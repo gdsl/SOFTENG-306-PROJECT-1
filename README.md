@@ -8,5 +8,6 @@ How to clone repo:
 2. Navigate to the package folder  
 3. *git init  
 4. *git remote add origin https://github.com/gdsl/SOFTENG-306-PROJECT-1  
-5. *git pull origin master
---Note:-- Check "Running ROS" page of wiki for more detailed steps
+5. *git pull origin master  
+-- Note: --  
+Check "Running ROS" page of wiki for more detailed steps
