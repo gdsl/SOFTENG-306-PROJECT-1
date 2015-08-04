@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <package>
-  <name>orchard_simulator</name>
+  <name>se306project</name>
   <version>0.0.0</version>
   <description>
-  The orchard_simulator package. Simulation of harvesting robots using ROS.
+  The se306project package. Simulation of harvesting robots using ROS.
   </description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag --> 
