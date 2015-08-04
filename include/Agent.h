@@ -6,11 +6,11 @@ class Agent{
 	public:
 		Agent();
 		~Agent();
-		ros::Publisher RobotNode_stage_pub
-		ros::Subscriber StageOdo_Sub
+		ros::Publisher RobotNode_stage_pub;
+		ros::Subscriber StageOdo_Sub;
 	
 	private:
 		geometry_msgs::Twist RobotNode_cmdvel;
-}
+};
 
 
