@@ -12,4 +12,4 @@ How to clone repo:
 5. *git pull origin master  
 
 -- Note: --  
-Check [Running ROS]([Wiki](https://github.com/xShay/SE306-ROS/wiki) page of wiki for more detailed steps
+Check [Running ROS](https://github.com/xShay/SE306-ROS/wiki) page of wiki for more detailed steps
