@@ -1,6 +1,8 @@
 # map.inc - useful setup for a floorplan bitmap
+# Used for the orchard floorplan
+# Borrowed from ROS templates for Stage
 # Authors: Richard Vaughan
-# $Id$
+#
 
 define floorplan model
 (
