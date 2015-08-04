@@ -2,7 +2,7 @@
 
 Implementation of invidiual robotic nodes with varying behaviours and message passing between one another. Presented via a graphical simulation of nodes acting as robots. Written in C++, runs on Linux.
 
-Software Engineering Design 2 (SOFTENG306)
+Software Engineering Design 2 (SOFTENG 306)
   
 How to clone repo:  
 1. Follow the tutorial steps to create a package, call it whatever you like  
