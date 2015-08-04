@@ -6,8 +6,8 @@ project(se306project)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   roscpp
-  rospy
   std_msgs
+  message_generation
 )
 
 ## System dependencies are found with CMake's conventions
@@ -44,11 +44,10 @@ find_package(catkin REQUIRED COMPONENTS
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
-#   Message1.msg
-#   Message2.msg
-# )
+add_message_files(
+  FILES
+  RobotState.msg
+)
 
 ## Generate services in the 'srv' folder
 # add_service_files(
@@ -65,10 +64,10 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs
-# )
+generate_messages(
+  DEPENDENCIES
+  std_msgs  # Or other packages containing msgs
+)
 
 ###################################
 ## catkin specific configuration ##
@@ -81,9 +80,10 @@ find_package(catkin REQUIRED COMPONENTS
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES se306project
-#  CATKIN_DEPENDS roscpp rospy std_msgs
+#  LIBRARIES orchard_simulator
+#  CATKIN_DEPENDS other_catkin_pkg
 #  DEPENDS system_lib
+  CATKIN_DEPENDS roscpp std_msgs message_runtime
 )
 
 ###########
@@ -93,24 +93,21 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 # include_directories(include)
-include_directories(
-  ${catkin_INCLUDE_DIRS}
-)
 
 ## Declare a cpp library
-# add_library(se306project
-#   src/${PROJECT_NAME}/se306project.cpp
+# add_library(orchard_simulator
+#   src/${PROJECT_NAME}/orchard_simulator.cpp
 # )
 
 ## Declare a cpp executable
-# add_executable(se306project_node src/se306project_node.cpp)
+# add_executable(orchard_simulator_node src/orchard_simulator_node.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
-# add_dependencies(se306project_node se306project_generate_messages_cpp)
+# add_dependencies(orchard_simulator_node orchard_simulator_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(se306project_node
+# target_link_libraries(orchard_simulator_node
 #   ${catkin_LIBRARIES}
 # )
 
@@ -129,7 +126,7 @@ include_directories(
 # )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS se306project se306project_node
+# install(TARGETS orchard_simulator orchard_simulator_node
 #   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -154,10 +151,17 @@ include_directories(
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_se306project.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_orchard_simulator.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+
+add_executable(test_robot src/test_robot.cpp)
+target_link_libraries(test_robot ${catkin_LIBRARIES})
+add_dependencies(test_robot test_robot_generate_messages_cpp)
+
+
+

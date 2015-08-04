@@ -1,14 +1,22 @@
 <?xml version="1.0"?>
 <package>
-  <name>se306project</name>
+  <name>orchard_simulator</name>
   <version>0.0.0</version>
-  <description>The se306project package</description>
+  <description>
+  The orchard_simulator package. Simulation of harvesting robots using ROS.
+  </description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag --> 
   <!-- Example:  -->
   <!-- <maintainer email="jane.doe@example.com">Jane Doe</maintainer> -->
-  <maintainer email="wal8800@todo.todo">wal8800</maintainer>
-
+  <maintainer email="chan743@aucklanduni.ac.nz">Chang Kon Han</maintainer>
+  <maintainer email="wyep266@aucklanduni.ac.nz">Wesley Yep</maintainer>
+  <maintainer email="ewhi352@aucklanduni.ac.nz">Elliot Whiley</maintainer>
+  <maintainer email="yfu959@aucklanduni.ac.nz">Gyver Fu</maintainer>
+  <maintainer email="klaw428@aucklanduni.ac.nz">John Law</maintainer>
+  <maintainer email="npra508@aucklanduni.ac.nz">Nikhil Prasad</maintainer>
+  <maintainer email="hjoo488@aucklanduni.ac.nz">Paul Joo</maintainer>
+  <maintainer email="jche671@aucklanduni.ac.nz">Lennon Chen</maintainer>
 
   <!-- One license tag required, multiple allowed, one license per tag -->
   <!-- Commonly used license strings: -->
@@ -19,7 +27,7 @@
   <!-- Url tags are optional, but mutiple are allowed, one per tag -->
   <!-- Optional attribute type can be: website, bugtracker, or repository -->
   <!-- Example: -->
-  <!-- <url type="website">http://wiki.ros.org/se306project</url> -->
+  <!-- <url type="website">http://wiki.ros.org/orchard_simulator</url> -->
 
 
   <!-- Author tags are optional, mutiple are allowed, one per tag -->
@@ -32,20 +40,18 @@
   <!-- Dependencies can be catkin packages or system dependencies -->
   <!-- Examples: -->
   <!-- Use build_depend for packages you need at compile time: -->
-  <!--   <build_depend>message_generation</build_depend> -->
+  <build_depend>message_generation</build_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>std_msgs</build_depend>
   <!-- Use buildtool_depend for build tool packages: -->
   <!--   <buildtool_depend>catkin</buildtool_depend> -->
   <!-- Use run_depend for packages you need at runtime: -->
-  <!--   <run_depend>message_runtime</run_depend> -->
+  <run_depend>message_runtime</run_depend>
+  <run_depend>roscpp</run_depend>
+  <run_depend>std_msgs</run_depend>
   <!-- Use test_depend for packages you need only for testing: -->
   <!--   <test_depend>gtest</test_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>roscpp</build_depend>
-  <build_depend>rospy</build_depend>
-  <build_depend>std_msgs</build_depend>
-  <run_depend>roscpp</run_depend>
-  <run_depend>rospy</run_depend>
-  <run_depend>std_msgs</run_depend>
 
 
   <!-- The export tag contains other, unspecified, tags -->
@@ -54,3 +60,4 @@
 
   </export>
 </package>
+
