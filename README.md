@@ -1,4 +1,4 @@
-# Orchard Simulator using ROS and STAGE  
+#Orchard Simulation of Kiwifruit Picking Robots
 
 Implementation of invidiual robotic nodes with varying behaviours and message passing between one another. Presented via a graphical simulation of nodes acting as robots. Written in C++, runs on Linux.
 
