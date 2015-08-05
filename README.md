@@ -5,11 +5,11 @@ Implementation of invidiual robotic nodes with varying behaviours and message pa
 Software Engineering Design 2 (SOFTENG 306)
   
 How to clone repo:  
-1. Follow the tutorial steps to create a package, call it whatever you like  
+1. Follow the tutorial steps to create a package, call it se306project
 2. Navigate to the package folder  
 3. *git init  
 4. *git remote add origin https://github.com/gdsl/SOFTENG-306-PROJECT-1  
-5. *git pull origin master  
+5. *git fetch 
 
 -- Note: --  
-Refer to [Running ROS](https://github.com/gdsl/SOFTENG-306-PROJECT-1/wiki/Running-ROS) for more detailed steps
+Refer to [Setup](https://github.com/gdsl/SOFTENG-306-PROJECT-1/wiki/setup) for more detailed steps
