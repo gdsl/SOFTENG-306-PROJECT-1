@@ -159,9 +159,9 @@ catkin_package(
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
 
-add_executable(test_robot src/test_robot.cpp)
-target_link_libraries(test_robot ${catkin_LIBRARIES})
-add_dependencies(test_robot test_robot_generate_messages_cpp)
+add_executable(PickerRobot src/PickerRobot.cpp)
+target_link_libraries(PickerRobot ${catkin_LIBRARIES})
+add_dependencies(PickerRobot PickerRobot_generate_messages_cpp)
 
 
 

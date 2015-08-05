@@ -58,6 +58,13 @@ void Robot::stageOdom_callback(nav_msgs::Odometry msg)
 	ROS_INFO("Current y position is: %f", y);
 }
 
+void Robot::StageLaser_callback(sensor_msgs::LaserScan msg)
+{
+	//This is the callback function to process laser scan messages
+	//you can access the range data from msg.ranges[i]. i = sample number
+	
+}
+
 /**
  * Message to stage of robot's odometry
  */
