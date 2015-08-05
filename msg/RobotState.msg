@@ -1,6 +1,0 @@
-uint32 pose_x
-uint32 pose_y
-uint16 pose_theta
-float32 linear_velocity_x
-float32 linear_velocity_y
-float32 angular_velocity_theta
