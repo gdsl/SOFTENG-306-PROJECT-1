@@ -11,6 +11,8 @@ How to clone repo:
 4. *git remote add origin https://github.com/gdsl/SOFTENG-306-PROJECT-1  
 5. *git fetch 
 
-Use roslaunch se306project orchard.launch to run
+Use roslaunch se306project orchard.launch to run  
+(If error, don't forget to use source devel/setup.bash)  
+  
 -- Note: --  
 Refer to [Setup](https://github.com/gdsl/SOFTENG-306-PROJECT-1/wiki/setup) for more detailed steps
