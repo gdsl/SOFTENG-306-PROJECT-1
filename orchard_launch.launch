@@ -1,4 +1,0 @@
-<launch>
-	<node name="stage" pkg="stage_ros" type="stageros" args="$(find se306project)/world/orchard.world"/>
-
-</launch>

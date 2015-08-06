@@ -158,6 +158,10 @@ catkin_package(
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+#catkin_add_gtest(name_of_the_test file the_directory_to_the_test_file cpp_files_that_is_being_tested)
+#eg catkin_add_gtest(testRobot test/testRobot.cpp a.cpp b.cpp c.pp)
+catkin_add_gtest(testRobot test/mytest.test test/testRobot.cpp)
+target_link_libraries(testRobot ${catkin_LIBRARIES})
 
 # Libraries
 include_directories(include)
@@ -166,5 +170,6 @@ add_library(Entity src/Entity.cpp)
 add_executable(PickerRobot src/PickerRobot.cpp)
 target_link_libraries(PickerRobot ${catkin_LIBRARIES})
 add_dependencies(PickerRobot PickerRobot_generate_messages_cpp)
+
 
 
