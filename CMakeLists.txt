@@ -168,7 +168,7 @@ include_directories(include)
 add_library(Entity src/Entity.cpp)
 
 add_executable(PickerRobot src/PickerRobot.cpp)
-target_link_libraries(PickerRobot ${catkin_LIBRARIES})
+target_link_libraries(PickerRobot Entity ${catkin_LIBRARIES})
 add_dependencies(PickerRobot PickerRobot_generate_messages_cpp)
 
 

@@ -1,29 +1,19 @@
-/*
- * PickerRobot.cpp
- *
- *  Created on: 6/08/2015
- *      Author: user
- */
-
-#include "PickerRobot.h"
 #include "ros/ros.h"
 #include "std_msgs/String.h"
 #include <sstream>
-#include "PickerRobot.h"
 #include "Entity.h"
+#include "PickerRobot.h"
+PickerRobot::PickerRobot(){
+}
 
-//PickerRobot::PickerRobot(){
-//}
-
-//PickerRobot::~PickerRobot(){
-//}
-//PickerRobot pickerRobot;
+PickerRobot::~PickerRobot(){
+}
+PickerRobot pickerRobot;
 
 
 int main(int argc, char **argv)
 {
-	//pickerRobot=PickerRobot();
-	//pickerRobot.Test();
+	pickerRobot=PickerRobot();
 	//You must call ros::init() first of all. ros::init() function needs to see argc and argv. The third argument is the name of the node
 	ros::init(argc, argv, "PickerRobot");
 

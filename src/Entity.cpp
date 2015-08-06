@@ -17,6 +17,7 @@ Entity::Entity():Entity(0,0,0.0,0.0,0.0){
 Entity::~Entity(){
 
 }
+
 /**
  * Initialises Entity object with given parameters.
  */
@@ -90,4 +91,3 @@ void Entity::updateOdometry()
 //
 void Entity::moveTo(geometry_msgs::Point point){}
 
-void Entity::Test(){}

@@ -19,7 +19,7 @@ class Entity
 		virtual ~Entity();
 		// Constructor with initialized variables.
 		Entity(int x, int y, double theta, double linearVelocity, double angularVelocity);
-		void Test();
+
 		// update the position of the robot
 		void setPose(int x, int y, double theta);
 
