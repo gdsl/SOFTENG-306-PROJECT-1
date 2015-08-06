@@ -250,3 +250,22 @@ trunk( pose [ 20.000 16.500 0.000 0.000 ] color "green")
 trunk( pose [ 25.000 16.500 0.000 0.000 ] color "green")
 trunk( pose [ 30.000 16.500 0.000 0.000 ] color "green")
 trunk( pose [ 35.000 16.500 0.000 0.000 ] color "green")
+
+# define newentity oldentity ()
+define myRobot position 
+( 
+  block( 
+	points 3 
+	point[0] [0 0] 
+	point[1] [1 0] 
+	point[2] [1 1] 
+	z [0 1] 
+  )
+  #properties as name value pairs
+  size [0.35 0.35 0.25] 
+  drive "diff" 
+) 
+
+# throw in a robot 
+myRobot( pose [ 5 5 0 0 ] name "bob" color "random") #commanded by robot_0/cmd_vel
+myRobot( pose [ 1 1 0 0 ] name "lucy" color "random")
