@@ -251,6 +251,8 @@ trunk( pose [ 25.000 16.500 0.000 0.000 ] color "green")
 trunk( pose [ 30.000 16.500 0.000 0.000 ] color "green")
 trunk( pose [ 35.000 16.500 0.000 0.000 ] color "green")
 
+human( pose [ 5.000 2.00 0.000 0.000 ] color "blue")
+
 # define newentity oldentity ()
 define myRobot position 
 ( 
