@@ -30,6 +30,11 @@ Entity::Entity(int x, int y, double theta, double linearVelocity, double angular
 	this->theta = theta;
 	this->linearVelocity = linearVelocity;
 	this->angularVelocity = angularVelocity;
+	destination_x=x;
+	destination_y=y;
+	destination_theta=theta;
+	destination_linearVelocity=linearVelocity;
+	destination_angularVelocity=angularVelocity;
 }
 
 /**
@@ -87,7 +92,35 @@ void Entity::updateOdometry()
 	robotNode_stage_pub.publish(robotNode_cmdvel);
 }
 
-// movement towards a point
-//
-void Entity::moveTo(geometry_msgs::Point point){}
+/**
+ * Message to move the robot forward in the direction it is facing
+ * Note unit is in meters
+ */
+void Entity::moveForward(int distanceToMove){}
 
+/**
+ * Message to rotate the robot.
+ */
+void Entity::rotate(double angleToRotate){
+
+}
+
+/**
+ * Message to rotate the robot such that it faces North
+ */
+void Entity::faceNorth(){}
+
+/**
+ * Message to rotate the robot such that it faces South
+ */
+void Entity::faceSouth(){}
+
+/**
+ * Message to rotate the robot such that it faces East
+ */
+void Entity::faceEast(){}
+
+/**
+ * Message to rotate the robot such that it faces West
+ */
+void Entity::faceWest(){}

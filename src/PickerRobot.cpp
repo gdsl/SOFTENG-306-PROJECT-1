@@ -1,7 +1,7 @@
 #include "ros/ros.h"
 #include "std_msgs/String.h"
 #include <sstream>
-#include "Entity.h"
+#include "Robot.h"
 #include "PickerRobot.h"
 PickerRobot::PickerRobot(){
 }
