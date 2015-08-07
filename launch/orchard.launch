@@ -7,4 +7,8 @@
 	<group ns="robot_1">
 		<node pkg="se306project" name="pubnode" type="PickerRobot"/>
 	</group>
+
+    <group ns="robot_2">
+        <node pkg="se306project" name="dognode" type="Animal"/>
+    </group>
 </launch>

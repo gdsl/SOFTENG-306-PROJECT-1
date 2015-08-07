@@ -266,6 +266,16 @@ define myRobot position
   drive "diff" 
 ) 
 
+#define animal
+define myAnimal position
+(
+  size [1 1 1]
+  drive "diff"
+)
+
 # throw in a robot 
 myRobot( pose [ 5 5 0 0 ] name "bob" color "random") #commanded by robot_0/cmd_vel
 myRobot( pose [ 1 1 0 0 ] name "lucy" color "random")
+
+#Animal
+myAnimal( pose [0 0 0 0] name "AlphaDog" color "random")
