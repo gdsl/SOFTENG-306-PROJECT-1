@@ -93,7 +93,11 @@ void Entity::updateOdometry()
  * Note unit is in meters
  * input:	double vel: the velocity of the robot moving forward
  */
-void Entity::moveForward(double vel){}
+void Entity::moveForward(double vel){
+	angularVelocity=0;
+	linearVelocity=vel;
+	updateOdometry();
+}
 
 /**
  * Message to rotate the robot.

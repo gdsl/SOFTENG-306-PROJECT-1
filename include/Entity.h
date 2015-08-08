@@ -41,7 +41,7 @@ class Entity
 		void faceWest(double angleSpeed);
 		void updateOdometry();
 
-	private:
+	protected:
 		// pose
 		int x;
 		int y;
@@ -51,6 +51,7 @@ class Entity
 		double linearVelocity;
 		double angularVelocity;
 
+	private:
 		// Expresses velocity in free space broken into its linear and angular parts
 		// http://docs.ros.org/jade/api/nav_msgs/html/msg/Odometry.html
 		geometry_msgs::Twist robotNode_cmdvel;

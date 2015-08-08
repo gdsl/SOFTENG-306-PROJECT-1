@@ -14,6 +14,7 @@ class PickerRobot: public Robot {
 public:
 	PickerRobot();
 	virtual ~PickerRobot();
+	void movement();
 };
 
 #endif /* SE306PROJECT_SRC_PICKERROBOT_H_ */
