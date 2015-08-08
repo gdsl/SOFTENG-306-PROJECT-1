@@ -18,11 +18,11 @@ int main(int argc, char **argv)
 	ros::init(argc, argv, "PickerRobot");
 
 	//NodeHandle is the main access point to communicate with ros.
-	//ros::NodeHandle n;
+	ros::NodeHandle n;
 
 	//advertise() function will tell ROS that you want to publish on a given topic_
 	//to stage
-	//ros::Publisher RobotNode_stage_pub =
+	pickerRobot.robotNode_stage_pub=n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
 
 	/*
 	//subscribe to listen to messages coming from stage

@@ -25,9 +25,9 @@ class Entity
 
 		// update the velocity of the robot
 		void setVelocity(double linearVelocity, double angularVelocity);
-		ros::NodeHandle n;
+
 		// Publisher and Subscriber. Public available to update.
-		ros::Publisher robotNode_stage_pub=n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
+		ros::Publisher robotNode_stage_pub;
 		ros::Subscriber stageOdo_Sub;
 
 		// Callback methods
