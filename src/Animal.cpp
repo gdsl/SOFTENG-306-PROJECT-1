@@ -4,6 +4,8 @@
 #include <sstream>
 #include "Entity.h"
 #include "Animal.h"
+#include <stdlib.h>
+#include <time.h>
  
 Animal::Animal() : Entity() {
 
@@ -37,44 +39,61 @@ int main(int argc, char **argv)
   
 
     alphaDog.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("odom",1000,stage_callback);
-    
+    srand(time(NULL));
     ros::Rate loop_rate(10); 
-
+    bool targetReach = true;
+    double targetX = 3;
+    double targetY = 3;
     while (ros::ok())
     {
         //message to stage
         //alphaDog.setVelocity(0,0.2);
 
-        double targetX = 20;
-        double targetY = 20;
+       //double dist = sqrt((pow((alphaDog.getX()-targetX),2) + pow((alphaDog.getY()-targetY),2)));
+        //if (dist < 2) targetReach = true;
+        /*
+        if ( alphaDog.getLin() == 0 && alphaDog.getAng() == 0 ) {
+            targetReach = true;
+        }
+        if (targetReach) {
+            targetX = rand() % 11 + (-5);
+            targetY = rand() % 11 + (-5);
+            targetReach = false;
+        }*/
 
-        double diffX = alphaDog.x - targetX;
-        double diffY = alphaDog.y - targetY;
-
+        double diffX = alphaDog.getX() - targetX;
+        double diffY = alphaDog.getY() - targetY;
+        
         if (abs(diffX) > 0.5 ) {
             if (diffX > 0) {
-                alphaDog.turnWest(2.0);
+                alphaDog.faceWest(2.0);
                 
             } else {
-                alphaDog.turnWest(2.0);
-            }
-            if (alphaDog.angularVelocity == 0 ) {
-                alphaDog.moveForward(2.0);
+                alphaDog.faceEast(2.0);
             }
 
-        ) else if (abs(diffY) > 0.5) {
+            if (alphaDog.getAng() == 0 ) {
+                alphaDog.moveForward(diffX,2.0);
+            } 
+
+
+        } else if (abs(diffY) > 0.5) {
+
             if (diffY > 0) {
-                alphaDog.turnSouth(2.0);
+                alphaDog.faceSouth(2.0);
                 
             } else {
-                alphaDog.turnNorth(2.0);
+                alphaDog.faceNorth(2.0);
             }
-            if (alphaDog.angularVelocity == 0 ) {
-                alphaDog.moveForward(2.0);
+
+            if (alphaDog.getAng() == 0 ) {
+                alphaDog.moveForward(diffY,2.0);
             }
         } else {
             alphaDog.setVelocity(0,0);
         }
+
+        
         
         alphaDog.updateOdometry();
         

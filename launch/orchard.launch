@@ -8,9 +8,13 @@
 	<group ns="robot_1">
 		<node pkg="se306project" name="pickernode" type="PickerRobot"/>
 	</group>
-
-
+	
 	<group ns="robot_2">
-	    <node pkg="se306project" name="dognode" type="Animal"/>
+
+		<node pkg="se306project" name="carriernode" type="CarrierRobot"/>
+	</group>
+
+	<group ns="robot_3">
+		<node pkg="se306project" name="dognode" type="Animal"/>
 	</group>
 </launch>

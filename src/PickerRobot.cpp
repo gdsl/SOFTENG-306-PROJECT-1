@@ -1,10 +1,9 @@
 #include "ros/ros.h"
 #include "std_msgs/String.h"
 #include <sstream>
-#include <nav_msgs/Odometry.h>
-#include <cmath>
 #include "Robot.h"
 #include "PickerRobot.h"
+
 PickerRobot::PickerRobot():Robot(){
 
 }
@@ -18,13 +17,8 @@ void callBackStageOdm(const nav_msgs::Odometry msg){
 }
 
 void PickerRobot::movement(){
-	if (std::abs(pickerRobot.theta-0.5)<0.1){
-		if(std::abs(pickerRobot.y+10.0)>0.1){
-			pickerRobot.moveForward(1);
-		}else{
-			pickerRobot.moveForward(0);
-		}
-	}
+	//robot oscillates
+	pickerRobot.moveForward(1,1);
 }
 
 int main(int argc, char **argv)
@@ -39,10 +33,13 @@ int main(int argc, char **argv)
 	//advertise() function will tell ROS that you want to publish on a given topic_
 	//to stage
 	pickerRobot.robotNode_stage_pub=n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
-
+	ros::Publisher pub=n.advertise<std_msgs::String>("status",1000);
 	//subscribe to listen to messages coming from stage
-	pickerRobot.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("odom",1000, callBackStageOdm);
+	pickerRobot.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000, callBackStageOdm);
 	//ros::Subscriber StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>("robot_0/base_scan",1000,StageLaser_callback);
+
+	// refer to advertise msg type
+	std_msgs::String status_msg;
 
 	ros::Rate loop_rate(10);
 
@@ -51,11 +48,13 @@ int main(int argc, char **argv)
 
 	while (ros::ok())
 	{
-		pickerRobot.faceSouth(1);
+		pickerRobot.faceSouth(0.4);
 		pickerRobot.movement();
 		ros::spinOnce();
 		loop_rate.sleep();
+		status_msg.data = "test";
 
+		pub.publish(status_msg);
 		++count;
 	}
 
