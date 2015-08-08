@@ -23,5 +23,4 @@ void MainWindow::on_closeButton_clicked()
 {
 	//close roslaunch
 	system("pkill stage");
-	close();
 }
