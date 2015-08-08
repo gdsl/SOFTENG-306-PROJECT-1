@@ -17,9 +17,7 @@ class Entity
 		// Default constructor
 		Entity();
 		virtual ~Entity();
-		// Constructor with initialized variables.
-		Entity(int x, int y, double theta, double linearVelocity, double angularVelocity);
-
+		Entity(double x, double y, double theta, double linearVelocity, double angularVelocity);
 		// update the position of the robot
 		void setPose(int x, int y, double theta);
 
@@ -31,9 +29,10 @@ class Entity
 		ros::Subscriber stageOdo_Sub;
 
 		// Callback methods
+		void atLocation();
 		void stageOdom_callback(nav_msgs::Odometry msg);
 		void StageLaser_callback(sensor_msgs::LaserScan msg);
-		void moveForward(double vel);
+		void moveForward(double distance,double vel);
 		void rotate(double angleToRotateTo,double angleSpeed);
 		void faceNorth(double angleSpeed);
 		void faceSouth(double angleSpeed);
@@ -41,17 +40,20 @@ class Entity
 		void faceWest(double angleSpeed);
 		void updateOdometry();
 
-	protected:
-		// pose
-		int x;
-		int y;
+
+
+	private:
+		//positions
+		double x;
+		double y;
 		double theta;
 
 		// velocity
 		double linearVelocity;
 		double angularVelocity;
 
-	private:
+		//boolean for if the robot is at desire location
+		bool desireLocation;
 		// Expresses velocity in free space broken into its linear and angular parts
 		// http://docs.ros.org/jade/api/nav_msgs/html/msg/Odometry.html
 		geometry_msgs::Twist robotNode_cmdvel;

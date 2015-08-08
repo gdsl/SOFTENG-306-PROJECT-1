@@ -1,4 +1,5 @@
 #include "ros/ros.h"
+#include "ros/console.h"
 #include "std_msgs/String.h"
 #include <sstream>
 #include "Entity.h"
@@ -8,7 +9,7 @@
  * Default constructor of Entity. Calls the other constructor with default values.
  */
 
-Entity::Entity():Entity(0,0,0.0,0.0,0.0){
+Entity::Entity():Entity(0,0,0,0,0){
 
 }
 
@@ -20,19 +21,17 @@ Entity::~Entity(){
 }
 
 /**
- * Initialises Entity object with given parameters.
+ * Constructor with parameters
  */
-
-Entity::Entity(int x, int y, double theta, double linearVelocity, double angularVelocity)
-{
+Entity::Entity(double x, double y, double theta, double linearVelocity, double angularVelocity){
 	// initialise variables
-	this->x = x;
-	this->y = y;
+	this->x=x;
+	this->y=y;
 	this->theta = theta;
 	this->linearVelocity = linearVelocity;
 	this->angularVelocity = angularVelocity;
+	desireLocation=false;
 }
-
 /**
  * Update the position of the Entity
  */
@@ -92,11 +91,21 @@ void Entity::updateOdometry()
  * Message to move the robot forward in the direction it is facing
  * Note unit is in meters
  * input:	double vel: the velocity of the robot moving forward
+ *			double distance: the amount of distance to move
  */
-void Entity::moveForward(double vel){
-	angularVelocity=0;
-	linearVelocity=vel;
-	updateOdometry();
+void Entity::moveForward(double distance, double vel){
+	if (!desireLocation){
+		if(x-distance>0.01){
+			linearVelocity=-vel;
+		}else if(distance-x>0.01){
+			linearVelocity=vel;
+		} else{
+			desireLocation=true;
+			linearVelocity=0;
+		}
+		angularVelocity=0;
+		updateOdometry();
+	}
 }
 
 /**
@@ -106,14 +115,10 @@ void Entity::moveForward(double vel){
  */
 void Entity::rotate(double angleToRotateTo, double angleSpeed){
 
-	if (std::abs(angleToRotateTo-theta)>0.1){
-		if (theta>angleToRotateTo){
-			angularVelocity=-angleSpeed;
-			updateOdometry();
-		}else{
-			angularVelocity=angleSpeed;
-			updateOdometry();
-		}
+	if (std::abs(angleToRotateTo-theta)>0.01){
+		//ROS_INFO(""+(angleToRotateTo-theta));
+		angularVelocity=angleSpeed;
+		updateOdometry();
 	}else{
 		angularVelocity=0;
 		linearVelocity=0;
@@ -132,7 +137,7 @@ void Entity::faceNorth(double angleSpeed){
  * Message to rotate the robot such that it faces South
  */
 void Entity::faceSouth(double angleSpeed){
-	rotate(1/2, angleSpeed);
+	rotate(0.8, angleSpeed);
 }
 
 /**

@@ -177,4 +177,7 @@ add_executable(PickerRobot src/PickerRobot.cpp)
 target_link_libraries(PickerRobot Robot Entity ${catkin_LIBRARIES})
 add_dependencies(PickerRobot PickerRobot_generate_messages_cpp)
 
+add_executable(CarrierRobot src/CarrierRobot.cpp)
+target_link_libraries(CarrierRobot Robot Entity ${catkin_LIBRARIES})
+add_dependencies(CarrierRobot CarrierRobot_generate_messages_cpp)
 
