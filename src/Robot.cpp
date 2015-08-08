@@ -7,7 +7,7 @@
 
 #include "Robot.h"
 
-Robot::Robot() {
+Robot::Robot():Entity(0,0,0,0,0) {
 	// TODO Auto-generated constructor stub
 
 }
