@@ -25,20 +25,20 @@ class Entity
 
 		// update the velocity of the robot
 		void setVelocity(double linearVelocity, double angularVelocity);
-
+		ros::NodeHandle n;
 		// Publisher and Subscriber. Public available to update.
-		ros::Publisher robotNode_stage_pub;
+		ros::Publisher robotNode_stage_pub=n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
 		ros::Subscriber stageOdo_Sub;
 
 		// Callback methods
 		void stageOdom_callback(nav_msgs::Odometry msg);
 		void StageLaser_callback(sensor_msgs::LaserScan msg);
-		void moveForward(int distanceToMove);
-		void rotate(double angleToRotate);
-		void faceNorth();
-		void faceSouth();
-		void faceEast();
-		void faceWest();
+		void moveForward(double vel);
+		void rotate(double angleToRotateTo,double angleSpeed);
+		void faceNorth(double angleSpeed);
+		void faceSouth(double angleSpeed);
+		void faceEast(double angleSpeed);
+		void faceWest(double angleSpeed);
 		void updateOdometry();
 
 	private:
@@ -50,15 +50,6 @@ class Entity
 		// velocity
 		double linearVelocity;
 		double angularVelocity;
-
-		// destination pose
-		int destination_x;
-		int destination_y;
-		double destination_theta;
-
-		// destination velocity
-		double destination_linearVelocity;
-		double destination_angularVelocity;
 
 		// Expresses velocity in free space broken into its linear and angular parts
 		// http://docs.ros.org/jade/api/nav_msgs/html/msg/Odometry.html

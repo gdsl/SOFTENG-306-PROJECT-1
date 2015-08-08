@@ -276,8 +276,8 @@ define myAnimal position
 )
 
 # throw in a robot 
-myRobot( pose [ 5 5 0 0 ] name "bob" color "random") #commanded by robot_0/cmd_vel
-myRobot( pose [ 1 1 0 0 ] name "lucy" color "random")
+myRobot( pose [ 5 5 0 0 ] name "picker1" color "random") #commanded by robot_0/cmd_vel
+myRobot( pose [ 10 10 0 0 ] name "picker2" color "random")
 
 #Animal
 myAnimal( pose [0 0 0 0] name "AlphaDog" color "random")
