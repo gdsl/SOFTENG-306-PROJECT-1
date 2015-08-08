@@ -16,11 +16,11 @@ Animal alphaDog;
 
 void stage_callback(nav_msgs::Odometry msg) {
     alphaDog.stageOdom_callback(msg);
-    int x = msg.pose.pose.position.x;
-	int y = msg.pose.pose.position.y;
-    alphaDog.setPose(x,y,0);
+    //alphaDog.setPose(x,y,0);
 
 }
+
+
 
 
 int main(int argc, char **argv) 
@@ -43,7 +43,39 @@ int main(int argc, char **argv)
     while (ros::ok())
     {
         //message to stage
-        alphaDog.setVelocity(0.2,0.2);
+        //alphaDog.setVelocity(0,0.2);
+
+        double targetX = 20;
+        double targetY = 20;
+
+        double diffX = alphaDog.x - targetX;
+        double diffY = alphaDog.y - targetY;
+
+        if (abs(diffX) > 0.5 ) {
+            if (diffX > 0) {
+                alphaDog.turnWest(2.0);
+                
+            } else {
+                alphaDog.turnWest(2.0);
+            }
+            if (alphaDog.angularVelocity == 0 ) {
+                alphaDog.moveForward(2.0);
+            }
+
+        ) else if (abs(diffY) > 0.5) {
+            if (diffY > 0) {
+                alphaDog.turnSouth(2.0);
+                
+            } else {
+                alphaDog.turnNorth(2.0);
+            }
+            if (alphaDog.angularVelocity == 0 ) {
+                alphaDog.moveForward(2.0);
+            }
+        } else {
+            alphaDog.setVelocity(0,0);
+        }
+        
         alphaDog.updateOdometry();
         
 

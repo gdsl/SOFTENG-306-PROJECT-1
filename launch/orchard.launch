@@ -11,6 +11,6 @@
 
 
 	<group ns="robot_2">
-	<node pkg="se306project" name="dognode" type="Animal"/>
+	    <node pkg="se306project" name="dognode" type="Animal"/>
 	</group>
 </launch>

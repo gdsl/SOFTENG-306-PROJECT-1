@@ -23,7 +23,7 @@ define pole modelBase
   gui_nose 0
 )
 
-define human modelBase
+define human position
 (
 
   # These corresponds to the maximum x y and z of the human in meters.
@@ -87,7 +87,7 @@ define human modelBase
 
 )
 
-define dog modelBase
+define dog position
 (
 
   # These corresponds to the maximum x y and z of the dog in meters.

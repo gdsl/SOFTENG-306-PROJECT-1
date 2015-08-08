@@ -251,8 +251,6 @@ trunk( pose [ 25.000 16.500 0.000 0.000 ] color "green")
 trunk( pose [ 30.000 16.500 0.000 0.000 ] color "green")
 trunk( pose [ 35.000 16.500 0.000 0.000 ] color "green")
 
-human( pose [ 5.000 2.00 0.000 0.000 ] color "blue")
-
 # define newentity oldentity ()
 define myRobot position 
 ( 
@@ -269,7 +267,7 @@ define myRobot position
 ) 
 
 #define animal
-#define myAnimal position
+#define dog position
 #(
 #  size [1 1 1]
 #  drive "diff"
@@ -281,3 +279,5 @@ myRobot( pose [ 10 10 0 0 ] name "picker2" color "random")
 
 #Animal
 dog( pose [0 0 0 0] name "AlphaDog" color "random")
+
+human( pose [ 5.000 2.00 0.000 0.000 ] color "blue")
