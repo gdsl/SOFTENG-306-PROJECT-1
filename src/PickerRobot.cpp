@@ -2,6 +2,7 @@
 #include "std_msgs/String.h"
 #include <sstream>
 #include <nav_msgs/Odometry.h>
+#include <cmath>
 #include "Robot.h"
 #include "PickerRobot.h"
 PickerRobot::PickerRobot():Robot(){
@@ -14,6 +15,16 @@ PickerRobot pickerRobot;
 
 void callBackStageOdm(const nav_msgs::Odometry msg){
 	pickerRobot.stageOdom_callback(msg);
+}
+
+void PickerRobot::movement(){
+	if (std::abs(pickerRobot.theta-0.5)<0.1){
+		if(std::abs(pickerRobot.y+10.0)>0.1){
+			pickerRobot.moveForward(1);
+		}else{
+			pickerRobot.moveForward(0);
+		}
+	}
 }
 
 int main(int argc, char **argv)
@@ -41,6 +52,7 @@ int main(int argc, char **argv)
 	while (ros::ok())
 	{
 		pickerRobot.faceSouth(1);
+		pickerRobot.movement();
 		ros::spinOnce();
 		loop_rate.sleep();
 
