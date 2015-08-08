@@ -42,8 +42,8 @@ int main(int argc, char **argv)
     srand(time(NULL));
     ros::Rate loop_rate(10); 
     bool targetReach = true;
-    double targetX = 3;
-    double targetY = 3;
+    double targetX = 1;
+    double targetY = 1;
     while (ros::ok())
     {
         //message to stage

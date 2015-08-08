@@ -173,6 +173,13 @@ add_executable(Animal src/Animal.cpp)
 target_link_libraries(Animal Entity ${catkin_LIBRARIES})
 add_dependencies(Animal Animal_generate_messages_cpp)
 
+add_library(Person src/Person.cpp)
+target_link_libraries(Person Entity ${catkin_LIBRARIES})
+
+add_executable(AlphaPerson src/AlphaPerson.cpp)
+target_link_libraries(AlphaPerson Person Entity ${catkin_LIBRARIES})
+add_dependencies(AlphaPerson AlphaPerson_generate_messages_cpp)
+
 add_executable(PickerRobot src/PickerRobot.cpp)
 target_link_libraries(PickerRobot Robot Entity ${catkin_LIBRARIES})
 add_dependencies(PickerRobot PickerRobot_generate_messages_cpp)
