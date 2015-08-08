@@ -82,12 +82,57 @@ void Entity::updateOdometry()
 {
 	robotNode_cmdvel.linear.x = linearVelocity;
 	robotNode_cmdvel.angular.z = angularVelocity;
-
+	robotNode_cmdvel.linear.y = 0;
 	// publish message
 	robotNode_stage_pub.publish(robotNode_cmdvel);
 }
 
-// movement towards a point
-//
-void Entity::moveTo(geometry_msgs::Point point){}
+/**
+ * Message to move the robot forward in the direction it is facing
+ * Note unit is in meters
+ * input:	double vel: the velocity of the robot moving forward
+ */
+void Entity::moveForward(double vel){}
 
+/**
+ * Message to rotate the robot.
+ * Input:	double angleToRotate: the angle robot will rotate to relative to absoulte frame.
+ *			double angleSpeed: how fast we want the robot to rotate. Note its speed so always +ve
+ */
+void Entity::rotate(double angleToRotateTo, double angleSpeed){
+	if (angleToRotateTo!=theta){
+		if (theta>angleToRotateTo){
+			angularVelocity=-angleSpeed;
+			updateOdometry();
+		}else{
+			angularVelocity=angleSpeed;
+			updateOdometry();
+		}
+	}else{
+		angularVelocity=0;
+		linearVelocity=0;
+		updateOdometry();
+	}
+}
+
+/**
+ * Message to rotate the robot such that it faces North
+ */
+void Entity::faceNorth(double angleSpeed){
+	rotate(0, angleSpeed);
+}
+
+/**
+ * Message to rotate the robot such that it faces South
+ */
+void Entity::faceSouth(double angleSpeed){}
+
+/**
+ * Message to rotate the robot such that it faces East
+ */
+void Entity::faceEast(double angleSpeed){}
+
+/**
+ * Message to rotate the robot such that it faces West
+ */
+void Entity::faceWest(double angleSpeed){}

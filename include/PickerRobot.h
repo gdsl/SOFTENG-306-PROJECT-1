@@ -4,13 +4,13 @@
 #include <geometry_msgs/Twist.h>
 #include <geometry_msgs/Point.h>
 #include <nav_msgs/Odometry.h>
-#include "Entity.h"
+#include "Robot.h"
 /**
  * PickerRobot class
  * This class is for the implementation of the picker robot
  */
 
-class PickerRobot: public Entity {
+class PickerRobot: public Robot {
 public:
 	PickerRobot();
 	virtual ~PickerRobot();

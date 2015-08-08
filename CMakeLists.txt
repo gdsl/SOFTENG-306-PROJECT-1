@@ -166,13 +166,15 @@ target_link_libraries(testRobot ${catkin_LIBRARIES})
 # Libraries
 include_directories(include)
 add_library(Entity src/Entity.cpp)
+add_library(Robot src/Robot.cpp)
+target_link_libraries(Robot Entity ${catkin_LIBRARIES})
 
 add_executable(Animal src/Animal.cpp)
 target_link_libraries(Animal Entity ${catkin_LIBRARIES})
 add_dependencies(Animal Animal_generate_messages_cpp)
 
 add_executable(PickerRobot src/PickerRobot.cpp)
-target_link_libraries(PickerRobot Entity ${catkin_LIBRARIES})
+target_link_libraries(PickerRobot Robot Entity ${catkin_LIBRARIES})
 add_dependencies(PickerRobot PickerRobot_generate_messages_cpp)
 
 

@@ -1,7 +1,7 @@
 #include "ros/ros.h"
 #include "std_msgs/String.h"
 #include <sstream>
-#include "Entity.h"
+#include "Robot.h"
 #include "PickerRobot.h"
 PickerRobot::PickerRobot(){
 }
@@ -22,7 +22,7 @@ int main(int argc, char **argv)
 
 	//advertise() function will tell ROS that you want to publish on a given topic_
 	//to stage
-	ros::Publisher RobotNode_stage_pub = n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
+	pickerRobot.robotNode_stage_pub=n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
 
 	/*
 	//subscribe to listen to messages coming from stage
@@ -36,7 +36,7 @@ int main(int argc, char **argv)
 
 	while (ros::ok())
 	{
-
+		pickerRobot.faceNorth(1);
 
 		loop_rate.sleep();
 		++count;
