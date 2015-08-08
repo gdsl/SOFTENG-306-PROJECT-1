@@ -33,10 +33,15 @@ class Entity
 		// Callback methods
 		void stageOdom_callback(nav_msgs::Odometry msg);
 		void StageLaser_callback(sensor_msgs::LaserScan msg);
-		void moveTo(geometry_msgs::Point point);
+		void moveForward(double vel);
+		void rotate(double angleToRotateTo,double angleSpeed);
+		void faceNorth(double angleSpeed);
+		void faceSouth(double angleSpeed);
+		void faceEast(double angleSpeed);
+		void faceWest(double angleSpeed);
 		void updateOdometry();
 
-	private:
+	protected:
 		// pose
 		int x;
 		int y;
@@ -46,6 +51,7 @@ class Entity
 		double linearVelocity;
 		double angularVelocity;
 
+	private:
 		// Expresses velocity in free space broken into its linear and angular parts
 		// http://docs.ros.org/jade/api/nav_msgs/html/msg/Odometry.html
 		geometry_msgs::Twist robotNode_cmdvel;
