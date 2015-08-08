@@ -1,15 +1,20 @@
 #include "ros/ros.h"
 #include "std_msgs/String.h"
 #include <sstream>
+#include <nav_msgs/Odometry.h>
 #include "Robot.h"
 #include "PickerRobot.h"
-PickerRobot::PickerRobot(){
+PickerRobot::PickerRobot():Robot(){
+
 }
 
 PickerRobot::~PickerRobot(){
 }
 PickerRobot pickerRobot;
 
+void callBackStageOdm(const nav_msgs::Odometry msg){
+	pickerRobot.stageOdom_callback(msg);
+}
 
 int main(int argc, char **argv)
 {
@@ -24,10 +29,9 @@ int main(int argc, char **argv)
 	//to stage
 	pickerRobot.robotNode_stage_pub=n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
 
-	/*
 	//subscribe to listen to messages coming from stage
-	ros::Subscriber StageOdo_sub = n.subscribe<nav_msgs::Odometry>("robot_0/odom",1000, StageOdom_callback);
-	ros::Subscriber StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>("robot_0/base_scan",1000,StageLaser_callback);*/
+	pickerRobot.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("odom",1000, callBackStageOdm);
+	//ros::Subscriber StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>("robot_0/base_scan",1000,StageLaser_callback);
 
 	ros::Rate loop_rate(10);
 
@@ -36,9 +40,10 @@ int main(int argc, char **argv)
 
 	while (ros::ok())
 	{
-		pickerRobot.faceNorth(1);
-
+		pickerRobot.faceSouth(1);
+		ros::spinOnce();
 		loop_rate.sleep();
+
 		++count;
 	}
 
