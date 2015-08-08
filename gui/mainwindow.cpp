@@ -1,34 +1,27 @@
 #include "mainwindow.h"
+#include "ui_mainwindow.h"
 
-#include <QtCore/QCoreApplication>
-
-MainWindow::MainWindow(QWidget *parent)
-	: QMainWindow(parent)
+MainWindow::MainWindow(QWidget *parent) :
+    QMainWindow(parent),
+    ui(new Ui::MainWindow)
 {
-	// Create the button, make "this" the parent
-	m_button = new QPushButton("Run simulator", this);
-	// set size and location of the button
-	m_button->setGeometry(QRect(QPoint(100, 100),
-	QSize(200, 50)));
-	move(200,200);
-	// Connect button signal to appropriate slot
-	connect(m_button, SIGNAL (released()), this, SLOT (handleButton()));
-	isRunningSimulator = false;
+    ui->setupUi(this);
 }
 
-void MainWindow::handleButton()
+MainWindow::~MainWindow()
 {
-	if (!isRunningSimulator) {
-		isRunningSimulator = true;
-		// change the text
-		m_button->setText("Stop simulator");
-		//launch roslaunch
-		system("roslaunch se306project orchard.launch &");
-	} else {
-		isRunningSimulator = false;
-		// change the text
-		m_button->setText("Run simulator");
-		//close roslaunch
-		system("pkill stage");
-	}
+    delete ui;
+}
+
+void MainWindow::on_launchButton_clicked()
+{
+	//launch roslaunch
+	system("roslaunch se306project orchard.launch &");
+}
+
+void MainWindow::on_closeButton_clicked()
+{
+	//close roslaunch
+	system("pkill stage");
+	close();
 }

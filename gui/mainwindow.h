@@ -2,26 +2,26 @@
 #define MAINWINDOW_H
 
 #include <QtGui/QMainWindow>
-#include <QtGui/QPushButton>
 
 namespace Ui {
-	class MainWindow;
+class MainWindow;
 }
 
 class MainWindow : public QMainWindow
 {
-	Q_OBJECT
+    Q_OBJECT
 
-	public:
-		explicit MainWindow(QWidget *parent = 0);
+public:
+    explicit MainWindow(QWidget *parent = 0);
+    ~MainWindow();
 
-	private slots:
-		void handleButton();
+private slots:
+	void on_launchButton_clicked();
 
-	private:
-		QPushButton *m_button;
-		bool isRunningSimulator;
+	void on_closeButton_clicked();
 
+private:
+    Ui::MainWindow *ui;
 };
 
 #endif // MAINWINDOW_H

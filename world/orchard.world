@@ -28,7 +28,7 @@ paused 0
 floorplan
 (
   name "Orchard"
-  # The actual size of the lab
+  # The actual size of the orchard
   size [80 40 0.1]
   pose [0.000 0.000 0.000 0.000]
   bitmap "bitmaps/orchard.png"

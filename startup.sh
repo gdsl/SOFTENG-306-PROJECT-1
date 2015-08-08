@@ -1,2 +1,2 @@
-source ~/rosws/devel/setup.bash
+source ../../devel/setup.bash
 gui/gui
