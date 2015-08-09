@@ -252,17 +252,33 @@ trunk( pose [ 30.000 16.500 0.000 0.000 ] color "green")
 trunk( pose [ 35.000 16.500 0.000 0.000 ] color "green")
 
 # define newentity oldentity ()
-define myRobot position 
+define PickerRobot position 
 ( 
   block( 
-	points 3 
+	points 4
 	point[0] [0 0] 
 	point[1] [1 0] 
 	point[2] [1 1] 
+	point[3] [0 1]
 	z [0 1] 
   )
   #properties as name value pairs
-  size [0.35 0.35 0.25] 
+  size [2.5 1.5 1] 
+  drive "diff" 
+)
+
+define CarrierRobot position 
+( 
+  block( 
+	points 4
+	point[0] [0 0] 
+	point[1] [1 0] 
+	point[2] [1 1] 
+	point[3] [0 1]
+	z [0 1] 
+  )
+  #properties as name value pairs
+  size [1.8 1.5 0.5] 
   drive "diff" 
 ) 
 
@@ -273,10 +289,10 @@ define myRobot position
 #  drive "diff"
 #)
 
-# throw in a robot 
-myRobot( pose [ 5 5 0 0 ] name "Picker1" color "random") #commanded by robot_0/cmd_vel
-myRobot( pose [ 5 10 0 0 ] name "Picker2" color "random")
-myRobot( pose [ 0 9.5 0 0 ] name "Carrier1" color "random")
+# Spawn robots
+PickerRobot( pose [ 5 5 0 0 ] name "Picker1" color "random") #commanded by robot_0/cmd_vel
+PickerRobot( pose [ 5 10 0 0 ] name "Picker2" color "random")
+CarrierRobot( pose [ 12 9.5 0 0 ] name "Carrier1" color "random")
 
 #Animal
 dog( pose [0 0 0 0] name "AlphaDog" color "random")

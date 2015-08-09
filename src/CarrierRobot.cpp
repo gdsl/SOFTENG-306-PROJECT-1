@@ -29,7 +29,8 @@ void recievePickerRobotStatus(const se306project::robot_status::ConstPtr& msg)
 	if ((msg->status).compare("Full")==0){
 		ROS_INFO("Tests");
 		if (!carrierRobot.getDesireLocation()){
-			carrierRobot.moveForward(double(msg->pos_x),1);
+		        // carrier robot will approach picker but will leave a space of 2 metres to avoid colliding
+			carrierRobot.moveForward(double(msg->pos_x), 1);
 		}else{
 			status="Arrived";
 		}
