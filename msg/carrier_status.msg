@@ -1,0 +1,2 @@
+uint8 my_counter
+string status

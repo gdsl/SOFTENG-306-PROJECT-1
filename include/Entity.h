@@ -39,12 +39,14 @@ class Entity
 		void faceEast(double angleSpeed);
 		void faceWest(double angleSpeed);
 		void updateOdometry();
-
+		void setDesireLocation(bool desireLocation);
         //get method
         double getX();
         double getY();
+        double getTheta();
         double getLin();
         double getAng();
+        bool getDesireLocation();
 
 	private:
 		//positions

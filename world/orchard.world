@@ -276,7 +276,7 @@ define myRobot position
 # throw in a robot 
 myRobot( pose [ 5 5 0 0 ] name "Picker1" color "random") #commanded by robot_0/cmd_vel
 myRobot( pose [ 5 10 0 0 ] name "Picker2" color "random")
-myRobot( pose [ 0 10 0 0 ] name "Carrier1" color "random")
+myRobot( pose [ 0 9.5 0 0 ] name "Carrier1" color "random")
 
 #Animal
 dog( pose [0 0 0 0] name "AlphaDog" color "random")

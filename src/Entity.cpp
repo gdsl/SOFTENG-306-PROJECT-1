@@ -9,7 +9,7 @@
  * Default constructor of Entity. Calls the other constructor with default values.
  */
 
-Entity::Entity():Entity(0,0,0,0,0){
+Entity::Entity():Entity(0,0,0,0.01,0.01){
 
 }
 
@@ -163,10 +163,22 @@ double Entity::getY() {
     return y;
 }
 
+double Entity::getTheta() {
+    return theta;
+}
+
 double Entity::getLin() {
     return linearVelocity;
 }
 
 double Entity::getAng() {
     return angularVelocity;
+}
+
+bool Entity::getDesireLocation() {
+    return desireLocation;
+}
+
+void Entity::setDesireLocation(bool desireLocation){
+	this->desireLocation=desireLocation;
 }
