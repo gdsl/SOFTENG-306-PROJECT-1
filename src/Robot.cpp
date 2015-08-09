@@ -9,3 +9,10 @@ Robot::Robot():Entity(0,0,0,0,0) {
 Robot::~Robot() {
 	// TODO Auto-generated destructor stub
 }
+
+void Entity::StageLaser_callback(sensor_msgs::LaserScan msg)
+{
+	//This is the callback function to process laser scan messages
+	//you can access the range data from msg.ranges[i]. i = sample number
+
+}

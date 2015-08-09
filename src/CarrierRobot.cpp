@@ -21,6 +21,8 @@ void callBackStageOdm(const nav_msgs::Odometry msg){
 	carrierRobot.stageOdom_callback(msg);
 }
 
+void callBack
+
 void recievePickerRobotStatus(const se306project::robot_status::ConstPtr& msg)
 {
 	//ROS_INFO("sub echoing pub: %d",msg->my_counter);

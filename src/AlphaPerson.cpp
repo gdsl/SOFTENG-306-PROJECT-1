@@ -45,9 +45,8 @@ int main(int argc, char **argv)
     while (ros::ok())
     {
         //message to stage
-        alphaPerson.setVelocity(0,0.2);      
+        alphaPerson.setVelocity(0,0.2);
         alphaPerson.updateOdometry();
-        
 
         ros::spinOnce();
     
