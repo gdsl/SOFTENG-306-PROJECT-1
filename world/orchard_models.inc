@@ -23,6 +23,23 @@ define pole modelBase
   gui_nose 0
 )
 
+define laser ranger
+(
+	sensor
+	(
+		range [ 0.0 30.0 ] # maximum range reported by scanner in meters.
+		fov 180 # angular field of view of the scanner, in radians.
+		samples 180 # number of laser samples per scan
+	)
+
+	# generic model properties
+	model
+	(
+		color "black"
+		size [ 0.1 0.1 0.1 ]
+	)
+)
+
 define human position
 (
 
@@ -85,6 +102,8 @@ define human position
   z [ 1.5 1.700 ]
 			)
 
+  obstacle_return 1
+  ranger_return 1
 )
 
 define dog position
@@ -149,6 +168,9 @@ define dog position
   z [ 0.35 0.50 ]
 			)
 
+  obstacle_return 1
+  ranger_return 1
+
 )
 
 # define newentity oldentity ()
@@ -165,6 +187,11 @@ define PickerRobot position
   #properties as name value pairs
   size [2.5 1.5 1]
   drive "diff"
+  laser(pose [ 0.050 0.000 0 0.000 ])
+
+  obstacle_return 1
+  ranger_return 1
+
 )
 
 define CarrierRobot position
@@ -180,4 +207,9 @@ define CarrierRobot position
   #properties as name value pairs
   size [1.8 1.5 0.5]
   drive "diff"
+  laser(pose [ 0.050 0.000 0 0.000 ])
+
+  obstacle_return 1
+  ranger_return 1
+
 )
