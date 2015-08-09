@@ -56,7 +56,6 @@ int main(int argc, char **argv)
 	//advertise() function will tell ROS that you want to publish on a given topic_
 	//to stage
 	pickerRobot.robotNode_stage_pub=n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
-	pickerRobot.ro
 	ros::Publisher pub=n.advertise<se306project::robot_status>("status",1000);
 	//subscribe to listen to messages coming from stage
 	pickerRobot.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000, callBackStageOdm);
