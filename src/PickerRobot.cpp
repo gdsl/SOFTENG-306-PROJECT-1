@@ -80,11 +80,10 @@ int main(int argc, char **argv)
 		pub.publish(status_msg);
 
 		ros::spinOnce();
-		//pickerRobot.faceSouth(0.4);
+		pickerRobot.faceSouth(0.4);
 		pickerRobot.movement();
 		loop_rate.sleep();
 		//assigne to status message
-
 
 		++count;
 	}

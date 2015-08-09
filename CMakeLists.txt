@@ -153,17 +153,17 @@ catkin_package(
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_orchard_simulator.cpp)
-# if(TARGET ${PROJECT_NAME}-test)
-#   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
-# endif()
+ catkin_add_gtest(${PROJECT_NAME}-test test/testRobot.cpp src/PickerRobot.cpp src/Robot.cpp src/Entity.cpp)
+ if(TARGET ${PROJECT_NAME}-test)
+   target_link_libraries(${PROJECT_NAME}-test ${catkin_LIBRARIES})
+ endif()
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
 #catkin_add_gtest(name_of_the_test file the_directory_to_the_test_file cpp_files_that_is_being_tested)
 #eg catkin_add_gtest(testRobot test/testRobot.cpp a.cpp b.cpp c.pp)
-catkin_add_gtest(testRobot test/mytest.test test/testRobot.cpp)
-target_link_libraries(testRobot ${catkin_LIBRARIES})
+#catkin_add_gtest(testRobot test/mytest.test test/testRobot.cpp)
+#target_link_libraries(testRobot ${catkin_LIBRARIES})
 
 # Libraries
 include_directories(include)

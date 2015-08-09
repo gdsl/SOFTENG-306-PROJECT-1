@@ -23,6 +23,46 @@ define pole modelBase
   gui_nose 0
 )
 
+define laserBase ranger
+(
+	sensor
+	(
+		range [ 0.0 30.0 ] # maximum range reported by scanner in meters.
+		fov 180 # angular field of view of the scanner, in radians.
+		samples 180 # number of laser samples per scan
+	)
+
+	# generic model properties
+	model
+	(
+		color "black"
+		size [ 0.1 0.1 0.1 ]
+	)
+)
+
+define pretendLaserBase ranger #For animal and humans which should not have lasers
+(
+	sensor
+	(
+		range [ 0.0 0.0 ] # set tp zero
+		fov 0
+		samples 0
+	)
+)
+
+define pickerLaser laserBase
+()
+
+define carrierLaser laserBase
+()
+
+define dogLaser pretendLaserBase
+()
+define humanLaser pretendLaserBase
+()
+
+
+
 define human position
 (
 
@@ -84,7 +124,9 @@ define human position
   point[0] [  -0.05  -0.05 ] 
   z [ 1.5 1.700 ]
 			)
-
+  humanLaser(pose [ 0.050 0.000 0 0.000 ])
+  obstacle_return 1
+  ranger_return 1
 )
 
 define dog position
@@ -148,5 +190,49 @@ define dog position
   point[0] [  -0.50   0.05 ] 
   z [ 0.35 0.50 ]
 			)
+  dogLaser(pose [ 0.050 0.000 0 0.000 ])
+  obstacle_return 1
+  ranger_return 1
+
+)
+
+# define newentity oldentity ()
+define PickerRobot position
+(
+  block(
+	points 4
+	point[0] [0 0]
+	point[1] [1 0]
+	point[2] [1 1]
+	point[3] [0 1]
+	z [0 1]
+  )
+  #properties as name value pairs
+  size [2.5 1.5 1]
+  drive "diff"
+  pickerLaser(pose [ 0.050 0.000 0 0.000 ])
+
+  obstacle_return 1
+  ranger_return 1
+
+)
+
+define CarrierRobot position
+(
+  block(
+	points 4
+	point[0] [0 0]
+	point[1] [1 0]
+	point[2] [1 1]
+	point[3] [0 1]
+	z [0 1]
+  )
+  #properties as name value pairs
+  size [1.8 1.5 0.5]
+  drive "diff"
+  carrierLaser(pose [ 0.050 0.000 0 0.000 ])
+
+  obstacle_return 1
+  ranger_return 1
 
 )
