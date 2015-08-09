@@ -4,6 +4,7 @@
 #include <sstream>
 #include "Entity.h"
 #include <cmath>
+#include <tf/tf.h>
 
 /**
  * Default constructor of Entity. Calls the other constructor with default values.
@@ -61,8 +62,11 @@ void Entity::stageOdom_callback(nav_msgs::Odometry msg)
 {
 	x = msg.pose.pose.position.x;
 	y = msg.pose.pose.position.y;
-	//theta =msg.pose.pose.orientation.w;
-    theta = asin(msg.pose.pose.orientation.z)*2;
+	
+    tf::Pose pose;
+    tf::poseMsgToTF(msg.pose.pose,pose);
+
+    theta = tf::getYaw(pose.getRotation());    
 	// ROS logging api
 	//ROS_INFO("Current x position is: %f", x);
 	//ROS_INFO("Current y position is: %f", y);
