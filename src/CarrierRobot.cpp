@@ -26,18 +26,32 @@ void recievePickerRobotStatus(const se306project::robot_status::ConstPtr& msg)
 	//ROS_INFO("sub echoing pub: %d",msg->my_counter);
 	//ROS_INFO("sub echoing pub: %s",msg->status.c_str());
 	//ROS_INFO("sub echoing pub: %f",msg->pos_x);
-	if ((msg->status).compare("Full")==0){
-		ROS_INFO("Tests");
-		if (!carrierRobot.getDesireLocation()){
-		        // carrier robot will approach picker but will leave a space of 2 metres to avoid colliding
-			carrierRobot.moveForward(double(msg->pos_x), 1);
-		}else{
-			status="Arrived";
-		}
-	}else if ((msg->status).compare("Moving")==0){
-		status="Idle";
+	if (status.compare("Arrived")==0){
+		status="Transporting";
 		carrierRobot.setDesireLocation(false);
+	}else if(status.compare("Idle")==0){
+		if ((msg->status).compare("Full")==0){
+			ROS_INFO("Tests");
+
+			if (!carrierRobot.getDesireLocation()){
+					// carrier robot will approach picker but will leave a space of 2 metres to avoid colliding
+				carrierRobot.moveForward(double((msg->pos_x)+3), 1);
+			}else{
+				status="Arrived";
+			}
+		}
+	}else if(status.compare("Transporting")==0){
+		if (!carrierRobot.getDesireLocation()){
+			//carrier will move to right 10meters to imaginery dump place
+			carrierRobot.moveForward(10, 1);
+		}else{
+			status="Idle";
+			carrierRobot.setDesireLocation(false);//refresh that it can recieve more desirelocation
+		}
+
 	}
+
+
 }
 
 int main(int argc, char **argv)
