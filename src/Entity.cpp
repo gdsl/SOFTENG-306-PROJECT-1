@@ -93,9 +93,9 @@ void Entity::updateOdometry()
  */
 void Entity::moveForward(double distance, double vel){
 	if (!desireLocation){
-		if(x-distance>0.01){
+		if(x-distance>0.05){
 			linearVelocity=-vel;
-		}else if(distance-x>0.01){
+		}else if(distance-x>0.05){
 			linearVelocity=vel;
 		} else{
 			desireLocation=true;
