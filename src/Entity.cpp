@@ -4,6 +4,7 @@
 #include <sstream>
 #include "Entity.h"
 #include <cmath>
+#include <sensor_msgs/LaserScan.h>
 
 /**
  * Default constructor of Entity. Calls the other constructor with default values.
