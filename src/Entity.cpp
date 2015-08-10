@@ -68,6 +68,13 @@ void Entity::stageOdom_callback(nav_msgs::Odometry msg)
 	//ROS_INFO("Current y position is: %f", y);
 }
 
+void Entity::stageLaser_callback(sensor_msgs::LaserScan msg)
+{
+	//This is the callback function to process laser scan messages
+	//you can access the range data from msg.ranges[i]. i = sample number
+
+}
+
 /**
  * Message to stage of Entity's odometry
  */

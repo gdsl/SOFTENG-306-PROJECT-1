@@ -21,6 +21,10 @@ void callBackStageOdm(const nav_msgs::Odometry msg){
 	carrierRobot.stageOdom_callback(msg);
 }
 
+void callBackLaserScan(const sensor_msgs::LaserScan msg) {
+	carrierRobot.stageLaser_callback(msg);
+}
+
 void recievePickerRobotStatus(const se306project::robot_status::ConstPtr& msg)
 {
 	//ROS_INFO("sub echoing pub: %d",msg->my_counter);
@@ -69,6 +73,7 @@ int main(int argc, char **argv)
 	carrierRobot.robotNode_stage_pub=n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
 		//subscribe to listen to messages coming from stage
 	carrierRobot.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000, callBackStageOdm);
+	carrierRobot.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000, callBackLaserScan);
 	ros::Subscriber mysub_object = n.subscribe<se306project::robot_status>("/robot_0/status",1000,recievePickerRobotStatus);
 	ros::Publisher pub=n.advertise<se306project::carrier_status>("status",1000);
 
