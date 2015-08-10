@@ -18,7 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
     Worker *worker = new Worker();
     worker->moveToThread(thread);
  	connect (thread, SIGNAL(started()), worker, SLOT(newLabel()));
-    connect(worker, SIGNAL(requestNewLabel(QString)), this, SLOT(onUpdateGUI(QString)));
+    connect(worker, SIGNAL(requestNewLabel(QString, int)), this, SLOT(onUpdateGUI(QString, int)));
     connect(thread, SIGNAL(destroyed()), worker, SLOT(deleteLater()));
 
 	
@@ -37,9 +37,9 @@ MainWindow::~MainWindow()
 //	exec("gui/getStatus.sh");
 //}
 
-void MainWindow::onUpdateGUI( QString str )
+void MainWindow::onUpdateGUI( QString str, int i )
 {
-    ui->robotPanel1->setPlainText(str);
+    ui->robotList1->item(i)->setText(str);
 }
 
 void MainWindow::on_launchButton_clicked()

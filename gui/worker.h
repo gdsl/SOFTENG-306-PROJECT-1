@@ -16,5 +16,5 @@ public slots:
     void newLabel();
 
 signals:    
-    void requestNewLabel(const QString &);
+    void requestNewLabel(const QString &, int);
 };

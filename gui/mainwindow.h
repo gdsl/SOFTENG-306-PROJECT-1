@@ -21,7 +21,7 @@ signals:
 	void requestProcess();
 
 public slots:
-	void onUpdateGUI( QString str );
+	void onUpdateGUI( QString str, int i );
 
 public:
     explicit MainWindow(QWidget *parent = 0);
