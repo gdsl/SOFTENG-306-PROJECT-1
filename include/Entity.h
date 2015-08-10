@@ -1,3 +1,7 @@
+/**
+ * Entity Header file.
+ * Here is where we declare method specification for Entity.
+ */
 #ifndef SE306PROJECT_SRC_ENTITY_H_
 #define SE306PROJECT_SRC_ENTITY_H_
 #include "ros/ros.h"
@@ -5,11 +9,9 @@
 #include <geometry_msgs/Point.h>
 #include <nav_msgs/Odometry.h>
 #include <sensor_msgs/LaserScan.h>
-
-/**
- * Entity Header file.
- * Here is where we declare method specification for Entity.
- */
+#include "Movement.h"
+#include <vector>
+#include <string>
 
 class Entity
 {
@@ -32,7 +34,10 @@ class Entity
 		void stageOdom_callback(nav_msgs::Odometry msg);
 		void atLocation();
 		// Movement methods
-		void moveForward(double distance,double vel);
+		void move();
+		void movementComplete();
+		void addMovement(std::string type,double amount,double velocity);
+		void moveForward(double distance,double vel, std::string direction);
 		void rotate(double angleToRotateTo,double angleSpeed);
 		void faceNorth(double angleSpeed);
 		void faceSouth(double angleSpeed);
@@ -58,6 +63,12 @@ class Entity
 		double linearVelocity;
 		double angularVelocity;
 
+		//movement queue
+        std::vector<Movement> movementQueue;
+
+		//direction robot facing
+		enum Direction {WEST, SOUTH, EAST, NORTH};
+		Direction directionFacing=WEST;//initialse to west originally
 		//boolean for if the robot is at desire location
 		bool desireLocation;
 		// Expresses velocity in free space broken into its linear and angular parts

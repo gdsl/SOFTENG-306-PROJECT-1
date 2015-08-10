@@ -5,6 +5,9 @@
 #include "Entity.h"
 #include <cmath>
 #include <tf/tf.h>
+#include <vector>
+#include <string>
+#include "Movement.h"
 
 /**
  * Default constructor of Entity. Calls the other constructor with default values.
@@ -33,6 +36,8 @@ Entity::Entity(double x, double y, double theta, double linearVelocity, double a
 	this->angularVelocity = angularVelocity;
 	desireLocation=false;
 }
+
+Movement currentMovement;//current movement
 /**
  * Update the position of the Entity
  */
@@ -85,24 +90,103 @@ void Entity::updateOdometry()
 }
 
 /**
+ * Message to get node start going through the movement queue
+ */
+void Entity::move(){
+	if(movementQueue.size()>0){
+		desireLocation=false;
+		currentMovement=movementQueue.front();
+		if(currentMovement.getType().compare("forward_x")==0){
+			//call move forward for x direction
+			moveForward(currentMovement.getPos(),currentMovement.getVel(),"x");
+		}else if (currentMovement.getType().compare("forward_y")==0){
+			//call move forward for y direction
+			moveForward(currentMovement.getPos(),currentMovement.getVel(),"y");
+		}else{
+			//call rotate
+			rotate(currentMovement.getPos(),currentMovement.getVel());
+		}
+	}else{
+		desireLocation=true;
+	}
+}
+
+/**
+ * Message to remove movements to queue
+ */
+void Entity::movementComplete(){
+	//convert to position
+	movementQueue.erase(movementQueue.begin());//remove movement from queue
+	desireLocation=true;
+}
+
+/**
+ * Method to add movements to movement queue
+ */
+void Entity::addMovement(std::string type, double distance,double velocity){
+	//convert to position
+	double pos=0;
+	if (type.compare("rotation")!=0){
+		bool useCurrent=true; //boolean to check if current location should be use
+		if (movementQueue.size()>0){//check if queue have initial values
+				bool found=false;
+				int foundIndex=movementQueue.size();
+				ROS_INFO("queue size: %d", foundIndex);
+				int index=foundIndex-1;
+				ROS_INFO("index: %d", index);
+				while(index>=0){
+					if(movementQueue.at(index).getType().compare(type)==0){
+						found=true;
+						foundIndex=index;
+					}
+					index-=1;
+				}
+				if (found){//if found same type use that as reference for position
+					useCurrent=false;
+					pos=distance+movementQueue.at(foundIndex).getPos();
+				}
+		}
+		if (useCurrent){//when no other forward movement to reference use current location
+			if(type.compare("forward_x")==0){
+				pos=x+distance;
+			}else if (type.compare("forward_y")==0){
+				pos=y+distance;
+			}
+		}
+	}else{
+		pos=distance;
+	}
+	ROS_INFO("pos: %f", pos);
+	Movement m=Movement(type,pos,velocity);
+	movementQueue.push_back(m);
+}
+
+/**
  * Message to move the entity forward in the direction it is facing
  * Note unit is in meters
  * input:	double vel: the velocity of the entity moving forward
- *			double distance: the amount of distance to move
+ *			double pos: the absolute position to move to
  */
-void Entity::moveForward(double distance, double vel){
-	if (!desireLocation){
-		if(x-distance>0.01){
-			linearVelocity=-vel;
-		}else if(distance-x>0.01){
+void Entity::moveForward(double pos, double vel, std::string direction){
+	double position=0;
+	if (direction.compare("x")==0){
+		position=x;
+	}else{
+		position=y;
+	}
+	if (!desireLocation){//TODO slow down
+		if(std::abs(position-pos)>=1){
 			linearVelocity=vel;
-		} else{
-			desireLocation=true;
+		}else{
+			movementComplete();//call method complete to remove complete movement from queue
 			linearVelocity=0;
 		}
-		angularVelocity=0;
-		updateOdometry(); //update the information to stage
+	}else{
+		desireLocation=true;
+		linearVelocity=0;
 	}
+	angularVelocity=0;
+	updateOdometry(); //update the information to stage
 }
 
 /**
@@ -115,17 +199,18 @@ void Entity::rotate(double angleToRotateTo, double angleSpeed){
 	if (std::abs(angleToRotateTo-theta)>0.0001){
 		if (std::abs(angleToRotateTo-theta)<(0.01)){//slow down speed when very near
 				//ROS_INFO(""+(angleToRotateTo-theta));
-				angularVelocity=0.001*angleSpeed;
+				angularVelocity=0.001;
 				updateOdometry();
 		}else if (std::abs(angleToRotateTo-theta)<(0.1)){//slow down speed when near
 			//ROS_INFO(""+(angleToRotateTo-theta));
-			angularVelocity=0.1*angleSpeed;
+			angularVelocity=0.1;
 			updateOdometry();
 		}else{
 			angularVelocity=angleSpeed;
 		}
 		updateOdometry();
 	}else{
+		movementComplete();//call method complete to remove complete movement from queue
 		//if angle similar stop rotating
 		angularVelocity=0;
 		linearVelocity=0;
@@ -137,28 +222,28 @@ void Entity::rotate(double angleToRotateTo, double angleSpeed){
  * Message to rotate the entity such that it faces North
  */
 void Entity::faceNorth(double angleSpeed){
-	rotate(-M_PI/2, angleSpeed);
+	addMovement("rotation",-M_PI/2, angleSpeed);
 }
 
 /**
  * Message to rotate the entity such that it faces South
  */
 void Entity::faceSouth(double angleSpeed){
-	rotate(M_PI/2, angleSpeed);
+	addMovement("rotation",M_PI/2, angleSpeed);
 }
 
 /**
  * Message to rotate the entity such that it faces East
  */
 void Entity::faceEast(double angleSpeed){
-	rotate(M_PI, angleSpeed);
+	addMovement("rotation",M_PI, angleSpeed);
 }
 
 /**
  * Message to rotate the entity such that it faces West
  */
 void Entity::faceWest(double angleSpeed){
-	rotate(0,angleSpeed);
+	addMovement("rotation",0, angleSpeed);
 }
 
 /**
