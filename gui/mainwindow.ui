@@ -27,7 +27,7 @@
      <string>Robots</string>
     </property>
    </widget>
-   <widget class="QTextBrowser" name="robotPanel1">
+   <widget class="QTextEdit" name="robotPanel1">
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -37,7 +37,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QTextBrowser" name="robotPanel2">
+   <widget class="QTextEdit" name="robotPanel2">
     <property name="geometry">
      <rect>
       <x>120</x>
@@ -60,7 +60,7 @@
      <string>Obstacles</string>
     </property>
    </widget>
-   <widget class="QTextBrowser" name="obstaclePanel1">
+   <widget class="QTextEdit" name="obstaclePanel1">
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -70,7 +70,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QTextBrowser" name="obstaclePanel2">
+   <widget class="QTextEdit" name="obstaclePanel2">
     <property name="geometry">
      <rect>
       <x>90</x>
@@ -80,7 +80,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QTextBrowser" name="obstaclePanel3">
+   <widget class="QTextEdit" name="obstaclePanel3">
     <property name="geometry">
      <rect>
       <x>160</x>
@@ -90,7 +90,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QTextBrowser" name="obstaclePanel4">
+   <widget class="QTextEdit" name="obstaclePanel4">
     <property name="geometry">
      <rect>
       <x>230</x>
@@ -100,7 +100,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QTextBrowser" name="obstaclePanel5">
+   <widget class="QTextEdit" name="obstaclePanel5">
     <property name="geometry">
      <rect>
       <x>300</x>
