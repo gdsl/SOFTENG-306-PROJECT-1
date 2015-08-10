@@ -32,6 +32,7 @@ Entity::Entity(double x, double y, double theta, double linearVelocity, double a
 	this->linearVelocity = linearVelocity;
 	this->angularVelocity = angularVelocity;
 	desireLocation=false;
+        float32 minDistace=30.0;
 }
 /**
  * Update the position of the Entity
@@ -74,12 +75,11 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg)
 	//This is the callback function to process laser scan messages
 	//you can access the range data from msg.ranges[i]. i = sample numbe
         //range vector means distance measure corresponds to the a set of angles
-        //float32 minDistance=30.0;
-        //int l=sizeof(ranges) / sizeof(ranges[0]); 
-        //for (int i=0;i<l;i++){
-              //if ranges[i]< minDistance;
-              //   minDistance = ranges[i];
-        //}  
+        int l=sizeof(msg.ranges) / sizeof(msg.ranges[0]); 
+        for (int i=0;i<l;i++){
+              if ranges[i]< minDistance;
+                 minDistance = ranges[i];
+        } 
 }
 
 /**
