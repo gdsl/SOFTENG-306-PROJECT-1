@@ -112,9 +112,18 @@ void Entity::moveForward(double distance, double vel){
  */
 void Entity::rotate(double angleToRotateTo, double angleSpeed){
 	//Check if angleToRotateTo and the current angle is similar. If not rotate.
-	if (std::abs(angleToRotateTo-theta)>(0.01)){
-		//ROS_INFO(""+(angleToRotateTo-theta));
-		angularVelocity=angleSpeed;
+	if (std::abs(angleToRotateTo-theta)>0.0001){
+		if (std::abs(angleToRotateTo-theta)<(0.01)){//slow down speed when very near
+				//ROS_INFO(""+(angleToRotateTo-theta));
+				angularVelocity=0.001*angleSpeed;
+				updateOdometry();
+		}else if (std::abs(angleToRotateTo-theta)<(0.1)){//slow down speed when near
+			//ROS_INFO(""+(angleToRotateTo-theta));
+			angularVelocity=0.1*angleSpeed;
+			updateOdometry();
+		}else{
+			angularVelocity=angleSpeed;
+		}
 		updateOdometry();
 	}else{
 		//if angle similar stop rotating

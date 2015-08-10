@@ -68,8 +68,6 @@ void recievePickerRobotStatus(const se306project::robot_status::ConstPtr& msg)
 		}
 
 	}
-
-
 }
 
 int main(int argc, char **argv)
@@ -94,7 +92,7 @@ int main(int argc, char **argv)
 	//relative to the absolute frame of the farm.
 	carrierRobot.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000, callBackStageOdm);
 	//subscribe to the status of picker robot
-	ros::Subscriber mysub_object = n.subscribe<se306project::robot_status>("/robot_0/status",1000,recievePickerRobotStatus);
+	//ros::Subscriber mysub_object = n.subscribe<se306project::robot_status>("/robot_0/status",1000,recievePickerRobotStatus);
 
 
 	//a count of how many messages we have sent
@@ -109,7 +107,6 @@ int main(int argc, char **argv)
 		status_msg.my_counter=count;		//add counter to message
 		status_msg.status=status;		//add status to message
 		pub.publish(status_msg);	//publish message
-		carrierRobot.faceSouth(1);
 
 		loop_rate.sleep();
 		++count; // increase counter
