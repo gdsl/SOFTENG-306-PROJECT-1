@@ -48,18 +48,11 @@ int main(int argc, char **argv)
     double targetX = -3;
     double targetY = -3;
     double errors = 0.25;
-<<<<<<< HEAD
-
-
-
-=======
     double state = 0;
     int horizontalSign = 1;
     int verticalSign = 1;
    
     //0 rotatiing to the side, 1, moving horizontally, 2 rotating to bnorth/south, 3 moving vertical, 4 stop
-   
->>>>>>> f332b9ac4847474a197321adb7b0440b6a10e5f7
     while (ros::ok())
     {
         //message to stage 
