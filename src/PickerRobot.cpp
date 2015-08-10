@@ -39,7 +39,7 @@ void recieveCarrierRobotStatus(const se306project::carrier_status::ConstPtr& msg
 }
 
 /*
- * Method for the logic of PickerRobot movement.
+ * Method for the logic of PickerRobot running its movement queue.
  */
 void PickerRobot::movement(){
 	//If status is not full the picker robot will keep moving
@@ -49,8 +49,14 @@ void PickerRobot::movement(){
 			status="Full";
 		}else{
 			//if picker robot is not at desire location keep moving
-			pickerRobot.moveForward(distance,1);
+			pickerRobot.addMovement("forward_x",distance,1);
 		}
+		pickerRobot.addMovement("forward_x",-4,1);
+		pickerRobot.faceSouth(1);
+		pickerRobot.addMovement("forward_y",-5,1);
+		pickerRobot.faceNorth(1);
+		pickerRobot.addMovement("forward_y",5,1);
+
 	}
 	//pickerRobot.moveForward(distance,1);
 
@@ -82,7 +88,7 @@ int main(int argc, char **argv)
 
 	//a count of howmany messages we have sent
 	int count = 0;
-
+	pickerRobot.movement();
 	while (ros::ok())
 	{
 		ros::spinOnce();
@@ -94,7 +100,7 @@ int main(int argc, char **argv)
 		status_msg.pos_theta=pickerRobot.getAng(); //add angle to message to broadcast
 		pub.publish(status_msg);//publish the message for other node
 
-		pickerRobot.movement();//robot move
+		pickerRobot.move();//robot move
 		loop_rate.sleep();
 
 

@@ -56,21 +56,7 @@ int main(int argc, char **argv)
    
     while (ros::ok())
     {
-        //message to stage
-        //alphaDog.setVelocity(0,0.2);
-        /*
-        double dist = sqrt((pow((alphaDog.getX()-targetX),2) + pow((alphaDog.getY()-targetY),2)));
-        if (dist < errors+0.25) targetReach = true;
-        
-        if ( alphaDog.getLin() == 0 && alphaDog.getAng() == 0 ) {
-            targetReach = true;
-        }
-        if (targetReach) {
-            targetX =( rand() % (2*range+1)) + (-range);
-            targetY =( rand() % (2*range+1) )+ (-range);
-            targetReach = false;
-        } */
-
+        //message to stage 
         double diffX = alphaDog.getX() - targetX;
         double diffY = alphaDog.getY() - targetY;
         
@@ -88,9 +74,9 @@ int main(int argc, char **argv)
                     state = 1;
                 }
         } else if (state == 1 ) {
-            alphaDog.setDesireLocation(false);
-            alphaDog.moveForward(targetX, horizontalSign*0.5);   
-
+            //alphaDog.setDesireLocation(false);
+            //alphaDog.moveForward(targetX, horizontalSign*0.5);   
+            alphaDog.addMovement("forward_x",targetX,horizontalSign*0.5);
             if (alphaDog.getLin() == 0) {
                 state = 2;
             }
@@ -109,12 +95,8 @@ int main(int argc, char **argv)
         } else if (state == 3) {
             //alphaDog.setDesireLocation(false);
             //alphaDog.moveForward(targetY,2.0);   
-
-            if(alphaDog.getY()-targetY>0.01){
-			    alphaDog.setVelocity(-0.5*verticalSign,0);
-		    }else if(targetY-alphaDog.getY()>0.01){
-			    alphaDog.setVelocity(0.5*verticalSign,0);
-		    } else {
+            alphaDog.addMovement("foward_y",targetY,verticalSign*0.5);
+            if (alphaDog.getLin() == 0) {
                 state =4;
             }
             alphaDog.updateOdometry();
@@ -124,58 +106,7 @@ int main(int argc, char **argv)
             state = 0;  
             alphaDog.setVelocity(0,0); 
             alphaDog.updateOdometry();
-        }
-        /*
-        alphaDog.setVelocity(0,0);
-        if (abs(diffX) > errors ) {
-            if (diffX > 0) {
-                alphaDog.faceWest(2.0);
-               // ROS_INFO("facing West");   
-                if (alphaDog.getAng() == 0 ) {
-                    alphaDog.setVelocity(0,0);
-                    alphaDog.moveForward(1,2.0);
-                    
-                } 
-                
-            } else {
-                alphaDog.faceEast(2.0);
-                //ROS_INFO("facinge East");
-                if (alphaDog.getAng() == 0 ) {
-                    alphaDog.setVelocity(0,0);
-                    alphaDog.moveForward(1,2.0);
-                } 
-            }
-
-            
-
-
-        } else if (abs(diffY) > errors) {
-
-            if (diffY > 0) {
-                alphaDog.faceSouth(2.0);
-               // ROS_INFO("face South");
-                if (alphaDog.getAng() == 0 ) {
-                    alphaDog.setVelocity(0,0);  
-                    alphaDog.moveForward(1,2.0);
-                }
-                
-            } else {
-                //ROS_INFO("face North");
-                alphaDog.faceNorth(2.0);
-                if (alphaDog.getAng() == 0 ) {
-                    alphaDog.setVelocity(0,0);
-                    alphaDog.moveForward(1,2.0);
-                }
-            }
-
-            
-        } else {
-            alphaDog.setVelocity(0,0);
-
-        } */
-        
-        
-        
+        } 
 
         ros::spinOnce();
     
