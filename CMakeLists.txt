@@ -167,8 +167,10 @@ catkin_package(
 
 # Libraries
 include_directories(include)
+add_library(Movement src/Movement.cpp)
 add_library(Entity src/Entity.cpp)
 add_library(Robot src/Robot.cpp)
+target_link_libraries(Entity Movement ${catkin_LIBRARIES})
 target_link_libraries(Robot Entity ${catkin_LIBRARIES})
 
 add_executable(Animal src/Animal.cpp)

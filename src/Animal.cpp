@@ -77,13 +77,13 @@ int main(int argc, char **argv)
             if (diffX > 0) {
                 alphaDog.faceWest(2.0);
                 if (alphaDog.getAng() == 0 ) {
-                    alphaDog.moveForward(diffX,-2.0);
+                    alphaDog.addMovement("forward_x",diffX,-2.0);
                 } 
                 
             } else {
                 alphaDog.faceEast(2.0);
                 if (alphaDog.getAng() == 0 ) {
-                    alphaDog.moveForward(diffX,2.0);
+                    alphaDog.addMovement("forward_x",diffX,2.0);
                 } 
             }
 
@@ -95,13 +95,13 @@ int main(int argc, char **argv)
             if (diffY > 0) {
                 alphaDog.faceSouth(2.0);
                 if (alphaDog.getAng() == 0 ) {
-                    alphaDog.moveForward(diffY,-2.0);
+                    alphaDog.addMovement("forward_y",diffY,-2.0);
                 }
                 
             } else {
                 alphaDog.faceNorth(2.0);
                 if (alphaDog.getAng() == 0 ) {
-                    alphaDog.moveForward(diffY,2.0);
+                    alphaDog.addMovement("forward_y",diffY,2.0);
                 }
             }
 

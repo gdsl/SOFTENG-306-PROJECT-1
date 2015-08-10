@@ -50,7 +50,7 @@ void recievePickerRobotStatus(const se306project::robot_status::ConstPtr& msg)
 		if ((msg->status).compare("Full")==0){
 			if (!carrierRobot.getDesireLocation()){
 				// carrier robot will approach picker but will leave a space to avoid colliding
-				carrierRobot.moveForward(double((msg->pos_x)+3), 1);
+				carrierRobot.addMovement("forward_x",double((msg->pos_x)-carrierRobot.getX()+3), 1);
 			}else{
 				//if carrier robot is at picker robot change status to Arrived
 				status="Arrived";
@@ -60,7 +60,7 @@ void recievePickerRobotStatus(const se306project::robot_status::ConstPtr& msg)
 		//if the carrier is transporting it will move to bin drop off area (the driveway)
 		if (!carrierRobot.getDesireLocation()){
 			//carrier will move to right 10meters to imaginery dump place
-			carrierRobot.moveForward(10, 1);
+			carrierRobot.addMovement("forward_x",10, 1);
 		}else{
 			status="Idle"; //when carrier robot complete transporting full bin to driveway it
 			//become Idle again (free)
@@ -92,7 +92,7 @@ int main(int argc, char **argv)
 	//relative to the absolute frame of the farm.
 	carrierRobot.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000, callBackStageOdm);
 	//subscribe to the status of picker robot
-	//ros::Subscriber mysub_object = n.subscribe<se306project::robot_status>("/robot_0/status",1000,recievePickerRobotStatus);
+	ros::Subscriber mysub_object = n.subscribe<se306project::robot_status>("/robot_0/status",1000,recievePickerRobotStatus);
 
 
 	//a count of how many messages we have sent
@@ -108,6 +108,7 @@ int main(int argc, char **argv)
 		status_msg.status=status;		//add status to message
 		pub.publish(status_msg);	//publish message
 
+		carrierRobot.move();
 		loop_rate.sleep();
 		++count; // increase counter
 	}
