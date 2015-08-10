@@ -3,7 +3,7 @@
 
 Robot::Robot():Entity(0,0,0,0,0) {
 	// TODO Auto-generated constructor stub
-
+	// Test comments
 }
 
 Robot::~Robot() {
