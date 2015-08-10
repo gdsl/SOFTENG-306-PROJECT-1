@@ -180,7 +180,7 @@ void Entity::moveForward(double pos, double vel, std::string direction){
 	}
 	if (!desireLocation){//TODO slow down
 		ROS_INFO("mfpos: %f", pos);
-		if(std::abs(position-pos)>=1){
+		if(std::abs(position-pos)>=0.1){
 			linearVelocity=vel;
 		}else{
 			movementComplete();//call method complete to remove complete movement from queue
@@ -201,12 +201,16 @@ void Entity::moveForward(double pos, double vel, std::string direction){
  */
 void Entity::rotate(double angleToRotateTo, double angleSpeed){
 	//Check if angleToRotateTo and the current angle is similar. If not rotate.
-	if (std::abs(angleToRotateTo-theta)>0.01){
-		if (std::abs(angleToRotateTo-theta)<(0.01)){//slow down speed when very near
+	if (std::abs(angleToRotateTo-theta)>0.0001){
+		if (std::abs(angleToRotateTo-theta)<(0.002)){//slow down speed when very near
+						//ROS_INFO(""+(angleToRotateTo-theta));
+						angularVelocity=0.001;
+						updateOdometry();
+		}else if (std::abs(angleToRotateTo-theta)<(0.05)){//slow down speed when very near
 				//ROS_INFO(""+(angleToRotateTo-theta));
-				angularVelocity=0.001;
+				angularVelocity=0.01;
 				updateOdometry();
-		}else if (std::abs(angleToRotateTo-theta)<(0.2)){//slow down speed when near
+		}else if (std::abs(angleToRotateTo-theta)<(0.3)){//slow down speed when near
 			//ROS_INFO(""+(angleToRotateTo-theta));
 			angularVelocity=0.1;
 			updateOdometry();

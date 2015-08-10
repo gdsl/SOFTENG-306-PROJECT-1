@@ -27,12 +27,13 @@ void callBackStageOdm(const nav_msgs::Odometry msg){
  * This method is called when message is received.
  */
 void recieveCarrierRobotStatus(const se306project::carrier_status::ConstPtr& msg){
-	if (msg->status.compare("Arrived")==0){
+	if (msg->status.compare("Transporting")==0&&status.compare("Full")==0){
 		if (distance==1){
 			distance=5;
 		}else if (distance ==5){
 			distance=1;
 		}
+		pickerRobot.movement();
 		pickerRobot.setDesireLocation(false);
 		status="Moving";
 	}
@@ -54,12 +55,22 @@ void PickerRobot::movement(){
 
 	}*/
 	//pickerRobot.moveForward(distance,1);
-	pickerRobot.faceEast(1);
-	pickerRobot.addMovement("forward_x",3,1);
-	pickerRobot.faceSouth(1);
-	pickerRobot.addMovement("forward_y",-5,1);
-	pickerRobot.faceNorth(1);
-	pickerRobot.addMovement("forward_y",5,1);
+	if (distance==1){
+		pickerRobot.faceEast(1);
+		pickerRobot.addMovement("forward_x",37.5,1);
+		pickerRobot.faceSouth(1);
+		pickerRobot.addMovement("forward_y",-4.35,1);
+		pickerRobot.faceWest(1);
+		pickerRobot.addMovement("forward_x",-37.5,1);
+	}else if (distance ==5){
+		pickerRobot.faceEast(1);
+		pickerRobot.addMovement("forward_x",37.5,1);
+		pickerRobot.faceNorth(1);
+		pickerRobot.addMovement("forward_y",4.35,1);
+		pickerRobot.faceWest(1);
+		pickerRobot.addMovement("forward_x",-37.5,1);
+	}
+
 }
 
 int main(int argc, char **argv)
@@ -79,7 +90,7 @@ int main(int argc, char **argv)
 	//subscribe to listen to messages coming from stage about is position relative to absolute frame
 	pickerRobot.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000, callBackStageOdm);
 	//subscribe to carrier robot's status message
-	ros::Subscriber mysub_object = n.subscribe<se306project::carrier_status>("/robot_2/status",1000,recieveCarrierRobotStatus);
+	ros::Subscriber mysub_object = n.subscribe<se306project::carrier_status>("/robot_1/status",1000,recieveCarrierRobotStatus);
 
 	// initalise robot status message
 	se306project::robot_status status_msg;
@@ -103,6 +114,13 @@ int main(int argc, char **argv)
 		//TODO debug
 		if(count==7){
 			pickerRobot.movement();
+		}
+		if(count>7){
+			if(pickerRobot.movementQueue.size()<1){
+				if (status.compare("Moving")==0){
+					status="Full";
+				}
+			}
 		}
 
 		ros::spinOnce();

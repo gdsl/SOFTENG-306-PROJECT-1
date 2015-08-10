@@ -44,29 +44,32 @@ void recievePickerRobotStatus(const se306project::robot_status::ConstPtr& msg)
 	if (status.compare("Arrived")==0){
 		//Change status to transporting as the carrier robot is now taking away the full bin
 		status="Transporting";
-		carrierRobot.setDesireLocation(false);//refresh that it can recieve more desire location
+		carrierRobot.faceWest(1);
+		carrierRobot.addMovement("forward_x",-34.5, 1);
+		carrierRobot.faceNorth(1);
+		carrierRobot.addMovement("forward_y",std::abs(14.5-carrierRobot.getY()),1);
+		//carrierRobot.setDesireLocation(false);//refresh that it can recieve more desire location
 	}else if(status.compare("Idle")==0){
 		//when the carrier robot is idle and the picker robot is full the carrier robot move to it.
 		if ((msg->status).compare("Full")==0){
-			if (!carrierRobot.getDesireLocation()){
-				// carrier robot will approach picker but will leave a space to avoid colliding
-				carrierRobot.addMovement("forward_x",double((msg->pos_x)-carrierRobot.getX()+3), 1);
-			}else{
-				//if carrier robot is at picker robot change status to Arrived
-				status="Arrived";
-			}
+			// carrier robot will approach picker but will leave a space to avoid colliding
+			carrierRobot.faceSouth(1);
+			carrierRobot.addMovement("forward_y",-std::abs(double((msg->pos_y)-carrierRobot.getY())),1);
+			carrierRobot.faceEast(1);
+			carrierRobot.addMovement("forward_x",double((msg->pos_x)-carrierRobot.getX()-3), 1);
+			status="Moving";
 		}
 	}else if(status.compare("Transporting")==0){
 		//if the carrier is transporting it will move to bin drop off area (the driveway)
-		if (!carrierRobot.getDesireLocation()){
-			//carrier will move to right 10meters to imaginery dump place
-			carrierRobot.addMovement("forward_x",10, 1);
-		}else{
+		if(carrierRobot.movementQueue.size()<1){
 			status="Idle"; //when carrier robot complete transporting full bin to driveway it
 			//become Idle again (free)
 			carrierRobot.setDesireLocation(false);//refresh that it can recieve more desire location
 		}
-
+	}else if(status.compare("Moving")==0){
+		if(carrierRobot.movementQueue.size()<1){
+			status="Arrived";
+		}
 	}
 }
 
