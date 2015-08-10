@@ -42,53 +42,70 @@ int main(int argc, char **argv)
     srand(time(NULL));
     ros::Rate loop_rate(10); 
     bool targetReach = true;
-    double targetX = 1;
-    double targetY = 1;
+    int range = 10;
+    double targetX =( rand() % (2*range+1)) + (-range);
+    double targetY =( rand() % (2*range+1) )+ (-range);
+    double errors = 0.25;
+
+
+    
     while (ros::ok())
     {
         //message to stage
         //alphaDog.setVelocity(0,0.2);
-
-       //double dist = sqrt((pow((alphaDog.getX()-targetX),2) + pow((alphaDog.getY()-targetY),2)));
-        //if (dist < 2) targetReach = true;
-        /*
+        
+       double dist = sqrt((pow((alphaDog.getX()-targetX),2) + pow((alphaDog.getY()-targetY),2)));
+        if (dist < errors+0.25) targetReach = true;
+        
         if ( alphaDog.getLin() == 0 && alphaDog.getAng() == 0 ) {
             targetReach = true;
         }
         if (targetReach) {
-            targetX = rand() % 11 + (-5);
-            targetY = rand() % 11 + (-5);
+            targetX =( rand() % (2*range+1)) + (-range);
+            targetY =( rand() % (2*range+1) )+ (-range);
             targetReach = false;
-        }*/
+        }
+    
+       // debugMsg.linear.x = targetX;
+        //debugMsg.linear.y = targetY;
+        //debug_pub.publish(debugMsg);
 
         double diffX = alphaDog.getX() - targetX;
         double diffY = alphaDog.getY() - targetY;
         
-        if (abs(diffX) > 0.5 ) {
+        if (abs(diffX) > errors ) {
             if (diffX > 0) {
                 alphaDog.faceWest(2.0);
+                if (alphaDog.getAng() == 0 ) {
+                    alphaDog.moveForward(diffX,-2.0);
+                } 
                 
             } else {
                 alphaDog.faceEast(2.0);
+                if (alphaDog.getAng() == 0 ) {
+                    alphaDog.moveForward(diffX,2.0);
+                } 
             }
 
-            if (alphaDog.getAng() == 0 ) {
-                alphaDog.moveForward(diffX,2.0);
-            } 
+            
 
 
-        } else if (abs(diffY) > 0.5) {
+        } else if (abs(diffY) > errors) {
 
             if (diffY > 0) {
                 alphaDog.faceSouth(2.0);
+                if (alphaDog.getAng() == 0 ) {
+                    alphaDog.moveForward(diffY,-2.0);
+                }
                 
             } else {
                 alphaDog.faceNorth(2.0);
+                if (alphaDog.getAng() == 0 ) {
+                    alphaDog.moveForward(diffY,2.0);
+                }
             }
 
-            if (alphaDog.getAng() == 0 ) {
-                alphaDog.moveForward(diffY,2.0);
-            }
+            
         } else {
             alphaDog.setVelocity(0,0);
         }

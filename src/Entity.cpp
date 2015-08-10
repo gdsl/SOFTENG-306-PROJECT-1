@@ -4,6 +4,7 @@
 #include <sstream>
 #include "Entity.h"
 #include <cmath>
+#include <tf/tf.h>
 
 /**
  * Default constructor of Entity. Calls the other constructor with default values.
@@ -61,18 +62,14 @@ void Entity::stageOdom_callback(nav_msgs::Odometry msg)
 {
 	x = msg.pose.pose.position.x;
 	y = msg.pose.pose.position.y;
-	//theta =msg.pose.pose.orientation.w;
-    theta = asin(msg.pose.pose.orientation.z)*2;
+	
+    tf::Pose pose;
+    tf::poseMsgToTF(msg.pose.pose,pose);
+
+    theta = tf::getYaw(pose.getRotation());    
 	// ROS logging api
 	//ROS_INFO("Current x position is: %f", x);
 	//ROS_INFO("Current y position is: %f", y);
-}
-
-void Entity::StageLaser_callback(sensor_msgs::LaserScan msg)
-{
-	//This is the callback function to process laser scan messages
-	//you can access the range data from msg.ranges[i]. i = sample number
-
 }
 
 /**
@@ -89,9 +86,9 @@ void Entity::updateOdometry()
 }
 
 /**
- * Message to move the robot forward in the direction it is facing
+ * Message to move the entity forward in the direction it is facing
  * Note unit is in meters
- * input:	double vel: the velocity of the robot moving forward
+ * input:	double vel: the velocity of the entity moving forward
  *			double distance: the amount of distance to move
  */
 void Entity::moveForward(double distance, double vel){
@@ -110,9 +107,9 @@ void Entity::moveForward(double distance, double vel){
 }
 
 /**
- * Message to rotate the robot.
- * Input:	double angleToRotate: In radians the angle robot will rotate to relative to absoulte frame.
- *			double angleSpeed: how fast we want the robot to rotate. Note its speed so always +ve
+ * Message to rotate the entity.
+ * Input:	double angleToRotate: In radians, the angle entity will rotate to relative to absoulte frame.
+ *			double angleSpeed: how fast we want the entity to rotate. Note its speed so always +ve
  */
 void Entity::rotate(double angleToRotateTo, double angleSpeed){
 
@@ -128,28 +125,28 @@ void Entity::rotate(double angleToRotateTo, double angleSpeed){
 }
 
 /**
- * Message to rotate the robot such that it faces North
+ * Message to rotate the entity such that it faces North
  */
 void Entity::faceNorth(double angleSpeed){
 	rotate(-M_PI/2, angleSpeed);
 }
 
 /**
- * Message to rotate the robot such that it faces South
+ * Message to rotate the entity such that it faces South
  */
 void Entity::faceSouth(double angleSpeed){
 	rotate(M_PI/2, angleSpeed);
 }
 
 /**
- * Message to rotate the robot such that it faces East
+ * Message to rotate the entity such that it faces East
  */
 void Entity::faceEast(double angleSpeed){
 	rotate(M_PI, angleSpeed);
 }
 
 /**
- * Message to rotate the robot such that it faces West
+ * Message to rotate the entity such that it faces West
  */
 void Entity::faceWest(double angleSpeed){
 	rotate(0,angleSpeed);

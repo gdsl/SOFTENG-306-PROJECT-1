@@ -59,7 +59,7 @@ int main(int argc, char **argv)
 	ros::Publisher pub=n.advertise<se306project::robot_status>("status",1000);
 	//subscribe to listen to messages coming from stage
 	pickerRobot.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000, callBackStageOdm);
-	//ros::Subscriber StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>("robot_0/base_scan",1000,StageLaser_callback);
+	//pickerRobot.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("robot_0/base_scan",1000,StageLaser_callback);
 	ros::Subscriber mysub_object = n.subscribe<se306project::carrier_status>("/robot_2/status",1000,recieveCarrierRobotStatus);
 
 	// initalise robot status message
@@ -80,11 +80,10 @@ int main(int argc, char **argv)
 		pub.publish(status_msg);
 
 		ros::spinOnce();
-		//pickerRobot.faceSouth(0.4);
+		pickerRobot.faceSouth(0.4);
 		pickerRobot.movement();
 		loop_rate.sleep();
 		//assigne to status message
-
 
 		++count;
 	}

@@ -29,9 +29,9 @@ class Entity
 		ros::Subscriber stageOdo_Sub;
 
 		// Callback methods
-		void atLocation();
 		void stageOdom_callback(nav_msgs::Odometry msg);
-		void StageLaser_callback(sensor_msgs::LaserScan msg);
+		void atLocation();
+		// Movement methods
 		void moveForward(double distance,double vel);
 		void rotate(double angleToRotateTo,double angleSpeed);
 		void faceNorth(double angleSpeed);
