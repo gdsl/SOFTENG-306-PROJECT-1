@@ -48,7 +48,7 @@ int main(int argc, char **argv)
     double errors = 0.25;
 
 
-    
+
     while (ros::ok())
     {
         //message to stage

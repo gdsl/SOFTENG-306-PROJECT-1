@@ -5,7 +5,7 @@
 #include "Entity.h"
 #include <cmath>
 #include <tf/tf.h>
-#include <list>
+#include <vector>
 #include <string>
 #include "Movement.h"
 
@@ -97,10 +97,13 @@ void Entity::move(){
 		desireLocation=false;
 		currentMovement=movementQueue.front();
 		if(currentMovement.getType().compare("forward_x")==0){
+			//call move forward for x direction
 			moveForward(currentMovement.getPos(),currentMovement.getVel(),"x");
 		}else if (currentMovement.getType().compare("forward_y")==0){
+			//call move forward for y direction
 			moveForward(currentMovement.getPos(),currentMovement.getVel(),"y");
 		}else{
+			//call rotate
 			rotate(currentMovement.getPos(),currentMovement.getVel());
 		}
 	}else{
@@ -109,16 +112,51 @@ void Entity::move(){
 }
 
 /**
- * Message to add movements to queue
+ * Message to remove movements to queue
+ */
+void Entity::movementComplete(){
+	//convert to position
+	movementQueue.erase(movementQueue.begin());//remove movement from queue
+	desireLocation=true;
+}
+
+/**
+ * Method to add movements to movement queue
  */
 void Entity::addMovement(std::string type, double distance,double velocity){
-	//TODO convert to postion
+	//convert to position
 	double pos=0;
-	if(type.compare("forward_x")==0){
-		pos=x+distance;
+	if (type.compare("rotation")!=0){
+		bool useCurrent=true; //boolean to check if current location should be use
+		if (movementQueue.size()>0){//check if queue have initial values
+				bool found=false;
+				int foundIndex=movementQueue.size();
+				ROS_INFO("queue size: %d", foundIndex);
+				int index=foundIndex-1;
+				ROS_INFO("index: %d", index);
+				while(index>=0){
+					if(movementQueue.at(index).getType().compare(type)==0){
+						found=true;
+						foundIndex=index;
+					}
+					index-=1;
+				}
+				if (found){//if found same type use that as reference for position
+					useCurrent=false;
+					pos=distance+movementQueue.at(foundIndex).getPos();
+				}
+		}
+		if (useCurrent){//when no other forward movement to reference use current location
+			if(type.compare("forward_x")==0){
+				pos=x+distance;
+			}else if (type.compare("forward_y")==0){
+				pos=y+distance;
+			}
+		}
 	}else{
-		pos=y+distance;
+		pos=distance;
 	}
+	ROS_INFO("pos: %f", pos);
 	Movement m=Movement(type,pos,velocity);
 	movementQueue.push_back(m);
 }
@@ -136,19 +174,19 @@ void Entity::moveForward(double pos, double vel, std::string direction){
 	}else{
 		position=y;
 	}
-	if (!desireLocation){
-		if(x-pos>0.01){
-			linearVelocity=-vel;
-		}else if(pos-x>0.01){
+	if (!desireLocation){//TODO slow down
+		if(std::abs(position-pos)>=1){
 			linearVelocity=vel;
-		} else{
-			desireLocation=true;
-			movementQueue.pop_front();
+		}else{
+			movementComplete();//call method complete to remove complete movement from queue
 			linearVelocity=0;
 		}
-		angularVelocity=0;
-		updateOdometry(); //update the information to stage
+	}else{
+		desireLocation=true;
+		linearVelocity=0;
 	}
+	angularVelocity=0;
+	updateOdometry(); //update the information to stage
 }
 
 /**
@@ -172,8 +210,7 @@ void Entity::rotate(double angleToRotateTo, double angleSpeed){
 		}
 		updateOdometry();
 	}else{
-		movementQueue.pop_front();//if rotate to desire angle remove movement from queue
-		desireLocation=true;
+		movementComplete();//call method complete to remove complete movement from queue
 		//if angle similar stop rotating
 		angularVelocity=0;
 		linearVelocity=0;

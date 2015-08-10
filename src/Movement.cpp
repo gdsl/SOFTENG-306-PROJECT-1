@@ -7,7 +7,7 @@
 
 #include "Movement.h"
 
-Movement::Movement():Movement("rotate",0,0) {//default constructor will call
+Movement::Movement():Movement("rotation",0,0) {//default constructor will call
 	// TODO Auto-generated constructor stub
 
 }
@@ -17,7 +17,7 @@ Movement::~Movement() {
 }
 
 Movement::Movement(std::string type,double pos,double velocity) {
-	MovementType=type; //forward_x , forward_y or rotate
+	MovementType=type; //forward_x , forward_y or rotation
 	this->pos=pos;
 	this->velocity=velocity;
 }

@@ -20,7 +20,7 @@ public:
 	void setPos(double pos);
 	void setVel(double velocity);
 private:
-	std::string MovementType;//variable for type of movement (forward or rotate)
+	std::string MovementType;//variable for type of movement (forward_x, forward_y or rotation)
 	double pos; //Variable for abs pos of the movement destination
 	double velocity; //varaible for velocity of movement
 };

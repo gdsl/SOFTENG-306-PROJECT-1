@@ -10,7 +10,7 @@
 #include <nav_msgs/Odometry.h>
 #include <sensor_msgs/LaserScan.h>
 #include "Movement.h"
-#include <list>
+#include <vector>
 #include <string>
 
 class Entity
@@ -35,6 +35,7 @@ class Entity
 		void atLocation();
 		// Movement methods
 		void move();
+		void movementComplete();
 		void addMovement(std::string type,double amount,double velocity);
 		void moveForward(double distance,double vel, std::string direction);
 		void rotate(double angleToRotateTo,double angleSpeed);
@@ -52,8 +53,6 @@ class Entity
         double getAng();
         bool getDesireLocation();
 
-        std::list<Movement> movementQueue;
-
 	private:
 		//positions
 		double x;
@@ -63,6 +62,9 @@ class Entity
 		// velocity
 		double linearVelocity;
 		double angularVelocity;
+
+		//movement queue
+        std::vector<Movement> movementQueue;
 
 		//direction robot facing
 		enum Direction {WEST, SOUTH, EAST, NORTH};

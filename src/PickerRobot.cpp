@@ -43,23 +43,23 @@ void recieveCarrierRobotStatus(const se306project::carrier_status::ConstPtr& msg
  */
 void PickerRobot::movement(){
 	//If status is not full the picker robot will keep moving
-	if(status.compare("Full")!=0){
+	/*if(status.compare("Full")!=0){
 		if (pickerRobot.getDesireLocation()){
 			//if picker robot is at desire location set status to full
 			status="Full";
 		}else{
 			//if picker robot is not at desire location keep moving
-			pickerRobot.addMovement("forward_x",distance,1);
+			//pickerRobot.addMovement("forward_x",1,1);
 		}
-		pickerRobot.addMovement("forward_x",-4,1);
-		pickerRobot.faceSouth(1);
-		pickerRobot.addMovement("forward_y",-5,1);
-		pickerRobot.faceNorth(1);
-		pickerRobot.addMovement("forward_y",5,1);
 
-	}
+	}*/
 	//pickerRobot.moveForward(distance,1);
-
+	pickerRobot.faceEast(1);
+	pickerRobot.addMovement("forward_x",3,1);
+	pickerRobot.faceSouth(1);
+	pickerRobot.addMovement("forward_y",-5,1);
+	pickerRobot.faceNorth(1);
+	pickerRobot.addMovement("forward_y",5,1);
 }
 
 int main(int argc, char **argv)
@@ -88,10 +88,11 @@ int main(int argc, char **argv)
 
 	//a count of howmany messages we have sent
 	int count = 0;
-	pickerRobot.movement();
+
 	while (ros::ok())
 	{
 		ros::spinOnce();
+		loop_rate.sleep();
 		//assign to status message
 		status_msg.my_counter = count++;//add counter to message to broadcast
 		status_msg.status=status;//add status to message to broadcast
@@ -102,7 +103,10 @@ int main(int argc, char **argv)
 
 		pickerRobot.move();//robot move
 		loop_rate.sleep();
-
+		//TODO debug
+		if(count==3){
+			pickerRobot.movement();
+		}
 
 		++count;
 	}
