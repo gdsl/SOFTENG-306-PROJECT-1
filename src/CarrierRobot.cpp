@@ -34,7 +34,7 @@ void recievePickerRobotStatus(const se306project::robot_status::ConstPtr& msg)
 			ROS_INFO("Tests");
 
 			if (!carrierRobot.getDesireLocation()){
-					// carrier robot will approach picker but will leave a space of 2 metres to avoid colliding
+				// carrier robot will approach picker but will leave a space of 2 metres to avoid colliding
 				carrierRobot.moveForward(double((msg->pos_x)+3), 1);
 			}else{
 				status="Arrived";
@@ -67,7 +67,7 @@ int main(int argc, char **argv)
 	ros::Rate loop_rate(10);
 	// tell master you want to sub to topic
 	carrierRobot.robotNode_stage_pub=n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
-		//subscribe to listen to messages coming from stage
+	//subscribe to listen to messages coming from stage
 	carrierRobot.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000, callBackStageOdm);
 	ros::Subscriber mysub_object = n.subscribe<se306project::robot_status>("/robot_0/status",1000,recievePickerRobotStatus);
 	ros::Publisher pub=n.advertise<se306project::carrier_status>("status",1000);
