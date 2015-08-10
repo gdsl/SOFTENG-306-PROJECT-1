@@ -53,6 +53,9 @@ class Entity
         double getAng();
         bool getDesireLocation();
 
+		//movement queue
+        std::vector<Movement> movementQueue;
+
 	private:
 		//positions
 		double x;
@@ -62,9 +65,6 @@ class Entity
 		// velocity
 		double linearVelocity;
 		double angularVelocity;
-
-		//movement queue
-        std::vector<Movement> movementQueue;
 
 		//direction robot facing
 		enum Direction {WEST, SOUTH, EAST, NORTH};
