@@ -5,13 +5,15 @@
 
 using namespace std;
 
-class GUIUpdater : public QObject {
+class Worker : public QObject {
     Q_OBJECT
 
 public:
-    explicit GUIUpdater(QObject *parent = 0) : QObject(parent){}    
-    void newLabel(const QString &image);
+    explicit Worker(QObject *parent = 0) : QObject(parent){}    
 	void exec(string cmd);
+
+public slots:
+    void newLabel();
 
 signals:    
     void requestNewLabel(const QString &);

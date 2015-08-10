@@ -22,24 +22,27 @@ static const uint qt_meta_data_MainWindow[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       3,   14, // methods
+       4,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       0,       // signalCount
+       1,       // signalCount
+
+ // signals: signature, parameters, type, tag, flags
+      12,   11,   11,   11, 0x05,
 
  // slots: signature, parameters, type, tag, flags
-      16,   12,   11,   11, 0x0a,
-      37,   11,   11,   11, 0x08,
-      63,   11,   11,   11, 0x08,
+      33,   29,   11,   11, 0x0a,
+      54,   11,   11,   11, 0x08,
+      80,   11,   11,   11, 0x08,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_MainWindow[] = {
-    "MainWindow\0\0str\0onUpdateGUI(QString)\0"
-    "on_launchButton_clicked()\0"
+    "MainWindow\0\0requestProcess()\0str\0"
+    "onUpdateGUI(QString)\0on_launchButton_clicked()\0"
     "on_closeButton_clicked()\0"
 };
 
@@ -49,9 +52,10 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         Q_ASSERT(staticMetaObject.cast(_o));
         MainWindow *_t = static_cast<MainWindow *>(_o);
         switch (_id) {
-        case 0: _t->onUpdateGUI((*reinterpret_cast< QString(*)>(_a[1]))); break;
-        case 1: _t->on_launchButton_clicked(); break;
-        case 2: _t->on_closeButton_clicked(); break;
+        case 0: _t->requestProcess(); break;
+        case 1: _t->onUpdateGUI((*reinterpret_cast< QString(*)>(_a[1]))); break;
+        case 2: _t->on_launchButton_clicked(); break;
+        case 3: _t->on_closeButton_clicked(); break;
         default: ;
         }
     }
@@ -89,10 +93,16 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 3)
+        if (_id < 4)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 3;
+        _id -= 4;
     }
     return _id;
+}
+
+// SIGNAL 0
+void MainWindow::requestProcess()
+{
+    QMetaObject::activate(this, &staticMetaObject, 0, 0);
 }
 QT_END_MOC_NAMESPACE

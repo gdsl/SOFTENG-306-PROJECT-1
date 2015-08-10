@@ -73,7 +73,7 @@ CATKIN_IGNORE
 *.dll
 
 # Fortran module files
-*.mod
+*.modgu
 
 # Compiled Static libraries
 *.lai
@@ -85,3 +85,10 @@ CATKIN_IGNORE
 *.exe
 *.out
 *.app
+*.o
+
+#gui project
+*.pro
+gui/Makefile
+gui/gui
+gui/moc*

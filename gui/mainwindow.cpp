@@ -13,6 +13,16 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+	QThread *thread = new QThread(this);
+    Worker *worker = new Worker();
+    worker->moveToThread(thread);
+ 	connect (thread, SIGNAL(started()), worker, SLOT(newLabel()));
+    connect(worker, SIGNAL(requestNewLabel(QString)), this, SLOT(onUpdateGUI(QString)));
+    connect(thread, SIGNAL(destroyed()), worker, SLOT(deleteLater()));
+
+	
+	thread->start();
 }
 
 MainWindow::~MainWindow()
@@ -36,18 +46,13 @@ void MainWindow::on_launchButton_clicked()
 {
 	//launch roslaunch
 	system("roslaunch se306project orchard.launch &");
-
+	
 	//create subscriber thread
 	//pthread_t t1;
 	//pthread_create (&t1, NULL, print_message_function, NULL);
 
-	QThread *thread = new QThread(this);
-    GUIUpdater *updater = new GUIUpdater();
-    updater->moveToThread(thread);
-    connect(updater, SIGNAL(requestNewLabel(QString)), this, SLOT(onUpdateGUI(QString)));
-    connect(thread, SIGNAL(destroyed()), updater, SLOT(deleteLater()));
-
-    updater->newLabel("");
+	emit MainWindow::requestProcess();
+	qDebug("THREAD2 STARTED@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
 }
 
 void MainWindow::on_closeButton_clicked()

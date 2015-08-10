@@ -17,6 +17,9 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
+signals:
+	void requestProcess();
+
 public slots:
 	void onUpdateGUI( QString str );
 
