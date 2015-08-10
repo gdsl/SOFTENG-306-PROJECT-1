@@ -75,7 +75,6 @@ void Entity::stageOdom_callback(nav_msgs::Odometry msg)
 /**
  * Message to stage of Entity's odometry
  */
-
 void Entity::updateOdometry()
 {
 	robotNode_cmdvel.linear.x = linearVelocity;
@@ -102,7 +101,7 @@ void Entity::moveForward(double distance, double vel){
 			linearVelocity=0;
 		}
 		angularVelocity=0;
-		updateOdometry();
+		updateOdometry(); //update the information to stage
 	}
 }
 
@@ -112,15 +111,16 @@ void Entity::moveForward(double distance, double vel){
  *			double angleSpeed: how fast we want the entity to rotate. Note its speed so always +ve
  */
 void Entity::rotate(double angleToRotateTo, double angleSpeed){
-
-	if (std::abs(angleToRotateTo-theta)>(20*M_PI/180)){
+	//Check if angleToRotateTo and the current angle is similar. If not rotate.
+	if (std::abs(angleToRotateTo-theta)>(0.01)){
 		//ROS_INFO(""+(angleToRotateTo-theta));
 		angularVelocity=angleSpeed;
 		updateOdometry();
 	}else{
+		//if angle similar stop rotating
 		angularVelocity=0;
 		linearVelocity=0;
-		updateOdometry();
+		updateOdometry(); //update the information to stage
 	}
 }
 
@@ -152,30 +152,51 @@ void Entity::faceWest(double angleSpeed){
 	rotate(0,angleSpeed);
 }
 
+/**
+ * Getter method for x position of entity
+ */
 double Entity::getX() {
     return x;
 }
 
+/**
+ * Getter method for y position of entity
+ */
 double Entity::getY() {
     return y;
 }
 
+/**
+ * Getter method for angle of entity
+ */
 double Entity::getTheta() {
     return theta;
 }
 
+/**
+ * Getter method for linear velocity of entity
+ */
 double Entity::getLin() {
     return linearVelocity;
 }
 
+/**
+ * Getter method for angular velocity of entity
+ */
 double Entity::getAng() {
     return angularVelocity;
 }
 
+/**
+ * Getter method for desire location of entity
+ */
 bool Entity::getDesireLocation() {
     return desireLocation;
 }
 
+/**
+ * setter method for desire location of entity
+ */
 void Entity::setDesireLocation(bool desireLocation){
 	this->desireLocation=desireLocation;
 }

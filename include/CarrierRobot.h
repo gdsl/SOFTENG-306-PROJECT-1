@@ -3,6 +3,10 @@
 #include "Robot.h"
 #include "ros/ros.h"
 
+/**
+ * CarrierRobot Header file.
+ * Here is where we declare method specification.
+ */
 class CarrierRobot: public Robot {
 public:
 	CarrierRobot();

@@ -105,12 +105,13 @@ int main(int argc, char **argv)
 	//ROS loop
 	while (ros::ok())
 	{
+		ros::spinOnce();
 		status_msg.my_counter=count;		//add counter to message
 		status_msg.status=status;		//add status to message
 		pub.publish(status_msg);	//publish message
-		ros::spinOnce();
-		loop_rate.sleep();
+		carrierRobot.faceSouth(1);
 
+		loop_rate.sleep();
 		++count; // increase counter
 	}
 

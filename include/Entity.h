@@ -7,8 +7,8 @@
 #include <sensor_msgs/LaserScan.h>
 
 /**
- * Parent class for Entity nodes.
- * Note: Unless the class has a virtual method, it is still a normal class??
+ * Entity Header file.
+ * Here is where we declare method specification for Entity.
  */
 
 class Entity

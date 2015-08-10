@@ -5,11 +5,11 @@
 #include <geometry_msgs/Point.h>
 #include <nav_msgs/Odometry.h>
 #include "Robot.h"
-/**
- * PickerRobot class
- * This class is for the implementation of the picker robot
- */
 
+/**
+ * PickerRobot class header file
+ * This class is for the declaration of method
+ */
 class PickerRobot: public Robot {
 public:
 	PickerRobot();
