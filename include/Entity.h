@@ -7,8 +7,8 @@
 #include <sensor_msgs/LaserScan.h>
 
 /**
- * Parent class for Entity nodes.
- * Note: Unless the class has a virtual method, it is still a normal class??
+ * Entity Header file.
+ * Here is where we declare method specification for Entity.
  */
 
 class Entity
@@ -29,8 +29,9 @@ class Entity
 		ros::Subscriber stageOdo_Sub;
 
 		// Callback methods
-		void atLocation();
 		void stageOdom_callback(nav_msgs::Odometry msg);
+		void atLocation();
+		// Movement methods
 		void moveForward(double distance,double vel);
 		void rotate(double angleToRotateTo,double angleSpeed);
 		void faceNorth(double angleSpeed);

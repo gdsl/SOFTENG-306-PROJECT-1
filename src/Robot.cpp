@@ -14,5 +14,6 @@ void Robot::StageLaser_callback(sensor_msgs::LaserScan msg)
 {
 	//This is the callback function to process laser scan messages
 	//you can access the range data from msg.ranges[i]. i = sample number
+	
 
 }

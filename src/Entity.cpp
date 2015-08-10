@@ -75,7 +75,6 @@ void Entity::stageOdom_callback(nav_msgs::Odometry msg)
 /**
  * Message to stage of Entity's odometry
  */
-
 void Entity::updateOdometry()
 {
 	robotNode_cmdvel.linear.x = linearVelocity;
@@ -86,9 +85,9 @@ void Entity::updateOdometry()
 }
 
 /**
- * Message to move the robot forward in the direction it is facing
+ * Message to move the entity forward in the direction it is facing
  * Note unit is in meters
- * input:	double vel: the velocity of the robot moving forward
+ * input:	double vel: the velocity of the entity moving forward
  *			double distance: the amount of distance to move
  */
 void Entity::moveForward(double distance, double vel){
@@ -102,80 +101,111 @@ void Entity::moveForward(double distance, double vel){
 			linearVelocity=0;
 		}
 		angularVelocity=0;
-		updateOdometry();
+		updateOdometry(); //update the information to stage
 	}
 }
 
 /**
- * Message to rotate the robot.
- * Input:	double angleToRotate: In radians the angle robot will rotate to relative to absoulte frame.
- *			double angleSpeed: how fast we want the robot to rotate. Note its speed so always +ve
+ * Message to rotate the entity.
+ * Input:	double angleToRotate: In radians, the angle entity will rotate to relative to absoulte frame.
+ *			double angleSpeed: how fast we want the entity to rotate. Note its speed so always +ve
  */
 void Entity::rotate(double angleToRotateTo, double angleSpeed){
-
-	if (std::abs(angleToRotateTo-theta)>(20*M_PI/180)){
-		//ROS_INFO(""+(angleToRotateTo-theta));
-		angularVelocity=angleSpeed;
+	//Check if angleToRotateTo and the current angle is similar. If not rotate.
+	if (std::abs(angleToRotateTo-theta)>0.0001){
+		if (std::abs(angleToRotateTo-theta)<(0.01)){//slow down speed when very near
+				//ROS_INFO(""+(angleToRotateTo-theta));
+				angularVelocity=0.001*angleSpeed;
+				updateOdometry();
+		}else if (std::abs(angleToRotateTo-theta)<(0.1)){//slow down speed when near
+			//ROS_INFO(""+(angleToRotateTo-theta));
+			angularVelocity=0.1*angleSpeed;
+			updateOdometry();
+		}else{
+			angularVelocity=angleSpeed;
+		}
 		updateOdometry();
 	}else{
+		//if angle similar stop rotating
 		angularVelocity=0;
 		linearVelocity=0;
-		updateOdometry();
+		updateOdometry(); //update the information to stage
 	}
 }
 
 /**
- * Message to rotate the robot such that it faces North
+ * Message to rotate the entity such that it faces North
  */
 void Entity::faceNorth(double angleSpeed){
 	rotate(-M_PI/2, angleSpeed);
 }
 
 /**
- * Message to rotate the robot such that it faces South
+ * Message to rotate the entity such that it faces South
  */
 void Entity::faceSouth(double angleSpeed){
 	rotate(M_PI/2, angleSpeed);
 }
 
 /**
- * Message to rotate the robot such that it faces East
+ * Message to rotate the entity such that it faces East
  */
 void Entity::faceEast(double angleSpeed){
 	rotate(M_PI, angleSpeed);
 }
 
 /**
- * Message to rotate the robot such that it faces West
+ * Message to rotate the entity such that it faces West
  */
 void Entity::faceWest(double angleSpeed){
 	rotate(0,angleSpeed);
 }
 
+/**
+ * Getter method for x position of entity
+ */
 double Entity::getX() {
     return x;
 }
 
+/**
+ * Getter method for y position of entity
+ */
 double Entity::getY() {
     return y;
 }
 
+/**
+ * Getter method for angle of entity
+ */
 double Entity::getTheta() {
     return theta;
 }
 
+/**
+ * Getter method for linear velocity of entity
+ */
 double Entity::getLin() {
     return linearVelocity;
 }
 
+/**
+ * Getter method for angular velocity of entity
+ */
 double Entity::getAng() {
     return angularVelocity;
 }
 
+/**
+ * Getter method for desire location of entity
+ */
 bool Entity::getDesireLocation() {
     return desireLocation;
 }
 
+/**
+ * setter method for desire location of entity
+ */
 void Entity::setDesireLocation(bool desireLocation){
 	this->desireLocation=desireLocation;
 }
