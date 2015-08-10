@@ -1,3 +1,9 @@
 <launch>
-    <test test-name="testRobot" pkg="se306project" type="testRobot.cpp" />
+    <node name="stage" pkg="stage_ros" type="stageros" args="$(find se306project)/world/orchard.world"/>
+
+	<group ns="robot_0">
+		<node pkg="se306project" name="pickernode" type="PickerRobot"/>
+	</group>
+
+    <test test-name="testRobot" pkg="se306project" type="testRobot" />
 </launch>
