@@ -72,8 +72,14 @@ void Entity::stageOdom_callback(nav_msgs::Odometry msg)
 void Entity::stageLaser_callback(sensor_msgs::LaserScan msg)
 {
 	//This is the callback function to process laser scan messages
-	//you can access the range data from msg.ranges[i]. i = sample number
-
+	//you can access the range data from msg.ranges[i]. i = sample numbe
+        //range vector means distance measure corresponds to the a set of angles
+        //float32 minDistance=30.0;
+        //int l=sizeof(ranges) / sizeof(ranges[0]); 
+        //for (int i=0;i<l;i++){
+              //if ranges[i]< minDistance;
+              //   minDistance = ranges[i];
+        //}  
 }
 
 /**
