@@ -12,7 +12,7 @@ TEST(Example,testcase1) {
 
 TEST(PickerRobot, constructPicker) {
 	PickerRobot pickerRobot;
-	EXPECT_EQ(pickerRobot.getLin(), 0);
+	EXPECT_EQ(pickerRobot.getLin(), 1);
 }
 
 int main(int argc,char **argv) {

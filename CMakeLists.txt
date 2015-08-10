@@ -153,10 +153,7 @@ catkin_package(
 #############
 
 ## Add gtest based cpp test target and link libraries
- catkin_add_gtest(${PROJECT_NAME}-test test/testRobot.cpp src/PickerRobot.cpp src/Robot.cpp src/Entity.cpp)
- if(TARGET ${PROJECT_NAME}-test)
-   target_link_libraries(${PROJECT_NAME}-test ${catkin_LIBRARIES})
- endif()
+ 
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
@@ -186,7 +183,19 @@ add_executable(PickerRobot src/PickerRobot.cpp)
 target_link_libraries(PickerRobot Robot Entity ${catkin_LIBRARIES})
 add_dependencies(PickerRobot se306project_generate_messages_cpp)
 
+add_library(PickerRobotLib src/PickerRobot.cpp)
+target_link_libraries(PickerRobotLib Robot Entity ${catkin_LIBRARIES})
+
 add_executable(CarrierRobot src/CarrierRobot.cpp)
 target_link_libraries(CarrierRobot Robot Entity ${catkin_LIBRARIES})
 add_dependencies(CarrierRobot se306project_generate_messages_cpp)
 
+#catkin_add_gtest(${PROJECT_NAME}-test test/testRobot.cpp src/PickerRobot.cpp)
+ #if(TARGET ${PROJECT_NAME}-test)
+  # target_link_libraries(Entity Robot ${catkin_LIBRARIES})
+# endif()
+
+if (CATKIN_ENABLE_TESTING)
+    catkin_add_gtest(testRobot test/testRobot.cpp)
+    target_link_libraries(testRobot PickerRobotLib ${catkin_LIBRARIES})
+endif()
