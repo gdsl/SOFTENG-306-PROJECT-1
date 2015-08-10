@@ -42,78 +42,77 @@ int main(int argc, char **argv)
     srand(time(NULL));
     ros::Rate loop_rate(10); 
     bool targetReach = true;
-    int range = 10;
-    double targetX =( rand() % (2*range+1)) + (-range);
-    double targetY =( rand() % (2*range+1) )+ (-range);
+    int range = 5;
+    //double targetX =( rand() % (2*range+1)) + (-range);
+    //double targetY =( rand() % (2*range+1) )+ (-range);
+    double targetX = -3;
+    double targetY = -3;
     double errors = 0.25;
+<<<<<<< HEAD
 
 
 
+=======
+    double state = 0;
+    int horizontalSign = 1;
+    int verticalSign = 1;
+   
+    //0 rotatiing to the side, 1, moving horizontally, 2 rotating to bnorth/south, 3 moving vertical, 4 stop
+   
+>>>>>>> f332b9ac4847474a197321adb7b0440b6a10e5f7
     while (ros::ok())
     {
-        //message to stage
-        //alphaDog.setVelocity(0,0.2);
-        
-       double dist = sqrt((pow((alphaDog.getX()-targetX),2) + pow((alphaDog.getY()-targetY),2)));
-        if (dist < errors+0.25) targetReach = true;
-        
-        if ( alphaDog.getLin() == 0 && alphaDog.getAng() == 0 ) {
-            targetReach = true;
-        }
-        if (targetReach) {
-            targetX =( rand() % (2*range+1)) + (-range);
-            targetY =( rand() % (2*range+1) )+ (-range);
-            targetReach = false;
-        }
-    
-       // debugMsg.linear.x = targetX;
-        //debugMsg.linear.y = targetY;
-        //debug_pub.publish(debugMsg);
-
+        //message to stage 
         double diffX = alphaDog.getX() - targetX;
         double diffY = alphaDog.getY() - targetY;
         
-        if (abs(diffX) > errors ) {
-            if (diffX > 0) {
-                alphaDog.faceWest(2.0);
-                if (alphaDog.getAng() == 0 ) {
-                    alphaDog.addMovement("forward_x",diffX,-2.0);
-                } 
+        alphaDog.setVelocity(0,0);
+        if (state == 0 ) {
+               if (diffX > 0 ) {
+                    alphaDog.faceWest(2.0);
+                    horizontalSign = 1;
+               } else {
+                    alphaDog.faceEast(2.0);
+                    horizontalSign = -1;
+               }
                 
-            } else {
-                alphaDog.faceEast(2.0);
-                if (alphaDog.getAng() == 0 ) {
-                    alphaDog.addMovement("forward_x",diffX,2.0);
-                } 
-            }
-
-            
-
-
-        } else if (abs(diffY) > errors) {
-
-            if (diffY > 0) {
-                alphaDog.faceSouth(2.0);
-                if (alphaDog.getAng() == 0 ) {
-                    alphaDog.addMovement("forward_y",diffY,-2.0);
+               if (alphaDog.getAng() == 0) {
+                    state = 1;
                 }
+        } else if (state == 1 ) {
+            //alphaDog.setDesireLocation(false);
+            //alphaDog.moveForward(targetX, horizontalSign*0.5);   
+            alphaDog.addMovement("forward_x",targetX,horizontalSign*0.5);
+            if (alphaDog.getLin() == 0) {
+                state = 2;
+            }
+        } else if (state == 2) {
+            if (diffY > 0 ) {
+                    alphaDog.faceSouth(2.0);
+                    verticalSign = 1;
+               } else {
+                    alphaDog.faceNorth(2.0);
+                    verticalSign = -1;
+               }
                 
-            } else {
-                alphaDog.faceNorth(2.0);
-                if (alphaDog.getAng() == 0 ) {
-                    alphaDog.addMovement("forward_y",diffY,2.0);
+               if (alphaDog.getAng() == 0) {
+                    state = 3;
                 }
+        } else if (state == 3) {
+            //alphaDog.setDesireLocation(false);
+            //alphaDog.moveForward(targetY,2.0);   
+            alphaDog.addMovement("foward_y",targetY,verticalSign*0.5);
+            if (alphaDog.getLin() == 0) {
+                state =4;
             }
-
-            
-        } else {
-            alphaDog.setVelocity(0,0);
-        }
-
-        
-        
-        alphaDog.updateOdometry();
-        
+            alphaDog.updateOdometry();
+        } else if (state == 4) {
+            targetX =( rand() % (2*range+1)) + (-range);
+            targetY =( rand() % (2*range+1) )+ (-range);
+            state = 0;  
+            alphaDog.setVelocity(0,0); 
+            alphaDog.updateOdometry();
+        } 
 
         ros::spinOnce();
     
