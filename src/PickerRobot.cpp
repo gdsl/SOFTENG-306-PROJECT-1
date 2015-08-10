@@ -59,8 +59,8 @@ int main(int argc, char **argv)
 	ros::Publisher pub=n.advertise<se306project::robot_status>("status",1000);
 	//subscribe to listen to messages coming from stage
 	pickerRobot.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000, callBackStageOdm);
-        //ros::Publisher scan_pub = n.advertise<sensor_msgs::LaserScan>("scan", 1000);
-	//ros::Subscriber StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>("robot_0/base_scan",1000,StageLaser_callback);
+        ros::Publisher scan_pub = n.advertise<sensor_msgs::LaserScan>("scan", 1000);
+	ros::Subscriber StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>("robot_0/base_scan",1000,StageLaser_callback);
 	ros::Subscriber mysub_object = n.subscribe<se306project::carrier_status>("/robot_2/status",1000,recieveCarrierRobotStatus);
 
 	// initalise robot status message
@@ -78,31 +78,31 @@ int main(int argc, char **argv)
 	while (ros::ok())
 	{
           //generate some fake data for our laser scan
-          //for(unsigned int i = 0; i < num_readings; ++i){
-              //ranges[i] = count;
-              //intensities[i] = 100 + count;
-            //}
+          for(unsigned int i = 0; i < num_readings; ++i){
+              ranges[i] = count;
+              intensities[i] = 100 + count;
+            }
                 
-                //ros::Time scan_time = ros::Time::now();
+                ros::Time scan_time = ros::Time::now();
                 //populate the LaserScan message
-                //sensor_msgs::LaserScan scan;
-                //scan.header.stamp = scan_time;
-                //scan.header.frame_id = "laser_frame";
-                //scan.angle_min = -1.57;
-                //scan.angle_max = 1.57;
-                //scan.angle_increment = 3.14 / num_readings;
-                //scan.time_increment = (1 / laser_frequency) / (num_readings);
-                //scan.range_min = 0.0;
-                //scan.range_max = 100.0;
+                sensor_msgs::LaserScan scan;
+                scan.header.stamp = scan_time;
+                scan.header.frame_id = "laser_frame";
+                scan.angle_min = -1.57;
+                scan.angle_max = 1.57;
+                scan.angle_increment = 3.14 / num_readings;
+                scan.time_increment = (1 / laser_frequency) / (num_readings);
+                scan.range_min = 0.0;
+                scan.range_max = 100.0;
    
-                //scan.ranges.resize(num_readings);
-                //scan.intensities.resize(num_readings);
-                //for(unsigned int i = 0; i < num_readings; ++i){
-                   //scan.ranges[i] = ranges[i];
-                   //scan.intensities[i] = intensities[i];
-                //}
+                scan.ranges.resize(num_readings);
+                scan.intensities.resize(num_readings);
+                for(unsigned int i = 0; i < num_readings; ++i){
+                   scan.ranges[i] = ranges[i];
+                   scan.intensities[i] = intensities[i];
+                }
    
-                //scan_pub.publish(scan);
+                scan_pub.publish(scan);
 
 		status_msg.my_counter = count++;
 		status_msg.status=status;
