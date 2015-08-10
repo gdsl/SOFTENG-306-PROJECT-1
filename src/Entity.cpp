@@ -73,8 +73,8 @@ void Entity::stageOdom_callback(nav_msgs::Odometry msg)
 
     theta = tf::getYaw(pose.getRotation());    
 	// ROS logging api
-	//ROS_INFO("Current x position is: %f", x);
-	//ROS_INFO("Current y position is: %f", y);
+	ROS_INFO("Current x position is: %f", x);
+	ROS_INFO("Current y position is: %f", y);
 }
 
 /**
@@ -147,16 +147,20 @@ void Entity::addMovement(std::string type, double distance,double velocity){
 				}
 		}
 		if (useCurrent){//when no other forward movement to reference use current location
-			if(type.compare("forward_x")==0){
+			if((type.compare("forward_x"))==0){
 				pos=x+distance;
-			}else if (type.compare("forward_y")==0){
+				ROS_INFO("xpos: %f", pos);
+				ROS_INFO("x: %f", x);
+				ROS_INFO("dis: %f", distance);
+			}else if ((type.compare("forward_y"))==0){
 				pos=y+distance;
+				ROS_INFO("y: %f", pos);
 			}
 		}
 	}else{
 		pos=distance;
 	}
-	ROS_INFO("pos: %f", pos);
+	//ROS_INFO("pos: %f", pos);
 	Movement m=Movement(type,pos,velocity);
 	movementQueue.push_back(m);
 }
@@ -175,6 +179,7 @@ void Entity::moveForward(double pos, double vel, std::string direction){
 		position=y;
 	}
 	if (!desireLocation){//TODO slow down
+		ROS_INFO("mfpos: %f", pos);
 		if(std::abs(position-pos)>=1){
 			linearVelocity=vel;
 		}else{
@@ -196,12 +201,12 @@ void Entity::moveForward(double pos, double vel, std::string direction){
  */
 void Entity::rotate(double angleToRotateTo, double angleSpeed){
 	//Check if angleToRotateTo and the current angle is similar. If not rotate.
-	if (std::abs(angleToRotateTo-theta)>0.0001){
+	if (std::abs(angleToRotateTo-theta)>0.01){
 		if (std::abs(angleToRotateTo-theta)<(0.01)){//slow down speed when very near
 				//ROS_INFO(""+(angleToRotateTo-theta));
 				angularVelocity=0.001;
 				updateOdometry();
-		}else if (std::abs(angleToRotateTo-theta)<(0.1)){//slow down speed when near
+		}else if (std::abs(angleToRotateTo-theta)<(0.2)){//slow down speed when near
 			//ROS_INFO(""+(angleToRotateTo-theta));
 			angularVelocity=0.1;
 			updateOdometry();
@@ -222,28 +227,28 @@ void Entity::rotate(double angleToRotateTo, double angleSpeed){
  * Message to rotate the entity such that it faces North
  */
 void Entity::faceNorth(double angleSpeed){
-	addMovement("rotation",-M_PI/2, angleSpeed);
+	addMovement("rotation",M_PI/2, angleSpeed);
 }
 
 /**
  * Message to rotate the entity such that it faces South
  */
 void Entity::faceSouth(double angleSpeed){
-	addMovement("rotation",M_PI/2, angleSpeed);
+	addMovement("rotation",-M_PI/2, angleSpeed);
 }
 
 /**
  * Message to rotate the entity such that it faces East
  */
 void Entity::faceEast(double angleSpeed){
-	addMovement("rotation",M_PI, angleSpeed);
+	addMovement("rotation",0, angleSpeed);
 }
 
 /**
  * Message to rotate the entity such that it faces West
  */
 void Entity::faceWest(double angleSpeed){
-	addMovement("rotation",0, angleSpeed);
+	addMovement("rotation",M_PI, angleSpeed);
 }
 
 /**

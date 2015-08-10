@@ -91,8 +91,6 @@ int main(int argc, char **argv)
 
 	while (ros::ok())
 	{
-		ros::spinOnce();
-		loop_rate.sleep();
 		//assign to status message
 		status_msg.my_counter = count++;//add counter to message to broadcast
 		status_msg.status=status;//add status to message to broadcast
@@ -102,12 +100,13 @@ int main(int argc, char **argv)
 		pub.publish(status_msg);//publish the message for other node
 
 		pickerRobot.move();//robot move
-		loop_rate.sleep();
 		//TODO debug
-		if(count==3){
+		if(count==7){
 			pickerRobot.movement();
 		}
 
+		ros::spinOnce();
+		loop_rate.sleep();
 		++count;
 	}
 
