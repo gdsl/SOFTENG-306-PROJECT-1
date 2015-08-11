@@ -75,7 +75,7 @@ void PickerRobot::movement(){
 	}
 
 }
-
+/*
 int main(int argc, char **argv)
 {
 	pickerRobot=PickerRobot();
@@ -136,4 +136,4 @@ callBackLaserScan);
 
 	return 0;
 
-}
+}*/
