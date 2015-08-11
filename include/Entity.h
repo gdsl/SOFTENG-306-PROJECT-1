@@ -29,9 +29,11 @@ class Entity
 		// Publisher and Subscriber. Public available to update.
 		ros::Publisher robotNode_stage_pub;
 		ros::Subscriber stageOdo_Sub;
+                ros::Subscriber baseScan_Sub;
 
 		// Callback methods
 		void stageOdom_callback(nav_msgs::Odometry msg);
+                void stageLaser_callback(sensor_msgs::LaserScan msg);
 		void atLocation();
 		// Movement methods
 		void move();

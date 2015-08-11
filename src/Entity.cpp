@@ -8,6 +8,7 @@
 #include <vector>
 #include <string>
 #include "Movement.h"
+#include <sensor_msgs/LaserScan.h>
 
 /**
  * Default constructor of Entity. Calls the other constructor with default values.
@@ -35,6 +36,10 @@ Entity::Entity(double x, double y, double theta, double linearVelocity, double a
 	this->linearVelocity = linearVelocity;
 	this->angularVelocity = angularVelocity;
 	desireLocation=false;
+        //the distance of the nearest obstacle 
+        float32 minDistace=30.0;
+        //set the default obstacle angle as a value larger than 180
+        float32 obstacleAngle=270;
 }
 
 Movement currentMovement;//current movement
@@ -75,6 +80,19 @@ void Entity::stageOdom_callback(nav_msgs::Odometry msg)
 	// ROS logging api
 	ROS_INFO("Current x position is: %f", x);
 	ROS_INFO("Current y position is: %f", y);
+}
+
+void Entity::stageLaser_callback(sensor_msgs::LaserScan msg)
+{
+	//This is the callback function to process laser scan messages
+	//you can access the range data from msg.ranges[i]. i = sample numbe
+        //range vector means distance measure corresponds to the a set of angles
+        int l=sizeof(msg.ranges) / sizeof(msg.ranges[0]); 
+        for (int i=0;i<l;i++){
+              if ranges[i]< minDistance;
+                 minDistance = ranges[i];
+                 obstacleAngle=(i/l)*msg.angle_increment+angle_min;
+        } 
 }
 
 /**

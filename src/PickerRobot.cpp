@@ -22,6 +22,9 @@ void callBackStageOdm(const nav_msgs::Odometry msg){
 	pickerRobot.stageOdom_callback(msg);
 }
 
+void callBackLaserScan(const sensor_msgs::LaserScan msg) {
+	pickerRobot.stageLaser_callback(msg);
+}
 /*
  * Method that process the carrier robot message received.
  * This method is called when message is received.
@@ -89,6 +92,9 @@ int main(int argc, char **argv)
 
 	//subscribe to listen to messages coming from stage about is position relative to absolute frame
 	pickerRobot.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000, callBackStageOdm);
+        //subscribe to obstacle detection
+        pickerRobot.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000,
+callBackLaserScan);
 	//subscribe to carrier robot's status message
 	ros::Subscriber mysub_object = n.subscribe<se306project::carrier_status>("/robot_1/status",1000,recieveCarrierRobotStatus);
 
