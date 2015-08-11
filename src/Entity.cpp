@@ -40,9 +40,10 @@ Entity::Entity(double x, double y, double theta, double linearVelocity, double a
         this->minDistance=30.0;
         //set the default obstacle angle as a value larger than 180
         this->obstacleAngle=270;
+        
 }
 
-Movement currentMovement;//current movement
+Movement currentMovement;//create field for current movement of the node.
 /**
  * Update the position of the Entity
  */
@@ -87,11 +88,12 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg)
 	//This is the callback function to process laser scan messages
 	//you can access the range data from msg.ranges[i]. i = sample numbe
         //range vector means distance measure corresponds to the a set of angles
-        int l=sizeof(msg.ranges) / sizeof(msg.ranges[0]); 
-        for (int i=0;i<l;i++){
-              if (msg.ranges[i]< minDistance)
+        int l=sizeof(msg.ranges) / sizeof(msg.ranges[0]);
+        for (int i=0; i<l; i++){
+              if (msg.ranges[i]< minDistance) {
                  minDistance = msg.ranges[i];
-                 obstacleAngle=(i/l)*msg.angle_increment+msg.angle_min;
+                 obstacleAngle= (i/l) * msg.angle_increment + msg.angle_min;
+              }
         } 
 }
 

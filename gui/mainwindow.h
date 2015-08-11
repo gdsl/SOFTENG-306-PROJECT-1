@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <QtGui/QMainWindow>
+#include <QListWidget>
 
 
 using namespace std;
@@ -21,12 +22,11 @@ signals:
 	void requestProcess();
 
 public slots:
-	void onUpdateGUI( QString str, int i );
+	void onUpdateGUI( QString id, QString str, int i );
 
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-//	static void updateGUI(const QString buffer);
 
 private slots:
 	void on_launchButton_clicked();
@@ -35,6 +35,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    QListWidget *uiList[4] = {NULL, NULL, NULL, NULL};
 //	void updateGUI(const QString buffer);
 //	void *print_message_function( void *ptr );
 //	void exec(string cmd);
