@@ -115,6 +115,9 @@ int main(int argc, char **argv)
 		ros::spinOnce();
 		status_msg.my_counter=count;		//add counter to message
 		status_msg.status=status;		//add status to message
+		status_msg.pos_x=carrierRobot.getX(); //add x to message to broadcast
+		status_msg.pos_y=carrierRobot.getY();//add y to message to broadcast
+		status_msg.pos_theta=carrierRobot.getAng(); //add angle to message to broadcast
 		pub.publish(status_msg);	//publish message
 
 		carrierRobot.move();
