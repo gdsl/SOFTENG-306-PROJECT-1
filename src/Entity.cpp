@@ -37,9 +37,9 @@ Entity::Entity(double x, double y, double theta, double linearVelocity, double a
 	this->angularVelocity = angularVelocity;
 	desireLocation=false;
         //the distance of the nearest obstacle 
-        float32 minDistace=30.0;
+        this->minDistance=30.0;
         //set the default obstacle angle as a value larger than 180
-        float32 obstacleAngle=270;
+        this->obstacleAngle=270;
 }
 
 Movement currentMovement;//current movement
@@ -89,9 +89,9 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg)
         //range vector means distance measure corresponds to the a set of angles
         int l=sizeof(msg.ranges) / sizeof(msg.ranges[0]); 
         for (int i=0;i<l;i++){
-              if ranges[i]< minDistance;
-                 minDistance = ranges[i];
-                 obstacleAngle=(i/l)*msg.angle_increment+angle_min;
+              if (msg.ranges[i]< minDistance)
+                 minDistance = msg.ranges[i];
+                 obstacleAngle=(i/l)*msg.angle_increment+msg.angle_min;
         } 
 }
 
