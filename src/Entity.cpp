@@ -145,6 +145,10 @@ void Entity::movementComplete(){
 	desireLocation=true;
 }
 
+int Entity::getMovementQueueSize() {
+	return movementQueue.size();
+}
+
 /**
  * Method to add movements to movement queue
  */

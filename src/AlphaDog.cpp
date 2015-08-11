@@ -15,6 +15,8 @@ AlphaDog::~AlphaDog() {
 }
 
 AlphaDog alphaDog;
+std::string status="Walking";
+bool queueFull = false;
 
 void stage_callback(nav_msgs::Odometry msg) {
     alphaDog.stageOdom_callback(msg);
@@ -58,17 +60,18 @@ int main(int argc, char **argv)
         //message to stage 
         double diffX = alphaDog.getX() - targetX;
         double diffY = alphaDog.getY() - targetY;
-         alphaDog.move();
+        alphaDog.move();
         
-     
-        alphaDog.faceWest(1);
-        alphaDog.addMovement("forward_x",-5,1);
-        alphaDog.faceSouth(1);
-        alphaDog.addMovement("forward_y",-5,1);
-        alphaDog.faceEast(1);
-        alphaDog.addMovement("forward_x",5,1);
-        alphaDog.faceNorth(1);
-        alphaDog.addMovement("forward_y",5,1);
+    	if (alphaDog.getMovementQueueSize() == 0) {
+		    alphaDog.faceWest(1);
+			alphaDog.addMovement("forward_x",-5,1);
+			alphaDog.faceSouth(1);
+			alphaDog.addMovement("forward_y",-5,1);
+			alphaDog.faceEast(1);
+			alphaDog.addMovement("forward_x",5,1);
+			alphaDog.faceNorth(1);
+			alphaDog.addMovement("forward_y",5,1);
+		}
     
         ros::spinOnce();
     
