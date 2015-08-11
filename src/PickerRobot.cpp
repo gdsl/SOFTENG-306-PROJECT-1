@@ -13,6 +13,7 @@ PickerRobot::~PickerRobot(){
 }
 PickerRobot pickerRobot;
 std::string status="Moving";
+std::string previousStatus = "Moving";
 double distance=1;
 
 /*
@@ -24,6 +25,16 @@ void callBackStageOdm(const nav_msgs::Odometry msg){
 
 void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 	pickerRobot.stageLaser_callback(msg);
+
+	if (pickerRobot.getMinDistance() < 1) {
+		if (status.compare("Obstacle nearby") != 0) {
+			previousStatus = status;
+		}
+		status = "Obstacle nearby";
+	} else {
+		status = previousStatus;
+	}
+
 }
 /*
  * Method that process the carrier robot message received.

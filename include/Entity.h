@@ -54,6 +54,8 @@ class Entity
 		double getTheta();
 		double getLin();
 		double getAng();
+		double getMinDistance();
+		double getObstacleAngle();
 		bool getDesireLocation();
 		int getMovementQueueSize();
 

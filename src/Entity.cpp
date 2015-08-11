@@ -88,6 +88,11 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg)
 	//This is the callback function to process laser scan messages
 	//you can access the range data from msg.ranges[i]. i = sample numbe
         //range vector means distance measure corresponds to the a set of angles
+
+	// reset values
+	minDistance = 30;
+	obstacleAngle = 270;
+
         int l=sizeof(msg.ranges) / sizeof(msg.ranges[0]);
         for (int i=0; i<l; i++){
               if (msg.ranges[i]< minDistance) {
@@ -312,6 +317,22 @@ double Entity::getLin() {
  */
 double Entity::getAng() {
     return angularVelocity;
+}
+
+/**
+ * Getter method for min distance of obstacle from entity
+ */
+
+double Entity::getMinDistance() {
+	return minDistance;
+}
+
+/**
+ * Getter method for getting obstacle angle from entity to minDistance obstacle
+ */
+
+double Entity::getObstacleAngle() {
+	return obstacleAngle;
 }
 
 /**

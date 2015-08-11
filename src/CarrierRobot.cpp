@@ -21,7 +21,7 @@ CarrierRobot::~CarrierRobot() {
 //create carrier robot and status
 CarrierRobot carrierRobot;
 std::string status="Idle";
-
+std::string previousStatus = "Idle";
 /*
  * Wrapper method for the callBackStageOdm method
  */
@@ -31,6 +31,16 @@ void callBackStageOdm(const nav_msgs::Odometry msg){
 
 void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 	carrierRobot.stageLaser_callback(msg);
+
+	if (carrierRobot.getMinDistance() < 1) {
+		if (status.compare("Obstacle nearby") != 0) {
+			previousStatus = status;
+		}
+		status = "Obstacle nearby";
+	} else {
+		status = previousStatus;
+	}
+
 }
 
 /*
@@ -74,6 +84,8 @@ void recievePickerRobotStatus(const se306project::robot_status::ConstPtr& msg)
 		if(carrierRobot.movementQueue.size()<1){
 			status="Arrived";
 		}
+	} else if (status.compare("Obstacle nearby") == 0) {
+
 	}
 }
 
