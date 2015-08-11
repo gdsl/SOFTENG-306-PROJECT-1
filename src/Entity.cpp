@@ -42,7 +42,7 @@ Entity::Entity(double x, double y, double theta, double linearVelocity, double a
         this->obstacleAngle=270;
 }
 
-Movement currentMovement;//current movement
+Movement currentMovement;//create field for current movement of the node.
 /**
  * Update the position of the Entity
  */
