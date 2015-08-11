@@ -3,6 +3,10 @@
 #include "Entity.h"
 #include <nav_msgs/Odometry.h>
 
+/**
+ * Robot Header file.
+ * Here is where we declare method specification for Robot.
+ */
 class Robot :public Entity {
 public:
 	Robot();

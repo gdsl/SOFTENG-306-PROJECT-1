@@ -153,22 +153,21 @@ catkin_package(
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_orchard_simulator.cpp)
-# if(TARGET ${PROJECT_NAME}-test)
-#   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
-# endif()
+ 
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
 #catkin_add_gtest(name_of_the_test file the_directory_to_the_test_file cpp_files_that_is_being_tested)
 #eg catkin_add_gtest(testRobot test/testRobot.cpp a.cpp b.cpp c.pp)
-catkin_add_gtest(testRobot test/mytest.test test/testRobot.cpp)
-target_link_libraries(testRobot ${catkin_LIBRARIES})
+#catkin_add_gtest(testRobot test/mytest.test test/testRobot.cpp)
+#target_link_libraries(testRobot ${catkin_LIBRARIES})
 
 # Libraries
 include_directories(include)
+add_library(Movement src/Movement.cpp)
 add_library(Entity src/Entity.cpp)
 add_library(Robot src/Robot.cpp)
+target_link_libraries(Entity Movement ${catkin_LIBRARIES})
 target_link_libraries(Robot Entity ${catkin_LIBRARIES})
 
 add_executable(Animal src/Animal.cpp)
@@ -186,7 +185,25 @@ add_executable(PickerRobot src/PickerRobot.cpp)
 target_link_libraries(PickerRobot Robot Entity ${catkin_LIBRARIES})
 add_dependencies(PickerRobot se306project_generate_messages_cpp)
 
+add_library(PickerRobotLib src/PickerRobot.cpp)
+target_link_libraries(PickerRobotLib Robot Entity ${catkin_LIBRARIES})
+
 add_executable(CarrierRobot src/CarrierRobot.cpp)
 target_link_libraries(CarrierRobot Robot Entity ${catkin_LIBRARIES})
 add_dependencies(CarrierRobot se306project_generate_messages_cpp)
 
+#catkin_add_(${PROJECT_NAME}-test test/testRobot.cpp src/PickerRobot.cpp)
+ #if(TARGET ${PROJECT_NAME}-test)
+  # target_link_libraries(Entity Robot ${catkin_LIBRARIES})
+# endif()
+
+if (CATKIN_ENABLE_TESTING)
+    #unit test (testing class function/constructor only)
+    catkin_add_gtest(testRobotUnit test/testRobot.cpp)
+    target_link_libraries(testRobotUnit PickerRobotLib ${catkin_LIBRARIES})
+
+    #integration test(everything include testing multiple nodes with stage running)
+    find_package(rostest REQUIRED)
+    add_rostest_gtest(testRobot test/mytest.test test/testRobot.cpp)
+    target_link_libraries(testRobot PickerRobotLib ${catkin_LIBRARIES})
+endif()

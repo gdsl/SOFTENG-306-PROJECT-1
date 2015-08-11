@@ -23,7 +23,7 @@ define pole modelBase
   gui_nose 0
 )
 
-define laser ranger
+define laserBase ranger
 (
 	sensor
 	(
@@ -39,6 +39,29 @@ define laser ranger
 		size [ 0.1 0.1 0.1 ]
 	)
 )
+
+define pretendLaserBase ranger #For animal and humans which should not have lasers
+(
+	sensor
+	(
+		range [ 0.0 0.0 ] # set tp zero
+		fov 0
+		samples 0
+	)
+)
+
+define pickerLaser laserBase
+()
+
+define carrierLaser laserBase
+()
+
+define dogLaser pretendLaserBase
+()
+define humanLaser pretendLaserBase
+()
+
+
 
 define human position
 (
@@ -101,7 +124,7 @@ define human position
   point[0] [  -0.05  -0.05 ] 
   z [ 1.5 1.700 ]
 			)
-
+  humanLaser(pose [ 0.050 0.000 0 0.000 ])
   obstacle_return 1
   ranger_return 1
 )
@@ -167,7 +190,7 @@ define dog position
   point[0] [  -0.50   0.05 ] 
   z [ 0.35 0.50 ]
 			)
-
+  dogLaser(pose [ 0.050 0.000 0 0.000 ])
   obstacle_return 1
   ranger_return 1
 
@@ -187,7 +210,7 @@ define PickerRobot position
   #properties as name value pairs
   size [2.5 1.5 1]
   drive "diff"
-  laser(pose [ 0.050 0.000 0 0.000 ])
+  pickerLaser(pose [ 1.15 0.000 -1 0.000 ])
 
   obstacle_return 1
   ranger_return 1
@@ -207,7 +230,7 @@ define CarrierRobot position
   #properties as name value pairs
   size [1.8 1.5 0.5]
   drive "diff"
-  laser(pose [ 0.050 0.000 0 0.000 ])
+  carrierLaser(pose [ 0.050 0.000 0 0.000 ])
 
   obstacle_return 1
   ranger_return 1

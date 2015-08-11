@@ -3,17 +3,25 @@
 #include "se306project/carrier_status.h"
 #include "se306project/robot_status.h"
 
+/*
+ * Default constructor for carrier Robot
+ */
 CarrierRobot::CarrierRobot() {
 	// TODO Auto-generated constructor stub
 
 }
 
+/*
+ * Default destructor for carrier Robot
+ */
 CarrierRobot::~CarrierRobot() {
 	// TODO Auto-generated destructor stub
 }
 
+//create carrier robot and status
 CarrierRobot carrierRobot;
 std::string status="Idle";
+
 /*
  * Wrapper method for the callBackStageOdm method
  */
@@ -25,42 +33,58 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 	carrierRobot.stageLaser_callback(msg);
 }
 
+<<<<<<< HEAD
+=======
+/*
+ * Method that process the picker robot message received.
+ * This method is called when message is received.
+ */
+>>>>>>> nightly
 void recievePickerRobotStatus(const se306project::robot_status::ConstPtr& msg)
 {
 	//ROS_INFO("sub echoing pub: %d",msg->my_counter);
 	//ROS_INFO("sub echoing pub: %s",msg->status.c_str());
 	//ROS_INFO("sub echoing pub: %f",msg->pos_x);
-	if (status.compare("Arrived")==0){
-		status="Transporting";
-		carrierRobot.setDesireLocation(false);
-	}else if(status.compare("Idle")==0){
-		if ((msg->status).compare("Full")==0){
-			ROS_INFO("Tests");
 
-			if (!carrierRobot.getDesireLocation()){
-					// carrier robot will approach picker but will leave a space of 2 metres to avoid colliding
-				carrierRobot.moveForward(double((msg->pos_x)+3), 1);
-			}else{
-				status="Arrived";
-			}
+	//Check the status of Carrier robot so see how it should act
+	//when status is arrived it means that the carrier robot has arrived at picker
+	if (status.compare("Arrived")==0){
+		//Change status to transporting as the carrier robot is now taking away the full bin
+		status="Transporting";
+		carrierRobot.faceWest(1);
+		carrierRobot.addMovement("forward_x",-34.5, 1);
+		carrierRobot.faceNorth(1);
+		carrierRobot.addMovement("forward_y",std::abs(14.5-carrierRobot.getY()),1);
+		//carrierRobot.setDesireLocation(false);//refresh that it can recieve more desire location
+	}else if(status.compare("Idle")==0){
+		//when the carrier robot is idle and the picker robot is full the carrier robot move to it.
+		if ((msg->status).compare("Full")==0){
+			// carrier robot will approach picker but will leave a space to avoid colliding
+			carrierRobot.faceSouth(1);
+			carrierRobot.addMovement("forward_y",-std::abs(double((msg->pos_y)-carrierRobot.getY())),1);
+			carrierRobot.faceEast(1);
+			carrierRobot.addMovement("forward_x",double((msg->pos_x)-carrierRobot.getX()-3), 1);
+			status="Moving";
 		}
 	}else if(status.compare("Transporting")==0){
-		if (!carrierRobot.getDesireLocation()){
-			//carrier will move to right 10meters to imaginery dump place
-			carrierRobot.moveForward(10, 1);
-		}else{
-			status="Idle";
-			carrierRobot.setDesireLocation(false);//refresh that it can recieve more desirelocation
+		//if the carrier is transporting it will move to bin drop off area (the driveway)
+		if(carrierRobot.movementQueue.size()<1){
+			status="Idle"; //when carrier robot complete transporting full bin to driveway it
+			//become Idle again (free)
+			carrierRobot.setDesireLocation(false);//refresh that it can recieve more desire location
 		}
-
+	}else if(status.compare("Moving")==0){
+		if(carrierRobot.movementQueue.size()<1){
+			status="Arrived";
+		}
 	}
-
-
 }
 
 int main(int argc, char **argv)
 {
+	//initialise carrierRobot so method can be invoke on it
 	carrierRobot=CarrierRobot();
+
 	//You must call ros::init() first of all. ros::init() function needs to see argc and argv. The third argument is the name of the node
 	ros::init(argc, argv, "CarrierRobot");
 
@@ -69,28 +93,37 @@ int main(int argc, char **argv)
 
 
 	ros::Rate loop_rate(10);
-	// tell master you want to sub to topic
+	//Broadcast the node's velocity information for other and stage to subscribe to.
 	carrierRobot.robotNode_stage_pub=n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
-		//subscribe to listen to messages coming from stage
-	carrierRobot.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000, callBackStageOdm);
-	carrierRobot.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000, callBackLaserScan);
-	ros::Subscriber mysub_object = n.subscribe<se306project::robot_status>("/robot_0/status",1000,recievePickerRobotStatus);
+	//Broadcast the node's status information for other to subscribe to.
 	ros::Publisher pub=n.advertise<se306project::carrier_status>("status",1000);
 
+	//subscribe to listen to messages coming from stage for odometry (this is base pose so it is
+	//relative to the absolute frame of the farm.
+	carrierRobot.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000, callBackStageOdm);
 
-	//a count of howmany messages we have sent
+        //relative to the obstacle information
+        carrierRobot.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000, callBackLaserScan);
+	//subscribe to the status of picker robot
+	ros::Subscriber mysub_object = n.subscribe<se306project::robot_status>("/robot_0/status",1000,recievePickerRobotStatus);
+
+
+	//a count of how many messages we have sent
 	int count = 0;
+	//carrier status message initialisation
 	se306project::carrier_status status_msg;
 
+	//ROS loop
 	while (ros::ok())
 	{
-		status_msg.my_counter=count;
-		status_msg.status=status;
-		pub.publish(status_msg);
 		ros::spinOnce();
-		loop_rate.sleep();
+		status_msg.my_counter=count;		//add counter to message
+		status_msg.status=status;		//add status to message
+		pub.publish(status_msg);	//publish message
 
-		++count;
+		carrierRobot.move();
+		loop_rate.sleep();
+		++count; // increase counter
 	}
 
 	return 0;
