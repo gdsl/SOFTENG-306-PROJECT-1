@@ -61,7 +61,7 @@ TEST(PickerRobot, setDesireLocationOfPicker) {
  * Test for Entity moveForward() method when Robot is NOT near its destination position.
  * Velocity of Robot should be set to value given as the Robot should be moving towards its 
  * horizontal or vertical destination.
- * WILL NOT WORK UNTIL ROBOT PUBLISHERS ARE INITIALIZED IN CONSTRUCTORS.
+ * WILL NOT WORK UNTIL ROBOT PUBLISHERS ARE INITIALIZED IN CONSTRUCTORS.*/
 TEST(PickerRobot, moveForwardWhenNotAtDestination) {
 	PickerRobot pickerRobot = PickerRobot();
 	ros::NodeHandle n;
@@ -70,12 +70,13 @@ TEST(PickerRobot, moveForwardWhenNotAtDestination) {
 	pickerRobot.moveForward(15, 1, "x");
 	EXPECT_EQ(pickerRobot.getLin(), 1);
 }
-*/
+
 /*
  * Test for Carrier robot inherit Entity constructor. Tests that default values are assigned correctly.
  */
 TEST(CarrierRobot, constructCarrier) {
 	CarrierRobot carrierRobot = CarrierRobot();
+    ros::NodeHandle n;
 	EXPECT_EQ(carrierRobot.getX(), 0);
 	EXPECT_EQ(carrierRobot.getY(), 0);
 	EXPECT_EQ(carrierRobot.getTheta(), 0);
