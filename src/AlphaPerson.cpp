@@ -14,6 +14,8 @@ AlphaPerson::~AlphaPerson() {
 }
 
 AlphaPerson alphaPerson;
+// Default human behaviour = walking
+std::string status="Walking";
 
 void stage_callback(nav_msgs::Odometry msg) {
     alphaPerson.stageOdom_callback(msg);
@@ -21,8 +23,19 @@ void stage_callback(nav_msgs::Odometry msg) {
 
 }
 
-
-
+/*
+ * Method that processes the human message received.
+ * This method is called when message is received.
+ */
+/*void recieveHumanStatus(const se306project::human_status::ConstPtr& msg){
+	// Check if human is turning
+	if (msg->pos_theta != 0) {
+		status = "Turning";
+	}
+	else {
+		status = "Walking";
+	}
+}*/
 
 int main(int argc, char **argv) 
 {
