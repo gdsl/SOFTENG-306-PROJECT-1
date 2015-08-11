@@ -57,7 +57,7 @@ int main(int argc, char **argv)
     double targetX = 1;
     double targetY = 1;
     bool once = true;
-
+    int state = 0;
 
     while (ros::ok())
     {
@@ -65,7 +65,7 @@ int main(int argc, char **argv)
         
 
      alphaPerson.move();
-     if (alphaPerson.getMovementQueueSize() == 0) {
+     if (alphaPerson.getMovementQueueSize() == 0 && state == 0) {
 
             alphaPerson.faceEast(1);
             if (once ) {
@@ -79,26 +79,16 @@ int main(int argc, char **argv)
             alphaPerson.faceEast(1);
             alphaPerson.addMovement("forward_x", 15, 1);
             alphaPerson.faceSouth(1);
+            state = 1;
             
-            //returning
-            
+     } else if (alphaPerson.getMovementQueueSize() == 0 && state == 1) {
+        //returning         
             alphaPerson.faceWest(1);
-            alphaPerson.addMovement("forward_x", -15, 1 );
+            alphaPerson.addMovement("forward_x", -30, 1 );
             alphaPerson.faceSouth(1);
-            alphaPerson.faceWest(1);
-            alphaPerson.addMovement("foward_x", -15 , 1);
-            alphaPerson.faceSouth(1); 
-
-		}
-     /*
-        alphaPerson.faceWest(1);
-        alphaPerson.addMovement("forward_x",-5,1);
-        alphaPerson.faceSouth(1);
-        alphaPerson.addMovement("forward_y",-5,1);
-        alphaPerson.faceEast(1);
-        alphaPerson.addMovement("forward_x",5,1);
-        alphaPerson.faceNorth(1);
-        alphaPerson.addMovement("forward_y",5,1);*/
+            state = 0;
+    } 
+    
         
         ros::spinOnce();
         loop_rate.sleep();	
