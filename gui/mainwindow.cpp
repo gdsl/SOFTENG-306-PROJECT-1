@@ -13,14 +13,18 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+	ui->robotList1->item(0)->setText("Type: Picker");
+	ui->robotList2->item(0)->setText("Type: Carrier");
 
+	//create a new thread
 	QThread *thread = new QThread(this);
+	//create a new worker (a bit like swingworker)
     Worker *worker = new Worker();
     worker->moveToThread(thread);
- 	connect (thread, SIGNAL(started()), worker, SLOT(newLabel()));
-    connect(worker, SIGNAL(requestNewLabel(QString, int)), this, SLOT(onUpdateGUI(QString, int)));
+	worker->setId("robot_0");
+ 	connect (thread, SIGNAL(started()), worker, SLOT(executeScript())); //started() signal is by default called by thread->start
+    connect(worker, SIGNAL(requestNewLabel(QString, int)), this, SLOT(onUpdateGUI(QString, int))); //custom signal which calls the slot for onUpdateGUI
     connect(thread, SIGNAL(destroyed()), worker, SLOT(deleteLater()));
-
 	
 	thread->start();
 }
@@ -31,14 +35,9 @@ MainWindow::~MainWindow()
 }
 
 
-//method which calls the rostopic command
-//void *print_message_function( void *ptr )
-//{
-//	exec("gui/getStatus.sh");
-//}
-
 void MainWindow::onUpdateGUI( QString str, int i )
 {
+	//update the gui for robots
     ui->robotList1->item(i)->setText(str);
 }
 
@@ -46,13 +45,9 @@ void MainWindow::on_launchButton_clicked()
 {
 	//launch roslaunch
 	system("roslaunch se306project orchard.launch &");
-	
-	//create subscriber thread
-	//pthread_t t1;
-	//pthread_create (&t1, NULL, print_message_function, NULL);
 
 	emit MainWindow::requestProcess();
-	qDebug("THREAD2 STARTED@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+	qDebug("THREAD STARTED@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
 }
 
 void MainWindow::on_closeButton_clicked()

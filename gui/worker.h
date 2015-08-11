@@ -11,9 +11,13 @@ class Worker : public QObject {
 public:
     explicit Worker(QObject *parent = 0) : QObject(parent){}    
 	void exec(string cmd);
+	void setId(string id_string);
 
 public slots:
-    void newLabel();
+    void executeScript();
+
+private:
+	string id;
 
 signals:    
     void requestNewLabel(const QString &, int);
