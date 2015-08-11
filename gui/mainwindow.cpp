@@ -56,19 +56,6 @@ MainWindow::MainWindow(QWidget *parent) :
     thread->start();
     thread2->start();
         
-  /* for(int i = 0; i < 2; i++) {
-        QThread *thread = new QThread(this);
-        Worker *worker = new Worker();
-        worker->moveToThread(thread);
-        worker->setId(i);
-       
-        connect (thread, SIGNAL(started()), worker, SLOT(executeScript())); //started() signal is by default called by thread->start
-        connect(worker, SIGNAL(requestNewLabel(QString, int)), this, SLOT(onUpdateGUI(QString, int))); //custom signal which calls the slot for onUpdateGUI
-        connect(thread, SIGNAL(destroyed()), worker, SLOT(deleteLater()));
-	
-        thread->start();
-    } */
-        
 /*    for(int i = 0; i < 2; i++) {
         
         std::string str;
@@ -104,7 +91,6 @@ MainWindow::~MainWindow()
 void MainWindow::onUpdateGUI( QString id, QString str, int i )
 {
 	//update the gui for robots
-    //qDebug(id.toUtf8().constData());
     uiList[id.toInt()]->item(i)->setText(str);
     //ui->robotList1->item(i)->setText(str);
 }
