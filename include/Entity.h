@@ -67,9 +67,6 @@ class Entity
 		// velocity
 		double linearVelocity;
 		double angularVelocity;
-		
-                float minDistance;
-                float obstacleAngle;
 
 		double minDistance;
 		double obstacleAngle;
