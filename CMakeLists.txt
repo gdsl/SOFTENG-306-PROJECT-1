@@ -170,12 +170,15 @@ add_library(Robot src/Robot.cpp)
 target_link_libraries(Entity Movement ${catkin_LIBRARIES})
 target_link_libraries(Robot Entity ${catkin_LIBRARIES})
 
-add_executable(Animal src/Animal.cpp)
+add_library(Animal src/Animal.cpp)
 target_link_libraries(Animal Entity ${catkin_LIBRARIES})
-add_dependencies(Animal se306project_generate_messages_cpp)
 
 add_library(Person src/Person.cpp)
 target_link_libraries(Person Entity ${catkin_LIBRARIES})
+
+add_executable(AlphaDog src/AlphaDog.cpp)
+target_link_libraries(AlphaDog Animal Entity ${catkin_LIBRARIES})
+add_dependencies(AlphaDog  se306project_generate_messages_cpp)
 
 add_executable(AlphaPerson src/AlphaPerson.cpp)
 target_link_libraries(AlphaPerson Person Entity ${catkin_LIBRARIES})

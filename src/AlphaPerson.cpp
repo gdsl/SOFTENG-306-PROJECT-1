@@ -37,7 +37,7 @@ int main(int argc, char **argv)
     alphaPerson.robotNode_stage_pub = n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
 	ros::Publisher pub = n.advertise<se306project::robot_status>("status_topic",100);
 
-    alphaPerson.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("odom",1000,stage_callback);
+    alphaPerson.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000,stage_callback);
     srand(time(NULL));
     ros::Rate loop_rate(10); 
     bool targetReach = true;
@@ -51,15 +51,22 @@ int main(int argc, char **argv)
 
         loop_rate.sleep();
 
-        //message to stage
-        alphaPerson.setVelocity(0,0.2);
-        alphaPerson.updateOdometry();
+     alphaPerson.move();
+        
+     
+        alphaPerson.faceWest(1);
+        alphaPerson.addMovement("forward_x",-5,1);
+        alphaPerson.faceSouth(1);
+        alphaPerson.addMovement("forward_y",-5,1);
+        alphaPerson.faceEast(1);
+        alphaPerson.addMovement("forward_x",5,1);
+        alphaPerson.faceNorth(1);
+        alphaPerson.addMovement("forward_y",5,1);
 
-//ros::spinOnce();	
-
-		se306project::robot_status status_msg;
-		status_msg.status="Hello World";		//add status to message
-		pub.publish(status_msg);	//publish message
+        ros::spinOnce();	
+	//	se306project::robot_status status_msg;
+		//status_msg.status="Hello World";		//add status to message
+	//	pub.publish(status_msg);	//publish message
 		
     
 
