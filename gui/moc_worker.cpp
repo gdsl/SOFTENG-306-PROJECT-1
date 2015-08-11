@@ -40,7 +40,7 @@ static const uint qt_meta_data_Worker[] = {
 
 static const char qt_meta_stringdata_Worker[] = {
     "Worker\0\0,\0requestNewLabel(QString,int)\0"
-    "newLabel()\0"
+    "executeScript()\0"
 };
 
 void Worker::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -50,7 +50,7 @@ void Worker::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void
         Worker *_t = static_cast<Worker *>(_o);
         switch (_id) {
         case 0: _t->requestNewLabel((*reinterpret_cast< const QString(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
-        case 1: _t->newLabel(); break;
+        case 1: _t->executeScript(); break;
         default: ;
         }
     }
