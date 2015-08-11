@@ -6,11 +6,13 @@
 using namespace std;
 
 void Worker::setId(string id_string) {
-	id = id_string;
+    stringId = id_string;
+	id = QString::fromStdString(id_string);
 }
 
 void Worker::executeScript() {
-	exec("gui/rostopicScripts/" + id + ".sh");
+    qDebug("executeScript prerun");
+	exec("gui/rostopicScripts/robot_" + stringId + ".sh");
 }
 
 //for processing command
@@ -27,13 +29,13 @@ void Worker::exec(string cmd) {
 				string s = string(buffer);
 				buffer[strlen(buffer) - 1] = '\0';
 				if (s.compare(0, 5, "pos_x") == 0) { //check if line starts with pos_x
-	 				emit requestNewLabel(buffer, 1); //emits a signal
+	 				emit requestNewLabel(id, buffer, 1); //emits a signal
 				} else if (s.compare(0, 5, "pos_y") == 0) {//check if line starts with pos_y
-	 				emit requestNewLabel(buffer, 2); 
+	 				emit requestNewLabel(id, buffer, 2); 
 				} else if (s.compare(0, 9, "pos_theta") == 0) {//check if line starts with pos_theta
-					emit requestNewLabel(buffer, 3); 
+					emit requestNewLabel(id, buffer, 3); 
 				} else if (s.compare(0, 6, "status") == 0) {//check if line starts with status
-					emit requestNewLabel(buffer, 4); 
+					emit requestNewLabel(id, buffer, 4); 
 				}
 			} 
 		}

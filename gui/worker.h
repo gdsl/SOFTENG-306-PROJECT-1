@@ -17,8 +17,9 @@ public slots:
     void executeScript();
 
 private:
-	string id;
+	QString id;
+    string stringId;
 
 signals:    
-    void requestNewLabel(const QString &, int);
+    void requestNewLabel(QString, const QString &, int);
 };
