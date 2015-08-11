@@ -30,16 +30,16 @@ static const uint qt_meta_data_Worker[] = {
        1,       // signalCount
 
  // signals: signature, parameters, type, tag, flags
-      10,    8,    7,    7, 0x05,
+      11,    8,    7,    7, 0x05,
 
  // slots: signature, parameters, type, tag, flags
-      39,    7,    7,    7, 0x0a,
+      48,    7,    7,    7, 0x0a,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_Worker[] = {
-    "Worker\0\0,\0requestNewLabel(QString,int)\0"
+    "Worker\0\0,,\0requestNewLabel(QString,QString,int)\0"
     "executeScript()\0"
 };
 
@@ -49,7 +49,7 @@ void Worker::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void
         Q_ASSERT(staticMetaObject.cast(_o));
         Worker *_t = static_cast<Worker *>(_o);
         switch (_id) {
-        case 0: _t->requestNewLabel((*reinterpret_cast< const QString(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
+        case 0: _t->requestNewLabel((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< const QString(*)>(_a[2])),(*reinterpret_cast< int(*)>(_a[3]))); break;
         case 1: _t->executeScript(); break;
         default: ;
         }
@@ -96,9 +96,9 @@ int Worker::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 }
 
 // SIGNAL 0
-void Worker::requestNewLabel(const QString & _t1, int _t2)
+void Worker::requestNewLabel(QString _t1, const QString & _t2, int _t3)
 {
-    void *_a[] = { 0, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)) };
+    void *_a[] = { 0, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)), const_cast<void*>(reinterpret_cast<const void*>(&_t3)) };
     QMetaObject::activate(this, &staticMetaObject, 0, _a);
 }
 QT_END_MOC_NAMESPACE

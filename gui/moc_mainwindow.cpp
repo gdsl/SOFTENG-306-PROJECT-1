@@ -33,16 +33,16 @@ static const uint qt_meta_data_MainWindow[] = {
       12,   11,   11,   11, 0x05,
 
  // slots: signature, parameters, type, tag, flags
-      35,   29,   11,   11, 0x0a,
-      60,   11,   11,   11, 0x08,
-      86,   11,   11,   11, 0x08,
+      38,   29,   11,   11, 0x0a,
+      71,   11,   11,   11, 0x08,
+      97,   11,   11,   11, 0x08,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_MainWindow[] = {
-    "MainWindow\0\0requestProcess()\0str,i\0"
-    "onUpdateGUI(QString,int)\0"
+    "MainWindow\0\0requestProcess()\0id,str,i\0"
+    "onUpdateGUI(QString,QString,int)\0"
     "on_launchButton_clicked()\0"
     "on_closeButton_clicked()\0"
 };
@@ -54,7 +54,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         MainWindow *_t = static_cast<MainWindow *>(_o);
         switch (_id) {
         case 0: _t->requestProcess(); break;
-        case 1: _t->onUpdateGUI((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
+        case 1: _t->onUpdateGUI((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])),(*reinterpret_cast< int(*)>(_a[3]))); break;
         case 2: _t->on_launchButton_clicked(); break;
         case 3: _t->on_closeButton_clicked(); break;
         default: ;
