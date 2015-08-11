@@ -55,6 +55,7 @@ class Entity
 		double getLin();
 		double getAng();
 		bool getDesireLocation();
+		int getMovementQueueSize();
 
 		//movement queue
         std::vector<Movement> movementQueue;
