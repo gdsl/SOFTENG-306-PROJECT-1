@@ -56,17 +56,41 @@ int main(int argc, char **argv)
     bool targetReach = true;
     double targetX = 1;
     double targetY = 1;
-
+    bool once = true;
 
 
     while (ros::ok())
     {
 
-        loop_rate.sleep();
+        
 
      alphaPerson.move();
-        
-     
+     if (alphaPerson.getMovementQueueSize() == 0) {
+
+            alphaPerson.faceEast(1);
+            if (once ) {
+                alphaPerson.addMovement("forward_x", 17.5, 1);
+                once = false;
+            }
+            else {
+                alphaPerson.addMovement("forward_x", 15, 1);
+            }
+            alphaPerson.faceSouth(1);
+            alphaPerson.faceEast(1);
+            alphaPerson.addMovement("forward_x", 15, 1);
+            alphaPerson.faceSouth(1);
+            
+            //returning
+            
+            alphaPerson.faceWest(1);
+            alphaPerson.addMovement("forward_x", -15, 1 );
+            alphaPerson.faceSouth(1);
+            alphaPerson.faceWest(1);
+            alphaPerson.addMovement("foward_x", -15 , 1);
+            alphaPerson.faceSouth(1); 
+
+		}
+     /*
         alphaPerson.faceWest(1);
         alphaPerson.addMovement("forward_x",-5,1);
         alphaPerson.faceSouth(1);
@@ -74,9 +98,10 @@ int main(int argc, char **argv)
         alphaPerson.faceEast(1);
         alphaPerson.addMovement("forward_x",5,1);
         alphaPerson.faceNorth(1);
-        alphaPerson.addMovement("forward_y",5,1);
-
-        ros::spinOnce();	
+        alphaPerson.addMovement("forward_y",5,1);*/
+        
+        ros::spinOnce();
+        loop_rate.sleep();	
 	//	se306project::robot_status status_msg;
 		//status_msg.status="Hello World";		//add status to message
 	//	pub.publish(status_msg);	//publish message

@@ -259,4 +259,4 @@ CarrierRobot( pose [ -37 14.5 0 0 ] name "Carrier1" color "random")
 #Animal
 dog( pose [0 0 0 0] name "AlphaDog" color "random")
 
-human( pose [ 5.000 2.00 0.000 0.000 ] name "AlphaPerson" color "blue")
+human( pose [ 2.5 18.00 0.000 0.000 ] name "AlphaPerson" color "blue")
