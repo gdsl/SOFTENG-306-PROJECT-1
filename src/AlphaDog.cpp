@@ -41,36 +41,35 @@ int main(int argc, char **argv)
   
 
     alphaDog.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000,stage_callback);
-    srand(time(NULL));
     ros::Rate loop_rate(10); 
-    bool targetReach = true;
-    int range = 5;
-    //double targetX =( rand() % (2*range+1)) + (-range);
-    //double targetY =( rand() % (2*range+1) )+ (-range);
-    double targetX = -3;
-    double targetY = -3;
-    double errors = 0.25;
-    double state = 0;
-    int horizontalSign = 1;
-    int verticalSign = 1;
+    bool onceX = true;
+    bool onceY = true;
    
     //0 rotatiing to the side, 1, moving horizontally, 2 rotating to bnorth/south, 3 moving vertical, 4 stop
     while (ros::ok())
     {
         //message to stage 
-        double diffX = alphaDog.getX() - targetX;
-        double diffY = alphaDog.getY() - targetY;
         alphaDog.move();
         
     	if (alphaDog.getMovementQueueSize() == 0) {
 		    alphaDog.faceWest(1);
-			alphaDog.addMovement("forward_x",-5,1);
+            if (onceX ) {
+			    alphaDog.addMovement("forward_x",-7.5,1);
+                onceX = false;
+            } else {
+                alphaDog.addMovement("forward_x",-5,1);
+            }
 			alphaDog.faceSouth(1);
-			alphaDog.addMovement("forward_y",-5,1);
+            if (onceY) {
+			    alphaDog.addMovement("forward_y",15.5,1);
+                onceY = false;
+            } else {
+                alphaDog.addMovement("forward_y", -2.5 , 1);
+            } 
 			alphaDog.faceEast(1);
 			alphaDog.addMovement("forward_x",5,1);
 			alphaDog.faceNorth(1);
-			alphaDog.addMovement("forward_y",5,1);
+			alphaDog.addMovement("forward_y",2.5,1);
 		}
     
         ros::spinOnce();
