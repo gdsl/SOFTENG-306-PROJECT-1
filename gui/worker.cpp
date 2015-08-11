@@ -5,8 +5,6 @@
 
 using namespace std;
 
-string stringId;
-
 void Worker::setId(string id_string) {
     stringId = id_string;
 	id = QString::fromStdString(id_string);

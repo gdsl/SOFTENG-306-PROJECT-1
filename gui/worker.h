@@ -18,6 +18,7 @@ public slots:
 
 private:
 	QString id;
+    string stringId;
 
 signals:    
     void requestNewLabel(QString, const QString &, int);
