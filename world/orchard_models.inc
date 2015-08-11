@@ -230,7 +230,7 @@ define CarrierRobot position
   #properties as name value pairs
   size [1.8 1.5 0.5]
   drive "diff"
-  carrierLaser(pose [ 0.050 0.000 0 0.000 ])
+  carrierLaser(pose [ 0.850 0.000 -0.5 0.000 ])
 
   obstacle_return 1
   ranger_return 1
