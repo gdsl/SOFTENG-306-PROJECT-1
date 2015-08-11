@@ -92,9 +92,8 @@ int main(int argc, char **argv)
 
 	//subscribe to listen to messages coming from stage about is position relative to absolute frame
 	pickerRobot.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000, callBackStageOdm);
-        //subscribe to obstacle detection
-        pickerRobot.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000,
-callBackLaserScan);
+	//subscribe to obstacle detection
+	pickerRobot.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000,callBackLaserScan);
 	//subscribe to carrier robot's status message
 	ros::Subscriber mysub_object = n.subscribe<se306project::carrier_status>("/robot_1/status",1000,recieveCarrierRobotStatus);
 
@@ -113,7 +112,7 @@ callBackLaserScan);
 		status_msg.status=status;//add status to message to broadcast
 		status_msg.pos_x=pickerRobot.getX(); //add x to message to broadcast
 		status_msg.pos_y=pickerRobot.getY();//add y to message to broadcast
-		status_msg.pos_theta=pickerRobot.getAng(); //add angle to message to broadcast
+		status_msg.pos_theta=pickerRobot.getTheta(); //add angle to message to broadcast
 		pub.publish(status_msg);//publish the message for other node
 
 		pickerRobot.move();//robot move
