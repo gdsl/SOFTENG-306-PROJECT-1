@@ -91,7 +91,6 @@ MainWindow::~MainWindow()
 void MainWindow::onUpdateGUI( QString id, QString str, int i )
 {
 	//update the gui for robots
-    //qDebug(id.toUtf8().constData());
     uiList[id.toInt()]->item(i)->setText(str);
     //ui->robotList1->item(i)->setText(str);
 }
