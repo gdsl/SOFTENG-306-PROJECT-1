@@ -40,6 +40,7 @@ Entity::Entity(double x, double y, double theta, double linearVelocity, double a
         this->minDistance=30.0;
         //set the default obstacle angle as a value larger than 180
         this->obstacleAngle=270;
+        
 }
 
 Movement currentMovement;//current movement
