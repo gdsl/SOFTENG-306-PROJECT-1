@@ -67,6 +67,9 @@ class Entity
 		// velocity
 		double linearVelocity;
 		double angularVelocity;
+		
+                float minDistance;
+                float obstacleAngle;
 
 		//direction robot facing
 		enum Direction {WEST, SOUTH, EAST, NORTH};
