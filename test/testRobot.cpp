@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include "PickerRobot.h"
+#include "CarrierRobot.h"
 
 //function for example
 int add(int a, int b) {
@@ -68,7 +69,20 @@ TEST(PickerRobot, moveForwardWhenNotAtDestination) {
 	pickerRobot.setPose(10, 10, 5);
 	pickerRobot.moveForward(15, 1, "x");
 	EXPECT_EQ(pickerRobot.getLin(), 1);
-}*/
+}
+*/
+/*
+ * Test for Carrier robot inherit Entity constructor. Tests that default values are assigned correctly.
+ */
+TEST(CarrierRobot, constructCarrier) {
+	CarrierRobot carrierRobot = CarrierRobot();
+	EXPECT_EQ(carrierRobot.getX(), 0);
+	EXPECT_EQ(carrierRobot.getY(), 0);
+	EXPECT_EQ(carrierRobot.getTheta(), 0);
+	EXPECT_EQ(carrierRobot.getLin(), 0);
+	EXPECT_EQ(carrierRobot.getAng(), 0);
+	EXPECT_FALSE(carrierRobot.getDesireLocation());
+}
 
 int main(int argc,char **argv) {
     testing::InitGoogleTest(&argc, argv);
