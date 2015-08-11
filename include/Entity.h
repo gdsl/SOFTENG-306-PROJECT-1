@@ -71,6 +71,9 @@ class Entity
                 float minDistance;
                 float obstacleAngle;
 
+		double minDistance;
+		double obstacleAngle;
+		
 		//direction robot facing
 		enum Direction {WEST, SOUTH, EAST, NORTH};
 		Direction directionFacing=WEST;//initialse to west originally

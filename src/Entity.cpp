@@ -87,7 +87,7 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg)
 	//This is the callback function to process laser scan messages
 	//you can access the range data from msg.ranges[i]. i = sample numbe
         //range vector means distance measure corresponds to the a set of angles
-        int l=sizeof(msg.ranges) / sizeof(msg.ranges[0]); 
+        int l=sizeof(msg.ranges) / sizeof(msg.ranges[0]);
         for (int i=0; i<l; i++){
               if (msg.ranges[i]< minDistance) {
                  minDistance = msg.ranges[i];
