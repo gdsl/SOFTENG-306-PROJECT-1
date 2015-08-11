@@ -32,7 +32,10 @@ MainWindow::MainWindow(QWidget *parent) :
     uiList[2] = ui->obstacleList1;
     uiList[3] = ui->obstacleList2;
         
-    QThread *thread = new QThread(this);
+}
+
+void MainWindow::startReadingTopics() {
+	QThread *thread = new QThread(this);
     QThread *thread2 = new QThread(this);
         
     Worker *worker = new Worker();
@@ -82,6 +85,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	worker->setId("robot_0"); */
 }
 
+
 MainWindow::~MainWindow()
 {
     delete ui;
@@ -100,8 +104,9 @@ void MainWindow::on_launchButton_clicked()
 	//launch roslaunch
 	system("roslaunch se306project orchard.launch &");
 
-	emit MainWindow::requestProcess();
+	//emit MainWindow::requestProcess();
 	qDebug("THREAD STARTED@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+	startReadingTopics();
 }
 
 void MainWindow::on_closeButton_clicked()

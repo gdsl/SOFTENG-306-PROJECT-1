@@ -26,6 +26,7 @@ public slots:
 
 public:
     explicit MainWindow(QWidget *parent = 0);
+	void startReadingTopics();
     ~MainWindow();
 
 private slots:
