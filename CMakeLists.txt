@@ -206,7 +206,7 @@ if (CATKIN_ENABLE_TESTING)
     target_link_libraries(testRobotUnit PickerRobotLib ${catkin_LIBRARIES})
 
     #integration test(everything include testing multiple nodes with stage running)
-    find_package(rostest REQUIRED)
+    find_package(rostest)
     add_rostest_gtest(testRobot test/mytest.test test/testRobot.cpp)
     target_link_libraries(testRobot PickerRobotLib ${catkin_LIBRARIES})
 endif()
