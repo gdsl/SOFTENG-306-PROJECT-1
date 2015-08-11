@@ -94,7 +94,22 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg)
                  minDistance = msg.ranges[i];
                  obstacleAngle= (i/l) * msg.angle_increment + msg.angle_min;
               }
-        } 
+        }
+        /*
+        // if the closest object is 5m away
+        if (minDistance <= 5) {
+                // check if the object is coming up on the left side of the Robot or the right side
+                if (obstacleAngle >= 0) {
+                        //obstacle coming up on left so turn right by 30 degrees
+                        ROS_INFO("Turning right as object at %fm on angle %f", minDistance, obstacleAngle);
+                        addMovement("rotation",-M_PI/6, angularVelocity);
+                } else {
+                        //obstacle coming up on right so turn left by 30 degrees
+                        ROS_INFO("Turning left as object at %fm on angle %f", minDistance, obstacleAngle);
+                        addMovement("rotation",M_PI/6, angularVelocity);                
+                }
+                
+        }*/
 }
 
 /**
