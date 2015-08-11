@@ -5,8 +5,13 @@
 
 using namespace std;
 
-void Worker::newLabel() {
-	exec("gui/getStatus.sh");
+void Worker::setId(string id_string) {
+	id = id_string;
+}
+
+void Worker::executeScript() {
+    qDebug("executeScript prerun");
+	exec("gui/rostopicScripts/" + id + ".sh");
 }
 
 //for processing command
@@ -22,15 +27,16 @@ void Worker::exec(string cmd) {
 			if (fgets(buffer, max_buffer, stream) != NULL) {
 				string s = string(buffer);
 				buffer[strlen(buffer) - 1] = '\0';
-				if (s.compare(0, 5, "pos_x") == 0) {
-	 				emit requestNewLabel(buffer, 0); //emits a signal
-				//	cout << buffer;
-				//	ui->robotPanel1->setPlainText(buffer);
-				} else if (s.compare(0, 5, "pos_y") == 0) {
+				if (s.compare(0, 5, "pos_x") == 0) { //check if line starts with pos_x
 	 				emit requestNewLabel(buffer, 1); //emits a signal
-				//	cout << buffer;
+				} else if (s.compare(0, 5, "pos_y") == 0) {//check if line starts with pos_y
+	 				emit requestNewLabel(buffer, 2); 
+				} else if (s.compare(0, 9, "pos_theta") == 0) {//check if line starts with pos_theta
+					emit requestNewLabel(buffer, 3); 
+				} else if (s.compare(0, 6, "status") == 0) {//check if line starts with status
+					emit requestNewLabel(buffer, 4); 
 				}
-			}
+			} 
 		}
 		pclose(stream);
 	}
