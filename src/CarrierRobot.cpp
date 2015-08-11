@@ -33,13 +33,10 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 	carrierRobot.stageLaser_callback(msg);
 }
 
-<<<<<<< HEAD
-=======
 /*
  * Method that process the picker robot message received.
  * This method is called when message is received.
  */
->>>>>>> nightly
 void recievePickerRobotStatus(const se306project::robot_status::ConstPtr& msg)
 {
 	//ROS_INFO("sub echoing pub: %d",msg->my_counter);

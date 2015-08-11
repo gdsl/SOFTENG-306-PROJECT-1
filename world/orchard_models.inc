@@ -210,7 +210,7 @@ define PickerRobot position
   #properties as name value pairs
   size [2.5 1.5 1]
   drive "diff"
-  pickerLaser(pose [ 1.15 0.000 -1 0.000 ])
+  pickerLaser(pose [ 1.25 0.0 -1.0 0.0 ])
 
   obstacle_return 1
   ranger_return 1
@@ -230,7 +230,7 @@ define CarrierRobot position
   #properties as name value pairs
   size [1.8 1.5 0.5]
   drive "diff"
-  carrierLaser(pose [ 0.050 0.000 0 0.000 ])
+  carrierLaser(pose [ 0.9 0.0 -0.5 0.0 ])
 
   obstacle_return 1
   ranger_return 1
