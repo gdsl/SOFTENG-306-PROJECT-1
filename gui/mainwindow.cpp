@@ -6,9 +6,9 @@
 #include "worker.h"
 #include <QThread>
 #include <QListWidget>
+#include <sstream>
 
 using namespace std;
-
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -32,29 +32,47 @@ MainWindow::MainWindow(QWidget *parent) :
     uiList[2] = ui->obstacleList1;
     uiList[3] = ui->obstacleList2;
         
-  /* for(int i = 0; i < 2; i++) {
-        QThread *thread = new QThread(this);
-        Worker *worker = new Worker();
-        worker->moveToThread(thread);
-        worker->setId(i);
-       
-        connect (thread, SIGNAL(started()), worker, SLOT(executeScript())); //started() signal is by default called by thread->start
-        connect(worker, SIGNAL(requestNewLabel(QString, int)), this, SLOT(onUpdateGUI(QString, int))); //custom signal which calls the slot for onUpdateGUI
-        connect(thread, SIGNAL(destroyed()), worker, SLOT(deleteLater()));
-	
-        thread->start();
-    } */
-        
     QThread *thread = new QThread(this);
+    QThread *thread2 = new QThread(this);
+        
     Worker *worker = new Worker();
+    Worker *secondWorker = new Worker();
+    
     worker->moveToThread(thread);
+    secondWorker->moveToThread(thread2);
+        
     worker->setId("0");
-       
-    connect (thread, SIGNAL(started()), worker, SLOT(executeScript())); //started() signal is by default called by thread->start
+    secondWorker->setId("1");
+        
+    connect(thread, SIGNAL(started()), worker, SLOT(executeScript())); //started() signal is by default called by thread->start
+    connect(thread2, SIGNAL(started()), secondWorker, SLOT(executeScript()));
+        
     connect(worker, SIGNAL(requestNewLabel(QString, QString, int)), this, SLOT(onUpdateGUI(QString, QString, int))); //custom signal which calls the slot for onUpdateGUI
+    connect(secondWorker, SIGNAL(requestNewLabel(QString, QString, int)), this, SLOT(onUpdateGUI(QString, QString, int)));
+    
     connect(thread, SIGNAL(destroyed()), worker, SLOT(deleteLater()));
+    connect(thread2, SIGNAL(destroyed()), secondWorker, SLOT(deleteLater()));
 	
     thread->start();
+    thread2->start();
+        
+/*    for(int i = 0; i < 2; i++) {
+        
+        std::string str;
+        std:stringstream out;
+        out << i;
+        str = out.str();
+        
+        Worker theWorker = workerArray[i];
+        
+        theWorker->setId(str);
+       
+        connect (thread, SIGNAL(started()), worker, SLOT(executeScript())); //started() signal is by default called by thread->start
+        connect(worker, SIGNAL(requestNewLabel(QString, QString, int)), this, SLOT(onUpdateGUI(QString, QString, int))); //custom signal which calls the slot for onUpdateGUI
+        connect(thread, SIGNAL(destroyed()), worker, SLOT(deleteLater()));
+	
+        thread->start(); 
+    } */
     
 	/*//create a new thread
 	QThread *thread = new QThread(this);
@@ -73,8 +91,6 @@ MainWindow::~MainWindow()
 void MainWindow::onUpdateGUI( QString id, QString str, int i )
 {
 	//update the gui for robots
-    bool ok;
-    //qDebug(id.toUtf8().constData());
     uiList[id.toInt()]->item(i)->setText(str);
     //ui->robotList1->item(i)->setText(str);
 }
