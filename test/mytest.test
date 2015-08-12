@@ -8,4 +8,5 @@
 		<node pkg="se306project" name="pickernode" type="CarrierRobot"/>
 	</group>
     <test test-name="testRobot" pkg="se306project" type="testRobot" />
+    <test test-name="testAlphaPerson" pkg="se306project" type="testAlphaPerson" />
 </launch>

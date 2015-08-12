@@ -209,15 +209,21 @@ target_link_libraries(CarrierRobotLib Robot Entity ${catkin_LIBRARIES})
 # endif()
 
 if (CATKIN_ENABLE_TESTING)
+	#integration test(everything include testing multiple nodes with stage running)
+    find_package(catkin REQUIRED COMPONENTS rostest)
+    
+    add_rostest_gtest(testRobot test/mytest.test test/testRobot.cpp)
+    target_link_libraries(testRobot PickerRobotLib CarrierRobotLib ${catkin_LIBRARIES})
+    
+    # unit tests
+	catkin_add_gtest(testMovement test/testMovement.cpp)
+	target_link_libraries(testMovement Movement ${catkin_LIBRARIES})
+
     #unit test (testing class function/constructor only)
     catkin_add_gtest(testRobotUnit test/testRobot.cpp)
     target_link_libraries(testRobotUnit PickerRobotLib CarrierRobotLib ${catkin_LIBRARIES})
 
     catkin_add_gtest(testAlphaPerson test/testAlphaPerson.cpp)
     target_link_libraries(testAlphaPerson AlphaPersonLib ${catkin_LIBRARIES})
-
-    #integration test(everything include testing multiple nodes with stage running)
-    find_package(rostest)
-    add_rostest_gtest(testRobot test/mytest.test test/testRobot.cpp)
-    target_link_libraries(testRobot PickerRobotLib CarrierRobotLib ${catkin_LIBRARIES})
+    
 endif()
