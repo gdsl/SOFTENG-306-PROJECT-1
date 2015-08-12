@@ -189,6 +189,6 @@ PickerRobot( pose [ 0 15.1 0 0 ] name "Picker1" color "random") #commanded by ro
 CarrierRobot( pose [ -37 15.1 0 0 ] name "Carrier1" color "random")
 
 #Animal
-dog( pose [-2.5 18 0 0] name "AlphaDog" color "random")
+dog( pose [-3.75 17.5 0 0] name "AlphaDog" color "random")
 
 human( pose [ 2.5 18.00 0.000 0.000 ] name "AlphaPerson" color "blue")

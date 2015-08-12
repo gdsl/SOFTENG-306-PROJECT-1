@@ -60,22 +60,22 @@ int main(int argc, char **argv)
     	if (alphaDog.getMovementQueueSize() == 0) {
 		    alphaDog.faceWest(1);
             if (onceX ) {
-			    alphaDog.addMovement("forward_x",-8,1);
+			    alphaDog.addMovement("forward_x",-8.25,1);
                 onceX = false;
             } else {
                 alphaDog.addMovement("forward_x",-5,1);
             }
 			alphaDog.faceSouth(1);
             if (onceY) {
-			    alphaDog.addMovement("forward_y",15.5,1);
+			    alphaDog.addMovement("forward_y",16.25,1);
                 onceY = false;
             } else {
-                alphaDog.addMovement("forward_y", -2.5 , 1);
+                alphaDog.addMovement("forward_y", -1.25 , 1);
             } 
 		alphaDog.faceEast(1);
 		alphaDog.addMovement("forward_x",5,1);
 		alphaDog.faceNorth(1);
-		alphaDog.addMovement("forward_y",2.5,1);
+		alphaDog.addMovement("forward_y",1.25,1);
 	}
 	//status_msg.my_counter=count;		//add counter to message
 	status_msg.status=status;		//add status to message
