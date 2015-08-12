@@ -26,7 +26,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 	ui->robotList1->item(0)->setText("Type: Picker");
 	ui->robotList2->item(0)->setText("Type: Carrier");
-    	ui->animalList1->item(0)->setText("Type: Animal");
+    	ui->animalList1->item(0)->setText("Type: Dog");
 	ui->humanList1->item(0)->setText("Type: Human");
     uiList[0] = ui->robotList1;
     uiList[1] = ui->robotList2;
