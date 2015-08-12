@@ -5,6 +5,10 @@
 #include <gtest/gtest.h>
 
 /**
+ * Unit test for Movement class. Checks constructor method
+ */
+
+/**
  * Test default constructor for Movement
  */
 TEST(Movement, constructMovementDefault) {
