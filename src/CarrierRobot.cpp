@@ -38,7 +38,6 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 	} else {
 		obstacleStatus = "No obstacles";
 	}
-
 }
 
 /*
@@ -136,7 +135,5 @@ int main(int argc, char **argv)
 		loop_rate.sleep();
 		++count; // increase counter
 	}
-
 	return 0;
-
 }

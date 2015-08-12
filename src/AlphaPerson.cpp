@@ -91,6 +91,7 @@ int main(int argc, char **argv)
         ros::spinOnce();
         loop_rate.sleep();
 
+	// ******** MOVE THIS FUNCTION TO ENTITY - REFACTOR **************
 	// Logic to determine current status of Human - convert radians to degrees
 	radians = alphaPerson.getTheta();
 	angle = roundf(radians * 57.2957795 * 100) / 100;

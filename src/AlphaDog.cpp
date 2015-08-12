@@ -20,6 +20,10 @@ AlphaDog alphaDog;
 std::string status="Walking";
 bool queueFull = false;
 
+// Keeps track of current position that dog is facing
+double radians;
+double angle;
+
 void stage_callback(nav_msgs::Odometry msg) {
     alphaDog.stageOdom_callback(msg);
     //alphaDog.setPose(x,y,0);
@@ -84,7 +88,17 @@ int main(int argc, char **argv)
     
         loop_rate.sleep();
 
+	// ******** MOVE THIS FUNCTION TO ENTITY - REFACTOR **************
+	// Logic to determine current status of dog - convert radians to degrees
+	radians = alphaDog.getTheta();
+	angle = roundf(radians * 57.2957795 * 100) / 100;
+	// Check if dog is facing North/East/South/West (and therefore 'walking')
+	if ((angle == -360) || (angle == -270) || (angle == -180) || (angle == -90) || (angle == 0) || (angle == 90) || (angle == 180) || (angle == 270) || (angle == 360)) {
+		status = "Walking";
+	}
+	else {
+		status = "Turning";
+	}
     }
-   
     return 0;
 }
