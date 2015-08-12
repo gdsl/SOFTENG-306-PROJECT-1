@@ -185,9 +185,6 @@ add_executable(PickerRobot src/PickerRobot.cpp)
 target_link_libraries(PickerRobot Robot Entity ${catkin_LIBRARIES})
 add_dependencies(PickerRobot se306project_generate_messages_cpp)
 
-add_library(PickerRobotLib src/PickerRobot.cpp)
-target_link_libraries(PickerRobotLib Robot Entity ${catkin_LIBRARIES})
-
 add_executable(CarrierRobot src/CarrierRobot.cpp)
 target_link_libraries(CarrierRobot Robot Entity ${catkin_LIBRARIES})
 add_dependencies(CarrierRobot se306project_generate_messages_cpp)
@@ -199,5 +196,5 @@ add_dependencies(CarrierRobot se306project_generate_messages_cpp)
 
 if (CATKIN_ENABLE_TESTING)
     catkin_add_gtest(testRobot test/testRobot.cpp)
-    target_link_libraries(testRobot PickerRobotLib ${catkin_LIBRARIES})
+    catkin_add_gtest(testAlphaPerson test/testAlphaPerson.cpp)
 endif()
