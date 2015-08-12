@@ -60,7 +60,7 @@ int main(int argc, char **argv)
     	if (alphaDog.getMovementQueueSize() == 0) {
 		    alphaDog.faceWest(1);
             if (onceX ) {
-			    alphaDog.addMovement("forward_x",-7.5,1);
+			    alphaDog.addMovement("forward_x",-8,1);
                 onceX = false;
             } else {
                 alphaDog.addMovement("forward_x",-5,1);
