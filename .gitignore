@@ -94,3 +94,6 @@ gui/gui*
 gui/moc*
 gui/*.o
 gui/ui*
+
+gui/.__*
+gui/rostopicScripts/.__*
