@@ -186,6 +186,9 @@ add_executable(AlphaPerson src/AlphaPerson.cpp)
 target_link_libraries(AlphaPerson Person Entity ${catkin_LIBRARIES})
 add_dependencies(AlphaPerson se306project_generate_messages_cpp)
 
+add_library(AlphaPersonLib src/AlphaPerson.cpp)
+target_link_libraries(AlphaPersonLib Person Entity ${catkin_LIBRARIES})
+
 add_executable(PickerRobot src/PickerRobot.cpp)
 target_link_libraries(PickerRobot Robot Entity ${catkin_LIBRARIES})
 add_dependencies(PickerRobot se306project_generate_messages_cpp)
@@ -209,6 +212,9 @@ if (CATKIN_ENABLE_TESTING)
     #unit test (testing class function/constructor only)
     catkin_add_gtest(testRobotUnit test/testRobot.cpp)
     target_link_libraries(testRobotUnit PickerRobotLib CarrierRobotLib ${catkin_LIBRARIES})
+
+    catkin_add_gtest(testAlphaPerson test/testAlphaPerson.cpp)
+    target_link_libraries(testAlphaPerson AlphaPersonLib ${catkin_LIBRARIES})
 
     #integration test(everything include testing multiple nodes with stage running)
     find_package(rostest)
