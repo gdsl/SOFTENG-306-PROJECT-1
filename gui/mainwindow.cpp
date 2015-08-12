@@ -13,16 +13,7 @@ using namespace std;
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
-{
-    /*MainWindow::uiList = {ui->robotList1, ui->robotList2, ui->obstacleList1, ui->obstacleList2}; */
-   /* uiList[0] = ui->robotList1;
-    uiList[1] = ui->robotList2;
-    uiList[2] = ui->obstacleList1;
-    uiList[3] = ui->obstacleList2; */
-        
-    //uiList.insert(0, ui->robotList1);
-   // uiList.insert(1, ui->robotList2);
-        
+{        
     ui->setupUi(this);
 	ui->robotList1->item(0)->setText("Type: Picker");
 	ui->robotList2->item(0)->setText("Type: Carrier");
@@ -32,9 +23,11 @@ MainWindow::MainWindow(QWidget *parent) :
     uiList[2] = ui->obstacleList1;
     uiList[3] = ui->obstacleList2;
         
+    //Create a seperate thread for each robot.
     QThread *thread = new QThread(this);
     QThread *thread2 = new QThread(this);
         
+    //Set a worker for each thread and set their IDs.
     Worker *worker = new Worker();
     Worker *secondWorker = new Worker();
     
@@ -55,24 +48,6 @@ MainWindow::MainWindow(QWidget *parent) :
 	
     thread->start();
     thread2->start();
-        
-/*    for(int i = 0; i < 2; i++) {
-        
-        std::string str;
-        std:stringstream out;
-        out << i;
-        str = out.str();
-        
-        Worker theWorker = workerArray[i];
-        
-        theWorker->setId(str);
-       
-        connect (thread, SIGNAL(started()), worker, SLOT(executeScript())); //started() signal is by default called by thread->start
-        connect(worker, SIGNAL(requestNewLabel(QString, QString, int)), this, SLOT(onUpdateGUI(QString, QString, int))); //custom signal which calls the slot for onUpdateGUI
-        connect(thread, SIGNAL(destroyed()), worker, SLOT(deleteLater()));
-	
-        thread->start(); 
-    } */
     
 	/*//create a new thread
 	QThread *thread = new QThread(this);
@@ -91,8 +66,8 @@ MainWindow::~MainWindow()
 void MainWindow::onUpdateGUI( QString id, QString str, int i )
 {
 	//update the gui for robots
+    //Select UI element based on ID. Then set the text for line i with message str.
     uiList[id.toInt()]->item(i)->setText(str);
-    //ui->robotList1->item(i)->setText(str);
 }
 
 void MainWindow::on_launchButton_clicked()
