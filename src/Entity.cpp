@@ -14,7 +14,7 @@
  * Default constructor of Entity. Calls the other constructor with default values.
  */
 
-Entity::Entity():Entity(0,0,0,0.01,0.01){
+Entity::Entity():Entity(0,0,0,0,0){
 
 }
 
