@@ -24,10 +24,10 @@ TEST(AlphaDog, constructAlphaDog) {
  */
 TEST(AlphaDog, setPoseOfDog) {
 	AlphaDog alphaDog;
-	alphaDog.setPose(10, 30, 40);
-	EXPECT_EQ(alphaDog.getX(), 10);
-	EXPECT_EQ(alphaDog.getY(), 30);
-	EXPECT_EQ(alphaDog.getTheta(), 40);
+	alphaDog.setPose(20, 10, 30);
+	EXPECT_EQ(alphaDog.getX(), 20);
+	EXPECT_EQ(alphaDog.getY(), 10);
+	EXPECT_EQ(alphaDog.getTheta(), 30);
 }
 
 /*
@@ -36,9 +36,9 @@ TEST(AlphaDog, setPoseOfDog) {
  */
 TEST(AlphaDog, setVelocityOfDog) {
 	AlphaDog alphaDog;
-	alphaDog.setVelocity(4, 1);
-	EXPECT_EQ(alphaDog.getLin(), 4);
-	EXPECT_EQ(alphaDog.getAng(), 1);
+	alphaDog.setVelocity(2, 3);
+	EXPECT_EQ(alphaDog.getLin(), 2);
+	EXPECT_EQ(alphaDog.getAng(), 3);
 }
 
 /*
