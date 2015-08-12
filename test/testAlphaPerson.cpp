@@ -55,10 +55,10 @@ TEST(AlphaPerson, setDesireLocationOfPerson) {
 
 /*
  * Test for Entity moveForward() method when Robot is NOT near its destination position.
- * Velocity of Robot should be set to value given as the Robot should be moving towards its 
+ * Velocity of Robot should be set to value given as the Robot should be moving towards its
  * horizontal or vertical destination.
  * WILL NOT WORK UNTIL ROBOT PUBLISHERS ARE INITIALIZED IN CONSTRUCTORS.*/
-TEST(AlphaPerson, moveForwardWhenNotAtDestination) {
+TEST(MoveForward, moveForwardWhenNotAtDestinationAlpha) {
 	AlphaPerson alphaPerson;
 	ros::NodeHandle n;
 	alphaPerson.robotNode_stage_pub=n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
@@ -68,7 +68,7 @@ TEST(AlphaPerson, moveForwardWhenNotAtDestination) {
 }
 
 int main(int argc, char**argv) {
-	ros::init(argc,argv,"testAlphaPerson");
+	ros::init(argc, argv, "testAlphaPerson");
 	testing::InitGoogleTest(&argc, argv);
 	return RUN_ALL_TESTS();
 }
