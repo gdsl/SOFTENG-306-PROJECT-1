@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>771</width>
+    <width>861</width>
     <height>574</height>
    </rect>
   </property>
@@ -25,19 +25,6 @@
     </property>
     <property name="text">
      <string>Robots</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="obstacleLabel">
-    <property name="geometry">
-     <rect>
-      <x>60</x>
-      <y>190</y>
-      <width>81</width>
-      <height>17</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Obstacles</string>
     </property>
    </widget>
    <widget class="QLabel" name="settingsLabel">
@@ -263,7 +250,7 @@
      </property>
     </item>
    </widget>
-   <widget class="QListWidget" name="obstacleList1">
+   <widget class="QListWidget" name="animalList1">
     <property name="geometry">
      <rect>
       <x>60</x>
@@ -298,13 +285,26 @@
      </property>
     </item>
    </widget>
+   <widget class="QLabel" name="animalLabel">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>180</y>
+      <width>91</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Animal Dog</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>771</width>
+     <width>861</width>
      <height>25</height>
     </rect>
    </property>

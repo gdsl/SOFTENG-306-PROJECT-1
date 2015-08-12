@@ -49,6 +49,7 @@ add_message_files(
 	RobotState.msg
 	robot_status.msg
 	carrier_status.msg
+	animal_status.msg
 )
 
 ## Generate services in the 'srv' folder
