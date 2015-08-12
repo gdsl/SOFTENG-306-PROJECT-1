@@ -17,7 +17,7 @@ AlphaDog::~AlphaDog() {
 
 AlphaDog alphaDog;
 // Default dog behaviour = walking
-std::string status="Walking";
+std::string status="Moonwalking";
 bool queueFull = false;
 
 // Keeps track of current position that dog is facing
@@ -94,7 +94,7 @@ int main(int argc, char **argv)
 	angle = roundf(radians * 57.2957795 * 100) / 100;
 	// Check if dog is facing North/East/South/West (and therefore 'walking')
 	if ((angle == -360) || (angle == -270) || (angle == -180) || (angle == -90) || (angle == 0) || (angle == 90) || (angle == 180) || (angle == 270) || (angle == 360)) {
-		status = "Walking";
+		status = "Moonwalking";
 	}
 	else {
 		status = "Turning";
