@@ -6,6 +6,7 @@
 #include "AlphaPerson.h"
 #include "se306project/robot_status.h"
 #include "se306project/human_status.h"
+#include <math.h>
  
 AlphaPerson::AlphaPerson() : Person() {
 
@@ -18,25 +19,15 @@ AlphaPerson alphaPerson;
 // Default human behaviour = walking
 std::string status="Walking";
 
+// Keeps track of current position that human is facing
+double radians;
+double angle;
+
 void stage_callback(nav_msgs::Odometry msg) {
     alphaPerson.stageOdom_callback(msg);
     //alphaPerson.setPose(x,y,0);
 
 }
-
-/*
- * Method that processes the human message received.
- * This method is called when message is received.
- */
-/*void recieveHumanStatus(const se306project::human_status::ConstPtr& msg){
-	// Check if human is turning
-	if (msg->pos_theta != 0) {
-		status = "Turning";
-	}
-	else {
-		status = "Walking";
-	}
-}*/
 
 int main(int argc, char **argv) 
 {
@@ -81,13 +72,13 @@ int main(int argc, char **argv)
             alphaPerson.faceSouth(1);
             state = 1;
             
-     } else if (alphaPerson.getMovementQueueSize() == 0 && state == 1) {
+	} else if (alphaPerson.getMovementQueueSize() == 0 && state == 1) {
         //returning         
             alphaPerson.faceWest(1);
             alphaPerson.addMovement("forward_x", -30, 1 );
             alphaPerson.faceSouth(1);
             state = 0;
-    } 
+	} 
     
 	//assign to status message
 	status_msg.my_counter = count++;//add counter to message to broadcast
@@ -98,15 +89,18 @@ int main(int argc, char **argv)
 	pub.publish(status_msg);//publish the message for other node
         
         ros::spinOnce();
-        loop_rate.sleep();	
-	//	se306project::robot_status status_msg;
-		//status_msg.status="Hello World";		//add status to message
-	//	pub.publish(status_msg);	//publish message
-		
-    
+        loop_rate.sleep();
 
-
+	// Logic to determine current status of Human - convert radians to degrees
+	radians = alphaPerson.getTheta();
+	angle = roundf(radians * 57.2957795 * 100) / 100;
+	// Check if human is facing North/East/South/West (and therefore 'walking')
+	if ((angle == -360) || (angle == -270) || (angle == -180) || (angle == -90) || (angle == 0) || (angle == 90) || (angle == 180) || (angle == 270) || (angle == 360)) {
+		status = "Walking";
+	}
+	else {
+		status = "Turning";
+	}
     }
-   
     return 0;
 }

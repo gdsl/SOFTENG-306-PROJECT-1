@@ -115,7 +115,7 @@ void Entity::updateOdometry()
 }
 
 /**
- * Message to get node start going through the movement queue
+ * Message to get node to start going through the movement queue
  */
 void Entity::move(){
 	if(movementQueue.size()>0){
