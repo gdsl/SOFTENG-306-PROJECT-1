@@ -31,7 +31,7 @@ floorplan
   # The actual size of the orchard
   size [80 40 0.1]
   pose [0.000 0.000 0.000 0.000]
-  bitmap "bitmaps/orchard2.png"
+  bitmap "bitmaps/orchard.png"
 )
 
 pole( pose [ -32.500 16.900 0.000 0.000 ] color "brown")
