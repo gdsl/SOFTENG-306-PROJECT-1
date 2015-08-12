@@ -16,6 +16,7 @@ AlphaDog::~AlphaDog() {
 }
 
 AlphaDog alphaDog;
+// Default dog behaviour = walking
 std::string status="Walking";
 bool queueFull = false;
 
@@ -24,9 +25,6 @@ void stage_callback(nav_msgs::Odometry msg) {
     //alphaDog.setPose(x,y,0);
 
 }
-
-
-
 
 int main(int argc, char **argv) 
 {

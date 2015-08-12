@@ -27,14 +27,15 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->robotList1->item(0)->setText("Type: Picker");
 	ui->robotList2->item(0)->setText("Type: Carrier");
     	ui->animalList1->item(0)->setText("Type: Animal");
+	ui->humanList1->item(0)->setText("Type: Human");
     uiList[0] = ui->robotList1;
     uiList[1] = ui->robotList2;
     uiList[2] = ui->animalList1;
-    uiList[3] = ui->obstacleList2;        
+    uiList[3] = ui->humanList1;        
 }
 
 void MainWindow::startReadingTopics() {
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < 4; i++) {
 		QThread *thread = new QThread(this);
 		//QThread *thread2 = new QThread(this);
 		    
@@ -72,6 +73,9 @@ MainWindow::~MainWindow()
 void MainWindow::onUpdateGUI( QString id, QString str, int i )
 {
 	//update the gui for robots
+	if (id.toInt() == 2) {
+		qDebug(str.toStdString().c_str());
+	}
     uiList[id.toInt()]->item(i)->setText(str);
     //ui->robotList1->item(i)->setText(str);
 }

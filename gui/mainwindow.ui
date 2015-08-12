@@ -215,7 +215,7 @@
      </property>
     </item>
    </widget>
-   <widget class="QListWidget" name="obstacleList2">
+   <widget class="QListWidget" name="humanList1">
     <property name="geometry">
      <rect>
       <x>250</x>
@@ -295,7 +295,20 @@
      </rect>
     </property>
     <property name="text">
-     <string>Animal Dog</string>
+     <string>Dog</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="animalLabel_2">
+    <property name="geometry">
+     <rect>
+      <x>250</x>
+      <y>180</y>
+      <width>91</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Human</string>
     </property>
    </widget>
   </widget>
