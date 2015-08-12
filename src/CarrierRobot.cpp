@@ -22,6 +22,7 @@ CarrierRobot::~CarrierRobot() {
 CarrierRobot carrierRobot;
 std::string status="Idle";
 std::string previousStatus = "Idle";
+std::string obstacleStatus = "No obstacles";
 /*
  * Wrapper method for the callBackStageOdm method
  */
@@ -33,12 +34,9 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 	carrierRobot.stageLaser_callback(msg);
 
 	if (carrierRobot.getMinDistance() < 1) {
-		if (status.compare("Obstacle nearby") != 0) {
-			previousStatus = status;
-		}
-		status = "Obstacle nearby";
+		obstacleStatus = "Obstacle nearby";
 	} else {
-		status = previousStatus;
+		obstacleStatus = "No obstacles";
 	}
 
 }
@@ -131,6 +129,7 @@ int main(int argc, char **argv)
 		status_msg.pos_x=carrierRobot.getX(); //add x to message to broadcast
 		status_msg.pos_y=carrierRobot.getY();//add y to message to broadcast
 		status_msg.pos_theta=carrierRobot.getAng(); //add angle to message to broadcast
+		status_msg.obstacle = obstacleStatus;
 		pub.publish(status_msg);	//publish message
 
 		carrierRobot.move();

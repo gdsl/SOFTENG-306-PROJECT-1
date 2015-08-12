@@ -36,6 +36,8 @@ void Worker::exec(string cmd) {
 					emit requestNewLabel(id, buffer, 3); 
 				} else if (s.compare(0, 6, "status") == 0) {//check if line starts with status
 					emit requestNewLabel(id, buffer, 4); 
+				} else if (s.compare(0, 8, "obstacle") == 0) {
+					emit requestNewLabel(id, buffer, 5); 
 				}
 			} 
 		}

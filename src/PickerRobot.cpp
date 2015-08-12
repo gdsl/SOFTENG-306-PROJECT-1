@@ -14,6 +14,7 @@ PickerRobot::~PickerRobot(){
 PickerRobot pickerRobot;
 std::string status="Moving";
 std::string previousStatus = "Moving";
+std::string obstacleStatus = "No obstacles";
 double distance=1;
 
 /*
@@ -27,12 +28,9 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 	pickerRobot.stageLaser_callback(msg);
 
 	if (pickerRobot.getMinDistance() < 1) {
-		if (status.compare("Obstacle nearby") != 0) {
-			previousStatus = status;
-		}
-		status = "Obstacle nearby";
+		obstacleStatus = "Obstacle nearby";
 	} else {
-		status = previousStatus;
+		obstacleStatus = "No obstacles";
 	}
 
 }
@@ -128,6 +126,7 @@ int main(int argc, char **argv)
 		status_msg.pos_x=pickerRobot.getX(); //add x to message to broadcast
 		status_msg.pos_y=pickerRobot.getY();//add y to message to broadcast
 		status_msg.pos_theta=pickerRobot.getTheta(); //add angle to message to broadcast
+		status_msg.obstacle = obstacleStatus;
 		pub.publish(status_msg);//publish the message for other node
 
 		pickerRobot.move();//robot move

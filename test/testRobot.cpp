@@ -86,6 +86,7 @@ TEST(CarrierRobot, constructCarrier) {
 }
 
 int main(int argc,char **argv) {
+	ros::init(argc,argv,"testRobot");
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }
