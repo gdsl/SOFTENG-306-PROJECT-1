@@ -71,14 +71,14 @@ void PickerRobot::movement(){
 		pickerRobot.faceEast(1);
 		pickerRobot.addMovement("forward_x",37.5,1);
 		pickerRobot.faceSouth(1);
-		pickerRobot.addMovement("forward_y",-3.26,1);
+		pickerRobot.addMovement("forward_y",-3.35,1);
 		pickerRobot.faceWest(1);
 		pickerRobot.addMovement("forward_x",-37.5,1);
 	}else if (distance ==5){
 		pickerRobot.faceEast(1);
 		pickerRobot.addMovement("forward_x",37.5,1);
 		pickerRobot.faceNorth(1);
-		pickerRobot.addMovement("forward_y",3.26,1);
+		pickerRobot.addMovement("forward_y",3.35,1);
 		pickerRobot.faceWest(1);
 		pickerRobot.addMovement("forward_x",-37.5,1);
 	}

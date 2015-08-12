@@ -184,9 +184,9 @@ trunk( pose [ 30.000 9.900 0.000 0.000 ] color "green")
 trunk( pose [ 35.000 9.900 0.000 0.000 ] color "green")
 
 # Spawn robots
-PickerRobot( pose [ 0 15 0 0 ] name "Picker1" color "random") #commanded by robot_0/cmd_vel
+PickerRobot( pose [ 0 15.1 0 0 ] name "Picker1" color "random") #commanded by robot_0/cmd_vel
 #PickerRobot( pose [ 5 10 0 0 ] name "Picker2" color "random")
-CarrierRobot( pose [ -37 15 0 0 ] name "Carrier1" color "random")
+CarrierRobot( pose [ -37 15.1 0 0 ] name "Carrier1" color "random")
 
 #Animal
 dog( pose [-2.5 18 0 0] name "AlphaDog" color "random")
