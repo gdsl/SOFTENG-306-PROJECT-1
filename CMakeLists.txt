@@ -182,6 +182,9 @@ add_executable(AlphaDog src/AlphaDog.cpp)
 target_link_libraries(AlphaDog Animal Entity ${catkin_LIBRARIES})
 add_dependencies(AlphaDog  se306project_generate_messages_cpp)
 
+add_library(AlphaDogLib src/AlphaDog.cpp)
+target_link_libraries(AlphaDogLib Animal Entity ${catkin_LIBRARIES})
+
 add_executable(AlphaPerson src/AlphaPerson.cpp)
 target_link_libraries(AlphaPerson Person Entity ${catkin_LIBRARIES})
 add_dependencies(AlphaPerson se306project_generate_messages_cpp)
@@ -220,6 +223,9 @@ if (CATKIN_ENABLE_TESTING)
     
     add_rostest_gtest(testPickerRobot test/rostest/testPickerRobot.test test/testPickerRobot.cpp)
     target_link_libraries(testPickerRobot PickerRobotLib ${catkin_LIBRARIES})
+
+    add_rostest_gtest(testAlphaDog test/rostest/testAlphaDog.test test/testAlphaDog.cpp)
+    target_link_libraries(testAlphaDog AlphaDogLib ${catkin_LIBRARIES})
     
     # unit tests
 	catkin_add_gtest(testMovement test/testMovement.cpp)
