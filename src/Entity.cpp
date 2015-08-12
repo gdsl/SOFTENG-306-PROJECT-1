@@ -115,7 +115,7 @@ void Entity::updateOdometry()
 }
 
 /**
- * Message to get node start going through the movement queue
+ * Message to get node to start going through the movement queue
  */
 void Entity::move(){
 	if(movementQueue.size()>0){
@@ -209,8 +209,17 @@ void Entity::moveForward(double pos, double vel, std::string direction){
 	}
 	if (!desireLocation){//TODO slow down
 		ROS_INFO("mfpos: %f", pos);
-		if(std::abs(position-pos)>=0.1){
-			linearVelocity=vel;
+		if (std::abs(position-pos)>=0.01){
+			if(std::abs(position-pos)<=0.2){
+				linearVelocity=0.1;
+			}else if(std::abs(position-pos)<=1){
+				linearVelocity=1;
+			}else{
+				linearVelocity=vel;
+			}
+			//if (position-pos>=0){
+			//	linearVelocity=-linearVelocity;	
+			//}
 		}else{
 			movementComplete();//call method complete to remove complete movement from queue
 			linearVelocity=0;

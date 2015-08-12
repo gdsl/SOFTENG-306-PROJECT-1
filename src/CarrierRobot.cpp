@@ -38,7 +38,6 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 	} else {
 		obstacleStatus = "No obstacles";
 	}
-
 }
 
 /*
@@ -59,7 +58,7 @@ void recievePickerRobotStatus(const se306project::robot_status::ConstPtr& msg)
 		carrierRobot.faceWest(1);
 		carrierRobot.addMovement("forward_x",-34.5, 1);
 		carrierRobot.faceNorth(1);
-		carrierRobot.addMovement("forward_y",std::abs(14.5-carrierRobot.getY()),1);
+		carrierRobot.addMovement("forward_y",std::abs(15-carrierRobot.getY()),1);
 		//carrierRobot.setDesireLocation(false);//refresh that it can recieve more desire location
 	}else if(status.compare("Idle")==0){
 		//when the carrier robot is idle and the picker robot is full the carrier robot move to it.
@@ -136,7 +135,5 @@ int main(int argc, char **argv)
 		loop_rate.sleep();
 		++count; // increase counter
 	}
-
 	return 0;
-
 }

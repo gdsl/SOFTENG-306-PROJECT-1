@@ -23,6 +23,12 @@ define pole modelBase
   gui_nose 0
 )
 
+define fruitVine modelBase
+(
+    size [0.100 3.500 0.100]
+    gui_nose 0
+)
+
 define laserBase ranger
 (
 	sensor
@@ -208,7 +214,7 @@ define PickerRobot position
 	z [0 1]
   )
   #properties as name value pairs
-  size [2.5 1.5 1]
+  size [2.3 1.5 1]
   drive "diff"
   pickerLaser(pose [ 1.25 0.0 -1.0 0.0 ])
 

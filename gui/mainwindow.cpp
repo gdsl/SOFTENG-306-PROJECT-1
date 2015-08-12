@@ -26,7 +26,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 	ui->robotList1->item(0)->setText("Type: Picker");
 	ui->robotList2->item(0)->setText("Type: Carrier");
-    	ui->animalList1->item(0)->setText("Type: Animal");
+    	ui->animalList1->item(0)->setText("Type: Dog");
 	ui->humanList1->item(0)->setText("Type: Human");
     uiList[0] = ui->robotList1;
     uiList[1] = ui->robotList2;
@@ -73,9 +73,6 @@ MainWindow::~MainWindow()
 void MainWindow::onUpdateGUI( QString id, QString str, int i )
 {
 	//update the gui for robots
-	if (id.toInt() == 2) {
-		qDebug(str.toStdString().c_str());
-	}
     uiList[id.toInt()]->item(i)->setText(str);
     //ui->robotList1->item(i)->setText(str);
 }
@@ -86,7 +83,6 @@ void MainWindow::on_launchButton_clicked()
 	system("roslaunch se306project orchard.launch &");
 
 	//emit MainWindow::requestProcess();
-	qDebug("THREAD STARTED@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
 	startReadingTopics();
 }
 

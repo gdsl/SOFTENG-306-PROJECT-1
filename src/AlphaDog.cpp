@@ -17,8 +17,12 @@ AlphaDog::~AlphaDog() {
 
 AlphaDog alphaDog;
 // Default dog behaviour = walking
-std::string status="Walking";
+std::string status="Moonwalking";
 bool queueFull = false;
+
+// Keeps track of current position that dog is facing
+double radians;
+double angle;
 
 void stage_callback(nav_msgs::Odometry msg) {
     alphaDog.stageOdom_callback(msg);
@@ -56,7 +60,7 @@ int main(int argc, char **argv)
     	if (alphaDog.getMovementQueueSize() == 0) {
 		    alphaDog.faceWest(1);
             if (onceX ) {
-			    alphaDog.addMovement("forward_x",-7.5,1);
+			    alphaDog.addMovement("forward_x",-8,1);
                 onceX = false;
             } else {
                 alphaDog.addMovement("forward_x",-5,1);
@@ -84,7 +88,22 @@ int main(int argc, char **argv)
     
         loop_rate.sleep();
 
+	// ******** MOVE THIS FUNCTION TO ENTITY - REFACTOR **************
+	// Logic to determine current status of Human - Walking/Idle/Turning
+	// Convert radians to degrees
+	radians = alphaDog.getTheta();
+	angle = roundf(radians * 57.2957795 * 100) / 100;
+	// Check if human is moving (and therefore 'walking')
+	if (alphaDog.getLin() > 0.01) {
+		status = "Moonwalking";
+	}
+	// Check if human is facing North/East/South/West AND not moving (and therefore 'idle')
+	else if ((angle == -360) || (angle == -270) || (angle == -180) || (angle == -90) || (angle == 0) || (angle == 90) || (angle == 180) || (angle == 270) || (angle == 360) && (alphaDog.getLin() == 0)) {
+		status = "Idle";
+	}
+	else {
+		status = "Turning";
+	}
     }
-   
     return 0;
 }
