@@ -217,6 +217,9 @@ if (CATKIN_ENABLE_TESTING)
     
     add_rostest_gtest(testAlphaPerson test/rostest/testAlphaPerson.test test/testAlphaPerson.cpp)
     target_link_libraries(testAlphaPerson AlphaPersonLib ${catkin_LIBRARIES})
+
+    add_rostest_gtest(testAlphaDog test/rostest/testAlphaDog.test test/testAlphaDog.cpp)
+    target_link_libraries(testAlphaDog AlphaDogLib ${catkin_LIBRARIES})
     
     add_rostest_gtest(testCarrierRobot test/rostest/testCarrierRobot.test test/testCarrierRobot.cpp)
     target_link_libraries(testCarrierRobot CarrierRobotLib ${catkin_LIBRARIES})
