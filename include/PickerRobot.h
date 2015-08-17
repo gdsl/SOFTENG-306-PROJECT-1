@@ -13,6 +13,7 @@
 class PickerRobot: public Robot {
 public:
 	PickerRobot();
+	PickerRobot(std::string status);
 	virtual ~PickerRobot();
 	void movement();
 	virtual void stateLogic();
