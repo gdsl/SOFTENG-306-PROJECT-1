@@ -489,8 +489,6 @@ trunk( pose [ 40.000 -4.100 0.000 0.000 ] color "green")
 
 
 
-beacon( pose [ 37.000 15.000 0.000 0.000] color "green")
-
 
 # Spawn robots
 PickerRobot( pose [ 0 15.1 0 0 ] name "Picker1" color "random") #commanded by robot_0/cmd_vel
@@ -501,3 +499,5 @@ CarrierRobot( pose [ -37 15.1 0 0 ] name "Carrier1" color "random")
 dog( pose [-3.75 17.5 0 0] name "AlphaDog" color "random")
 
 human( pose [ 2.5 18.00 0.000 0.000 ] name "AlphaPerson" color "blue")
+beacon( pose [ 42.000 15.000 0.000 0.000] color "green")
+beacon( pose [ -32.000 15.000 0.000 0.000] color "green")

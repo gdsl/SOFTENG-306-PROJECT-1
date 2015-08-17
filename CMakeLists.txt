@@ -206,6 +206,11 @@ add_dependencies(CarrierRobot se306project_generate_messages_cpp)
 add_library(CarrierRobotLib src/CarrierRobot.cpp)
 target_link_libraries(CarrierRobotLib Robot Entity ${catkin_LIBRARIES})
 
+add_executable(Beacon src/Beacon.cpp)
+target_link_libraries(Beacon Entity ${catkin_LIBRARIES})
+add_dependencies(Beacon se306project_generate_messages_cpp)
+
+
 #catkin_add_(${PROJECT_NAME}-test test/testRobot.cpp src/PickerRobot.cpp)
  #if(TARGET ${PROJECT_NAME}-test)
   # target_link_libraries(Entity Robot ${catkin_LIBRARIES})
