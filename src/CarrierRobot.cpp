@@ -44,6 +44,8 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 
 	if (carrierRobot.getMinDistance() < 1) {
 		obstacleStatus = "Obstacle nearby";
+		//TODO implement real avoidance currently temp to test
+		carrierRobot.addMovementFront("rotation",carrierRobot.getTheta()+1,1);
 	} else {
 		obstacleStatus = "No obstacles";
 	}
@@ -103,6 +105,9 @@ void CarrierRobot::stateLogic(){
 		}
 		//if the carrier is in moving state, move
 		carrierRobot.move();
+	}else if (obstacleStatus.compare("Obstacle nearby")==0){
+		carrierRobot.setStatus("Moving");
+		carrierRobot.move();
 	}
 }
 
@@ -128,8 +133,8 @@ int main(int argc, char **argv)
 	//relative to the absolute frame of the farm.
 	carrierRobot.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000, callBackStageOdm);
 
-        //relative to the obstacle information
-        carrierRobot.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000, callBackLaserScan);
+    //relative to the obstacle information
+    carrierRobot.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000, callBackLaserScan);
 	//subscribe to the status of picker robot
 	ros::Subscriber mysub_object = n.subscribe<se306project::robot_status>("/robot_0/status",1000,recievePickerRobotStatus);
 
@@ -147,7 +152,7 @@ int main(int argc, char **argv)
 		status_msg.status=carrierRobot.getStatus();		//add status to message
 		status_msg.pos_x=carrierRobot.getX(); //add x to message to broadcast
 		status_msg.pos_y=carrierRobot.getY();//add y to message to broadcast
-		status_msg.pos_theta=carrierRobot.getAng(); //add angle to message to broadcast
+		status_msg.pos_theta=carrierRobot.getTheta(); //add angle to message to broadcast
 		status_msg.obstacle = obstacleStatus;
 		pub.publish(status_msg);	//publish message
 		carrierRobot.stateLogic();

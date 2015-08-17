@@ -33,7 +33,7 @@ define laserBase ranger
 (
 	sensor
 	(
-		range [ 0.0 30.0 ] # maximum range reported by scanner in meters.
+		range [ 0.0 10.0 ] # maximum range reported by scanner in meters.
 		fov 180 # angular field of view of the scanner, in radians.
 		samples 180 # number of laser samples per scan
 	)

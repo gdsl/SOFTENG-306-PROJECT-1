@@ -93,13 +93,13 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg)
 	minDistance = 30;
 	obstacleAngle = 270;
 
-        int l=sizeof(msg.ranges) / sizeof(msg.ranges[0]);
-        for (int i=0; i<l; i++){
-              if (msg.ranges[i]< minDistance) {
-                 minDistance = msg.ranges[i];
-                 obstacleAngle= (i/l) * msg.angle_increment + msg.angle_min;
-              }
-        } 
+	int l=sizeof(msg.ranges) / sizeof(msg.ranges[0]);
+	for (int i=0; i<l; i++){
+		  if (msg.ranges[i]< minDistance) {
+			 minDistance = msg.ranges[i];
+			 obstacleAngle= (i/l) * msg.angle_increment + msg.angle_min;
+		  }
+	}
 }
 
 /**
@@ -178,12 +178,8 @@ void Entity::addMovement(std::string type, double distance,double velocity){
 		if (useCurrent){//when no other forward movement to reference use current location
 			if((type.compare("forward_x"))==0){
 				pos=x+distance;
-				ROS_INFO("xpos: %f", pos);
-				ROS_INFO("x: %f", x);
-				ROS_INFO("dis: %f", distance);
 			}else if ((type.compare("forward_y"))==0){
 				pos=y+distance;
-				ROS_INFO("y: %f", pos);
 			}
 		}
 	}else{
@@ -192,6 +188,48 @@ void Entity::addMovement(std::string type, double distance,double velocity){
 	//ROS_INFO("pos: %f", pos);
 	Movement m=Movement(type,pos,velocity);
 	movementQueue.push_back(m);
+}
+
+/**
+ * Method to add movements to front of movement queue
+ */
+void Entity::addMovementFront(std::string type, double distance,double velocity){
+	//convert to position
+	//TODO refactor this with addMovement method
+	double pos=0;
+	if (type.compare("rotation")!=0){
+		bool useCurrent=true; //boolean to check if current location should be use
+		if (movementQueue.size()>0){//check if queue have initial values
+				bool found=false;
+				int foundIndex=movementQueue.size();
+				ROS_INFO("queue size: %d", foundIndex);
+				int index=foundIndex-1;
+				ROS_INFO("index: %d", index);
+				while(index>=0){
+					if(movementQueue.at(index).getType().compare(type)==0){
+						found=true;
+						foundIndex=index;
+					}
+					index-=1;
+				}
+				if (found){//if found same type use that as reference for position
+					useCurrent=false;
+					pos=distance+movementQueue.at(foundIndex).getPos();
+				}
+		}
+		if (useCurrent){//when no other forward movement to reference use current location
+			if((type.compare("forward_x"))==0){
+				pos=x+distance;
+			}else if ((type.compare("forward_y"))==0){
+				pos=y+distance;
+			}
+		}
+	}else{
+		pos=distance;
+	}
+	//ROS_INFO("pos: %f", pos);
+	Movement m=Movement(type,pos,velocity);
+	movementQueue.insert(movementQueue.begin(),m);
 }
 
 /**
