@@ -13,8 +13,13 @@
 class PickerRobot: public Robot {
 public:
 	PickerRobot();
+	PickerRobot(std::string status);
 	virtual ~PickerRobot();
 	void movement();
+	virtual void stateLogic();
+
+private:
+	int bin_capacity=0;
 };
 
 #endif /* SE306PROJECT_SRC_PICKERROBOT_H_ */

@@ -255,6 +255,14 @@ void Entity::rotate(double angleToRotateTo, double angleSpeed){
 		}else{
 			angularVelocity=angleSpeed;
 		}
+		if (angleToRotateTo<theta){//if angle to rotate to is less than theta rotate CW
+			angularVelocity=-angularVelocity;
+		}else if (angleToRotateTo==M_PI){
+			//if its 180 degrees (this can be +ve or -ve so need to make sure fastest turn  implemented
+			if (theta<0){// if -ve theta then CW is fastest
+				angularVelocity=-angularVelocity;
+			}
+		}
 		updateOdometry();
 	}else{
 		movementComplete();//call method complete to remove complete movement from queue
@@ -356,4 +364,19 @@ bool Entity::getDesireLocation() {
  */
 void Entity::setDesireLocation(bool desireLocation){
 	this->desireLocation=desireLocation;
+}
+
+
+/**
+ * Getter method for status of the entity
+ */
+std::string Entity::getStatus() {
+    return status;
+}
+
+/**
+ * setter method for status of the entity
+ */
+void Entity::setStatus(std::string status){
+	this->status=status;
 }

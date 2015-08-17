@@ -12,6 +12,7 @@ class Animal : public Entity {
 
 public:
     Animal();
+    Animal(double x, double y);
     virtual ~Animal();
 };
 

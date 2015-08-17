@@ -242,3 +242,12 @@ define CarrierRobot position
   ranger_return 1
 
 )
+
+define beacon modelBase
+(
+  size [0 0 0]
+  gui_nose 0
+  ranger_return 0
+  obstacle_return 0
+)
+
