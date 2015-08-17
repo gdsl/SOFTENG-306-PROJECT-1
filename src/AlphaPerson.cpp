@@ -11,11 +11,15 @@
 AlphaPerson::AlphaPerson() : Person() {
 
 }
+
+AlphaPerson::AlphaPerson(double x, double y): Person(x,y) {
+}
+
 AlphaPerson::~AlphaPerson() {
 
 }
 
-AlphaPerson alphaPerson;
+AlphaPerson alphaPerson(2.5,18);
 // Default human behaviour = walking
 std::string status="Walking";
 
@@ -48,7 +52,6 @@ int main(int argc, char **argv)
     bool targetReach = true;
     double targetX = 1;
     double targetY = 1;
-    bool once = true;
     int state = 0;
 	int count = 0;
 	se306project::human_status status_msg;
@@ -59,13 +62,7 @@ int main(int argc, char **argv)
      if (alphaPerson.getMovementQueueSize() == 0 && state == 0) {
 
             alphaPerson.faceEast(1);
-            if (once ) {
-                alphaPerson.addMovement("forward_x", 17.5, 1);
-                once = false;
-            }
-            else {
-                alphaPerson.addMovement("forward_x", 15, 1);
-            }
+            alphaPerson.addMovement("forward_x", 15, 1);
             alphaPerson.faceSouth(1);
             alphaPerson.faceEast(1);
             alphaPerson.addMovement("forward_x", 15, 1);
