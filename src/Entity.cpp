@@ -217,9 +217,20 @@ void Entity::moveForward(double pos, double vel, std::string direction){
 			}else{
 				linearVelocity=vel;
 			}
-			//if (position-pos>=0){
+			if (position>pos){//make sure the robot can slight go backwards to adjust to right position
+				if(theta<0.1 && theta>-0.1){ //if facing east then velocity should be negative since overshoot
+					linearVelocity=-linearVelocity;
+				}else if(theta<M_PI/2+0.1 && theta>M_PI/2-0.1){ //if facing North then velocity should be negative since overshoot
+					linearVelocity=-linearVelocity;
+				}
 			//	linearVelocity=-linearVelocity;	
-			//}
+			}else if (pos>position){//now in the -ve direction to our frame of reference
+				if(theta<-M_PI+0.1 || theta>M_PI-0.1){ //if facing west then velocity should be negative since overshoot
+					linearVelocity=-linearVelocity;
+				}else if(theta<-M_PI/2+0.1 && theta>-M_PI/2-0.1){ //if facing south then velocity should be negative since overshoot
+					linearVelocity=-linearVelocity;
+				}
+			}
 		}else{
 			movementComplete();//call method complete to remove complete movement from queue
 			linearVelocity=0;
