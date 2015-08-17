@@ -40,6 +40,7 @@ class Entity
 		void move();
 		void movementComplete();
 		void addMovement(std::string type,double amount,double velocity);
+		void addMovementFront(std::string type,double amount,double velocity);
 		void moveForward(double distance,double vel, std::string direction);
 		void rotate(double angleToRotateTo,double angleSpeed);
 		void faceNorth(double angleSpeed);
