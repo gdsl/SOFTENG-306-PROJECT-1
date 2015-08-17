@@ -4,6 +4,7 @@
 #include "se306project/robot_status.h"
 #include "se306project/carrier_status.h"
 #include "PickerRobot.h"
+#include "Constants.h"
 
 PickerRobot::PickerRobot():Robot(){
 
@@ -51,6 +52,16 @@ void recieveCarrierRobotStatus(const se306project::carrier_status::ConstPtr& msg
 	}
 }
 
+/**
+ * Method for the carrier robot's states transition and implementation
+ */
+void PickerRobot::stateLogic(){
+	if (status.compare("Moving")==0){
+			if(pickerRobot.movementQueue.size()<1){
+			status="Full";
+		}
+	}
+}
 /*
  * Method for the logic of PickerRobot running its movement queue.
  */
@@ -135,11 +146,7 @@ int main(int argc, char **argv)
 			pickerRobot.movement();
 		}
 		if(count>7){
-			if(pickerRobot.movementQueue.size()<1){
-				if (status.compare("Moving")==0){
-					status="Full";
-				}
-			}
+			pickerRobot.stateLogic();
 		}
 		ros::spinOnce();
 		loop_rate.sleep();

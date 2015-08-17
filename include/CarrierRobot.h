@@ -11,6 +11,7 @@ class CarrierRobot: public Robot {
 public:
 	CarrierRobot();
 	virtual ~CarrierRobot();
+	virtual void stateLogic();
 };
 
 #endif /* SE306PROJECT_SRC_CARRIERROBOT_H_ */

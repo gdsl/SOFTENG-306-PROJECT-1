@@ -77,12 +77,25 @@ void recievePickerRobotStatus(const se306project::robot_status::ConstPtr& msg)
 			//become Idle again (free)
 			carrierRobot.setDesireLocation(false);//refresh that it can recieve more desire location
 		}
+		carrierRobot.move();
+	} else if (status.compare("Obstacle nearby") == 0) {
+
+	}
+}
+/**
+ * Method for the carrier robot's states transition and implementation
+ */
+void CarrierRobot::stateLogic(){
+	if(status.compare("Transporting")==0){
+		//if the carrier is in transporting state move
+		carrierRobot.move();
 	}else if(status.compare("Moving")==0){
+		//check if the robot has anymore movement in queue if not set state to arrive
 		if(carrierRobot.movementQueue.size()<1){
 			status="Arrived";
 		}
-	} else if (status.compare("Obstacle nearby") == 0) {
-
+		//if the carrier is in moving state, move
+		carrierRobot.move();
 	}
 }
 
@@ -130,8 +143,7 @@ int main(int argc, char **argv)
 		status_msg.pos_theta=carrierRobot.getAng(); //add angle to message to broadcast
 		status_msg.obstacle = obstacleStatus;
 		pub.publish(status_msg);	//publish message
-
-		carrierRobot.move();
+		carrierRobot.stateLogic();
 		loop_rate.sleep();
 		++count; // increase counter
 	}

@@ -58,7 +58,6 @@ class Entity
 		double getObstacleAngle();
 		bool getDesireLocation();
 		int getMovementQueueSize();
-
 		//movement queue
         std::vector<Movement> movementQueue;
 
