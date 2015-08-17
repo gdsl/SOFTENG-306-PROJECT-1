@@ -13,6 +13,7 @@
 class AlphaDog: public Animal {
 public:
 	AlphaDog();
+    AlphaDog(double x, double y);
 	virtual ~AlphaDog();
 	
 };

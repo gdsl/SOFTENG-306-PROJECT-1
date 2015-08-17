@@ -182,6 +182,7 @@ trunk( pose [ 20.000 9.900 0.000 0.000 ] color "green")
 trunk( pose [ 25.000 9.900 0.000 0.000 ] color "green")
 trunk( pose [ 30.000 9.900 0.000 0.000 ] color "green")
 trunk( pose [ 35.000 9.900 0.000 0.000 ] color "green")
+beacon( pose [ 37.000 15.000 0.000 0.000] color "green")
 
 # Spawn robots
 PickerRobot( pose [ 0 15.1 0 0 ] name "Picker1" color "random") #commanded by robot_0/cmd_vel

@@ -9,13 +9,18 @@
 #include <time.h>
  
 AlphaDog::AlphaDog() : Animal() {
+    
+}
+
+AlphaDog::AlphaDog(double x, double y) : Animal(x,y) {
 
 }
+
 AlphaDog::~AlphaDog() {
 
 }
 
-AlphaDog alphaDog;
+AlphaDog alphaDog(-3.75,17.5);
 // Default dog behaviour = walking
 std::string status="Moonwalking";
 bool queueFull = false;
@@ -45,8 +50,6 @@ int main(int argc, char **argv)
 
     alphaDog.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000,stage_callback);
     ros::Rate loop_rate(10); 
-    bool onceX = true;
-    bool onceY = true;
 	
     //Broadcast the node's status information for other to subscribe to.
     ros::Publisher pub=n.advertise<se306project::animal_status>("status",1000);
@@ -59,24 +62,14 @@ int main(int argc, char **argv)
         
     	if (alphaDog.getMovementQueueSize() == 0) {
 		    alphaDog.faceWest(1);
-            if (onceX ) {
-			    alphaDog.addMovement("forward_x",-8.25,1);
-                onceX = false;
-            } else {
-                alphaDog.addMovement("forward_x",-5,1);
-            }
+            alphaDog.addMovement("forward_x",-5,1);
 			alphaDog.faceSouth(1);
-            if (onceY) {
-			    alphaDog.addMovement("forward_y",16.25,1);
-                onceY = false;
-            } else {
-                alphaDog.addMovement("forward_y", -1.25 , 1);
-            } 
-		alphaDog.faceEast(1);
-		alphaDog.addMovement("forward_x",5,1);
-		alphaDog.faceNorth(1);
-		alphaDog.addMovement("forward_y",1.25,1);
-	}
+            alphaDog.addMovement("forward_y", -1.25 , 1);  
+		    alphaDog.faceEast(1);
+		    alphaDog.addMovement("forward_x",5,1);
+		    alphaDog.faceNorth(1);
+		    alphaDog.addMovement("forward_y",1.25,1);
+	    }
 	//status_msg.my_counter=count;		//add counter to message
 	status_msg.status=status;		//add status to message
 	status_msg.pos_x=alphaDog.getX(); //add x to message to broadcast
