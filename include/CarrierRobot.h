@@ -10,7 +10,9 @@
 class CarrierRobot: public Robot {
 public:
 	CarrierRobot();
+	CarrierRobot(std::string status);
 	virtual ~CarrierRobot();
+	virtual void stateLogic();
 };
 
 #endif /* SE306PROJECT_SRC_CARRIERROBOT_H_ */

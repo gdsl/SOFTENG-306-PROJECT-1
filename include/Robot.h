@@ -11,6 +11,8 @@ class Robot :public Entity {
 public:
 	Robot();
 	virtual ~Robot();
+	//method for the robots state logic for transition and implementation
+	virtual void stateLogic()=0;
 };
 
 #endif /* SE306PROJECT_SRC_ROBOT_H_ */

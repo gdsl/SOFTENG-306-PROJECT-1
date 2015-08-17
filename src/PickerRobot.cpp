@@ -4,15 +4,20 @@
 #include "se306project/robot_status.h"
 #include "se306project/carrier_status.h"
 #include "PickerRobot.h"
+#include "Constants.h"
 
 PickerRobot::PickerRobot():Robot(){
 
 }
 
+PickerRobot::PickerRobot(std::string status){
+	this->setStatus(status);
+}
+
 PickerRobot::~PickerRobot(){
 }
 PickerRobot pickerRobot;
-std::string status="Moving";
+//std::string status="Moving";
 std::string previousStatus = "Moving";
 std::string obstacleStatus = "No obstacles";
 double distance=1;
@@ -39,7 +44,7 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
  * This method is called when message is received.
  */
 void recieveCarrierRobotStatus(const se306project::carrier_status::ConstPtr& msg){
-	if (msg->status.compare("Transporting")==0&&status.compare("Full")==0){
+	if (msg->status.compare("Transporting")==0&&pickerRobot.getStatus().compare("Full")==0){
 		if (distance==1){
 			distance=5;
 		}else if (distance ==5){
@@ -47,10 +52,20 @@ void recieveCarrierRobotStatus(const se306project::carrier_status::ConstPtr& msg
 		}
 		pickerRobot.movement();
 		pickerRobot.setDesireLocation(false);
-		status="Moving";
+		pickerRobot.setStatus("Moving");
 	}
 }
 
+/**
+ * Method for the carrier robot's states transition and implementation
+ */
+void PickerRobot::stateLogic(){
+	if (pickerRobot.getStatus().compare("Moving")==0){
+		if(pickerRobot.movementQueue.size()<1){
+			pickerRobot.setStatus("Full");
+		}
+	}
+}
 /*
  * Method for the logic of PickerRobot running its movement queue.
  */
@@ -87,7 +102,7 @@ void PickerRobot::movement(){
 
 int main(int argc, char **argv)
 {
-	pickerRobot=PickerRobot();
+	pickerRobot=PickerRobot("Moving");
 	//You must call ros::init() first of all. ros::init() function needs to see argc and argv. The third argument is the name of the node
 	ros::init(argc, argv, "PickerRobot");
 
@@ -122,7 +137,7 @@ int main(int argc, char **argv)
 	{
 		//assign to status message
 		status_msg.my_counter = count++;//add counter to message to broadcast
-		status_msg.status=status;//add status to message to broadcast
+		status_msg.status=pickerRobot.getStatus();//add status to message to broadcast
 		status_msg.pos_x=pickerRobot.getX(); //add x to message to broadcast
 		status_msg.pos_y=pickerRobot.getY();//add y to message to broadcast
 		status_msg.pos_theta=pickerRobot.getTheta(); //add angle to message to broadcast
@@ -135,11 +150,7 @@ int main(int argc, char **argv)
 			pickerRobot.movement();
 		}
 		if(count>7){
-			if(pickerRobot.movementQueue.size()<1){
-				if (status.compare("Moving")==0){
-					status="Full";
-				}
-			}
+			pickerRobot.stateLogic();
 		}
 		ros::spinOnce();
 		loop_rate.sleep();

@@ -357,3 +357,18 @@ bool Entity::getDesireLocation() {
 void Entity::setDesireLocation(bool desireLocation){
 	this->desireLocation=desireLocation;
 }
+
+
+/**
+ * Getter method for status of the entity
+ */
+std::string Entity::getStatus() {
+    return status;
+}
+
+/**
+ * setter method for status of the entity
+ */
+void Entity::setStatus(std::string status){
+	this->status=status;
+}
