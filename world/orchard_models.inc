@@ -33,7 +33,7 @@ define laserBase ranger
 (
 	sensor
 	(
-		range [ 0.0 30.0 ] # maximum range reported by scanner in meters.
+		range [ 0.0 10.0 ] # maximum range reported by scanner in meters.
 		fov 180 # angular field of view of the scanner, in radians.
 		samples 180 # number of laser samples per scan
 	)
@@ -243,9 +243,9 @@ define CarrierRobot position
 
 )
 
-define beacon modelBase
+define beacon position
 (
-  size [0 0 0]
+  size [0.1 0.1 0.1]
   gui_nose 0
   ranger_return 0
   obstacle_return 0
