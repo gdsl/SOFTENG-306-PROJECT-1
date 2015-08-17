@@ -12,6 +12,7 @@ class AlphaPerson : public Person {
 
 public:
     AlphaPerson();
+    AlphaPerson(double x, double y);
     virtual ~AlphaPerson();
 };
 
