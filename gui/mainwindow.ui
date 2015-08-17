@@ -40,7 +40,7 @@
      <string>Settings</string>
     </property>
    </widget>
-   <widget class="QLabel" name="numRobotsLabel">
+   <widget class="QLabel" name="pickerRobotsLabel">
     <property name="geometry">
      <rect>
       <x>220</x>
@@ -50,27 +50,27 @@
      </rect>
     </property>
     <property name="text">
-     <string>Num robots</string>
+     <string>Picker Robots</string>
     </property>
    </widget>
-   <widget class="QLabel" name="rowLengthLabel">
+   <widget class="QLabel" name="rowWidthLabel">
     <property name="geometry">
      <rect>
       <x>220</x>
-      <y>390</y>
+      <y>410</y>
       <width>101</width>
       <height>17</height>
      </rect>
     </property>
     <property name="text">
-     <string>Row length</string>
+     <string>Row width</string>
     </property>
    </widget>
    <widget class="QLabel" name="spacingLabel">
     <property name="geometry">
      <rect>
       <x>220</x>
-      <y>410</y>
+      <y>430</y>
       <width>131</width>
       <height>17</height>
      </rect>
@@ -88,18 +88,11 @@
       <height>21</height>
      </rect>
     </property>
-   </widget>
-   <widget class="QLineEdit" name="rowLengthField">
-    <property name="geometry">
-     <rect>
-      <x>360</x>
-      <y>390</y>
-      <width>113</width>
-      <height>21</height>
-     </rect>
+    <property name="text">
+     <string>1</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="spacingField">
+   <widget class="QLineEdit" name="rowLengthField">
     <property name="geometry">
      <rect>
       <x>360</x>
@@ -108,12 +101,28 @@
       <height>21</height>
      </rect>
     </property>
+    <property name="text">
+     <string>3.5</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="spacingField">
+    <property name="geometry">
+     <rect>
+      <x>360</x>
+      <y>430</y>
+      <width>113</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>2.5</string>
+    </property>
    </widget>
    <widget class="QPushButton" name="closeButton">
     <property name="geometry">
      <rect>
       <x>290</x>
-      <y>450</y>
+      <y>470</y>
       <width>99</width>
       <height>27</height>
      </rect>
@@ -126,7 +135,7 @@
     <property name="geometry">
      <rect>
       <x>440</x>
-      <y>450</y>
+      <y>470</y>
       <width>99</width>
       <height>27</height>
      </rect>
@@ -297,6 +306,81 @@
     <property name="text">
      <string>Animals</string>
     </property>
+   </widget>
+   <widget class="QLineEdit" name="numRobotsField_2">
+    <property name="geometry">
+     <rect>
+      <x>360</x>
+      <y>390</y>
+      <width>113</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>1</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="carrierRobotsLabel">
+    <property name="geometry">
+     <rect>
+      <x>220</x>
+      <y>390</y>
+      <width>101</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Carrier Robots</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="generateButton">
+    <property name="geometry">
+     <rect>
+      <x>480</x>
+      <y>420</y>
+      <width>141</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Generate world file</string>
+    </property>
+   </widget>
+   <widget class="QScrollArea" name="robotScroll">
+    <property name="geometry">
+     <rect>
+      <x>460</x>
+      <y>20</y>
+      <width>101</width>
+      <height>151</height>
+     </rect>
+    </property>
+    <property name="widgetResizable">
+     <bool>false</bool>
+    </property>
+    <widget class="QWidget" name="scrollAreaWidgetContents">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>118</width>
+       <height>78</height>
+      </rect>
+     </property>
+     <widget class="QPushButton" name="pushButton">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>181</width>
+        <height>27</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>PushButton</string>
+      </property>
+     </widget>
+    </widget>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">

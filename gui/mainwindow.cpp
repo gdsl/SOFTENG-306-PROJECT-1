@@ -101,3 +101,14 @@ void MainWindow::on_closeButton_clicked()
 	system("pkill stage");
 }
 
+void MainWindow::on_generateButton_clicked()
+{
+    CMarkup xml;
+    xml.AddElem( "picker_number", 3 );
+    xml.AddElem( "carrier_numer", 3 );
+    xml.AddElem( "resolution", 2 );
+    xml.AddElem( "row_width", 3.5 );
+    xml.AddElem( "trunk_pole_spacing", 2.5 );
+    xml.Save( "world/orchard.xml" );
+}
+
