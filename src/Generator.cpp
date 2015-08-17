@@ -34,6 +34,7 @@ Generator::Generator(string inputName, string outputName)
 	outfile << "\tsize [95 55 0.1]" << endl;
 	outfile << "\tpose [0.000 0.000 0.000 0.000]" << endl;
 	outfile << "\tbitmap \"bitmaps/orchard.png\"" << endl;
+	outfile << ")" << endl << endl;
 }
 
 /**
