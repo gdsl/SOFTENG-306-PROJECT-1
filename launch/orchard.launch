@@ -19,11 +19,12 @@
     </group>
 
     <group ns="robot_4">
-        <node pkg="se306project" name="beacon" type="Beacon"/>
+        <node pkg="se306project" name="beacon" type="Beacon" args="/beacon1/"/>
     </group>
 
     <group ns="robot_5">
-        <node pkg="se306project" name="beacon" type="Beacon"/>
+        <node pkg="se306project" name="beacon" type="Beacon" args="/beacon2/"/>
     </group>
+
 
 </launch>
