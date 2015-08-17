@@ -7,6 +7,7 @@
 #include <QThread>
 #include <QListWidget>
 #include <sstream>
+#include "../include/Markup.h"
 
 using namespace std;
 
@@ -44,7 +45,7 @@ void MainWindow::startReadingTopics() {
 		
 		worker->moveToThread(thread);
 		//secondWorker->moveToThread(thread2);
-	    stringstream out;
+	    stringstream out;https://github.com/gdsl/SOFTENG-306-PROJECT-1
 		out << i;
 		worker->setId( out.str());
 		//secondWorker->setId("1");
@@ -88,6 +89,14 @@ void MainWindow::on_launchButton_clicked()
 
 void MainWindow::on_closeButton_clicked()
 {
+    CMarkup xml;
+    xml.AddElem( "picker_number", 3 );
+    xml.AddElem( "carrier_numer", 2 );
+    xml.AddElem( "resolution", 2 );
+    xml.AddElem( "row_width", 3.5 );
+    xml.AddElem( "trunk_pole_spacing", 2.5 );
+    xml.Save( "/home/wesley/rosws/src/se306project/world/orchard.xml" );
+    
 	//close roslaunch
 	system("pkill stage");
 }
