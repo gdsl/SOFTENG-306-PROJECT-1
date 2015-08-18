@@ -214,7 +214,7 @@ define PickerRobot position
 	z [0 1]
   )
   #properties as name value pairs
-  size [2.3 1.5 1]
+  size [2.5 1.5 1]
   drive "diff"
   pickerLaser(pose [ 1.25 0.0 -1.0 0.0 ])
 

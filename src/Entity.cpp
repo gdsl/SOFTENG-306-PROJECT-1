@@ -434,6 +434,13 @@ std::string Entity::getStatus() {
 }
 
 /**
+ * Getter method for the direction the entity is facing
+ */
+Entity::Direction Entity::getDirectionFacing() {
+    return directionFacing;
+}
+
+/**
  * setter method for status of the entity
  */
 void Entity::setStatus(std::string status){

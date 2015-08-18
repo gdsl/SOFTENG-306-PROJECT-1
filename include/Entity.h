@@ -62,8 +62,12 @@ class Entity
 		bool getDesireLocation();
 		std::string getStatus();
 		int getMovementQueueSize();
+        //direction robot facing
+		enum Direction {WEST, SOUTH, EAST, NORTH};
+        Direction getDirectionFacing();
 		//movement queue
         std::vector<Movement> movementQueue;
+        
 
 	private:
 		//positions
@@ -78,8 +82,7 @@ class Entity
 		double minDistance;
 		double obstacleAngle;
 		std::string status;
-		//direction robot facing
-		enum Direction {WEST, SOUTH, EAST, NORTH};
+		
 		Direction directionFacing=WEST;//initialse to west originally
 		//boolean for if the robot is at desire location
 		bool desireLocation;
