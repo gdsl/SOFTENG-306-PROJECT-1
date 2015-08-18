@@ -25,6 +25,7 @@ double distance=1;
 //destination of next beacon
 double destX;
 double destY;
+bool atDestX = false, atDestY = false;
 
 /**
  * Getter method for the bin capacity of the picker robot
@@ -113,32 +114,69 @@ void PickerRobot::movement(){
 	}*/
 	//pickerRobot.moveForward(distance,1);
 //ALPHA MOVEMENT COMMENTED BELOW    
-	if (distance==1){
-		pickerRobot.faceEast(1);
-		pickerRobot.addMovement("forward_x",37.5,1);
-		pickerRobot.faceSouth(1);
-		pickerRobot.addMovement("forward_y",-3.35,1);
-		pickerRobot.faceWest(1);
-		pickerRobot.addMovement("forward_x",-37.5,1);
-	}else if (distance ==5){
-		pickerRobot.faceEast(1);
-		pickerRobot.addMovement("forward_x",37.5,1);
-		pickerRobot.faceNorth(1);
-		pickerRobot.addMovement("forward_y",3.35,1);
-		pickerRobot.faceWest(1);
-		pickerRobot.addMovement("forward_x",-37.5,1);
-	}
-//    //temporary variable used in calculation for distance to move
-//    double distanceToMove = 0;
-//    //if there is a destination
-//    if (destX != null) {
-//        //if the robot is not at its destination
-//        if (x != destX) {
-//            //check if we need to go backwards
-//            if (x > destX) {
-//                
-//                pickerRobot.addMovement("forward_x",
-//    }
+//	if (distance==1){
+//		pickerRobot.faceEast(1);
+//		pickerRobot.addMovement("forward_x",37.5,1);
+//		pickerRobot.faceSouth(1);
+//		pickerRobot.addMovement("forward_y",-3.35,1);
+//		pickerRobot.faceWest(1);
+//		pickerRobot.addMovement("forward_x",-37.5,1);
+//	}else if (distance ==5){
+//		pickerRobot.faceEast(1);
+//		pickerRobot.addMovement("forward_x",37.5,1);
+//		pickerRobot.faceNorth(1);
+//		pickerRobot.addMovement("forward_y",3.35,1);
+//		pickerRobot.faceWest(1);
+//		pickerRobot.addMovement("forward_x",-37.5,1);
+//	}
+    //temporary variable used in calculation for distance to move
+    double distanceToMove = 0;
+    double currentX = pickerRobot.getX();
+    double currentY = pickerRobot.getY();
+    //if the Picker has received the destination of the next beacon
+    //add the horizontal movement to the movement queue
+    //if the robot is not at its destination
+    if (pickerRobot.getMovementQueueSize() == 0) {
+        if (!atDestX) {            
+            //check if the Robot needs to go West
+            if (currentX > destX) {
+                //calculate the distance to move backwards along X axis
+                distanceToMove = currentX - destX;
+                //make sure the Robot is facing West, if not, turn it West.
+                if (pickerRobot.getDirectionFacing() != WEST) {pickerRobot.faceWest(1);}                
+            //otherwise it means the Robot needs to go East
+            } else if (currentX < destX) {
+                distanceToMove = destX - currentX;
+                //make sure the Robot is facing West, if not, turn it West.
+                if (pickerRobot.getDirectionFacing() != EAST) {pickerRobot.faceEast(1);}
+            }
+            pickerRobot.addMovement("forward_x", distanceToMove, 1);
+        } else {
+            //now add the vertical movement to the movement queue
+            if (!atDestY) {
+                //if the robot is not at its destination
+                if (currentY != destY) {
+                    //check if the Robot needs to go South
+                    if (currentY > destY) {
+                        //calculate the distance to move backwards along Y axis
+                        distanceToMove = currentY - destY;
+                        //make sure the Robot is facing South, if not, turn it South.
+                        if (pickerRobot.getDirectionFacing() != SOUTH) {
+                            pickerRobot.faceSouth(1);                    
+                        }                
+                    //otherwise it means the Robot needs to go North
+                    } else if (currentY < destY) {
+                        distanceToMove = destY - currentY;
+                        //make sure the Robot is facing North, if not, turn it North.
+                        if (pickerRobot.getDirectionFacing() != NORTH) {pickerRobot.faceNorth(1);}
+                    }
+                    pickerRobot.addMovement("forward_y", distanceToMove, 1);
+                }
+            }            
+        }
+    }
+    
+    
 }
 
 /*
@@ -149,9 +187,29 @@ void beaconCallback(const nav_msgs::Odometry msg) {
     destX = msg.pose.pose.position.x;
     destY = msg.pose.pose.position.y;
     
+    if (std::abs(destX - pickerRobot.getX()) < 0.0001) {
+        atDestX = true;
+        ROS_INFO("AT BEACON X POSITION");
+    }
+    else {atDestX = false;}
+    
+    if (destY == pickerRobot.getY()) {
+        atDestY = true;
+        ROS_INFO("AT BEACON Y POSITION");
+    }
+    else {atDestY = false;}
+    
     //debugging purposes
-    ROS_INFO("Beacon_1 x position is: %f", x);
-	ROS_INFO("Beacon_1 y position is: %f", y);
+    ROS_INFO("Beacon_1 x position is: %f", destX);
+	ROS_INFO("Beacon_1 y position is: %f", destY);
+}
+
+void atBeacon() {
+    if (atDestX && atDestY) {
+        pickerRobot.movementComplete();
+    }
+    
+    //resubscribe the beacon subscriber to the next beacon 
 }
 
 int main(int argc, char **argv)
@@ -205,16 +263,17 @@ int main(int argc, char **argv)
 		status_msg.pos_theta=pickerRobot.getTheta(); //add angle to message to broadcast
 		status_msg.obstacle = obstacleStatus;
 		pub.publish(status_msg);//publish the message for other node
-
-		//pickerRobot.move();//robot move
+        
+        atBeacon();
+        pickerRobot.movement();
+        pickerRobot.move();
 		//TODO debug
-		if(count==7){
-			pickerRobot.movement();
-			pickerRobot.move();
-		}
-		if(count>7){
-			pickerRobot.stateLogic();
-		}
+//		if(count==7){			
+//			pickerRobot.move();
+//		}
+//		if(count>7){
+//			pickerRobot.stateLogic();
+//		}
 		ros::spinOnce();
 		loop_rate.sleep();
 		++count;
