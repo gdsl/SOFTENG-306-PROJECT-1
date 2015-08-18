@@ -43,9 +43,12 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 	carrierRobot.stageLaser_callback(msg);
 
 	if (carrierRobot.getMinDistance() < 1) {
-		obstacleStatus = "Obstacle nearby";
-		//TODO implement real avoidance currently temp to test
-		carrierRobot.addMovementFront("rotation",carrierRobot.getTheta()+1,1);
+		if(obstacleStatus.compare("Obstacle nearby")!=0){
+			obstacleStatus = "Obstacle nearby";
+			//TODO implement real avoidance currently temp to test
+			//carrierRobot.addMovementFront(,carrierRobot.getTheta()+1,1);
+			carrierRobot.addMovementFront("rotation",carrierRobot.getTheta()+1,1);
+		}
 	} else {
 		obstacleStatus = "No obstacles";
 	}
@@ -101,7 +104,7 @@ void CarrierRobot::stateLogic(){
 	}else if(carrierRobot.getStatus().compare("Moving")==0){
 		//check if the robot has anymore movement in queue if not set state to arrive
 		if(carrierRobot.movementQueue.size()<1){
-			carrierRobot.setStatus("Arrived");
+			//carrierRobot.setStatus("Arrived");
 		}
 		//if the carrier is in moving state, move
 		carrierRobot.move();

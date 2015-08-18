@@ -19,6 +19,8 @@ public:
 	void movement();
 	virtual void stateLogic();
     std::vector<ros::Subscriber> beaconQueue;
+	int getBinCapacity();
+	void setBinCapacity(int bin_capacity);
 
 private:
 	int bin_capacity=0;    
