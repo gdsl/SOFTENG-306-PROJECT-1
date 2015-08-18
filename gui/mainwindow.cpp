@@ -15,52 +15,38 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    /*MainWindow::uiList = {ui->robotList1, ui->robotList2, ui->obstacleList1, ui->obstacleList2}; */
-   /* uiList[0] = ui->robotList1;
-    uiList[1] = ui->robotList2;
-    uiList[2] = ui->obstacleList1;
-    uiList[3] = ui->obstacleList2; */
-        
-    //uiList.insert(0, ui->robotList1);
-   // uiList.insert(1, ui->robotList2);
-        
+       
     ui->setupUi(this);
-	ui->robotList1->item(0)->setText("Type: Picker");
+/*	ui->robotList1->item(0)->setText("Type: Picker");
 	ui->robotList2->item(0)->setText("Type: Carrier");
     	ui->animalList1->item(0)->setText("Type: Dog");
-	ui->humanList1->item(0)->setText("Type: Human");
+	ui->humanList1->item(0)->setText("Type: Human"); 
     uiList[0] = ui->robotList1;
     uiList[1] = ui->robotList2;
     uiList[2] = ui->animalList1;
-    uiList[3] = ui->humanList1;        
+    uiList[3] = ui->humanList1;   */
+    
+    uiListRobots.reserve(50);  
+    uiListAnimals.reserve(50); 
+    
+    ui->robotScroll->widget()->layout()->setAlignment(Qt::AlignLeft);
+    ui->animalScroll->widget()->layout()->setAlignment(Qt::AlignLeft);
 }
 
 void MainWindow::startReadingTopics() {
 	for (int i = 0; i < 4; i++) {
-		QThread *thread = new QThread(this);
-		//QThread *thread2 = new QThread(this);
-		    
+		QThread *thread = new QThread(this);    
 		Worker *worker = new Worker();
-		//Worker *secondWorker = new Worker();
 		
 		worker->moveToThread(thread);
-		//secondWorker->moveToThread(thread2);
-	    stringstream out;https://github.com/gdsl/SOFTENG-306-PROJECT-1
+	    stringstream out;
 		out << i;
 		worker->setId( out.str());
-		//secondWorker->setId("1");
 		    
 		connect(thread, SIGNAL(started()), worker, SLOT(executeScript())); //started() signal is by default called by thread->start
-		//connect(thread2, SIGNAL(started()), secondWorker, SLOT(executeScript()));
-		    
 		connect(worker, SIGNAL(requestNewLabel(QString, QString, int)), this, SLOT(onUpdateGUI(QString, QString, int))); //custom signal which calls the slot for onUpdateGUI
-		//connect(secondWorker, SIGNAL(requestNewLabel(QString, QString, int)), this, SLOT(onUpdateGUI(QString, QString, int)));
-		
 		connect(thread, SIGNAL(destroyed()), worker, SLOT(deleteLater()));
-		//connect(thread2, SIGNAL(destroyed()), secondWorker, SLOT(deleteLater()));
-	
 		thread->start();
-		//thread2->start();
     }
 }
 
@@ -74,12 +60,24 @@ MainWindow::~MainWindow()
 void MainWindow::onUpdateGUI( QString id, QString str, int i )
 {
 	//update the gui for robots
-    uiList[id.toInt()]->item(i)->setText(str);
-    //ui->robotList1->item(i)->setText(str);
+	int idNum = id.toInt();
+
+
+	//hardcoded for now
+	if (idNum < 2) {
+	    QListWidget *qlw = ((QListWidget*)ui->robotScroll->widget()->layout()->itemAt(idNum)->widget());
+    	qlw->item(i)->setText(str);
+    } else {
+	    QListWidget *qlw = ((QListWidget*)ui->animalScroll->widget()->layout()->itemAt(idNum-2)->widget());
+    	qlw->item(i)->setText(str);
+    }
+
 }
 
 void MainWindow::on_launchButton_clicked()
 {
+    MainWindow::generate();
+    
 	//launch roslaunch
 	system("roslaunch se306project orchard.launch &");
 
@@ -88,27 +86,88 @@ void MainWindow::on_launchButton_clicked()
 }
 
 void MainWindow::on_closeButton_clicked()
-{
-    CMarkup xml;
-    xml.AddElem( "picker_number", 3 );
-    xml.AddElem( "carrier_numer", 2 );
-    xml.AddElem( "resolution", 2 );
-    xml.AddElem( "row_width", 3.5 );
-    xml.AddElem( "trunk_pole_spacing", 2.5 );
-    xml.Save( "/home/wesley/rosws/src/se306project/world/orchard.xml" );
-    
+{  
 	//close roslaunch
 	system("pkill stage");
 }
 
 void MainWindow::on_generateButton_clicked()
 {
-    CMarkup xml;
-    xml.AddElem( "picker_number", 3 );
-    xml.AddElem( "carrier_numer", 3 );
+    MainWindow::generate();
+}
+
+
+void MainWindow::generate() {
+CMarkup xml;
+    bool ok;
+    xml.AddElem( "picker_number", ui->pickerRobotsField->text().toInt(&ok, 10) );
+    xml.AddElem( "carrier_number", ui->carrierRobotsField->text().toInt(&ok, 10) );
+    xml.AddElem( "worker_number", ui->workersField->text().toInt(&ok, 10) );
+    xml.AddElem( "dog_number", ui->dogsField->text().toInt(&ok, 10) );
     xml.AddElem( "resolution", 2 );
-    xml.AddElem( "row_width", 3.5 );
-    xml.AddElem( "trunk_pole_spacing", 2.5 );
+    xml.AddElem( "row_width", ui->rowWidthField->text().toInt(&ok, 10) );
+    xml.AddElem( "trunk_pole_spacing", ui->spacingField->text().toInt(&ok, 10) );
     xml.Save( "world/orchard.xml" );
+    
+    int numPicker = ui->pickerRobotsField->text().toInt(&ok, 10);
+    int numCarrier = ui->carrierRobotsField->text().toInt(&ok, 10);
+    int numWorkers = ui->workersField->text().toInt(&ok, 10);
+    int numDogs = ui->dogsField->text().toInt(&ok, 10);
+
+    uiListRobots.clear();
+    uiListAnimals.clear();
+    for (int i = 0; i < numPicker; i++) {
+        uiListRobots.push_back(createNewItem("Picker"));   
+    }
+    for (int i = 0; i < numCarrier; i++) {
+        uiListRobots.push_back(createNewItem("Carrier"));   
+    }
+    for (int i = 0; i < numWorkers; i++) {
+        uiListAnimals.push_back(createNewItem("Human_Worker"));   
+    }
+    for (int i = 0; i < numDogs; i++) {
+        uiListAnimals.push_back(createNewItem("Animal_Dog"));   
+    }
+    //clear the layout
+    QLayoutItem *item;
+    while (( item = ui->robotScroll->widget()->layout()->takeAt(0)) != 0 ){
+        delete item->widget();
+        delete item;
+    }
+    while (( item = ui->animalScroll->widget()->layout()->takeAt(0)) != 0 ){
+        delete item->widget();
+        delete item;
+    }
+    //add all widgets back
+    for (int i = 0; i < uiListRobots.size(); i++) {
+        ui->robotScroll->widget()->layout()->addWidget(uiListRobots[i]);
+    }
+    for (int i = 0; i < uiListAnimals.size(); i++) {
+        ui->animalScroll->widget()->layout()->addWidget(uiListAnimals[i]);
+    }
+
+}
+
+QListWidget* MainWindow::createNewItem(string type) {
+    QListWidget *list = new QListWidget;
+    QListWidgetItem *item = new QListWidgetItem;
+    string typeLabel("Type: ");
+    item->setText((typeLabel + type).c_str());
+    list->addItem(item);
+    
+    QListWidgetItem *item2 = new QListWidgetItem;
+    list->addItem(item2);
+    QListWidgetItem *item3 = new QListWidgetItem;
+    list->addItem(item3);
+    QListWidgetItem *item4 = new QListWidgetItem;
+    list->addItem(item4);
+    QListWidgetItem *item5 = new QListWidgetItem;
+    list->addItem(item5);
+    QListWidgetItem *item6 = new QListWidgetItem;
+    list->addItem(item6);
+    
+    list->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    list->setFixedSize(180,150);
+    return list;
 }
 
