@@ -5,6 +5,7 @@
 #include "se306project/carrier_status.h"
 #include "PickerRobot.h"
 #include "Constants.h"
+#include <vector>
 
 PickerRobot::PickerRobot():Robot(){
 
@@ -21,6 +22,9 @@ PickerRobot pickerRobot;
 std::string previousStatus = "Moving";
 std::string obstacleStatus = "No obstacles";
 double distance=1;
+//destination of next beacon
+double destX;
+double destY;
 
 /*
  * Wrapper method for the callBackStageOdm method (in Entity)
@@ -82,6 +86,7 @@ void PickerRobot::movement(){
 
 	}*/
 	//pickerRobot.moveForward(distance,1);
+//ALPHA MOVEMENT COMMENTED BELOW    
 	if (distance==1){
 		pickerRobot.faceEast(1);
 		pickerRobot.addMovement("forward_x",37.5,1);
@@ -97,7 +102,30 @@ void PickerRobot::movement(){
 		pickerRobot.faceWest(1);
 		pickerRobot.addMovement("forward_x",-37.5,1);
 	}
+//    //temporary variable used in calculation for distance to move
+//    double distanceToMove = 0;
+//    //if there is a destination
+//    if (destX != null) {
+//        //if the robot is not at its destination
+//        if (x != destX) {
+//            //check if we need to go backwards
+//            if (x > destX) {
+//                
+//                pickerRobot.addMovement("forward_x",
+//    }
+}
 
+/*
+ * Method that is called whenever a message is received from a beacon.
+ * It will use the message to determine the Picker's next destination.
+ */
+void beaconCallback(const nav_msgs::Odometry msg) {
+    destX = msg.pose.pose.position.x;
+    destY = msg.pose.pose.position.y;
+    
+    //debugging purposes
+    ROS_INFO("Beacon_1 x position is: %f", x);
+	ROS_INFO("Beacon_1 y position is: %f", y);
 }
 
 int main(int argc, char **argv)
@@ -120,6 +148,14 @@ int main(int argc, char **argv)
 	pickerRobot.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000,callBackLaserScan);
 	//subscribe to carrier robot's status message
 	ros::Subscriber mysub_object = n.subscribe<se306project::carrier_status>("/robot_1/status",1000,recieveCarrierRobotStatus);
+    
+    // create subscribers for all beacons on world
+    ros:: Subscriber beacon1_sub = n.subscribe<nav_msgs::Odometry>("/beacon1/", 1000, beaconCallback);
+    //ros:: Subscriber beacon2_sub = n.subscribe<nav_msgs::Odometry>("/beacon2/", 1000, beaconCallback);
+        
+    // add them all to the beacon queue so the PickerRobot can process them one at a time
+    pickerRobot.beaconQueue.push_back(beacon1_sub);
+    //pickerRobot.beaconQueue.push_back(beacon2_sub);
 
 	// initalise robot status message
 	se306project::robot_status status_msg;
