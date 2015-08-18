@@ -314,6 +314,16 @@ void Entity::rotate(double angleToRotateTo, double angleSpeed){
 		}
 		updateOdometry();
 	}else{
+		//set the direction the robot is now facing
+		if(theta<0.1 && theta>-0.1){ //if facing east then velocity should be negative since overshoot
+			directionFacing=EAST;
+		}else if(theta<M_PI/2+0.1 && theta>M_PI/2-0.1){ //if facing North then velocity should be negative since overshoot
+			directionFacing=NORTH;
+		}else if(theta<-M_PI+0.1 || theta>M_PI-0.1){ //if facing west then velocity should be negative since overshoot
+			directionFacing=WEST;
+		}else if(theta<-M_PI/2+0.1 && theta>-M_PI/2-0.1){ //if facing south then velocity should be negative since overshoot
+			directionFacing=SOUTH;
+		}
 		movementComplete();//call method complete to remove complete movement from queue
 		//if angle similar stop rotating
 		angularVelocity=0;
