@@ -18,7 +18,7 @@ interval_real 100  # real-time interval between simulation updates in millisecon
 paused 0
 
 # configure the GUI window
-#size [ 900.000 600.000 ] 
+#size [ 900.000 600.000 ]
 #center [-7.010 5.960] 
 #rotate [ 0.920 -0.430 ]
 #scale 28.806 
