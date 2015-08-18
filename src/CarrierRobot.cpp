@@ -46,12 +46,12 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 		if(obstacleStatus.compare("Obstacle nearby")!=0){
 			obstacleStatus = "Obstacle nearby";
 			//TODO implement real avoidance currently temp to test
+			//carrierRobot.addMovementFront(,carrierRobot.getTheta()+1,1);
 			carrierRobot.addMovementFront("rotation",carrierRobot.getTheta()+1,1);
 		}
 	} else {
 		obstacleStatus = "No obstacles";
 	}
-
 }
 
 /*
