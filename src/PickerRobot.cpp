@@ -22,6 +22,20 @@ std::string previousStatus = "Moving";
 std::string obstacleStatus = "No obstacles";
 double distance=1;
 
+/**
+ * Getter method for the bin capacity of the picker robot
+ */
+int PickerRobot::getBinCapacity(){
+	return bin_capacity;
+}
+
+/**
+ * Setter method for the bin capacity of the picker robot
+ */
+void PickerRobot::setBinCapacity(int bin_capacity){
+	this->bin_capacity=bin_capacity;
+}
+
 /*
  * Wrapper method for the callBackStageOdm method (in Entity)
  */
@@ -31,13 +45,18 @@ void callBackStageOdm(const nav_msgs::Odometry msg){
 
 void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 	pickerRobot.stageLaser_callback(msg);
-
+	int pickrange=2;
+	if (pickerRobot.getStatus().compare("Moving")==0){
+		//TODO if(msg.ranges[0]<=pickrange&&msg.intensities[0]==1){
+		if(msg.ranges[0]<=pickrange&&msg.ranges[7]>=pickrange){
+			pickerRobot.setBinCapacity(pickerRobot.getBinCapacity()+2);
+		}
+	}
 	if (pickerRobot.getMinDistance() < 1) {
 		obstacleStatus = "Obstacle nearby";
 	} else {
 		obstacleStatus = "No obstacles";
 	}
-
 }
 /*
  * Method that process the carrier robot message received.
@@ -60,7 +79,14 @@ void recieveCarrierRobotStatus(const se306project::carrier_status::ConstPtr& msg
  * Method for the carrier robot's states transition and implementation
  */
 void PickerRobot::stateLogic(){
+	if(pickerRobot.getBinCapacity()>=BIN_CAPACITY){
+		pickerRobot.setStatus("Full");
+		pickerRobot.addMovementFront("forward_x",0,0);
+		pickerRobot.move();
+		//TODO halt movement
+	}
 	if (pickerRobot.getStatus().compare("Moving")==0){
+		pickerRobot.move();
 		if(pickerRobot.movementQueue.size()<1){
 			pickerRobot.setStatus("Full");
 		}
@@ -144,10 +170,11 @@ int main(int argc, char **argv)
 		status_msg.obstacle = obstacleStatus;
 		pub.publish(status_msg);//publish the message for other node
 
-		pickerRobot.move();//robot move
+		//pickerRobot.move();//robot move
 		//TODO debug
 		if(count==7){
 			pickerRobot.movement();
+			pickerRobot.move();
 		}
 		if(count>7){
 			pickerRobot.stateLogic();

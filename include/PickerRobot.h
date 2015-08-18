@@ -17,6 +17,8 @@ public:
 	virtual ~PickerRobot();
 	void movement();
 	virtual void stateLogic();
+	int getBinCapacity();
+	void setBinCapacity(int bin_capacity);
 
 private:
 	int bin_capacity=0;

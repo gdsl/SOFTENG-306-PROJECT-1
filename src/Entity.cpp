@@ -90,10 +90,10 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg)
         //range vector means distance measure corresponds to the a set of angles
 
 	// reset values
-	minDistance = 30;
+	minDistance = 10;
 	obstacleAngle = 270;
 
-	int l=sizeof(msg.ranges) / sizeof(msg.ranges[0]);
+	int l=sizeof(msg.ranges); // sizeof(msg.ranges[0]);
 	for (int i=0; i<l; i++){
 		  if (msg.ranges[i]< minDistance) {
 			 minDistance = msg.ranges[i];
