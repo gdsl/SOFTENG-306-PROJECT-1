@@ -101,6 +101,8 @@ void Generator::loadOrchard()
 	trunkHeight = atoi(trunk_height->GetText());
 
 	// TODO
+	// Spawn robots
+	//for (int i = 0; i <)
 }
 
 int main(int argc, char **argv)
