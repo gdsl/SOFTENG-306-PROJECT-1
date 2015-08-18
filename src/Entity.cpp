@@ -94,7 +94,7 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg)
 	obstacleAngle = 270;
 
 	int l=msg.ranges.size(); // sizeof(msg.ranges[0]);
-	for (int i=0; i<l; i++){
+	for (int i=45; i<l-45; i++){
 		  if (msg.ranges[i]< minDistance) {
 			 minDistance = msg.ranges[i];
 			 obstacleAngle= (i/l) * msg.angle_increment + msg.angle_min;
@@ -256,16 +256,16 @@ void Entity::moveForward(double pos, double vel, std::string direction){
 				linearVelocity=vel;
 			}
 			if (position>pos){//make sure the robot can slight go backwards to adjust to right position
-				if(theta<0.1 && theta>-0.1){ //if facing east then velocity should be negative since overshoot
+				if(directionFacing==EAST){ //if facing east then velocity should be negative since overshoot
 					linearVelocity=-linearVelocity;
-				}else if(theta<M_PI/2+0.1 && theta>M_PI/2-0.1){ //if facing North then velocity should be negative since overshoot
+				}else if(directionFacing==NORTH){ //if facing North then velocity should be negative since overshoot
 					linearVelocity=-linearVelocity;
 				}
 			//	linearVelocity=-linearVelocity;	
 			}else if (pos>position){//now in the -ve direction to our frame of reference
-				if(theta<-M_PI+0.1 || theta>M_PI-0.1){ //if facing west then velocity should be negative since overshoot
+				if(directionFacing==WEST){ //if facing west then velocity should be negative since overshoot
 					linearVelocity=-linearVelocity;
-				}else if(theta<-M_PI/2+0.1 && theta>-M_PI/2-0.1){ //if facing south then velocity should be negative since overshoot
+				}else if(directionFacing==SOUTH){ //if facing south then velocity should be negative since overshoot
 					linearVelocity=-linearVelocity;
 				}
 			}
