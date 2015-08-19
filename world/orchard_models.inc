@@ -61,6 +61,8 @@ define pickerLaser laserBase
 
 define carrierLaser laserBase
 ()
+define beaconLaser laserBase
+()
 
 define dogLaser pretendLaserBase
 ()
@@ -249,5 +251,6 @@ define beacon position
   gui_nose 0
   ranger_return 0
   obstacle_return 0
+  beaconLaser(pose [ 0.050 0.000 0 0.000 ])
 )
 
