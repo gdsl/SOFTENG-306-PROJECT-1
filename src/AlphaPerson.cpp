@@ -22,6 +22,7 @@ AlphaPerson::~AlphaPerson() {
 AlphaPerson alphaPerson(-30.00,21.15);
 bool foundTree = false;
 bool isSearch = false;
+bool lookAtBottom = true;
 double yDistance = 0;
 // Default human behaviour = walking
 std::string status="Walking";
@@ -49,8 +50,15 @@ void stage_laserCallback(sensor_msgs::LaserScan msg) {
                 double absAngle = i + toDegree - 90;
                 double obsX = alphaPerson.getX() + msg.ranges[i]*cos(absAngle*M_PI/180);
                 double obsY = alphaPerson.getY() + msg.ranges[i]*sin(absAngle*M_PI/180);
+                
+                bool whereToLook;
+                if (lookAtBottom) {
+                    whereToLook = -105 < absAngle && absAngle < -90;
+                } else {
+                    whereToLook = 90 < absAngle && absAngle < 105;
+                }
 
-                if (msg.ranges[i] > 1.5 && -105 < absAngle && absAngle < -90) {
+                if (msg.ranges[i] > 1.5 && whereToLook) {
                     foundTree = true;
                     if (msg.ranges[i] < minDist) minDist = msg.ranges[i];
                     v.push_back(msg.ranges[i]);
@@ -80,7 +88,12 @@ void stage_laserCallback(sensor_msgs::LaserScan msg) {
 
             if (count > 0) {
                 avgX = sumX / count;
-                avgY = (sumY /count) - 0.25;
+                avgY = (sumY /count) ;
+                if (lookAtBottom) {
+                    avgY -= 0.25;
+                } else {
+                    avgY += 0.25;
+                }
                 yDistance = avgY - alphaPerson.getY() + 0.75;
             }
             ROS_INFO("ALPHA PERSON x:%f y:%f",avgX,avgY);
@@ -112,6 +125,7 @@ int main(int argc, char **argv)
     int moving_to_search_spot = 1;
     int searching = 2;
     int go_to_next_tree = 3;
+    int tickCount = 0;
     while (ros::ok())
     { 
         alphaPerson.move();
@@ -124,12 +138,29 @@ int main(int argc, char **argv)
             } else if (state == moving_to_search_spot) {
                 alphaPerson.faceEast(1);
                 alphaPerson.addMovement("forward_x",0.75,1);
-                alphaPerson.faceSouth(1);
+                if (lookAtBottom) {
+                    alphaPerson.faceSouth(1);
+                } else {
+                    alphaPerson.faceNorth(1);
+                }
                 state = searching;
 
             } else if (state == searching) {
                 isSearch = true;
-                if (foundTree) state = go_to_next_tree;
+                if (foundTree) {
+                    state = go_to_next_tree;
+                } else {
+                    if (tickCount > 10)  {
+                        tickCount = 0;
+                        lookAtBottom = !lookAtBottom;
+                        if (lookAtBottom) {
+                            alphaPerson.faceSouth(1);
+                        } else {
+                            alphaPerson.faceNorth(1);
+                        }
+                    }
+                    tickCount++;
+                }
 
             } else if (state == go_to_next_tree) {
                 isSearch = false;
