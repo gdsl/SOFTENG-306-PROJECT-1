@@ -62,7 +62,6 @@ class Entity
 		bool getDesireLocation();
 		std::string getStatus();
 		int getMovementQueueSize();
-		int getCriticalIntensity();
         //direction robot facing
 		enum Direction {WEST, SOUTH, EAST, NORTH};
         Direction getDirectionFacing();
@@ -80,12 +79,11 @@ class Entity
 		double linearVelocity;
 		double angularVelocity;
 
-		int criticalIntensity;
 		double minDistance;
 		double obstacleAngle;
 		std::string status;
 		
-		Direction directionFacing=NORTH;//initialse to west originally
+		Direction directionFacing=WEST;//initialse to west originally
 		//boolean for if the robot is at desire location
 		bool desireLocation;
 		// Expresses velocity in free space broken into its linear and angular parts
