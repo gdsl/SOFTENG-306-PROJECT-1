@@ -17,45 +17,43 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 	ui->robotList1->item(0)->setText("Type: Picker");
 	ui->robotList2->item(0)->setText("Type: Carrier");
-    
+    ui->animalList1->item(0)->setText("Type: Dog");
+	ui->humanList1->item(0)->setText("Type: Human");
     uiList[0] = ui->robotList1;
     uiList[1] = ui->robotList2;
-    uiList[2] = ui->obstacleList1;
-    uiList[3] = ui->obstacleList2;
-        
-    //Create a seperate thread for each robot.
-    QThread *thread = new QThread(this);
-    QThread *thread2 = new QThread(this);
-        
-    //Set a worker for each thread and set their IDs.
-    Worker *worker = new Worker();
-    Worker *secondWorker = new Worker();
-    
-    worker->moveToThread(thread);
-    secondWorker->moveToThread(thread2);
-        
-    worker->setId("0");
-    secondWorker->setId("1");
-        
-    connect(thread, SIGNAL(started()), worker, SLOT(executeScript())); //started() signal is by default called by thread->start
-    connect(thread2, SIGNAL(started()), secondWorker, SLOT(executeScript()));
-        
-    connect(worker, SIGNAL(requestNewLabel(QString, QString, int)), this, SLOT(onUpdateGUI(QString, QString, int))); //custom signal which calls the slot for onUpdateGUI
-    connect(secondWorker, SIGNAL(requestNewLabel(QString, QString, int)), this, SLOT(onUpdateGUI(QString, QString, int)));
-    
-    connect(thread, SIGNAL(destroyed()), worker, SLOT(deleteLater()));
-    connect(thread2, SIGNAL(destroyed()), secondWorker, SLOT(deleteLater()));
-	
-    thread->start();
-    thread2->start();
-    
-	/*//create a new thread
-	QThread *thread = new QThread(this);
-	//create a new worker (a bit like swingworker)
-    Worker *worker = new Worker();
-    worker->moveToThread(thread);
-	worker->setId("robot_0"); */
+    uiList[2] = ui->animalList1;
+    uiList[3] = ui->humanList1;        
 }
+
+void MainWindow::startReadingTopics() {
+	for (int i = 0; i < 4; i++) {
+		QThread *thread = new QThread(this);
+		//QThread *thread2 = new QThread(this);
+		    
+		Worker *worker = new Worker();
+		//Worker *secondWorker = new Worker();
+		
+		worker->moveToThread(thread);
+		//secondWorker->moveToThread(thread2);
+	    stringstream out;
+		out << i;
+		worker->setId( out.str());
+		//secondWorker->setId("1");
+		    
+		connect(thread, SIGNAL(started()), worker, SLOT(executeScript())); //started() signal is by default called by thread->start
+		//connect(thread2, SIGNAL(started()), secondWorker, SLOT(executeScript()));
+		    
+		connect(worker, SIGNAL(requestNewLabel(QString, QString, int)), this, SLOT(onUpdateGUI(QString, QString, int))); //custom signal which calls the slot for onUpdateGUI
+		//connect(secondWorker, SIGNAL(requestNewLabel(QString, QString, int)), this, SLOT(onUpdateGUI(QString, QString, int)));
+		
+		connect(thread, SIGNAL(destroyed()), worker, SLOT(deleteLater()));
+		//connect(thread2, SIGNAL(destroyed()), secondWorker, SLOT(deleteLater()));
+	
+		thread->start();
+		//thread2->start();
+    }
+}
+
 
 MainWindow::~MainWindow()
 {
@@ -75,8 +73,8 @@ void MainWindow::on_launchButton_clicked()
 	//launch roslaunch
 	system("roslaunch se306project orchard.launch &");
 
-	emit MainWindow::requestProcess();
-	qDebug("THREAD STARTED@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+	//emit MainWindow::requestProcess();
+	startReadingTopics();
 }
 
 void MainWindow::on_closeButton_clicked()

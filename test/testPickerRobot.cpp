@@ -1,15 +1,9 @@
 #include <gtest/gtest.h>
 #include "PickerRobot.h"
-#include "CarrierRobot.h"
 
-//function for example
-int add(int a, int b) {
-    return a+b;
-}
-
-TEST(Example,testcase1) {
-    EXPECT_EQ(5,add(2,3));
-}
+/**
+ * Unit test for Picker Robot. Tests basic methods like constructor
+ */
 
 /*
  * Test for Entity constructor. Tests that default values are assigned correctly.
@@ -57,34 +51,17 @@ TEST(PickerRobot, setDesireLocationOfPicker) {
 	EXPECT_TRUE(pickerRobot.getDesireLocation());
 }
 
-/*
- * Test for Entity moveForward() method when Robot is NOT near its destination position.
- * Velocity of Robot should be set to value given as the Robot should be moving towards its 
- * horizontal or vertical destination.
- * WILL NOT WORK UNTIL ROBOT PUBLISHERS ARE INITIALIZED IN CONSTRUCTORS.
-TEST(PickerRobot, moveForwardWhenNotAtDestination) {
-	PickerRobot pickerRobot = PickerRobot();
+TEST(PickerRobot, moveForwardWhenNotAtDestinationPicker) {
+	PickerRobot pickerRobot;
 	ros::NodeHandle n;
 	pickerRobot.robotNode_stage_pub=n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
 	pickerRobot.setPose(10, 10, 5);
 	pickerRobot.moveForward(15, 1, "x");
 	EXPECT_EQ(pickerRobot.getLin(), 1);
 }
-*/
-/*
- * Test for Carrier robot inherit Entity constructor. Tests that default values are assigned correctly.
- */
-TEST(CarrierRobot, constructCarrier) {
-	CarrierRobot carrierRobot = CarrierRobot();
-	EXPECT_EQ(carrierRobot.getX(), 0);
-	EXPECT_EQ(carrierRobot.getY(), 0);
-	EXPECT_EQ(carrierRobot.getTheta(), 0);
-	EXPECT_EQ(carrierRobot.getLin(), 0);
-	EXPECT_EQ(carrierRobot.getAng(), 0);
-	EXPECT_FALSE(carrierRobot.getDesireLocation());
-}
 
 int main(int argc,char **argv) {
+	ros::init(argc, argv, "testPickerRobot");
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }

@@ -29,10 +29,11 @@ class Entity
 		// Publisher and Subscriber. Public available to update.
 		ros::Publisher robotNode_stage_pub;
 		ros::Subscriber stageOdo_Sub;
-                ros::Subscriber baseScan_Sub;
+		ros::Subscriber baseScan_Sub;
 
 		// Callback methods
 		void stageOdom_callback(nav_msgs::Odometry msg);
+
                 void stageLaser_callback(sensor_msgs::LaserScan msg);
 		void atLocation();
 		// Movement methods
@@ -47,13 +48,16 @@ class Entity
 		void faceWest(double angleSpeed);
 		void updateOdometry();
 		void setDesireLocation(bool desireLocation);
-        //get method
-        double getX();
-        double getY();
-        double getTheta();
-        double getLin();
-        double getAng();
-        bool getDesireLocation();
+		//get method
+		double getX();
+		double getY();
+		double getTheta();
+		double getLin();
+		double getAng();
+		double getMinDistance();
+		double getObstacleAngle();
+		bool getDesireLocation();
+		int getMovementQueueSize();
 
 		//movement queue
         std::vector<Movement> movementQueue;

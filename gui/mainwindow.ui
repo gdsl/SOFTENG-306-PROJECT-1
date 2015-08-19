@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>755</width>
-    <height>485</height>
+    <width>861</width>
+    <height>574</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,24 +27,11 @@
      <string>Robots</string>
     </property>
    </widget>
-   <widget class="QLabel" name="obstacleLabel">
-    <property name="geometry">
-     <rect>
-      <x>60</x>
-      <y>150</y>
-      <width>81</width>
-      <height>17</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Obstacles</string>
-    </property>
-   </widget>
    <widget class="QLabel" name="settingsLabel">
     <property name="geometry">
      <rect>
       <x>200</x>
-      <y>290</y>
+      <y>350</y>
       <width>67</width>
       <height>17</height>
      </rect>
@@ -57,7 +44,7 @@
     <property name="geometry">
      <rect>
       <x>220</x>
-      <y>310</y>
+      <y>370</y>
       <width>101</width>
       <height>17</height>
      </rect>
@@ -70,7 +57,7 @@
     <property name="geometry">
      <rect>
       <x>220</x>
-      <y>330</y>
+      <y>390</y>
       <width>101</width>
       <height>17</height>
      </rect>
@@ -83,7 +70,7 @@
     <property name="geometry">
      <rect>
       <x>220</x>
-      <y>350</y>
+      <y>410</y>
       <width>131</width>
       <height>17</height>
      </rect>
@@ -96,7 +83,7 @@
     <property name="geometry">
      <rect>
       <x>360</x>
-      <y>310</y>
+      <y>370</y>
       <width>113</width>
       <height>21</height>
      </rect>
@@ -106,7 +93,7 @@
     <property name="geometry">
      <rect>
       <x>360</x>
-      <y>330</y>
+      <y>390</y>
       <width>113</width>
       <height>21</height>
      </rect>
@@ -116,7 +103,7 @@
     <property name="geometry">
      <rect>
       <x>360</x>
-      <y>350</y>
+      <y>410</y>
       <width>113</width>
       <height>21</height>
      </rect>
@@ -126,7 +113,7 @@
     <property name="geometry">
      <rect>
       <x>290</x>
-      <y>390</y>
+      <y>450</y>
       <width>99</width>
       <height>27</height>
      </rect>
@@ -139,7 +126,7 @@
     <property name="geometry">
      <rect>
       <x>440</x>
-      <y>390</y>
+      <y>450</y>
       <width>99</width>
       <height>27</height>
      </rect>
@@ -154,9 +141,14 @@
       <x>60</x>
       <y>20</y>
       <width>181</width>
-      <height>121</height>
+      <height>151</height>
      </rect>
     </property>
+    <item>
+     <property name="text">
+      <string/>
+     </property>
+    </item>
     <item>
      <property name="text">
       <string/>
@@ -189,6 +181,46 @@
       <x>250</x>
       <y>20</y>
       <width>181</width>
+      <height>151</height>
+     </rect>
+    </property>
+    <item>
+     <property name="text">
+      <string/>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string/>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string/>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string/>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string/>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string/>
+     </property>
+    </item>
+   </widget>
+   <widget class="QListWidget" name="humanList1">
+    <property name="geometry">
+     <rect>
+      <x>250</x>
+      <y>210</y>
+      <width>181</width>
       <height>121</height>
      </rect>
     </property>
@@ -218,13 +250,13 @@
      </property>
     </item>
    </widget>
-   <widget class="QListWidget" name="obstacleList2">
+   <widget class="QListWidget" name="animalList1">
     <property name="geometry">
      <rect>
-      <x>250</x>
-      <y>170</y>
+      <x>60</x>
+      <y>210</y>
       <width>181</width>
-      <height>101</height>
+      <height>121</height>
      </rect>
     </property>
     <item>
@@ -253,40 +285,18 @@
      </property>
     </item>
    </widget>
-   <widget class="QListWidget" name="obstacleList1">
+   <widget class="QLabel" name="animalLabel">
     <property name="geometry">
      <rect>
       <x>60</x>
-      <y>170</y>
-      <width>181</width>
-      <height>101</height>
+      <y>180</y>
+      <width>91</width>
+      <height>17</height>
      </rect>
     </property>
-    <item>
-     <property name="text">
-      <string/>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string/>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string/>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string/>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string/>
-     </property>
-    </item>
+    <property name="text">
+     <string>Animals</string>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -294,7 +304,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>755</width>
+     <width>861</width>
      <height>25</height>
     </rect>
    </property>

@@ -49,6 +49,8 @@ add_message_files(
 	RobotState.msg
 	robot_status.msg
 	carrier_status.msg
+	animal_status.msg
+	human_status.msg
 )
 
 ## Generate services in the 'srv' folder
@@ -180,9 +182,15 @@ add_executable(AlphaDog src/AlphaDog.cpp)
 target_link_libraries(AlphaDog Animal Entity ${catkin_LIBRARIES})
 add_dependencies(AlphaDog  se306project_generate_messages_cpp)
 
+add_library(AlphaDogLib src/AlphaDog.cpp)
+target_link_libraries(AlphaDogLib Animal Entity ${catkin_LIBRARIES})
+
 add_executable(AlphaPerson src/AlphaPerson.cpp)
 target_link_libraries(AlphaPerson Person Entity ${catkin_LIBRARIES})
 add_dependencies(AlphaPerson se306project_generate_messages_cpp)
+
+add_library(AlphaPersonLib src/AlphaPerson.cpp)
+target_link_libraries(AlphaPersonLib Person Entity ${catkin_LIBRARIES})
 
 add_executable(PickerRobot src/PickerRobot.cpp)
 target_link_libraries(PickerRobot Robot Entity ${catkin_LIBRARIES})
@@ -204,12 +212,23 @@ target_link_libraries(CarrierRobotLib Robot Entity ${catkin_LIBRARIES})
 # endif()
 
 if (CATKIN_ENABLE_TESTING)
-    #unit test (testing class function/constructor only)
-    catkin_add_gtest(testRobotUnit test/testRobot.cpp)
-    target_link_libraries(testRobotUnit PickerRobotLib CarrierRobotLib ${catkin_LIBRARIES})
+	#integration test(everything include testing multiple nodes with stage running)
+    find_package(catkin REQUIRED COMPONENTS rostest)
+    
+    add_rostest_gtest(testAlphaPerson test/rostest/testAlphaPerson.test test/testAlphaPerson.cpp)
+    target_link_libraries(testAlphaPerson AlphaPersonLib ${catkin_LIBRARIES})
+    
+    add_rostest_gtest(testCarrierRobot test/rostest/testCarrierRobot.test test/testCarrierRobot.cpp)
+    target_link_libraries(testCarrierRobot CarrierRobotLib ${catkin_LIBRARIES})
+    
+    add_rostest_gtest(testPickerRobot test/rostest/testPickerRobot.test test/testPickerRobot.cpp)
+    target_link_libraries(testPickerRobot PickerRobotLib ${catkin_LIBRARIES})
 
-    #integration test(everything include testing multiple nodes with stage running)
-    find_package(rostest)
-    add_rostest_gtest(testRobot test/mytest.test test/testRobot.cpp)
-    target_link_libraries(testRobot PickerRobotLib CarrierRobotLib ${catkin_LIBRARIES})
+    add_rostest_gtest(testAlphaDog test/rostest/testAlphaDog.test test/testAlphaDog.cpp)
+    target_link_libraries(testAlphaDog AlphaDogLib ${catkin_LIBRARIES})
+    
+    # unit tests
+	catkin_add_gtest(testMovement test/testMovement.cpp)
+	target_link_libraries(testMovement Movement ${catkin_LIBRARIES})
+    
 endif()

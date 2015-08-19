@@ -14,7 +14,7 @@
  * Default constructor of Entity. Calls the other constructor with default values.
  */
 
-Entity::Entity():Entity(0,0,0,0.01,0.01){
+Entity::Entity():Entity(0,0,0,0,0){
 
 }
 
@@ -88,6 +88,11 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg)
 	//This is the callback function to process laser scan messages
 	//you can access the range data from msg.ranges[i]. i = sample numbe
         //range vector means distance measure corresponds to the a set of angles
+
+	// reset values
+	minDistance = 30;
+	obstacleAngle = 270;
+
         int l=sizeof(msg.ranges) / sizeof(msg.ranges[0]);
         for (int i=0; i<l; i++){
               if (msg.ranges[i]< minDistance) {
@@ -110,7 +115,7 @@ void Entity::updateOdometry()
 }
 
 /**
- * Message to get node start going through the movement queue
+ * Message to get node to start going through the movement queue
  */
 void Entity::move(){
 	if(movementQueue.size()>0){
@@ -138,6 +143,10 @@ void Entity::movementComplete(){
 	//convert to position
 	movementQueue.erase(movementQueue.begin());//remove movement from queue
 	desireLocation=true;
+}
+
+int Entity::getMovementQueueSize() {
+	return movementQueue.size();
 }
 
 /**
@@ -200,8 +209,17 @@ void Entity::moveForward(double pos, double vel, std::string direction){
 	}
 	if (!desireLocation){//TODO slow down
 		ROS_INFO("mfpos: %f", pos);
-		if(std::abs(position-pos)>=0.1){
-			linearVelocity=vel;
+		if (std::abs(position-pos)>=0.01){
+			if(std::abs(position-pos)<=0.2){
+				linearVelocity=0.1;
+			}else if(std::abs(position-pos)<=1){
+				linearVelocity=1;
+			}else{
+				linearVelocity=vel;
+			}
+			//if (position-pos>=0){
+			//	linearVelocity=-linearVelocity;	
+			//}
 		}else{
 			movementComplete();//call method complete to remove complete movement from queue
 			linearVelocity=0;
@@ -308,6 +326,22 @@ double Entity::getLin() {
  */
 double Entity::getAng() {
     return angularVelocity;
+}
+
+/**
+ * Getter method for min distance of obstacle from entity
+ */
+
+double Entity::getMinDistance() {
+	return minDistance;
+}
+
+/**
+ * Getter method for getting obstacle angle from entity to minDistance obstacle
+ */
+
+double Entity::getObstacleAngle() {
+	return obstacleAngle;
 }
 
 /**

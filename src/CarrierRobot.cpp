@@ -21,7 +21,8 @@ CarrierRobot::~CarrierRobot() {
 //create carrier robot and status
 CarrierRobot carrierRobot;
 std::string status="Idle";
-
+std::string previousStatus = "Idle";
+std::string obstacleStatus = "No obstacles";
 /*
  * Wrapper method for the callBackStageOdm method
  */
@@ -31,6 +32,12 @@ void callBackStageOdm(const nav_msgs::Odometry msg){
 
 void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 	carrierRobot.stageLaser_callback(msg);
+
+	if (carrierRobot.getMinDistance() < 1) {
+		obstacleStatus = "Obstacle nearby";
+	} else {
+		obstacleStatus = "No obstacles";
+	}
 }
 
 /*
@@ -51,7 +58,7 @@ void recievePickerRobotStatus(const se306project::robot_status::ConstPtr& msg)
 		carrierRobot.faceWest(1);
 		carrierRobot.addMovement("forward_x",-34.5, 1);
 		carrierRobot.faceNorth(1);
-		carrierRobot.addMovement("forward_y",std::abs(14.5-carrierRobot.getY()),1);
+		carrierRobot.addMovement("forward_y",std::abs(15-carrierRobot.getY()),1);
 		//carrierRobot.setDesireLocation(false);//refresh that it can recieve more desire location
 	}else if(status.compare("Idle")==0){
 		//when the carrier robot is idle and the picker robot is full the carrier robot move to it.
@@ -74,6 +81,8 @@ void recievePickerRobotStatus(const se306project::robot_status::ConstPtr& msg)
 		if(carrierRobot.movementQueue.size()<1){
 			status="Arrived";
 		}
+	} else if (status.compare("Obstacle nearby") == 0) {
+
 	}
 }
 
@@ -98,6 +107,7 @@ int main(int argc, char **argv)
 	//subscribe to listen to messages coming from stage for odometry (this is base pose so it is
 	//relative to the absolute frame of the farm.
 	carrierRobot.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000, callBackStageOdm);
+
         //relative to the obstacle information
         carrierRobot.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000, callBackLaserScan);
 	//subscribe to the status of picker robot
@@ -118,13 +128,12 @@ int main(int argc, char **argv)
 		status_msg.pos_x=carrierRobot.getX(); //add x to message to broadcast
 		status_msg.pos_y=carrierRobot.getY();//add y to message to broadcast
 		status_msg.pos_theta=carrierRobot.getAng(); //add angle to message to broadcast
+		status_msg.obstacle = obstacleStatus;
 		pub.publish(status_msg);	//publish message
 
 		carrierRobot.move();
 		loop_rate.sleep();
 		++count; // increase counter
 	}
-
 	return 0;
-
 }

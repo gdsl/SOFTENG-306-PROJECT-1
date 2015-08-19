@@ -13,6 +13,8 @@ PickerRobot::~PickerRobot(){
 }
 PickerRobot pickerRobot;
 std::string status="Moving";
+std::string previousStatus = "Moving";
+std::string obstacleStatus = "No obstacles";
 double distance=1;
 
 /*
@@ -24,6 +26,13 @@ void callBackStageOdm(const nav_msgs::Odometry msg){
 
 void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 	pickerRobot.stageLaser_callback(msg);
+
+	if (pickerRobot.getMinDistance() < 1) {
+		obstacleStatus = "Obstacle nearby";
+	} else {
+		obstacleStatus = "No obstacles";
+	}
+
 }
 /*
  * Method that process the carrier robot message received.
@@ -62,14 +71,14 @@ void PickerRobot::movement(){
 		pickerRobot.faceEast(1);
 		pickerRobot.addMovement("forward_x",37.5,1);
 		pickerRobot.faceSouth(1);
-		pickerRobot.addMovement("forward_y",-4.35,1);
+		pickerRobot.addMovement("forward_y",-3.35,1);
 		pickerRobot.faceWest(1);
 		pickerRobot.addMovement("forward_x",-37.5,1);
 	}else if (distance ==5){
 		pickerRobot.faceEast(1);
 		pickerRobot.addMovement("forward_x",37.5,1);
 		pickerRobot.faceNorth(1);
-		pickerRobot.addMovement("forward_y",4.35,1);
+		pickerRobot.addMovement("forward_y",3.35,1);
 		pickerRobot.faceWest(1);
 		pickerRobot.addMovement("forward_x",-37.5,1);
 	}
@@ -99,6 +108,10 @@ int main(int argc, char **argv)
 
 	// initalise robot status message
 	se306project::robot_status status_msg;
+        unsigned int num_readings = 100;
+        double laser_frequency = 40;
+        double ranges[num_readings];
+        double intensities[num_readings];
 
 	ros::Rate loop_rate(10);
 
@@ -113,6 +126,7 @@ int main(int argc, char **argv)
 		status_msg.pos_x=pickerRobot.getX(); //add x to message to broadcast
 		status_msg.pos_y=pickerRobot.getY();//add y to message to broadcast
 		status_msg.pos_theta=pickerRobot.getTheta(); //add angle to message to broadcast
+		status_msg.obstacle = obstacleStatus;
 		pub.publish(status_msg);//publish the message for other node
 
 		pickerRobot.move();//robot move
@@ -127,12 +141,9 @@ int main(int argc, char **argv)
 				}
 			}
 		}
-
 		ros::spinOnce();
 		loop_rate.sleep();
 		++count;
 	}
-
 	return 0;
-
 }
