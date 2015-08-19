@@ -1,5 +1,5 @@
 <launch>
-	<node name="stage" pkg="stage_ros" type="stageros" args="$(find se306project)/world/orchard.world"/>
+	<node name="stage" pkg="stage_ros" type="stageros" args="$(find se306project)/world/test.world"/>
 
 	<group ns="robot_0">
 		<node pkg="se306project" name="pickernode" type="PickerRobot"/>

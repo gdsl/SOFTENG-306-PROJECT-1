@@ -61,6 +61,8 @@ define pickerLaser laserBase
 
 define carrierLaser laserBase
 ()
+define beaconLaser laserBase
+()
 
 define dogLaser pretendLaserBase
 ()

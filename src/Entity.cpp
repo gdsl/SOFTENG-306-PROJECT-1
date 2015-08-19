@@ -441,3 +441,4 @@ Entity::Direction Entity::getDirectionFacing() {
 void Entity::setStatus(std::string status){
 	this->status=status;
 }
+

@@ -1,7 +1,25 @@
-<picker_number>1</picker_number>
-<carrier_number>1</carrier_number>
-<worker_number>1</worker_number>
-<dog_number>1</dog_number>
-<resolution>2</resolution>
-<row_width>0</row_width>
-<trunk_pole_spacing>0</trunk_pole_spacing>
+<?xml version="1.1" encoding="UTF-8"?>
+<world>
+	<resolution>0.02</resolution>
+	<interval_sim>100</interval_sim>
+	<interval_real>100</interval_real>
+	<paused>0</paused>
+	<models>
+		<orchard>
+			<row_count>3</row_count>
+			<row_length>70</row_length>
+			<row_width>3</row_width>
+			<trunk_pole_spacing>2</trunk_pole_spacing>
+		</orchard>
+		<robots>
+			<picker_number>3</picker_number>
+			<carrier_number>2</carrier_number>
+		</robots>
+		<people>
+			<worker_number>1</worker_number>
+		</people>
+		<animals>
+			<dog_number>1</dog_number>
+		</animals>
+	</models>
+</world>

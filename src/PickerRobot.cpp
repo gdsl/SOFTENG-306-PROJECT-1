@@ -26,7 +26,6 @@ double distance=1;
 double destX;
 double destY;
 bool atDestX = false, atDestY = false;
-ros:: Subscriber beacon_sub;
 
 /**
  * Getter method for the bin capacity of the picker robot
@@ -54,7 +53,7 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 	int pickrange=2;
 	if (pickerRobot.getStatus().compare("Moving")==0){
 		//TODO if(msg.ranges[0]<=pickrange&&msg.intensities[0]==1){
-		if(msg.ranges[0]<=pickrange&&msg.intensities[0]==1&&msg.ranges[7]>=pickrange){
+		if(msg.ranges[0]<=pickrange&&msg.ranges[7]>=pickrange){
 			pickerRobot.setBinCapacity(pickerRobot.getBinCapacity()+2);
 		}
 	}
@@ -70,11 +69,11 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
  */
 void recieveCarrierRobotStatus(const se306project::carrier_status::ConstPtr& msg){
 	if (msg->status.compare("Transporting")==0&&pickerRobot.getStatus().compare("Full")==0){
-		/*if (distance==1){
+		if (distance==1){
 			distance=5;
 		}else if (distance ==5){
 			distance=1;
-		}*/
+		}
 		pickerRobot.movement();
 		pickerRobot.setDesireLocation(false);
 		pickerRobot.setStatus("Moving");
@@ -93,8 +92,9 @@ void PickerRobot::stateLogic(){
 	}
 	if (pickerRobot.getStatus().compare("Moving")==0){
 		pickerRobot.move();
-	}else if (pickerRobot.getStatus().compare("Full")==0){
-		//TODO Do nothing for now
+		if(pickerRobot.movementQueue.size()<1){
+			pickerRobot.setStatus("Full");
+		}
 	}
 }
 /*
@@ -159,7 +159,7 @@ void PickerRobot::movement(){
                     //check if the Robot needs to go South
                     if (currentY > destY) {
                         //calculate the distance to move backwards along Y axis
-                        distanceToMove = -(currentY - destY);
+                        distanceToMove = currentY - destY;
                         //make sure the Robot is facing South, if not, turn it South.
                         if (pickerRobot.getDirectionFacing() != SOUTH) {
                             pickerRobot.faceSouth(1);                    
@@ -204,14 +204,12 @@ void beaconCallback(const nav_msgs::Odometry msg) {
 	ROS_INFO("Beacon_1 y position is: %f", destY);
 }
 
-void atBeacon(ros::NodeHandle n) {
+void atBeacon() {
     if (atDestX && atDestY) {
         pickerRobot.movementComplete();
-        //resubscribe the beacon subscriber to the next beacon 
-        beacon_sub = n.subscribe<nav_msgs::Odometry>("/beacon2/", 1000, beaconCallback);
     }
     
-    
+    //resubscribe the beacon subscriber to the next beacon 
 }
 
 int main(int argc, char **argv)
@@ -235,12 +233,12 @@ int main(int argc, char **argv)
 	//subscribe to carrier robot's status message
 	ros::Subscriber mysub_object = n.subscribe<se306project::carrier_status>("/robot_1/status",1000,recieveCarrierRobotStatus);
     
-    // assign subscriber to listen to first beacon along path
-    beacon_sub = n.subscribe<nav_msgs::Odometry>("/beacon1/", 1000, beaconCallback);
+    // create subscribers for all beacons on world
+    ros:: Subscriber beacon1_sub = n.subscribe<nav_msgs::Odometry>("/beacon1/", 1000, beaconCallback);
     //ros:: Subscriber beacon2_sub = n.subscribe<nav_msgs::Odometry>("/beacon2/", 1000, beaconCallback);
         
     // add them all to the beacon queue so the PickerRobot can process them one at a time
-    //pickerRobot.beaconQueue.push_back(beacon1_sub);
+    pickerRobot.beaconQueue.push_back(beacon1_sub);
     //pickerRobot.beaconQueue.push_back(beacon2_sub);
 
 	// initalise robot status message
@@ -266,10 +264,9 @@ int main(int argc, char **argv)
 		status_msg.obstacle = obstacleStatus;
 		pub.publish(status_msg);//publish the message for other node
         
-        atBeacon(n);
+        atBeacon();
         pickerRobot.movement();
-        //pickerRobot.move();
-        pickerRobot.stateLogic();
+        pickerRobot.move();
 		//TODO debug
 //		if(count==7){			
 //			pickerRobot.move();
