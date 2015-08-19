@@ -43,13 +43,39 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 	carrierRobot.stageLaser_callback(msg);
 
 	if (carrierRobot.getMinDistance() < 1) {
-		if(obstacleStatus.compare("Obstacle nearby")!=0){
-			obstacleStatus = "Obstacle nearby";
-			//TODO implement real avoidance currently temp to test
-			//carrierRobot.addMovementFront(,carrierRobot.getTheta()+1,1);
-			carrierRobot.addMovementFront("rotation",carrierRobot.getTheta()+M_PI,1);
-			//carrierRobot.addMovementFront("rotation",carrierRobot.getTheta()+M_PI/2,1);
+
+		if(carrierRobot.getCriticalIntensity()()>=4){//if its human or dog stop
+			carrierRobot.addMovementFront("forward_x",0,0);
+			carrierRobot.move();
+		}else{
+			if(carrierRobot.getDirectionFacing()== carrierRobot.NORTH&&obstacleStatus.compare("Obstacle nearby")!=0){
+				carrierRobot.addMovementFront("rotation",M_PI/2,1);
+				carrierRobot.addMovementFront("forward_x",-3,1);
+				carrierRobot.addMovementFront("rotation",M_PI,1);
+				carrierRobot.addMovementFront("forward_x",0,0);//this is at front of front
+				carrierRobot.move();
+			}
+			if(carrierRobot.getDirectionFacing()== carrierRobot.EAST&&obstacleStatus.compare("Obstacle nearby")!=0){
+				carrierRobot.addMovementFront("rotation",0, 1);
+				carrierRobot.addMovementFront("forward_y",-3,1);
+				carrierRobot.addMovementFront("rotation",-M_PI/2, 1);
+				carrierRobot.addMovementFront("forward_x",0,0);//this is at front of front
+				carrierRobot.move();
+			}
 		}
+		obstacleStatus = "Obstacle nearby";
+		/*if(obstacleStatus.compare("Obstacle nearby")==0){
+			//if(msg.intensities[obstacleNumber]>=4){//if its human or dog stop
+				carrierRobot.addMovementFront("forward_x",0,0);
+				//carrierRobot.addMovementFront("rotation",M_PI,1);
+				//carrierRobot.addMovementFront("rotation",-M_PI,1);
+				carrierRobot.move();
+				//TODO implement real avoidance currently temp to test
+				//carrierRobot.addMovementFront(,carrierRobot.getTheta()+1,1);
+				//carrierRobot.addMovementFront("rotation",carrierRobot.getTheta()+M_PI,1);
+				//carrierRobot.addMovementFront("rotation",carrierRobot.getTheta()+M_PI/2,1);
+			//}
+		}*/
 	} else {
 		obstacleStatus = "No obstacles";
 	}
@@ -108,7 +134,9 @@ void CarrierRobot::stateLogic(){
 			//carrierRobot.setStatus("Arrived");
 		}
 		//if the carrier is in moving state, move
-		carrierRobot.move();
+		//if (obstacleStatus.compare("Obstacle nearby")!=0){
+			carrierRobot.move();
+		//}
 	}else if (obstacleStatus.compare("Obstacle nearby")==0){
 		carrierRobot.setStatus("Moving");
 		carrierRobot.move();
