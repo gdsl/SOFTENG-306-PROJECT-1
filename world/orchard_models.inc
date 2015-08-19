@@ -64,7 +64,7 @@ define carrierLaser laserBase
 
 define dogLaser pretendLaserBase
 ()
-define humanLaser pretendLaserBase
+define humanLaser laserBase
 ()
 
 
@@ -131,7 +131,7 @@ define human position
   point[0] [  -0.05  -0.05 ] 
   z [ 1.5 1.700 ]
 			)
-  humanLaser(pose [ 0.050 0.000 0 0.000 ])
+  humanLaser(pose [ 0.00 0.000 -1.7 0.000 ])
   obstacle_return 1
   ranger_return 4
 )

@@ -19,7 +19,7 @@ AlphaPerson::~AlphaPerson() {
 
 }
 
-AlphaPerson alphaPerson(2.5,18);
+AlphaPerson alphaPerson(-30,22.4);
 // Default human behaviour = walking
 std::string status="Walking";
 
@@ -27,10 +27,20 @@ std::string status="Walking";
 double radians;
 double angle;
 
-void stage_callback(nav_msgs::Odometry msg) {
+void stage_positionCallback(nav_msgs::Odometry msg) {
     alphaPerson.stageOdom_callback(msg);
-    //alphaPerson.setPose(x,y,0);
+}
 
+void stage_laserCallback(sensor_msgs::LaserScan msg) {
+    alphaPerson.stageLaser_callback(msg);
+
+    int l=msg.intensities.size();
+
+    for (int i = 0; i<l; i++) {
+        if (msg.intensities[i] == 5) {
+            ROS_INFO("ALPHA PERSON SEEE ALPHA DOG %f", msg.ranges[i]);
+        }
+    }
 }
 
 int main(int argc, char **argv) 
@@ -46,12 +56,9 @@ int main(int argc, char **argv)
     alphaPerson.robotNode_stage_pub = n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
 	ros::Publisher pub = n.advertise<se306project::human_status>("status",100);
 
-    alphaPerson.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000,stage_callback);
-    srand(time(NULL));
+    alphaPerson.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000,stage_positionCallback);
+    alphaPerson.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000,stage_laserCallback);
     ros::Rate loop_rate(10); 
-    bool targetReach = true;
-    double targetX = 1;
-    double targetY = 1;
     int state = 0;
 	int count = 0;
 	se306project::human_status status_msg;
@@ -62,17 +69,23 @@ int main(int argc, char **argv)
      if (alphaPerson.getMovementQueueSize() == 0 && state == 0) {
 
             alphaPerson.faceEast(1);
-            alphaPerson.addMovement("forward_x", 15, 1);
+            alphaPerson.addMovement("forward_x", 35, 1);
             alphaPerson.faceSouth(1);
             alphaPerson.faceEast(1);
-            alphaPerson.addMovement("forward_x", 15, 1);
+            alphaPerson.addMovement("forward_x", 35, 1);
             alphaPerson.faceSouth(1);
             state = 1;
             
 	} else if (alphaPerson.getMovementQueueSize() == 0 && state == 1) {
-        //returning         
+            /*         
             alphaPerson.faceWest(1);
-            alphaPerson.addMovement("forward_x", -30, 1 );
+            alphaPerson.addMovement("forward_x", -70, 1 );
+            alphaPerson.faceSouth(1);*/
+            alphaPerson.faceWest(1);
+            alphaPerson.addMovement("forward_x", -35, 1);
+            alphaPerson.faceSouth(1);
+            alphaPerson.faceWest(1);
+            alphaPerson.addMovement("forward_x", -35, 1);
             alphaPerson.faceSouth(1);
             state = 0;
 	} 
