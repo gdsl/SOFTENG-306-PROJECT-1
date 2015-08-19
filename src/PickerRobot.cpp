@@ -53,7 +53,7 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 	int pickrange=2;
 	if (pickerRobot.getStatus().compare("Moving")==0){
 		//TODO if(msg.ranges[0]<=pickrange&&msg.intensities[0]==1){
-		if(msg.ranges[0]<=pickrange&&msg.ranges[7]>=pickrange){
+		if(msg.ranges[0]<=pickrange&&msg.intensities[0]==1&&msg.ranges[7]>=pickrange&&msg.intensities[7]==1){
 			pickerRobot.setBinCapacity(pickerRobot.getBinCapacity()+2);
 		}
 	}
@@ -69,11 +69,11 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
  */
 void recieveCarrierRobotStatus(const se306project::carrier_status::ConstPtr& msg){
 	if (msg->status.compare("Transporting")==0&&pickerRobot.getStatus().compare("Full")==0){
-		if (distance==1){
+		/*if (distance==1){
 			distance=5;
 		}else if (distance ==5){
 			distance=1;
-		}
+		}*/
 		pickerRobot.movement();
 		pickerRobot.setDesireLocation(false);
 		pickerRobot.setStatus("Moving");
@@ -159,7 +159,7 @@ void PickerRobot::movement(){
                     //check if the Robot needs to go South
                     if (currentY > destY) {
                         //calculate the distance to move backwards along Y axis
-                        distanceToMove = currentY - destY;
+                        distanceToMove = -(currentY - destY);
                         //make sure the Robot is facing South, if not, turn it South.
                         if (pickerRobot.getDirectionFacing() != SOUTH) {
                             pickerRobot.faceSouth(1);                    

@@ -192,6 +192,8 @@ void Entity::addMovement(std::string type, double distance,double velocity){
 
 /**
  * Method to add movements to front of movement queue
+ * Distance: the value relative to the absolute frame of reference
+ * eg if +5(north) in y then distance is 5 if -5(south) in y then distance is -5
  */
 void Entity::addMovementFront(std::string type, double distance,double velocity){
 	//convert to position
@@ -321,7 +323,7 @@ void Entity::rotate(double angleToRotateTo, double angleSpeed){
 			directionFacing=NORTH;
 		}else if(theta<-M_PI+0.1 || theta>M_PI-0.1){ //if facing west then velocity should be negative since overshoot
 			directionFacing=WEST;
-		}else if(theta<-M_PI/2+0.1 && theta>-M_PI/2-0.1){ //if facing south then velocity should be negative since overshoot
+		}else if(theta<-M_PI/2+0.1 && theta>((-M_PI/2)-0.1)){ //if facing south then velocity should be negative since overshoot
 			directionFacing=SOUTH;
 		}
 		movementComplete();//call method complete to remove complete movement from queue
