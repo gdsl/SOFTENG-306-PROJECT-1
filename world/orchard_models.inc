@@ -66,7 +66,8 @@ define dogLaser pretendLaserBase
 ()
 define humanLaser pretendLaserBase
 ()
-
+define beaconLaser pretendLaserBase
+()
 
 
 define human position
@@ -249,5 +250,6 @@ define beacon position
   gui_nose 0
   ranger_return 0
   obstacle_return 0
+  beaconLaser(pose [ 0.050 0.000 0 0.000 ])
 )
 
