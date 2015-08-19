@@ -157,7 +157,8 @@ void PickerRobot::movement(){
                 //check if the Robot needs to go South
                 if (currentY > destY) {
                     //calculate the distance to move backwards along Y axis
-                    distanceToMove = currentY - destY;
+                    distanceToMove = -(currentY - destY);
+                    ROS_INFO("Y DISTANCE TO MOVE IS: %f", distanceToMove);
                     //make sure the Robot is facing South, if not, turn it South.
                     if (pickerRobot.getDirectionFacing() != Entity::SOUTH) {
                         pickerRobot.faceSouth(1);                    
