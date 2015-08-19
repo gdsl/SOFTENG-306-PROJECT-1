@@ -134,6 +134,9 @@ void MainWindow::generate() {
     string colourArray[9] = { "red", "orange", "yellow", "green", "blue", "purple", "magenta", "aqua", "fuchsia" };
     for (int i = 0; i < uiListRobots.size(); i++) {
         ui->robotScroll->widget()->layout()->addWidget(uiListRobots[i]);
+        QListWidget *robotQL = ((QListWidget*)ui->robotScroll->widget()->layout()->itemAt(i)->widget());
+        QString backgroundColour = "QListWidget {background: " + QString::fromStdString(colourArray[i]) + ";}";
+        robotQL->setStyleSheet(backgroundColour);
     }
     for (int i = 0; i < uiListAnimals.size(); i++) {
         ui->animalScroll->widget()->layout()->addWidget(uiListAnimals[i]);
