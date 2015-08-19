@@ -26,6 +26,7 @@ double distance=1;
 double destX;
 double destY;
 bool atDestX = false, atDestY = false;
+ros:: Subscriber beacon_sub;
 
 /**
  * Getter method for the bin capacity of the picker robot
@@ -134,7 +135,6 @@ void PickerRobot::movement(){
     double currentX = pickerRobot.getX();
     double currentY = pickerRobot.getY();
     //if the Picker has received the destination of the next beacon
-    //add the horizontal movement to the movement queue
     //if the robot is not at its destination
     if (pickerRobot.getMovementQueueSize() == 0) {
         if (!atDestX) {            
@@ -143,35 +143,33 @@ void PickerRobot::movement(){
                 //calculate the distance to move backwards along X axis
                 distanceToMove = currentX - destX;
                 //make sure the Robot is facing West, if not, turn it West.
-                if (pickerRobot.getDirectionFacing() != WEST) {pickerRobot.faceWest(1);}                
+                if (pickerRobot.getDirectionFacing() != Entity::WEST) {pickerRobot.faceWest(1);}                
             //otherwise it means the Robot needs to go East
             } else if (currentX < destX) {
                 distanceToMove = destX - currentX;
                 //make sure the Robot is facing West, if not, turn it West.
-                if (pickerRobot.getDirectionFacing() != EAST) {pickerRobot.faceEast(1);}
+                if (pickerRobot.getDirectionFacing() != Entity::EAST) {pickerRobot.faceEast(1);}
             }
             pickerRobot.addMovement("forward_x", distanceToMove, 1);
         } else {
             //now add the vertical movement to the movement queue
             if (!atDestY) {
-                //if the robot is not at its destination
-                if (currentY != destY) {
-                    //check if the Robot needs to go South
-                    if (currentY > destY) {
-                        //calculate the distance to move backwards along Y axis
-                        distanceToMove = currentY - destY;
-                        //make sure the Robot is facing South, if not, turn it South.
-                        if (pickerRobot.getDirectionFacing() != SOUTH) {
-                            pickerRobot.faceSouth(1);                    
-                        }                
-                    //otherwise it means the Robot needs to go North
-                    } else if (currentY < destY) {
-                        distanceToMove = destY - currentY;
-                        //make sure the Robot is facing North, if not, turn it North.
-                        if (pickerRobot.getDirectionFacing() != NORTH) {pickerRobot.faceNorth(1);}
-                    }
-                    pickerRobot.addMovement("forward_y", distanceToMove, 1);
+                //check if the Robot needs to go South
+                if (currentY > destY) {
+                    //calculate the distance to move backwards along Y axis
+                    distanceToMove = currentY - destY;
+                    //make sure the Robot is facing South, if not, turn it South.
+                    if (pickerRobot.getDirectionFacing() != Entity::SOUTH) {
+                        pickerRobot.faceSouth(1);                    
+                    }                
+                //otherwise it means the Robot needs to go North
+                } else if (currentY < destY) {
+                    distanceToMove = destY - currentY;
+                    ROS_INFO("Y DISTANCE TO MOVE IS: %f", distanceToMove);
+                    //make sure the Robot is facing North, if not, turn it North.
+                    if (pickerRobot.getDirectionFacing() != Entity::NORTH) {pickerRobot.faceNorth(1);}
                 }
+                pickerRobot.addMovement("forward_y", distanceToMove, 1);
             }            
         }
     }
@@ -187,29 +185,30 @@ void beaconCallback(const nav_msgs::Odometry msg) {
     destX = msg.pose.pose.position.x;
     destY = msg.pose.pose.position.y;
     
-    if (std::abs(destX - pickerRobot.getX()) < 0.0001) {
+    if (std::abs(destX - pickerRobot.getX()) < 0.01) {
         atDestX = true;
         ROS_INFO("AT BEACON X POSITION");
     }
     else {atDestX = false;}
     
-    if (destY == pickerRobot.getY()) {
+    if (std::abs(destY - pickerRobot.getY()) < 0.01) {
         atDestY = true;
         ROS_INFO("AT BEACON Y POSITION");
     }
     else {atDestY = false;}
     
     //debugging purposes
-    ROS_INFO("Beacon_1 x position is: %f", destX);
-	ROS_INFO("Beacon_1 y position is: %f", destY);
+    ROS_INFO("Destination Beacon x position is: %f", destX);
+	ROS_INFO("Destination Beacon y position is: %f", destY);
 }
 
-void atBeacon() {
+void atBeacon(ros::NodeHandle n) {
     if (atDestX && atDestY) {
         pickerRobot.movementComplete();
     }
     
     //resubscribe the beacon subscriber to the next beacon 
+    beacon_sub = n.subscribe<nav_msgs::Odometry>("/beacon2/", 1000, beaconCallback);
 }
 
 int main(int argc, char **argv)
@@ -234,11 +233,11 @@ int main(int argc, char **argv)
 	ros::Subscriber mysub_object = n.subscribe<se306project::carrier_status>("/robot_1/status",1000,recieveCarrierRobotStatus);
     
     // create subscribers for all beacons on world
-    ros:: Subscriber beacon1_sub = n.subscribe<nav_msgs::Odometry>("/beacon1/", 1000, beaconCallback);
+    beacon_sub = n.subscribe<nav_msgs::Odometry>("/beacon1/", 1000, beaconCallback);
     //ros:: Subscriber beacon2_sub = n.subscribe<nav_msgs::Odometry>("/beacon2/", 1000, beaconCallback);
         
     // add them all to the beacon queue so the PickerRobot can process them one at a time
-    pickerRobot.beaconQueue.push_back(beacon1_sub);
+    pickerRobot.beaconQueue.push_back(beacon_sub);
     //pickerRobot.beaconQueue.push_back(beacon2_sub);
 
 	// initalise robot status message
@@ -264,7 +263,7 @@ int main(int argc, char **argv)
 		status_msg.obstacle = obstacleStatus;
 		pub.publish(status_msg);//publish the message for other node
         
-        atBeacon();
+        atBeacon(n);
         pickerRobot.movement();
         pickerRobot.move();
 		//TODO debug
