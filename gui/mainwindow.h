@@ -27,6 +27,8 @@ public slots:
 public:
     explicit MainWindow(QWidget *parent = 0);
 	void startReadingTopics();
+	QListWidget* createNewItem(string type);
+	void generate();
     ~MainWindow();
 
 private slots:
@@ -37,6 +39,8 @@ private slots:
 private:
     Ui::MainWindow *ui;
     QListWidget *uiList[4] = {NULL, NULL, NULL, NULL};
+    vector<QListWidget*> uiListRobots;
+    vector<QListWidget*> uiListAnimals;
 //	void updateGUI(const QString buffer);
 //	void *print_message_function( void *ptr );
 //	void exec(string cmd);
