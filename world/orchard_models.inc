@@ -33,7 +33,7 @@ define laserBase ranger
 (
 	sensor
 	(
-		range [ 0.0 30.0 ] # maximum range reported by scanner in meters.
+		range [ 0.0 10.0 ] # maximum range reported by scanner in meters.
 		fov 180 # angular field of view of the scanner, in radians.
 		samples 180 # number of laser samples per scan
 	)
@@ -132,7 +132,7 @@ define human position
 			)
   humanLaser(pose [ 0.050 0.000 0 0.000 ])
   obstacle_return 1
-  ranger_return 1
+  ranger_return 4
 )
 
 define dog position
@@ -198,7 +198,7 @@ define dog position
 			)
   dogLaser(pose [ 0.050 0.000 0 0.000 ])
   obstacle_return 1
-  ranger_return 1
+  ranger_return 5
 
 )
 
@@ -214,12 +214,12 @@ define PickerRobot position
 	z [0 1]
   )
   #properties as name value pairs
-  size [2.3 1.5 1]
+  size [2.5 1.5 1]
   drive "diff"
   pickerLaser(pose [ 1.25 0.0 -1.0 0.0 ])
 
   obstacle_return 1
-  ranger_return 1
+  ranger_return 2
 
 )
 
@@ -239,6 +239,15 @@ define CarrierRobot position
   carrierLaser(pose [ 0.9 0.0 -0.5 0.0 ])
 
   obstacle_return 1
-  ranger_return 1
+  ranger_return 3
 
 )
+
+define beacon position
+(
+  size [0.1 0.1 0.1]
+  gui_nose 0
+  ranger_return 0
+  obstacle_return 0
+)
+

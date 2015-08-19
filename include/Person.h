@@ -12,6 +12,7 @@ class Person : public Entity {
 
 public:
     Person();
+    Person(double x, double y);
     virtual ~Person();
 };
 

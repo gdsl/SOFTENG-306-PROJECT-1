@@ -40,6 +40,7 @@ class Entity
 		void move();
 		void movementComplete();
 		void addMovement(std::string type,double amount,double velocity);
+		void addMovementFront(std::string type,double amount,double velocity);
 		void moveForward(double distance,double vel, std::string direction);
 		void rotate(double angleToRotateTo,double angleSpeed);
 		void faceNorth(double angleSpeed);
@@ -48,6 +49,8 @@ class Entity
 		void faceWest(double angleSpeed);
 		void updateOdometry();
 		void setDesireLocation(bool desireLocation);
+		void setStatus(std::string status);
+
 		//get method
 		double getX();
 		double getY();
@@ -57,10 +60,14 @@ class Entity
 		double getMinDistance();
 		double getObstacleAngle();
 		bool getDesireLocation();
+		std::string getStatus();
 		int getMovementQueueSize();
-
+        //direction robot facing
+		enum Direction {WEST, SOUTH, EAST, NORTH};
+        Direction getDirectionFacing();
 		//movement queue
         std::vector<Movement> movementQueue;
+        
 
 	private:
 		//positions
@@ -74,9 +81,8 @@ class Entity
 
 		double minDistance;
 		double obstacleAngle;
+		std::string status;
 		
-		//direction robot facing
-		enum Direction {WEST, SOUTH, EAST, NORTH};
 		Direction directionFacing=WEST;//initialse to west originally
 		//boolean for if the robot is at desire location
 		bool desireLocation;

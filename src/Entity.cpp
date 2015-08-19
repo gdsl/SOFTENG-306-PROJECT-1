@@ -90,16 +90,16 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg)
         //range vector means distance measure corresponds to the a set of angles
 
 	// reset values
-	minDistance = 30;
+	minDistance = 10;
 	obstacleAngle = 270;
 
-        int l=sizeof(msg.ranges) / sizeof(msg.ranges[0]);
-        for (int i=0; i<l; i++){
-              if (msg.ranges[i]< minDistance) {
-                 minDistance = msg.ranges[i];
-                 obstacleAngle= (i/l) * msg.angle_increment + msg.angle_min;
-              }
-        } 
+	int l=msg.ranges.size(); // sizeof(msg.ranges[0]);
+	for (int i=45; i<l-45; i++){
+		  if (msg.ranges[i]< minDistance) {
+			 minDistance = msg.ranges[i];
+			 obstacleAngle= (i/l) * msg.angle_increment + msg.angle_min;
+		  }
+	}
 }
 
 /**
@@ -178,12 +178,8 @@ void Entity::addMovement(std::string type, double distance,double velocity){
 		if (useCurrent){//when no other forward movement to reference use current location
 			if((type.compare("forward_x"))==0){
 				pos=x+distance;
-				ROS_INFO("xpos: %f", pos);
-				ROS_INFO("x: %f", x);
-				ROS_INFO("dis: %f", distance);
 			}else if ((type.compare("forward_y"))==0){
 				pos=y+distance;
-				ROS_INFO("y: %f", pos);
 			}
 		}
 	}else{
@@ -192,6 +188,48 @@ void Entity::addMovement(std::string type, double distance,double velocity){
 	//ROS_INFO("pos: %f", pos);
 	Movement m=Movement(type,pos,velocity);
 	movementQueue.push_back(m);
+}
+
+/**
+ * Method to add movements to front of movement queue
+ */
+void Entity::addMovementFront(std::string type, double distance,double velocity){
+	//convert to position
+	//TODO refactor this with addMovement method
+	double pos=0;
+	if (type.compare("rotation")!=0){
+		bool useCurrent=true; //boolean to check if current location should be use
+		if (movementQueue.size()>0){//check if queue have initial values
+				bool found=false;
+				int foundIndex=movementQueue.size();
+				ROS_INFO("queue size: %d", foundIndex);
+				int index=foundIndex-1;
+				ROS_INFO("index: %d", index);
+				while(index>=0){
+					if(movementQueue.at(index).getType().compare(type)==0){
+						found=true;
+						foundIndex=index;
+					}
+					index-=1;
+				}
+				if (found){//if found same type use that as reference for position
+					useCurrent=false;
+					pos=distance+movementQueue.at(foundIndex).getPos();
+				}
+		}
+		if (useCurrent){//when no other forward movement to reference use current location
+			if((type.compare("forward_x"))==0){
+				pos=x+distance;
+			}else if ((type.compare("forward_y"))==0){
+				pos=y+distance;
+			}
+		}
+	}else{
+		pos=distance;
+	}
+	//ROS_INFO("pos: %f", pos);
+	Movement m=Movement(type,pos,velocity);
+	movementQueue.insert(movementQueue.begin(),m);
 }
 
 /**
@@ -217,9 +255,20 @@ void Entity::moveForward(double pos, double vel, std::string direction){
 			}else{
 				linearVelocity=vel;
 			}
-			//if (position-pos>=0){
+			if (position>pos){//make sure the robot can slight go backwards to adjust to right position
+				if(directionFacing==EAST){ //if facing east then velocity should be negative since overshoot
+					linearVelocity=-linearVelocity;
+				}else if(directionFacing==NORTH){ //if facing North then velocity should be negative since overshoot
+					linearVelocity=-linearVelocity;
+				}
 			//	linearVelocity=-linearVelocity;	
-			//}
+			}else if (pos>position){//now in the -ve direction to our frame of reference
+				if(directionFacing==WEST){ //if facing west then velocity should be negative since overshoot
+					linearVelocity=-linearVelocity;
+				}else if(directionFacing==SOUTH){ //if facing south then velocity should be negative since overshoot
+					linearVelocity=-linearVelocity;
+				}
+			}
 		}else{
 			movementComplete();//call method complete to remove complete movement from queue
 			linearVelocity=0;
@@ -255,8 +304,26 @@ void Entity::rotate(double angleToRotateTo, double angleSpeed){
 		}else{
 			angularVelocity=angleSpeed;
 		}
+		if (angleToRotateTo<theta){//if angle to rotate to is less than theta rotate CW
+			angularVelocity=-angularVelocity;
+		}else if (angleToRotateTo==M_PI){
+			//if its 180 degrees (this can be +ve or -ve so need to make sure fastest turn  implemented
+			if (theta<0){// if -ve theta then CW is fastest
+				angularVelocity=-angularVelocity;
+			}
+		}
 		updateOdometry();
 	}else{
+		//set the direction the robot is now facing
+		if(theta<0.1 && theta>-0.1){ //if facing east then velocity should be negative since overshoot
+			directionFacing=EAST;
+		}else if(theta<M_PI/2+0.1 && theta>M_PI/2-0.1){ //if facing North then velocity should be negative since overshoot
+			directionFacing=NORTH;
+		}else if(theta<-M_PI+0.1 || theta>M_PI-0.1){ //if facing west then velocity should be negative since overshoot
+			directionFacing=WEST;
+		}else if(theta<-M_PI/2+0.1 && theta>-M_PI/2-0.1){ //if facing south then velocity should be negative since overshoot
+			directionFacing=SOUTH;
+		}
 		movementComplete();//call method complete to remove complete movement from queue
 		//if angle similar stop rotating
 		angularVelocity=0;
@@ -356,4 +423,26 @@ bool Entity::getDesireLocation() {
  */
 void Entity::setDesireLocation(bool desireLocation){
 	this->desireLocation=desireLocation;
+}
+
+
+/**
+ * Getter method for status of the entity
+ */
+std::string Entity::getStatus() {
+    return status;
+}
+
+/**
+ * Getter method for the direction the entity is facing
+ */
+Entity::Direction Entity::getDirectionFacing() {
+    return directionFacing;
+}
+
+/**
+ * setter method for status of the entity
+ */
+void Entity::setStatus(std::string status){
+	this->status=status;
 }

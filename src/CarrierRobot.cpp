@@ -12,6 +12,15 @@ CarrierRobot::CarrierRobot() {
 }
 
 /*
+ * Constructor for carrier Robot with status
+ */
+CarrierRobot::CarrierRobot(std::string status){
+	// TODO Auto-generated constructor stub
+	this->setStatus(status);
+
+}
+
+/*
  * Default destructor for carrier Robot
  */
 CarrierRobot::~CarrierRobot() {
@@ -20,7 +29,7 @@ CarrierRobot::~CarrierRobot() {
 
 //create carrier robot and status
 CarrierRobot carrierRobot;
-std::string status="Idle";
+//std::string status="Idle";
 std::string previousStatus = "Idle";
 std::string obstacleStatus = "No obstacles";
 /*
@@ -34,7 +43,13 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 	carrierRobot.stageLaser_callback(msg);
 
 	if (carrierRobot.getMinDistance() < 1) {
-		obstacleStatus = "Obstacle nearby";
+		if(obstacleStatus.compare("Obstacle nearby")!=0){
+			obstacleStatus = "Obstacle nearby";
+			//TODO implement real avoidance currently temp to test
+			//carrierRobot.addMovementFront(,carrierRobot.getTheta()+1,1);
+			carrierRobot.addMovementFront("rotation",carrierRobot.getTheta()+M_PI,1);
+			//carrierRobot.addMovementFront("rotation",carrierRobot.getTheta()+M_PI/2,1);
+		}
 	} else {
 		obstacleStatus = "No obstacles";
 	}
@@ -52,15 +67,15 @@ void recievePickerRobotStatus(const se306project::robot_status::ConstPtr& msg)
 
 	//Check the status of Carrier robot so see how it should act
 	//when status is arrived it means that the carrier robot has arrived at picker
-	if (status.compare("Arrived")==0){
+	if (carrierRobot.getStatus().compare("Arrived")==0){
 		//Change status to transporting as the carrier robot is now taking away the full bin
-		status="Transporting";
+		carrierRobot.setStatus("Transporting");
 		carrierRobot.faceWest(1);
 		carrierRobot.addMovement("forward_x",-34.5, 1);
 		carrierRobot.faceNorth(1);
 		carrierRobot.addMovement("forward_y",std::abs(15-carrierRobot.getY()),1);
 		//carrierRobot.setDesireLocation(false);//refresh that it can recieve more desire location
-	}else if(status.compare("Idle")==0){
+	}else if(carrierRobot.getStatus().compare("Idle")==0){
 		//when the carrier robot is idle and the picker robot is full the carrier robot move to it.
 		if ((msg->status).compare("Full")==0){
 			// carrier robot will approach picker but will leave a space to avoid colliding
@@ -68,28 +83,42 @@ void recievePickerRobotStatus(const se306project::robot_status::ConstPtr& msg)
 			carrierRobot.addMovement("forward_y",-std::abs(double((msg->pos_y)-carrierRobot.getY())),1);
 			carrierRobot.faceEast(1);
 			carrierRobot.addMovement("forward_x",double((msg->pos_x)-carrierRobot.getX()-3), 1);
-			status="Moving";
+			carrierRobot.setStatus("Moving");
 		}
-	}else if(status.compare("Transporting")==0){
+	}else if (carrierRobot.getStatus().compare("Obstacle nearby") == 0) {
+
+	}
+}
+/**
+ * Method for the carrier robot's states transition and implementation
+ */
+void CarrierRobot::stateLogic(){
+	if(carrierRobot.getStatus().compare("Transporting")==0){
+		//if the carrier is in transporting state move
 		//if the carrier is transporting it will move to bin drop off area (the driveway)
 		if(carrierRobot.movementQueue.size()<1){
-			status="Idle"; //when carrier robot complete transporting full bin to driveway it
+			carrierRobot.setStatus("Idle"); //when carrier robot complete transporting full bin to driveway it
 			//become Idle again (free)
 			carrierRobot.setDesireLocation(false);//refresh that it can recieve more desire location
 		}
-	}else if(status.compare("Moving")==0){
+		carrierRobot.move();
+	}else if(carrierRobot.getStatus().compare("Moving")==0){
+		//check if the robot has anymore movement in queue if not set state to arrive
 		if(carrierRobot.movementQueue.size()<1){
-			status="Arrived";
+			//carrierRobot.setStatus("Arrived");
 		}
-	} else if (status.compare("Obstacle nearby") == 0) {
-
+		//if the carrier is in moving state, move
+		carrierRobot.move();
+	}else if (obstacleStatus.compare("Obstacle nearby")==0){
+		carrierRobot.setStatus("Moving");
+		carrierRobot.move();
 	}
 }
 
 int main(int argc, char **argv)
 {
 	//initialise carrierRobot so method can be invoke on it
-	carrierRobot=CarrierRobot();
+	carrierRobot=CarrierRobot("Idle");
 
 	//You must call ros::init() first of all. ros::init() function needs to see argc and argv. The third argument is the name of the node
 	ros::init(argc, argv, "CarrierRobot");
@@ -108,8 +137,8 @@ int main(int argc, char **argv)
 	//relative to the absolute frame of the farm.
 	carrierRobot.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000, callBackStageOdm);
 
-        //relative to the obstacle information
-        carrierRobot.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000, callBackLaserScan);
+    //relative to the obstacle information
+    carrierRobot.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000, callBackLaserScan);
 	//subscribe to the status of picker robot
 	ros::Subscriber mysub_object = n.subscribe<se306project::robot_status>("/robot_0/status",1000,recievePickerRobotStatus);
 
@@ -124,14 +153,13 @@ int main(int argc, char **argv)
 	{
 		ros::spinOnce();
 		status_msg.my_counter=count;		//add counter to message
-		status_msg.status=status;		//add status to message
+		status_msg.status=carrierRobot.getStatus();		//add status to message
 		status_msg.pos_x=carrierRobot.getX(); //add x to message to broadcast
 		status_msg.pos_y=carrierRobot.getY();//add y to message to broadcast
-		status_msg.pos_theta=carrierRobot.getAng(); //add angle to message to broadcast
+		status_msg.pos_theta=carrierRobot.getTheta(); //add angle to message to broadcast
 		status_msg.obstacle = obstacleStatus;
 		pub.publish(status_msg);	//publish message
-
-		carrierRobot.move();
+		carrierRobot.stateLogic();
 		loop_rate.sleep();
 		++count; // increase counter
 	}
