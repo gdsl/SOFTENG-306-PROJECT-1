@@ -115,7 +115,7 @@ void MainWindow::generate() {
         launchFileEntityList.push_back("PickerRobot");
     }
     for (int i = 0; i < numCarriers; i++) {
-        uiListRobots.push_back(createNewItem("Carrier"));  
+        uiListRobots.push_back(createNewItem("Carrier"));
         launchFileEntityList.push_back("CarrierRobot");
     }
     for (int i = 0; i < numWorkers; i++) {
