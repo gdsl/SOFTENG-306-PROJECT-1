@@ -44,7 +44,7 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 
 	if (carrierRobot.getMinDistance() < 1) {
 
-		if(carrierRobot.getCriticalIntensity()()>=4){//if its human or dog stop
+		if(carrierRobot.getCriticalIntensity()>=4){//if its human or dog stop
 			carrierRobot.addMovementFront("forward_x",0,0);
 			carrierRobot.move();
 		}else{

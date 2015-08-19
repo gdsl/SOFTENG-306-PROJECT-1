@@ -7,7 +7,8 @@
 #include <QThread>
 #include <QListWidget>
 #include <sstream>
-#include "../include/Markup.h"
+#include "Markup.h"
+#include <QLayout>
 
 using namespace std;
 
