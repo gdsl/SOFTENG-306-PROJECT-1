@@ -177,6 +177,9 @@ void Generator::loadRobots()
 	// Picker robot
 	XMLElement* picker_number = robots->FirstChildElement("picker_number");
 	int pickerNumber = atoi(picker_number->GetText());
+    
+    string colourArray[9] = { "red", "orange", "yellow", "green", "blue", "purple", "magenta", "aqua", "fuchsia" };
+    int colourCount = 0;
 	
 	// Generate picker robot comment
 	outfile << "# Picker robot" << endl;
@@ -189,8 +192,11 @@ void Generator::loadRobots()
 		// range 10 to 20
 		//int y = rand() % 10 + 11;
 		float theta = 90;
-
-		outfile << "PickerRobot( pose [ " << x << " " << y << " 0 " << theta << " ] name \"Picker" << i+1 << "\" color \"random\")" << endl;
+        
+        string colour = colourArray[colourCount];
+        colourCount += 1;
+        
+		outfile << "PickerRobot( pose [ " << x << " " << y << " 0 " << theta << " ] name \"Picker" << i+1 << "\" color \"" << colour << "\")" << endl;
 		y -= 3;
 	}
 
@@ -207,7 +213,11 @@ void Generator::loadRobots()
 		int x = -44;
 		// range 10 to 20
 		float theta = 90;
-		outfile << "CarrierRobot( pose [ " << x << " " << y << " 0 " << theta << " ] name \"Carrier" << i+1 << "\" color \"random\")" << endl;
+        
+        string colour = colourArray[colourCount];
+        colourCount += 1;
+        
+		outfile << "CarrierRobot( pose [ " << x << " " << y << " 0 " << theta << " ] name \"Carrier" << i+1 << "\" color \"" << colour << "\")" << endl;
 		y -= 3;
 	}
 

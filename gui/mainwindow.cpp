@@ -131,6 +131,7 @@ void MainWindow::generate() {
         delete item;
     }
     //add all widgets back
+    string colourArray[9] = { "red", "orange", "yellow", "green", "blue", "purple", "magenta", "aqua", "fuchsia" };
     for (int i = 0; i < uiListRobots.size(); i++) {
         ui->robotScroll->widget()->layout()->addWidget(uiListRobots[i]);
     }

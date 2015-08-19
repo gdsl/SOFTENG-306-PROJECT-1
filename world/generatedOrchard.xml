@@ -12,8 +12,8 @@
 <trunk_pole_spacing>2.5</trunk_pole_spacing>
 </orchard>
 <robots>
-<picker_number>2</picker_number>
-<carrier_number>1</carrier_number>
+<picker_number>3</picker_number>
+<carrier_number>3</carrier_number>
 </robots>
 <people>
 <worker_number>1</worker_number>
