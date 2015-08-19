@@ -53,7 +53,7 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 	int pickrange=2;
 	if (pickerRobot.getStatus().compare("Moving")==0){
 		//TODO if(msg.ranges[0]<=pickrange&&msg.intensities[0]==1){
-		if(msg.ranges[0]<=pickrange&&msg.intensities[0]==1&&msg.ranges[7]>=pickrange&&msg.intensities[7]==1){
+		if(msg.ranges[0]<=pickrange&&msg.intensities[0]==1&&msg.ranges[7]>=pickrange){
 			pickerRobot.setBinCapacity(pickerRobot.getBinCapacity()+2);
 		}
 	}
@@ -92,9 +92,8 @@ void PickerRobot::stateLogic(){
 	}
 	if (pickerRobot.getStatus().compare("Moving")==0){
 		pickerRobot.move();
-		if(pickerRobot.movementQueue.size()<1){
-			pickerRobot.setStatus("Full");
-		}
+	}else if (pickerRobot.getStatus().compare("Full")==0){
+		//TODO Do nothing for now
 	}
 }
 /*
@@ -266,7 +265,8 @@ int main(int argc, char **argv)
         
         atBeacon();
         pickerRobot.movement();
-        pickerRobot.move();
+        //pickerRobot.move();
+        pickerRobot.stateLogic();
 		//TODO debug
 //		if(count==7){			
 //			pickerRobot.move();

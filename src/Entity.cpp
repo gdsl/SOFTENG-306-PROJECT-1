@@ -36,11 +36,12 @@ Entity::Entity(double x, double y, double theta, double linearVelocity, double a
 	this->linearVelocity = linearVelocity;
 	this->angularVelocity = angularVelocity;
 	desireLocation=false;
-        //the distance of the nearest obstacle 
-        this->minDistance=30.0;
-        //set the default obstacle angle as a value larger than 180
-        this->obstacleAngle=270;
-        
+	//the distance of the nearest obstacle
+	this->minDistance=30.0;
+	//set the default obstacle angle as a value larger than 180
+	this->obstacleAngle=270;
+	this->criticalIntensity=0;
+
 }
 
 Movement currentMovement;//create field for current movement of the node.
@@ -73,11 +74,11 @@ void Entity::stageOdom_callback(nav_msgs::Odometry msg)
 {
 	x = msg.pose.pose.position.x;
 	y = msg.pose.pose.position.y;
-	
-    tf::Pose pose;
-    tf::poseMsgToTF(msg.pose.pose,pose);
 
-    theta = tf::getYaw(pose.getRotation());    
+	tf::Pose pose;
+	tf::poseMsgToTF(msg.pose.pose,pose);
+
+	theta = tf::getYaw(pose.getRotation());
 	// ROS logging api
 	ROS_INFO("Current x position is: %f", x);
 	ROS_INFO("Current y position is: %f", y);
@@ -87,18 +88,23 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg)
 {
 	//This is the callback function to process laser scan messages
 	//you can access the range data from msg.ranges[i]. i = sample numbe
-        //range vector means distance measure corresponds to the a set of angles
+	//range vector means distance measure corresponds to the a set of angles
 
 	// reset values
 	minDistance = 10;
 	obstacleAngle = 270;
-
+	criticalIntensity=0;
 	int l=msg.ranges.size(); // sizeof(msg.ranges[0]);
 	for (int i=45; i<l-45; i++){
-		  if (msg.ranges[i]< minDistance) {
-			 minDistance = msg.ranges[i];
-			 obstacleAngle= (i/l) * msg.angle_increment + msg.angle_min;
-		  }
+		if (msg.ranges[i]< minDistance) {
+			minDistance = msg.ranges[i];
+			obstacleAngle= (i/l) * msg.angle_increment + msg.angle_min;
+		}
+		if (msg.ranges[i]<1){//work most fatal intensity
+			if(msg.intensities[i]>criticalIntensity){
+				criticalIntensity=msg.intensities[i];
+			}
+		}
 	}
 }
 
@@ -158,22 +164,22 @@ void Entity::addMovement(std::string type, double distance,double velocity){
 	if (type.compare("rotation")!=0){
 		bool useCurrent=true; //boolean to check if current location should be use
 		if (movementQueue.size()>0){//check if queue have initial values
-				bool found=false;
-				int foundIndex=movementQueue.size();
-				ROS_INFO("queue size: %d", foundIndex);
-				int index=foundIndex-1;
-				ROS_INFO("index: %d", index);
-				while(index>=0){
-					if(movementQueue.at(index).getType().compare(type)==0){
-						found=true;
-						foundIndex=index;
-					}
-					index-=1;
+			bool found=false;
+			int foundIndex=movementQueue.size();
+			ROS_INFO("queue size: %d", foundIndex);
+			int index=foundIndex-1;
+			ROS_INFO("index: %d", index);
+			while(index>=0){
+				if(movementQueue.at(index).getType().compare(type)==0){
+					found=true;
+					foundIndex=index;
 				}
-				if (found){//if found same type use that as reference for position
-					useCurrent=false;
-					pos=distance+movementQueue.at(foundIndex).getPos();
-				}
+				index-=1;
+			}
+			if (found){//if found same type use that as reference for position
+				useCurrent=false;
+				pos=distance+movementQueue.at(foundIndex).getPos();
+			}
 		}
 		if (useCurrent){//when no other forward movement to reference use current location
 			if((type.compare("forward_x"))==0){
@@ -197,34 +203,13 @@ void Entity::addMovement(std::string type, double distance,double velocity){
  */
 void Entity::addMovementFront(std::string type, double distance,double velocity){
 	//convert to position
-	//TODO refactor this with addMovement method
 	double pos=0;
 	if (type.compare("rotation")!=0){
 		bool useCurrent=true; //boolean to check if current location should be use
-		if (movementQueue.size()>0){//check if queue have initial values
-				bool found=false;
-				int foundIndex=movementQueue.size();
-				ROS_INFO("queue size: %d", foundIndex);
-				int index=foundIndex-1;
-				ROS_INFO("index: %d", index);
-				while(index>=0){
-					if(movementQueue.at(index).getType().compare(type)==0){
-						found=true;
-						foundIndex=index;
-					}
-					index-=1;
-				}
-				if (found){//if found same type use that as reference for position
-					useCurrent=false;
-					pos=distance+movementQueue.at(foundIndex).getPos();
-				}
-		}
-		if (useCurrent){//when no other forward movement to reference use current location
-			if((type.compare("forward_x"))==0){
-				pos=x+distance;
-			}else if ((type.compare("forward_y"))==0){
-				pos=y+distance;
-			}
+		if((type.compare("forward_x"))==0){
+			pos=x+distance;
+		}else if ((type.compare("forward_y"))==0){
+			pos=y+distance;
 		}
 	}else{
 		pos=distance;
@@ -249,7 +234,7 @@ void Entity::moveForward(double pos, double vel, std::string direction){
 	}
 	if (!desireLocation){//TODO slow down
 		ROS_INFO("mfpos: %f", pos);
-		if (std::abs(position-pos)>=0.01){
+		if (std::abs(position-pos)>=0.1){
 			if(std::abs(position-pos)<=0.2){
 				linearVelocity=0.1;
 			}else if(std::abs(position-pos)<=1){
@@ -263,7 +248,7 @@ void Entity::moveForward(double pos, double vel, std::string direction){
 				}else if(directionFacing==NORTH){ //if facing North then velocity should be negative since overshoot
 					linearVelocity=-linearVelocity;
 				}
-			//	linearVelocity=-linearVelocity;	
+				//	linearVelocity=-linearVelocity;
 			}else if (pos>position){//now in the -ve direction to our frame of reference
 				if(directionFacing==WEST){ //if facing west then velocity should be negative since overshoot
 					linearVelocity=-linearVelocity;
@@ -292,13 +277,13 @@ void Entity::rotate(double angleToRotateTo, double angleSpeed){
 	//Check if angleToRotateTo and the current angle is similar. If not rotate.
 	if (std::abs(angleToRotateTo-theta)>0.0001){
 		if (std::abs(angleToRotateTo-theta)<(0.002)){//slow down speed when very near
-						//ROS_INFO(""+(angleToRotateTo-theta));
-						angularVelocity=0.001;
-						updateOdometry();
+			//ROS_INFO(""+(angleToRotateTo-theta));
+			angularVelocity=0.001;
+			updateOdometry();
 		}else if (std::abs(angleToRotateTo-theta)<(0.05)){//slow down speed when very near
-				//ROS_INFO(""+(angleToRotateTo-theta));
-				angularVelocity=0.01;
-				updateOdometry();
+			//ROS_INFO(""+(angleToRotateTo-theta));
+			angularVelocity=0.01;
+			updateOdometry();
 		}else if (std::abs(angleToRotateTo-theta)<(0.3)){//slow down speed when near
 			//ROS_INFO(""+(angleToRotateTo-theta));
 			angularVelocity=0.1;
@@ -366,35 +351,35 @@ void Entity::faceWest(double angleSpeed){
  * Getter method for x position of entity
  */
 double Entity::getX() {
-    return x;
+	return x;
 }
 
 /**
  * Getter method for y position of entity
  */
 double Entity::getY() {
-    return y;
+	return y;
 }
 
 /**
  * Getter method for angle of entity
  */
 double Entity::getTheta() {
-    return theta;
+	return theta;
 }
 
 /**
  * Getter method for linear velocity of entity
  */
 double Entity::getLin() {
-    return linearVelocity;
+	return linearVelocity;
 }
 
 /**
  * Getter method for angular velocity of entity
  */
 double Entity::getAng() {
-    return angularVelocity;
+	return angularVelocity;
 }
 
 /**
@@ -414,10 +399,18 @@ double Entity::getObstacleAngle() {
 }
 
 /**
+ * Getter method for getting the critical intensity of the entity
+ * so the highest intensity of laser callback for close object
+ */
+int Entity::getCriticalIntensity() {
+	return criticalIntensity;
+}
+
+/**
  * Getter method for desire location of entity
  */
 bool Entity::getDesireLocation() {
-    return desireLocation;
+	return desireLocation;
 }
 
 /**
@@ -432,14 +425,14 @@ void Entity::setDesireLocation(bool desireLocation){
  * Getter method for status of the entity
  */
 std::string Entity::getStatus() {
-    return status;
+	return status;
 }
 
 /**
  * Getter method for the direction the entity is facing
  */
 Entity::Direction Entity::getDirectionFacing() {
-    return directionFacing;
+	return directionFacing;
 }
 
 /**
