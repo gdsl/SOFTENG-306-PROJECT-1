@@ -9,6 +9,7 @@
 #include <sstream>
 #include "Markup.h"
 #include "Generator.h"
+#include "unistd.h"
 
 using namespace std;
 
@@ -62,8 +63,6 @@ void MainWindow::onUpdateGUI( QString id, QString str, int i )
 	    QListWidget *qlw = ((QListWidget*)ui->robotScroll->widget()->layout()->itemAt(idNum)->widget());
     	qlw->item(i)->setText(str);
     } else {
-        qDebug("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@222");
-        qDebug(id.toStdString().c_str());
 	    QListWidget *qlw = ((QListWidget*)ui->animalScroll->widget()->layout()->itemAt(idNum-(numCarriers + numPickers))->widget());
     	qlw->item(i)->setText(str);
     }
@@ -76,7 +75,8 @@ void MainWindow::on_launchButton_clicked()
 	
 	//launch roslaunch
 	system("roslaunch se306project test.launch &");
-
+    usleep(1000000); //1 second
+    //qDebug("started reading!!!!!!!!!!!!!!!!!!!!!!!!!!1");
 	//emit MainWindow::requestProcess();
 	startReadingTopics();
 }
