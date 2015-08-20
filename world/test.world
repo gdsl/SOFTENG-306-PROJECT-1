@@ -456,18 +456,27 @@ pole( pose [ 37.5 -0.6 0.000 0.000 ] color "brown")
 
 # Generate robots
 # Picker robot
-PickerRobot( pose [ -44 24 0 90 ] name "Picker1" color "red")
-PickerRobot( pose [ -44 21 0 90 ] name "Picker2" color "orange")
+PickerRobot( pose [ -44 24 0 90 ] name "Picker1" color "PeachPuff")
+PickerRobot( pose [ -44 21 0 90 ] name "Picker2" color "NavajoWhite")
+PickerRobot( pose [ -44 18 0 90 ] name "Picker3" color "LemonChiffon")
+PickerRobot( pose [ -44 15 0 90 ] name "Picker4" color "AliceBlue")
+PickerRobot( pose [ -44 12 0 90 ] name "Picker5" color "Lavender")
+PickerRobot( pose [ -44 9 0 90 ] name "Picker6" color "thistle")
+PickerRobot( pose [ -44 6 0 90 ] name "Picker7" color "HotPink")
+PickerRobot( pose [ -44 3 0 90 ] name "Picker8" color "PaleTurquoise")
+PickerRobot( pose [ -44 0 0 90 ] name "Picker9" color "PaleGreen")
+PickerRobot( pose [ -44 -3 0 90 ] name "Picker10" color "beige")
+PickerRobot( pose [ -44 -6 0 90 ] name "Picker11" color "plum")
+PickerRobot( pose [ -44 -9 0 90 ] name "Picker12" color "LightGrey")
+PickerRobot( pose [ -44 -12 0 90 ] name "Picker13" color "LightSkyBlue")
 # Carrier robot
-CarrierRobot( pose [ -44 18 0 90 ] name "Carrier1" color "yellow")
-CarrierRobot( pose [ -44 15 0 90 ] name "Carrier2" color "green")
-CarrierRobot( pose [ -44 12 0 90 ] name "Carrier3" color "blue")
+CarrierRobot( pose [ -44 -15 0 90 ] name "Carrier1" color "SpringGreen")
 
 # Generate people
 # Generate workers
-human( pose [ -4 -7 0.000 0.000 ] name "Worker1" color "blue")
+human( pose [ -10 -7 0.000 0.000 ] name "Worker1" color "blue")
 
 # Generate animals
 # Generate dog
-dog( pose [ 3 -9 0.000 0.000 ] name "Dog1" color "random")
+dog( pose [ 19 -6 0.000 0.000 ] name "Dog1" color "random")
 

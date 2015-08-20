@@ -178,7 +178,7 @@ void Generator::loadRobots()
 	XMLElement* picker_number = robots->FirstChildElement("picker_number");
 	int pickerNumber = atoi(picker_number->GetText());
     
-    string colourArray[9] = { "red", "orange", "yellow", "green", "blue", "purple", "magenta", "aqua", "fuchsia" };
+    string colourArray[14] = { "PeachPuff", "NavajoWhite", "LemonChiffon", "AliceBlue", "Lavender", "thistle", "LightSalmon", "PaleTurquoise", "PaleGreen", "beige", "plum", "LightGrey", "LightSkyBlue", "SpringGreen" };
     int colourCount = 0;
 	
 	// Generate picker robot comment
