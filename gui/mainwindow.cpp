@@ -155,6 +155,7 @@ void MainWindow::generate() {
 	generator.loadRobots();
 	generator.loadPeople();
 	generator.loadAnimals();
+    generator.loadTallWeeds();
 	generator.write();
 
 }

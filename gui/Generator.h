@@ -17,6 +17,7 @@ class Generator
 		void loadRobots();
 		void loadPeople();
 		void loadAnimals();
+        void loadTallWeeds();
 		void write();
 
 	private:

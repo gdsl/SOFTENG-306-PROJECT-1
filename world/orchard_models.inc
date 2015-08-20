@@ -251,3 +251,9 @@ define beacon position
   obstacle_return 0
 )
 
+define tallWeed modelBase
+(
+  size [1.0 1.0 1.0]
+  gui_noise 0
+)
+
