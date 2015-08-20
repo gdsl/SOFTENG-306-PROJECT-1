@@ -141,7 +141,7 @@ void PickerRobot::movement(){
             //check if the Robot needs to go West
             if (currentX > destX) {
                 //calculate the distance to move backwards along X axis
-                distanceToMove = currentX - destX;
+                distanceToMove = -(currentX - destX);
                 //make sure the Robot is facing West, if not, turn it West.
                 if (pickerRobot.getDirectionFacing() != WEST) {pickerRobot.faceWest(1);}                
             //otherwise it means the Robot needs to go East
