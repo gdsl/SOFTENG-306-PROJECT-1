@@ -2,8 +2,11 @@
  * Generator header file. Converts xml documents to world file
  */
 #include "tinyxml2.h"
+#include <stdio.h>
+#include <stdlib.h>
 #include <string>
 #include <fstream>
+#include <vector>
 
 using namespace tinyxml2;
 using namespace std;
@@ -11,12 +14,13 @@ using namespace std;
 class Generator
 {
 	public:
-		Generator(string inputName, string outputName);
+		Generator(/*string inputName, */string outputName);
 		void loadWorld();
-		void loadOrchard();
-		void loadRobots();
-		void loadPeople();
-		void loadAnimals();
+		void loadOrchard(int rowCount, float rowLength, float rowWidth, float trunkPoleSpacing);
+		std::vector<int> loadPickerRobots(int pickerNumber);
+		std::vector<int> loadCarrierRobots(int carrierNumber);
+		void loadPeople(int workerNumber);
+		void loadAnimals(int dogNumbers);
 		void write();
 
 	private:
@@ -25,7 +29,8 @@ class Generator
 		XMLDocument doc;
 		XMLElement* rootElement;
 		ofstream outfile;
-
+		string colourArray[9] = { "red", "orange", "yellow", "green", "blue", "purple", "magenta", "aqua", "fuchsia" };
+        int colourCount = 0;
 		// static const variables
 		// distance between trunk/pole and beacon. x coord
 		int const static SEPARATION = 2;

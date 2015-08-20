@@ -44,12 +44,15 @@ private:
     vector<QListWidget*> uiListRobots;
     vector<QListWidget*> uiListAnimals;
     vector<string> launchFileEntityList;
+    vector<int> pickerRobotsPositions;
+    vector<int> carrierRobotsPositions;
     int numPickers;
     int numCarriers;
     int numRows = 7;
     int numBeacons = 14;
     int numDogs;
     int numWorkers;
+    
 //	void updateGUI(const QString buffer);
 //	void *print_message_function( void *ptr );
 //	void exec(string cmd);
