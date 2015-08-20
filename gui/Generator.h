@@ -21,6 +21,7 @@ class Generator
 		std::vector<int> loadCarrierRobots(int carrierNumber);
 		void loadPeople(int workerNumber);
 		void loadAnimals(int dogNumbers);
+        void loadTallWeeds();
 		void write();
 
 	private:
@@ -29,8 +30,8 @@ class Generator
 		XMLDocument doc;
 		XMLElement* rootElement;
 		ofstream outfile;
-		string colourArray[9] = { "red", "orange", "yellow", "green", "blue", "purple", "magenta", "aqua", "fuchsia" };
-        int colourCount = 0;
+		string colourArray[14] = { "PeachPuff", "NavajoWhite", "LemonChiffon", "AliceBlue", "Lavender", "thistle", "LightSalmon", "PaleTurquoise", "PaleGreen", "beige", "plum", "LightGrey", "LightSkyBlue", "SpringGreen" };
+    int colourCount = 0;
 		// static const variables
 		// distance between trunk/pole and beacon. x coord
 		int const static SEPARATION = 2;

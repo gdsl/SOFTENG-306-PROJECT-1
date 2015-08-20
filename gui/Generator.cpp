@@ -177,7 +177,7 @@ std::vector<int> Generator::loadPickerRobots(int pickerNumber)
     std::vector<int> pickerRobotsPositions;
 	// Generate robot comment
 	outfile << "# Generate robots" << endl;
-	
+
 	// Generate picker robot comment
 	outfile << "# Picker robot" << endl;
 	int y = 24;
@@ -275,6 +275,17 @@ void Generator::loadAnimals(int dogNumbers)
 	}
 
 	outfile << endl;
+}
+
+void Generator::loadTallWeeds()
+{
+    outfile << "#Generate tall weeds" << endl;
+    for(int i = 0; i < 10; i++){
+        int x = rand() % 92 - 42;
+        int y = rand() % 52 - 26;
+        
+        outfile << "tallWeed( pose [ " << x << " " << y << " 0.000 0.000 ] name \"TallWeed" << i+1 << "\" color \"ForestGreen\")" << endl;
+    }
 }
 /*
 int main(int argc, char **argv)

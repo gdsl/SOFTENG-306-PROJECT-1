@@ -50,7 +50,8 @@ define pretendLaserBase ranger #For animal and humans which should not have lase
 (
 	sensor
 	(
-		range [ 0.0 0.0 ] # set tp zero
+		size [ 0 0 0 ]
+		range [ 0.0 0.0 ] # set to zero
 		fov 0
 		samples 0
 	)
@@ -253,6 +254,12 @@ define beacon position
   gui_nose 0
   ranger_return 0
   obstacle_return 0
-  beaconLaser(pose [ 0.050 0.000 0 0.000 ])
+  #beaconLaser(pose [ 0.00 0.000 0 0.000 ])
+)
+
+define tallWeed modelBase
+(
+  size [1.0 1.0 1.0]
+  gui_noise 0
 )
 
