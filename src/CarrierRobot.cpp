@@ -44,7 +44,7 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 
 		if(carrierRobot.getCriticalIntensity()>=4){//if its human or dog stop
 			carrierRobot.addMovementFront("forward_x",0,0,1);
-			carrierRobot.move();
+			//carrierRobot.move();
 		}else{
 			if(carrierRobot.getAvoidanceQueueSize()<=0){
 				if(carrierRobot.getDirectionFacing()== carrierRobot.NORTH&&obstacleStatus.compare("Obstacle nearby")!=0){
@@ -56,7 +56,7 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 					carrierRobot.addMovementFront("forward_x",-3,1,1);
 					carrierRobot.addMovementFront("rotation",M_PI,1,1);
 					carrierRobot.addMovementFront("forward_x",0,0,1);//this is at front of front
-					carrierRobot.move();
+					//carrierRobot.move();
 				}
 				if(carrierRobot.getDirectionFacing()== carrierRobot.EAST&&obstacleStatus.compare("Obstacle nearby")!=0){
 					carrierRobot.addMovementFront("rotation",0, 1,1);
@@ -67,7 +67,7 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 					carrierRobot.addMovementFront("forward_y",-3,1,1);
 					carrierRobot.addMovementFront("rotation",-M_PI/2, 1,1);
 					carrierRobot.addMovementFront("forward_x",0,0,1);//this is at front of front
-					carrierRobot.move();
+					//carrierRobot.move();
 				}
 			}else{
 				//halt movement if already have avoidance logic
@@ -75,18 +75,8 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 				carrierRobot.move();
 			}
 		}
+		//halt movement if already have avoidance logic
 		obstacleStatus = "Obstacle nearby";
-		/*if(obstacleStatus.compare("Obstacle nearby")==0){
-			//if(msg.intensities[obstacleNumber]>=4){//if its human or dog stop
-				carrierRobot.addMovementFront("forward_x",0,0);
-				//carrierRobot.addMovementFront("rotation",M_PI,1);
-				//carrierRobot.addMovementFront("rotation",-M_PI,1);
-				carrierRobot.move();
-				//carrierRobot.addMovementFront(,carrierRobot.getTheta()+1,1);
-				//carrierRobot.addMovementFront("rotation",carrierRobot.getTheta()+M_PI,1);
-				//carrierRobot.addMovementFront("rotation",carrierRobot.getTheta()+M_PI/2,1);
-			//}
-		}*/
 	} else {
 		obstacleStatus = "No obstacles";
 	}
@@ -142,7 +132,7 @@ void CarrierRobot::stateLogic(){
 		}
 		//if the carrier is in moving state, move
 		//if (obstacleStatus.compare("Obstacle nearby")!=0){
-			carrierRobot.move();
+		carrierRobot.move();
 		//}
 	}else if (obstacleStatus.compare("Obstacle nearby")==0){
 		carrierRobot.setStatus("Moving");

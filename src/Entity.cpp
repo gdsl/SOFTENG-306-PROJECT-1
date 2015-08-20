@@ -290,7 +290,6 @@ void Entity::addMovementFront(std::string type, double distance,double velocity,
 	//convert to position
 	double pos=0;
 	if (type.compare("rotation")!=0){
-		bool useCurrent=true; //boolean to check if current location should be use
 		if((type.compare("forward_x"))==0){
 			pos=x+distance;
 		}else if ((type.compare("forward_y"))==0){
