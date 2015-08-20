@@ -132,9 +132,9 @@ void Generator::loadOrchard(int rowCount, float rowLength, float rowWidth, float
 			 * add beacons at start and end of each row
 			 */
 			if (i == 0 && j < rowCount) {
-				outfile << "beacon ( pose [ " << (x - SEPARATION) << " " << (y-rowWidth/2.0) << " 0.000 0.000 ] color \"random\")" << endl;
+				outfile << "beacon( pose [ " << (x - SEPARATION) << " " << (y-rowWidth/2.0) << " 0.000 0.000 ] name \"beacon" << j << "\" color \"random\")" << endl;
 			} else if (i == columnCount - 1 && j < rowCount) {
-				outfile << "beacon ( pose [ " << (x + SEPARATION) << " " << (y-rowWidth/2.0) << " 0.000 0.000 ] color \"random\")" << endl;
+				outfile << "beacon( pose [ " << (x + SEPARATION) << " " << (y-rowWidth/2.0) << " 0.000 0.000 ] name \"beacon" << (j + 7) << "\" color \"random\")" << endl;
 			}
 
 			/*
