@@ -43,6 +43,7 @@ private:
     QListWidget *uiList[4] = {NULL, NULL, NULL, NULL};
     vector<QListWidget*> uiListRobots;
     vector<QListWidget*> uiListAnimals;
+    vector<QListWidget*> uiListPeoples;
     vector<string> launchFileEntityList;
     int numPickers;
     int numCarriers;
