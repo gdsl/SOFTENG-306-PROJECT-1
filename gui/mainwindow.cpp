@@ -34,7 +34,7 @@ void MainWindow::startReadingTopics() {
     bool ok;
     int totalDynamicStuff = numPickers + numCarriers + numWorkers + numDogs;
     
-	for (int i = numBeacons; i < numBeacons + totalDynamicStuff ; i++) {
+	for (int i = numBeacons+numWeeds; i < numBeacons + numWeeds + totalDynamicStuff ; i++) {
 		QThread *thread = new QThread(this);    
 		Worker *worker = new Worker();
 		
@@ -60,7 +60,7 @@ MainWindow::~MainWindow()
 void MainWindow::onUpdateGUI( QString id, QString str, int i )
 {
 	//update the gui for robots
-	int idNum = id.toInt()-numBeacons;
+	int idNum = id.toInt()-numBeacons-numWeeds;
 	
 	if (idNum < numCarriers+numPickers) {
 	    QListWidget *qlw = ((QListWidget*)ui->robotScroll->widget()->layout()->itemAt(idNum)->widget());
@@ -111,6 +111,9 @@ void MainWindow::generate() {
     uiListAnimals.clear();
     launchFileEntityList.clear();
     
+    for (int i = 0; i < numWeeds; i++) {
+        launchFileEntityList.push_back("TallWeed");    
+    }
     for (int i = 0; i < numRows; i++) {
         launchFileEntityList.push_back("Beacon");
         launchFileEntityList.push_back("Beacon");
@@ -155,12 +158,12 @@ void MainWindow::generate() {
     
     Generator generator(/*"world/generatedOrchard.xml", */"world/test.world");
 	generator.loadWorld();
+    generator.loadTallWeeds();
 	generator.loadOrchard(7, 70, rowWidth, spacing);
 	pickerRobotsPositions = generator.loadPickerRobots(numPickers);
 	carrierRobotsPositions = generator.loadCarrierRobots(numCarriers);
 	generator.loadPeople(numWorkers);
 	generator.loadAnimals(numDogs);
-    generator.loadTallWeeds();
 
 	generator.write();
     writeLaunchFile();
@@ -232,9 +235,15 @@ void MainWindow::writeLaunchFile(){
                 xml.SetAttrib( "type", launchFileEntityList[i] );
                 if (launchFileEntityList[i] == "Beacon") {
                     ostringstream oss;
-                    oss << "/beacon" << i+1 << "/";
+                    oss << "/beacon" << i+1-numWeeds << "/";
                     xml.SetAttrib( "args", oss.str() );
-                } else if (launchFileEntityList[i] == "PickerRobot") {
+                } else if (launchFileEntityList[i] == "TallWeed") {
+                    ostringstream oss;
+                    int alphaPersonNumber = numRows*2 + numWeeds + numPickers + numCarriers;
+                    oss << "/tallweed" << i+1 << "/ /robot_" << alphaPersonNumber << "/status";
+                    xml.SetAttrib( "args", oss.str() );
+                } 
+                else if (launchFileEntityList[i] == "PickerRobot") {
                     ostringstream oss;
                     oss << pickerRobotsPositions[pickerPos] << " " << pickerRobotsPositions[pickerPos+1];
                     pickerPos += 2;

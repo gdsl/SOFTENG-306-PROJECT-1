@@ -210,6 +210,9 @@ add_executable(Beacon src/Beacon.cpp)
 target_link_libraries(Beacon Entity ${catkin_LIBRARIES})
 add_dependencies(Beacon se306project_generate_messages_cpp)
 
+add_executable(TallWeed src/TallWeed.cpp)
+target_link_libraries(TallWeed Entity ${catkin_LIBRARIES})
+add_dependencies(TallWeed se306project_generate_messages_cpp)
 
 #catkin_add_(${PROJECT_NAME}-test test/testRobot.cpp src/PickerRobot.cpp)
  #if(TARGET ${PROJECT_NAME}-test)

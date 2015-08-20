@@ -257,9 +257,11 @@ define beacon position
   #beaconLaser(pose [ 0.00 0.000 0 0.000 ])
 )
 
-define tallWeed modelBase
+define tallWeed position
 (
   size [0.3 0.3 1.0]
+  obstacle_return 1
+  ranger_return 1
   gui_noise 0
 )
 

@@ -112,7 +112,7 @@ int main(int argc, char **argv)
     ros::NodeHandle n;
     
     alphaPerson.robotNode_stage_pub = n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
-	ros::Publisher pub = n.advertise<se306project::human_status>("status",100);
+	ros::Publisher pub = n.advertise<se306project::human_status>("status",1000);
 
     alphaPerson.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000,stage_positionCallback);
     alphaPerson.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000,stage_laserCallback);

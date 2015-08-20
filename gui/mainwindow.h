@@ -50,6 +50,7 @@ private:
     int numCarriers;
     int numRows = 7;
     int numBeacons = 14;
+    int numWeeds = 10;
     int numDogs;
     int numWorkers;
     
