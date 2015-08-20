@@ -30,6 +30,7 @@ public:
 	QListWidget* createNewItem(string type);
 	void generate();
 	void writeXml();
+	void writeLaunchFile();
     ~MainWindow();
 
 private slots:
@@ -42,6 +43,13 @@ private:
     QListWidget *uiList[4] = {NULL, NULL, NULL, NULL};
     vector<QListWidget*> uiListRobots;
     vector<QListWidget*> uiListAnimals;
+    vector<string> launchFileEntityList;
+    int numPickers;
+    int numCarriers;
+    int numRows = 7;
+    int numBeacons = 14;
+    int numDogs;
+    int numWorkers;
 //	void updateGUI(const QString buffer);
 //	void *print_message_function( void *ptr );
 //	void exec(string cmd);

@@ -9,6 +9,7 @@
 #include <sstream>
 #include "Markup.h"
 #include "Generator.h"
+#include "unistd.h"
 
 using namespace std;
 
@@ -18,15 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
        
     ui->setupUi(this);
-/*	ui->robotList1->item(0)->setText("Type: Picker");
-	ui->robotList2->item(0)->setText("Type: Carrier");
-    	ui->animalList1->item(0)->setText("Type: Dog");
-	ui->humanList1->item(0)->setText("Type: Human"); 
-    uiList[0] = ui->robotList1;
-    uiList[1] = ui->robotList2;
-    uiList[2] = ui->animalList1;
-    uiList[3] = ui->humanList1;   */
-    
+   
     uiListRobots.reserve(50);  
     uiListAnimals.reserve(50); 
     
@@ -35,7 +28,10 @@ MainWindow::MainWindow(QWidget *parent) :
 }
 
 void MainWindow::startReadingTopics() {
-	for (int i = 0; i < 4; i++) {
+    bool ok;
+    int totalDynamicStuff = numPickers + numCarriers + numWorkers + numDogs;
+    
+	for (int i = numBeacons; i < numBeacons + totalDynamicStuff ; i++) {
 		QThread *thread = new QThread(this);    
 		Worker *worker = new Worker();
 		
@@ -61,15 +57,13 @@ MainWindow::~MainWindow()
 void MainWindow::onUpdateGUI( QString id, QString str, int i )
 {
 	//update the gui for robots
-	int idNum = id.toInt();
-
-
-	//hardcoded for now
-	if (idNum < 2) {
+	int idNum = id.toInt()-numBeacons;
+	
+	if (idNum < numCarriers+numPickers) {
 	    QListWidget *qlw = ((QListWidget*)ui->robotScroll->widget()->layout()->itemAt(idNum)->widget());
     	qlw->item(i)->setText(str);
     } else {
-	    QListWidget *qlw = ((QListWidget*)ui->animalScroll->widget()->layout()->itemAt(idNum-2)->widget());
+	    QListWidget *qlw = ((QListWidget*)ui->animalScroll->widget()->layout()->itemAt(idNum-(numCarriers + numPickers))->widget());
     	qlw->item(i)->setText(str);
     }
 
@@ -77,19 +71,21 @@ void MainWindow::onUpdateGUI( QString id, QString str, int i )
 
 void MainWindow::on_launchButton_clicked()
 {
-    //MainWindow::generate();
+    MainWindow::generate();
 	
 	//launch roslaunch
-	system("roslaunch se306project orchard.launch &");
-
+	system("roslaunch se306project test.launch &");
+    usleep(1000000); //1 second
+    //qDebug("started reading!!!!!!!!!!!!!!!!!!!!!!!!!!1");
 	//emit MainWindow::requestProcess();
 	startReadingTopics();
 }
 
 void MainWindow::on_closeButton_clicked()
 {  
-	//close roslaunch
+	//close roslaunch and close all rostopics
 	system("pkill stage");
+	system("pkill rostopic");
 }
 
 void MainWindow::on_generateButton_clicked()
@@ -101,24 +97,34 @@ void MainWindow::on_generateButton_clicked()
 void MainWindow::generate() {
     writeXml();
     bool ok;
-    int numPicker = ui->pickerRobotsField->text().toInt(&ok, 10);
-    int numCarrier = ui->carrierRobotsField->text().toInt(&ok, 10);
-    int numWorkers = ui->workersField->text().toInt(&ok, 10);
-    int numDogs = ui->dogsField->text().toInt(&ok, 10);
+    numPickers = ui->pickerRobotsField->text().toInt(&ok, 10);
+    numCarriers = ui->carrierRobotsField->text().toInt(&ok, 10);
+    numWorkers = ui->workersField->text().toInt(&ok, 10);
+    numDogs = ui->dogsField->text().toInt(&ok, 10);
 
     uiListRobots.clear();
     uiListAnimals.clear();
-    for (int i = 0; i < numPicker; i++) {
-        uiListRobots.push_back(createNewItem("Picker"));   
+    launchFileEntityList.clear();
+    
+    for (int i = 0; i < numRows; i++) {
+        launchFileEntityList.push_back("Beacon");
+        launchFileEntityList.push_back("Beacon");
     }
-    for (int i = 0; i < numCarrier; i++) {
-        uiListRobots.push_back(createNewItem("Carrier"));   
+    for (int i = 0; i < numPickers; i++) {
+        uiListRobots.push_back(createNewItem("Picker"));
+        launchFileEntityList.push_back("PickerRobot");
+    }
+    for (int i = 0; i < numCarriers; i++) {
+        uiListRobots.push_back(createNewItem("Carrier"));  
+        launchFileEntityList.push_back("CarrierRobot");
     }
     for (int i = 0; i < numWorkers; i++) {
-        uiListAnimals.push_back(createNewItem("Human_Worker"));   
+        uiListAnimals.push_back(createNewItem("Human_Worker"));
+        launchFileEntityList.push_back("AlphaPerson"); 
     }
     for (int i = 0; i < numDogs; i++) {
-        uiListAnimals.push_back(createNewItem("Animal_Dog"));   
+        uiListAnimals.push_back(createNewItem("Animal_Dog")); 
+        launchFileEntityList.push_back("AlphaDog");  
     }
     //clear the layout
     QLayoutItem *item;
@@ -142,6 +148,7 @@ void MainWindow::generate() {
         ui->animalScroll->widget()->layout()->addWidget(uiListAnimals[i]);
     }
     
+    writeLaunchFile();
     Generator generator("world/generatedOrchard.xml", "world/test.world");
 	generator.loadWorld();
 	generator.loadOrchard();
@@ -190,6 +197,38 @@ void MainWindow::writeXml() {
         xml.OutOfElem();
     xml.OutOfElem();
     xml.Save( "world/generatedOrchard.xml" );
+}
+
+void MainWindow::writeLaunchFile(){
+    //writes to the launch file
+    CMarkup xml;
+    bool ok;
+    xml.AddElem("launch");
+    xml.IntoElem();
+        xml.AddElem("node");
+        xml.SetAttrib( "name", "stage" );
+        xml.SetAttrib( "pkg", "stage_ros" );
+        xml.SetAttrib( "type", "stageros" );
+        xml.SetAttrib( "args", "$(find se306project)/world/test.world" );
+        for (int i = 0; i < launchFileEntityList.size(); i++) {
+            xml.AddElem("group");
+            ostringstream oss;
+            oss << "robot_" << i;
+            xml.SetAttrib("ns", oss.str());
+            xml.IntoElem();
+            xml.AddElem("node");
+                xml.SetAttrib( "name", launchFileEntityList[i]+"node" );
+                xml.SetAttrib( "pkg", "se306project" );
+                xml.SetAttrib( "type", launchFileEntityList[i] );
+                if (launchFileEntityList[i] == "Beacon") {
+                    ostringstream oss;
+                    oss << "/beacon" << i+1 << "/";
+                    xml.SetAttrib( "args", oss.str() );
+                }
+            xml.OutOfElem();
+        }   
+    xml.OutOfElem();
+    xml.Save("launch/test.launch");
 }
 
 QListWidget* MainWindow::createNewItem(string type) {

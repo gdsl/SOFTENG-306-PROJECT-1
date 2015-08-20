@@ -120,14 +120,14 @@ void Generator::loadOrchard()
 		// row number
 		outfile << "# row " << i+1 << endl;
 
-		for (int j = 0; j < rowCount; j++) {
+		for (int j = 0; j < rowCount+1; j++) {
 
 			/*
 			 * add beacons at start and end of each row
 			 */
-			if (i == 0 && j < rowCount-1) {
+			if (i == 0 && j < rowCount) {
 				outfile << "beacon ( pose [ " << (x - SEPARATION) << " " << (y-rowWidth/2.0) << " 0.000 0.000 ] color \"random\")" << endl;
-			} else if (i == columnCount - 1 && j < rowCount-1) {
+			} else if (i == columnCount - 1 && j < rowCount) {
 				outfile << "beacon ( pose [ " << (x + SEPARATION) << " " << (y-rowWidth/2.0) << " 0.000 0.000 ] color \"random\")" << endl;
 			}
 
@@ -144,7 +144,7 @@ void Generator::loadOrchard()
 			 * add fruit vines except last row
 			 * Height is hardcoded to trunk height.
 			 */
-			if (j < rowCount-1) {
+			if (j < rowCount) {
 				outfile << "fruitVine( pose [ " << x << " " << (y-rowWidth/2.0) << " 1.8 0.000 ] color \"green\")" << endl;				
 			}
 
@@ -191,7 +191,7 @@ void Generator::loadRobots()
 		int x = -44;
 		// range 10 to 20
 		//int y = rand() % 10 + 11;
-		float theta = 90;
+		float theta = 90; //0
         
         string colour = colourArray[colourCount];
         colourCount += 1;
@@ -212,7 +212,7 @@ void Generator::loadRobots()
 		//int x = rand() % 50 - 25;
 		int x = -44;
 		// range 10 to 20
-		float theta = 90;
+		float theta = 90; //0
         
         string colour = colourArray[colourCount];
         colourCount += 1;

@@ -2,6 +2,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
+#include <fstream>
 
 using namespace std;
 
@@ -12,7 +13,14 @@ void Worker::setId(string id_string) {
 
 void Worker::executeScript() {
     qDebug("executeScript prerun");
-	exec("gui/rostopicScripts/robot_" + stringId + ".sh");
+    string filePath = "gui/rostopicScripts/robot_" + stringId + ".sh";
+    ofstream myfile;
+    myfile.open (filePath.c_str());
+    myfile << "cd ../../../..\nsource devel/setup.bash\nrostopic echo /robot_" << stringId.c_str() << "/status";
+    myfile.close();
+    string cmd = "chmod +x " + filePath;
+    system(cmd.c_str());
+	exec(filePath);
 }
 
 //for processing command
