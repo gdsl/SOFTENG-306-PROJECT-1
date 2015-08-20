@@ -518,25 +518,23 @@ PickerRobot( pose [ -42 24 0 90 ] name "Picker1" color "PeachPuff")
 PickerRobot( pose [ -42 20 0 90 ] name "Picker2" color "NavajoWhite")
 # Carrier robot
 CarrierRobot( pose [ -45 24 0 90 ] name "Carrier1" color "LemonChiffon")
-CarrierRobot( pose [ -45 21 0 90 ] name "Carrier2" color "AliceBlue")
-CarrierRobot( pose [ -45 18 0 90 ] name "Carrier3" color "Lavender")
 
 # Generate people
 # Generate workers
-human( pose [ -20 -11 0.000 0.000 ] name "Worker1" color "blue")
+human( pose [ -18 -3 0.000 0.000 ] name "Worker1" color "blue")
 
 # Generate animals
 # Generate dog
-dog( pose [ 5 -9 0.000 0.000 ] name "Dog1" color "random")
+dog( pose [ 4 -7 0.000 0.000 ] name "Dog1" color "random")
 
 #Generate tall weeds
-tallWeed( pose [ 45 4 0.000 0.000 ] name "TallWeed1" color "ForestGreen")
-tallWeed( pose [ 34 23 0.000 0.000 ] name "TallWeed2" color "ForestGreen")
-tallWeed( pose [ -7 -9 0.000 0.000 ] name "TallWeed3" color "ForestGreen")
-tallWeed( pose [ -7 -19 0.000 0.000 ] name "TallWeed4" color "ForestGreen")
-tallWeed( pose [ -21 2 0.000 0.000 ] name "TallWeed5" color "ForestGreen")
-tallWeed( pose [ 34 -24 0.000 0.000 ] name "TallWeed6" color "ForestGreen")
-tallWeed( pose [ -13 -21 0.000 0.000 ] name "TallWeed7" color "ForestGreen")
-tallWeed( pose [ 43 20 0.000 0.000 ] name "TallWeed8" color "ForestGreen")
-tallWeed( pose [ 22 -8 0.000 0.000 ] name "TallWeed9" color "ForestGreen")
-tallWeed( pose [ 36 14 0.000 0.000 ] name "TallWeed10" color "ForestGreen")
+tallWeed( pose [ -17 3 0.000 0.000 ] name "TallWeed1" color "ForestGreen")
+tallWeed( pose [ 4 -19 0.000 0.000 ] name "TallWeed2" color "ForestGreen")
+tallWeed( pose [ -23 8 0.000 0.000 ] name "TallWeed3" color "ForestGreen")
+tallWeed( pose [ -35 16 0.000 0.000 ] name "TallWeed4" color "ForestGreen")
+tallWeed( pose [ -13 10 0.000 0.000 ] name "TallWeed5" color "ForestGreen")
+tallWeed( pose [ -17 16 0.000 0.000 ] name "TallWeed6" color "ForestGreen")
+tallWeed( pose [ -33 20 0.000 0.000 ] name "TallWeed7" color "ForestGreen")
+tallWeed( pose [ 23 0 0.000 0.000 ] name "TallWeed8" color "ForestGreen")
+tallWeed( pose [ -24 4 0.000 0.000 ] name "TallWeed9" color "ForestGreen")
+tallWeed( pose [ -5 -10 0.000 0.000 ] name "TallWeed10" color "ForestGreen")

@@ -259,7 +259,7 @@ define beacon position
 
 define tallWeed modelBase
 (
-  size [1.0 1.0 1.0]
+  size [0.3 0.3 1.0]
   gui_noise 0
 )
 
