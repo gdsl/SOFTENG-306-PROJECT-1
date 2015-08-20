@@ -42,8 +42,6 @@ class Entity
 		void avoidanceComplete();
 		void addMovement(std::string type,double amount,double velocity);
 		void addMovementFront(std::string type,double amount,double velocity, int queueType);
-		void moveForward(double distance,double vel, std::string direction);
-		void rotate(double angleToRotateTo,double angleSpeed);
 		void faceNorth(double angleSpeed);
 		void faceSouth(double angleSpeed);
 		void faceEast(double angleSpeed);
@@ -79,14 +77,24 @@ class Entity
 		double linearVelocity;
 		double angularVelocity;
 
+		//obstacle avoidance/detection variables
 		int criticalIntensity;
+		int previousScanIntensity;
+		int previousScanNumber;
+		int previousScanNumberMin;
+		int previousScanNumberMax;
 		double minDistance;
 		double obstacleAngle;
+		int numOfScan;
+		double previousScanDistance;
 		std::string status;
 		//movement queue
         std::vector<Movement> movementQueue;
         std::vector<Movement> avoidanceQueue; //vector for lsit of avoidance movements
 		Direction directionFacing=NORTH;//initialse to west originally
+
+		void moveForward(double distance,double vel, std::string direction, int queueNum);
+		void rotate(double angleToRotateTo,double angleSpeed,int queueNum);
 		//boolean for if the robot is at desire location
 		bool desireLocation;
 		// Expresses velocity in free space broken into its linear and angular parts

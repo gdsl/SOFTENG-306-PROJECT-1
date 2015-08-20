@@ -8,14 +8,12 @@
  */
 CarrierRobot::CarrierRobot() {
 	// TODO Auto-generated constructor stub
-
 }
 
 /*
  * Constructor for carrier Robot with status
  */
 CarrierRobot::CarrierRobot(std::string status){
-	// TODO Auto-generated constructor stub
 	this->setStatus(status);
 
 }
@@ -51,12 +49,20 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 			if(carrierRobot.getAvoidanceQueueSize()<=0){
 				if(carrierRobot.getDirectionFacing()== carrierRobot.NORTH&&obstacleStatus.compare("Obstacle nearby")!=0){
 					carrierRobot.addMovementFront("rotation",M_PI/2,1,1);
+					carrierRobot.addMovementFront("forward_x",3,1,1);
+					carrierRobot.addMovementFront("rotation",0, 1,1);
+					carrierRobot.addMovementFront("forward_y",3,1,1);
+					carrierRobot.addMovementFront("rotation",M_PI/2,1,1);
 					carrierRobot.addMovementFront("forward_x",-3,1,1);
 					carrierRobot.addMovementFront("rotation",M_PI,1,1);
 					carrierRobot.addMovementFront("forward_x",0,0,1);//this is at front of front
 					carrierRobot.move();
 				}
 				if(carrierRobot.getDirectionFacing()== carrierRobot.EAST&&obstacleStatus.compare("Obstacle nearby")!=0){
+					carrierRobot.addMovementFront("rotation",0, 1,1);
+					carrierRobot.addMovementFront("forward_y",3,1,1);
+					carrierRobot.addMovementFront("rotation",M_PI/2, 1,1);
+					carrierRobot.addMovementFront("forward_x",3,0,1);
 					carrierRobot.addMovementFront("rotation",0, 1,1);
 					carrierRobot.addMovementFront("forward_y",-3,1,1);
 					carrierRobot.addMovementFront("rotation",-M_PI/2, 1,1);
@@ -76,7 +82,6 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 				//carrierRobot.addMovementFront("rotation",M_PI,1);
 				//carrierRobot.addMovementFront("rotation",-M_PI,1);
 				carrierRobot.move();
-				//TODO implement real avoidance currently temp to test
 				//carrierRobot.addMovementFront(,carrierRobot.getTheta()+1,1);
 				//carrierRobot.addMovementFront("rotation",carrierRobot.getTheta()+M_PI,1);
 				//carrierRobot.addMovementFront("rotation",carrierRobot.getTheta()+M_PI/2,1);
