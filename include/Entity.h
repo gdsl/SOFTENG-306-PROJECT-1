@@ -33,8 +33,7 @@ class Entity
 
 		// Callback methods
 		void stageOdom_callback(nav_msgs::Odometry msg);
-
-                void stageLaser_callback(sensor_msgs::LaserScan msg);
+        void stageLaser_callback(sensor_msgs::LaserScan msg);
 		void atLocation();
 		// Movement methods
 		void move();
