@@ -86,13 +86,13 @@ void recieveCarrierRobotStatus(const se306project::carrier_status::ConstPtr& msg
 void PickerRobot::stateLogic(){
 	if(pickerRobot.getBinCapacity()>=BIN_CAPACITY){
 		pickerRobot.setStatus("Full");
-		pickerRobot.addMovementFront("forward_x",0,0);
+		pickerRobot.addMovementFront("forward_x",0,0,1);
 		pickerRobot.move();
 		//TODO halt movement
 	}
 	if (pickerRobot.getStatus().compare("Moving")==0){
 		pickerRobot.move();
-		if(pickerRobot.movementQueue.size()<1){
+		if(pickerRobot.getMovementQueueSize()<1){
 			pickerRobot.setStatus("Full");
 		}
 	}
@@ -159,7 +159,7 @@ void PickerRobot::movement(){
                     //check if the Robot needs to go South
                     if (currentY > destY) {
                         //calculate the distance to move backwards along Y axis
-                        distanceToMove = currentY - destY;
+                        distanceToMove = -(currentY - destY);
                         //make sure the Robot is facing South, if not, turn it South.
                         if (pickerRobot.getDirectionFacing() != SOUTH) {
                             pickerRobot.faceSouth(1);                    
