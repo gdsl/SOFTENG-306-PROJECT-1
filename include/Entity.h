@@ -39,8 +39,9 @@ class Entity
 		// Movement methods
 		void move();
 		void movementComplete();
+		void avoidanceComplete();
 		void addMovement(std::string type,double amount,double velocity);
-		void addMovementFront(std::string type,double amount,double velocity);
+		void addMovementFront(std::string type,double amount,double velocity, int queueType);
 		void moveForward(double distance,double vel, std::string direction);
 		void rotate(double angleToRotateTo,double angleSpeed);
 		void faceNorth(double angleSpeed);
@@ -62,13 +63,11 @@ class Entity
 		bool getDesireLocation();
 		std::string getStatus();
 		int getMovementQueueSize();
+		int getAvoidanceQueueSize();
 		int getCriticalIntensity();
         //direction robot facing
 		enum Direction {WEST, SOUTH, EAST, NORTH};
         Direction getDirectionFacing();
-		//movement queue
-        std::vector<Movement> movementQueue;
-        
 
 	private:
 		//positions
@@ -84,7 +83,9 @@ class Entity
 		double minDistance;
 		double obstacleAngle;
 		std::string status;
-		
+		//movement queue
+        std::vector<Movement> movementQueue;
+        std::vector<Movement> avoidanceQueue; //vector for lsit of avoidance movements
 		Direction directionFacing=NORTH;//initialse to west originally
 		//boolean for if the robot is at desire location
 		bool desireLocation;

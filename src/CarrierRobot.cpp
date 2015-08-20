@@ -45,21 +45,27 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 	if (carrierRobot.getMinDistance() < 1) {
 
 		if(carrierRobot.getCriticalIntensity()>=4){//if its human or dog stop
-			carrierRobot.addMovementFront("forward_x",0,0);
+			carrierRobot.addMovementFront("forward_x",0,0,1);
 			carrierRobot.move();
 		}else{
-			if(carrierRobot.getDirectionFacing()== carrierRobot.NORTH&&obstacleStatus.compare("Obstacle nearby")!=0){
-				carrierRobot.addMovementFront("rotation",M_PI/2,1);
-				carrierRobot.addMovementFront("forward_x",-3,1);
-				carrierRobot.addMovementFront("rotation",M_PI,1);
-				carrierRobot.addMovementFront("forward_x",0,0);//this is at front of front
-				carrierRobot.move();
-			}
-			if(carrierRobot.getDirectionFacing()== carrierRobot.EAST&&obstacleStatus.compare("Obstacle nearby")!=0){
-				carrierRobot.addMovementFront("rotation",0, 1);
-				carrierRobot.addMovementFront("forward_y",-3,1);
-				carrierRobot.addMovementFront("rotation",-M_PI/2, 1);
-				carrierRobot.addMovementFront("forward_x",0,0);//this is at front of front
+			if(carrierRobot.getAvoidanceQueueSize()<=0){
+				if(carrierRobot.getDirectionFacing()== carrierRobot.NORTH&&obstacleStatus.compare("Obstacle nearby")!=0){
+					carrierRobot.addMovementFront("rotation",M_PI/2,1,1);
+					carrierRobot.addMovementFront("forward_x",-3,1,1);
+					carrierRobot.addMovementFront("rotation",M_PI,1,1);
+					carrierRobot.addMovementFront("forward_x",0,0,1);//this is at front of front
+					carrierRobot.move();
+				}
+				if(carrierRobot.getDirectionFacing()== carrierRobot.EAST&&obstacleStatus.compare("Obstacle nearby")!=0){
+					carrierRobot.addMovementFront("rotation",0, 1,1);
+					carrierRobot.addMovementFront("forward_y",-3,1,1);
+					carrierRobot.addMovementFront("rotation",-M_PI/2, 1,1);
+					carrierRobot.addMovementFront("forward_x",0,0,1);//this is at front of front
+					carrierRobot.move();
+				}
+			}else{
+				//halt movement if already have avoidance logic
+				carrierRobot.addMovementFront("forward_x",0,0,1);
 				carrierRobot.move();
 			}
 		}
@@ -87,10 +93,6 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
  */
 void recievePickerRobotStatus(const se306project::robot_status::ConstPtr& msg)
 {
-	//ROS_INFO("sub echoing pub: %d",msg->my_counter);
-	//ROS_INFO("sub echoing pub: %s",msg->status.c_str());
-	//ROS_INFO("sub echoing pub: %f",msg->pos_x);
-
 	//Check the status of Carrier robot so see how it should act
 	//when status is arrived it means that the carrier robot has arrived at picker
 	if (carrierRobot.getStatus().compare("Arrived")==0){
@@ -122,7 +124,7 @@ void CarrierRobot::stateLogic(){
 	if(carrierRobot.getStatus().compare("Transporting")==0){
 		//if the carrier is in transporting state move
 		//if the carrier is transporting it will move to bin drop off area (the driveway)
-		if(carrierRobot.movementQueue.size()<1){
+		if(carrierRobot.getMovementQueueSize()<1){
 			carrierRobot.setStatus("Idle"); //when carrier robot complete transporting full bin to driveway it
 			//become Idle again (free)
 			carrierRobot.setDesireLocation(false);//refresh that it can recieve more desire location
@@ -130,7 +132,7 @@ void CarrierRobot::stateLogic(){
 		carrierRobot.move();
 	}else if(carrierRobot.getStatus().compare("Moving")==0){
 		//check if the robot has anymore movement in queue if not set state to arrive
-		if(carrierRobot.movementQueue.size()<1){
+		if(carrierRobot.getMovementQueueSize()<1){
 			//carrierRobot.setStatus("Arrived");
 		}
 		//if the carrier is in moving state, move
@@ -167,7 +169,7 @@ int main(int argc, char **argv)
 
     //relative to the obstacle information
     carrierRobot.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000, callBackLaserScan);
-	//subscribe to the status of picker robot
+    //subscribe to the status of picker robot
 	ros::Subscriber mysub_object = n.subscribe<se306project::robot_status>("/robot_0/status",1000,recievePickerRobotStatus);
 
 

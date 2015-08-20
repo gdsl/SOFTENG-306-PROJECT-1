@@ -143,7 +143,7 @@ void Entity::move(){
 }
 
 /**
- * Message to remove movements to queue
+ * Method to remove movements from movement queue
  */
 void Entity::movementComplete(){
 	//convert to position
@@ -151,12 +151,32 @@ void Entity::movementComplete(){
 	desireLocation=true;
 }
 
+/**
+ * Method to remove movements to from avoidance queue
+ */
+void Entity::avoidanceComplete(){
+	//convert to position
+	avoidanceQueue.erase(avoidanceQueue.begin());
+	desireLocation=true;
+}
+
+/**
+ * Method to get the size of the vector of the movement queue
+ */
 int Entity::getMovementQueueSize() {
 	return movementQueue.size();
 }
 
 /**
+ * Method to get the size of the vector of the avoidance queue
+ */
+int Entity::getAvoidanceQueueSize() {
+	return avoidanceQueue.size();
+}
+/**
  * Method to add movements to movement queue
+ * Distance: the value relative to the absolute frame of reference
+ * eg if +5(north) in y then distance is 5 if -5(south) in y then distance is -5
  */
 void Entity::addMovement(std::string type, double distance,double velocity){
 	//convert to position
@@ -200,8 +220,9 @@ void Entity::addMovement(std::string type, double distance,double velocity){
  * Method to add movements to front of movement queue
  * Distance: the value relative to the absolute frame of reference
  * eg if +5(north) in y then distance is 5 if -5(south) in y then distance is -5
+ * queueNum of queue 1 for avoidance 2 for movements
  */
-void Entity::addMovementFront(std::string type, double distance,double velocity){
+void Entity::addMovementFront(std::string type, double distance,double velocity, int queueNum){
 	//convert to position
 	double pos=0;
 	if (type.compare("rotation")!=0){
@@ -216,7 +237,11 @@ void Entity::addMovementFront(std::string type, double distance,double velocity)
 	}
 	//ROS_INFO("pos: %f", pos);
 	Movement m=Movement(type,pos,velocity);
-	movementQueue.insert(movementQueue.begin(),m);
+	if(queueNum==2){
+		movementQueue.insert(movementQueue.begin(),m);
+	}else{
+		avoidanceQueue.insert(avoidanceQueue.begin(),m);
+	}
 }
 
 /**
