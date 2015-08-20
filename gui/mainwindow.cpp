@@ -11,6 +11,8 @@
 #include <QLayout>
 #include "Generator.h"
 #include "unistd.h"
+#include <QDebug>
+#include <vector>
 
 using namespace std;
 
@@ -96,13 +98,15 @@ void MainWindow::on_generateButton_clicked()
 
 
 void MainWindow::generate() {
-    writeXml();
+    //writeXml();
     bool ok;
     numPickers = ui->pickerRobotsField->text().toInt(&ok, 10);
     numCarriers = ui->carrierRobotsField->text().toInt(&ok, 10);
     numWorkers = ui->workersField->text().toInt(&ok, 10);
     numDogs = ui->dogsField->text().toInt(&ok, 10);
-
+    float rowWidth = ui->rowWidthField->text().toFloat(&ok);
+    float spacing = ui->spacingField->text().toFloat(&ok);
+    
     uiListRobots.clear();
     uiListAnimals.clear();
     launchFileEntityList.clear();
@@ -149,14 +153,15 @@ void MainWindow::generate() {
         ui->animalScroll->widget()->layout()->addWidget(uiListAnimals[i]);
     }
     
-    writeLaunchFile();
-    Generator generator("world/generatedOrchard.xml", "world/test.world");
+    Generator generator(/*"world/generatedOrchard.xml", */"world/test.world");
 	generator.loadWorld();
-	generator.loadOrchard();
-	generator.loadRobots();
-	generator.loadPeople();
-	generator.loadAnimals();
+	generator.loadOrchard(7, 70, rowWidth, spacing);
+	pickerRobotsPositions = generator.loadPickerRobots(numPickers);
+	carrierRobotsPositions = generator.loadCarrierRobots(numCarriers);
+	generator.loadPeople(numWorkers);
+	generator.loadAnimals(numDogs);
 	generator.write();
+    writeLaunchFile();
 
 }
 
@@ -211,6 +216,8 @@ void MainWindow::writeLaunchFile(){
         xml.SetAttrib( "pkg", "stage_ros" );
         xml.SetAttrib( "type", "stageros" );
         xml.SetAttrib( "args", "$(find se306project)/world/test.world" );
+        int pickerPos = 0;
+        int carrierPos = 0;
         for (int i = 0; i < launchFileEntityList.size(); i++) {
             xml.AddElem("group");
             ostringstream oss;
@@ -224,6 +231,16 @@ void MainWindow::writeLaunchFile(){
                 if (launchFileEntityList[i] == "Beacon") {
                     ostringstream oss;
                     oss << "/beacon" << i+1 << "/";
+                    xml.SetAttrib( "args", oss.str() );
+                } else if (launchFileEntityList[i] == "PickerRobot") {
+                    ostringstream oss;
+                    oss << pickerRobotsPositions[pickerPos] << " " << pickerRobotsPositions[pickerPos+1];
+                    pickerPos += 2;
+                    xml.SetAttrib( "args", oss.str() );
+                } else if (launchFileEntityList[i] == "CarrierRobot") {
+                    ostringstream oss;
+                    oss << carrierRobotsPositions[carrierPos] << " " << carrierRobotsPositions[carrierPos+1];
+                    carrierPos += 2;
                     xml.SetAttrib( "args", oss.str() );
                 }
             xml.OutOfElem();

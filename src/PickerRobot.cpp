@@ -206,10 +206,11 @@ void beaconCallback(const nav_msgs::Odometry msg) {
 
 void atBeacon() {
     if (atDestX && atDestY) {
-        pickerRobot.movementComplete();
+        //pickerRobot.movementComplete();
+        //resubscribe the beacon subscriber to the next beacon 
     }
     
-    //resubscribe the beacon subscriber to the next beacon 
+    
 }
 
 int main(int argc, char **argv)
