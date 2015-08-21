@@ -246,15 +246,14 @@ void MainWindow::writeLaunchFile(){
                     int alphaPersonNumber = numRows*2 + numWeeds + numPickers + numCarriers;
                     oss << "/tallweed" << i+1 << "/ /robot_" << alphaPersonNumber << "/status";
                     xml.SetAttrib( "args", oss.str() );
-                } 
-                else if (launchFileEntityList[i] == "PickerRobot") {
+                } else if (launchFileEntityList[i] == "PickerRobot") {
                     ostringstream oss;
                     oss << pickerRobotsPositions[pickerPos] << " " << pickerRobotsPositions[pickerPos+1];
                     pickerPos += 2;
                     xml.SetAttrib( "args", oss.str() );
                 } else if (launchFileEntityList[i] == "CarrierRobot") {
                     ostringstream oss;
-                    oss << carrierRobotsPositions[carrierPos] << " " << carrierRobotsPositions[carrierPos+1];
+                    oss << carrierRobotsPositions[carrierPos] << " " << carrierRobotsPositions[carrierPos+1] << " " << numPickers;
                     carrierPos += 2;
                     xml.SetAttrib( "args", oss.str() );
                 }
