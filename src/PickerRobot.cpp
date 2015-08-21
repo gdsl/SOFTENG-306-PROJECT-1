@@ -103,7 +103,7 @@ void PickerRobot::stateLogic(ros::NodeHandle n){
 //		pickerRobot.setStatus("Full");
 //		pickerRobot.addMovementFront("forward_x",0,0,1);
 //		pickerRobot.move();
-//		//TODO halt movement
+//
 //	}
 //	if (pickerRobot.getStatus().compare("Moving")==0){
 //		pickerRobot.move();
@@ -126,11 +126,11 @@ void PickerRobot::stateLogic(ros::NodeHandle n){
             //set the current beacon to be the starting beacon
             currentBeacon = startBeacon;
             //subscribe to the new beacon
-            subscribeNextBeacon(n);
+            //subscribeNextBeacon(n);//dont need resubsription
             pickerRobot.movement();
             //if the Picker has received directions from next beacon, proceed to next state as it involves the next beacon
             if (hasNewBeacon) {pickerRobot.setState(PICKING);}
-
+            //TODO looks like picking state is getting set too early (logically) functional should be fine
         } else if (pickerRobot.getState() == PICKING) {
             //check if the Picker Robot is moving East or West along a row of kiwi fruit and adjust next beacon number accordingly
             //if Picker is starting on the left of a row, make it go to the right.
@@ -164,6 +164,7 @@ void PickerRobot::stateLogic(ros::NodeHandle n){
 
         }
     }
+    pickerRobot.move();
 }
 /*
  * Method for the logic of PickerRobot running its movement queue.
@@ -192,26 +193,25 @@ void PickerRobot::movement(){
                     if (pickerRobot.getDirectionFacing() != EAST) {pickerRobot.faceEast(1);}
                 }
                 pickerRobot.addMovement("forward_x", distanceToMove, 1);
-            } else {
-                //now add the vertical movement to the movement queue
-                if (!atDestY) {
-                    //check if the Robot needs to go South
-                    if (currentY > destY) {
-                        //calculate the distance to move backwards along Y axis
-                        distanceToMove = -(currentY - destY);
-                        //make sure the Robot is facing South, if not, turn it South.
-                        if (pickerRobot.getDirectionFacing() != SOUTH) {
-                            pickerRobot.faceSouth(1);                    
-                        }                
-                    //otherwise it means the Robot needs to go North
-                    } else if (currentY < destY) {
-                        distanceToMove = destY - currentY;
-                        //make sure the Robot is facing North, if not, turn it North.
-                        if (pickerRobot.getDirectionFacing() != NORTH) {pickerRobot.faceNorth(1);}
-                    }
-                    pickerRobot.addMovement("forward_y", distanceToMove, 1);
-                }            
             }
+			//now add the vertical movement to the movement queue
+			if (!atDestY) {
+				//check if the Robot needs to go South
+				if (currentY > destY) {
+					//calculate the distance to move backwards along Y axis
+					distanceToMove = -(currentY - destY);
+					//make sure the Robot is facing South, if not, turn it South.
+					if (pickerRobot.getDirectionFacing() != SOUTH) {
+						pickerRobot.faceSouth(1);
+					}
+				//otherwise it means the Robot needs to go North
+				} else if (currentY < destY) {
+					distanceToMove = destY - currentY;
+					//make sure the Robot is facing North, if not, turn it North.
+					if (pickerRobot.getDirectionFacing() != NORTH) {pickerRobot.faceNorth(1);}
+				}
+				pickerRobot.addMovement("forward_y", distanceToMove, 1);
+			}
         }
         hasNewBeacon = true;
     }
@@ -225,7 +225,6 @@ void PickerRobot::movement(){
 void beaconCallback(const nav_msgs::Odometry msg) {
     destX = msg.pose.pose.position.x;
     destY = msg.pose.pose.position.y;
-    
     if (std::abs(destX - pickerRobot.getX()) < 0.01) {
         atDestX = true;
         //ROS_INFO("AT BEACON X POSITION");
@@ -255,6 +254,9 @@ void PickerRobot::subscribeNextBeacon(ros::NodeHandle n) {
     out << currentBeacon;
     currentBeaconS = out.str();
     beacon_sub = n.subscribe<nav_msgs::Odometry>("/beacon" + currentBeaconS + "/", 1000, beaconCallback);
+    //beacon_sub.shutdown();
+    //beacon_sub = n.subscribe<nav_msgs::Odometry>("/beacon1/", 1000, beaconCallback);
+
     atDestX = false;
     atDestY = false;
 }
@@ -298,6 +300,8 @@ int main(int argc, char **argv)
     
     // assign beacon subscriber to the first beacon for this Picker robot's path.
     beacon_sub = n.subscribe<nav_msgs::Odometry>("/beacon1/", 1000, beaconCallback);
+    //beacon_sub.shutdown();
+    //beacon_sub = n.subscribe<nav_msgs::Odometry>("/beacon3/", 1000, beaconCallback);
 
 	// initalise robot status message
 	se306project::robot_status status_msg;
