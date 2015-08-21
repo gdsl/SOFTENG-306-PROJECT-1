@@ -22,7 +22,7 @@ public:
 	void setBinCapacity(int bin_capacity);
 
 private:
-	int bin_capacity=0;    
+	int bin_capacity=0; 
     
 };
 

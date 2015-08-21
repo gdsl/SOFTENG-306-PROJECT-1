@@ -16,6 +16,7 @@ CarrierRobot::CarrierRobot() {
 CarrierRobot::CarrierRobot(double x,double y,double theta,double linearVel, double angularVel,std::string status)
 	:Robot( x, y, theta, linearVel,  angularVel){
 	this->setStatus(status);
+    this->setState(IDLE);
 }
 
 /*
