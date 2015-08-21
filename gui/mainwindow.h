@@ -46,6 +46,7 @@ private:
     vector<string> launchFileEntityList;
     vector<int> pickerRobotsPositions;
     vector<int> carrierRobotsPositions;
+    vector<float> beaconPositions;   
     int numPickers;
     int numCarriers;
     int numRows = 7;

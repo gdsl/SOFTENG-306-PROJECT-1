@@ -80,28 +80,11 @@ void Generator::loadWorld()
 
 /**
  * Loads orchard environment. Places trunk/pole/fruit vine and puts beacon
+ returns position of beacons
  */
-void Generator::loadOrchard(int rowCount, float rowLength, float rowWidth, float trunkPoleSpacing)
+std::vector<float> Generator::loadOrchard(int rowCount, float rowLength, float rowWidth, float trunkPoleSpacing)
 {
-	//XMLElement* models = rootElement -> FirstChildElement("models");
-
-	// orchard element
-	//XMLElement* orchard = models -> FirstChildElement("orchard");
-
-	// initialise variables
-	/*float rowCount, rowLength, rowWidth, trunkPoleSpacing;
-
-	XMLElement* row_count = orchard -> FirstChildElement("row_count");
-	rowCount = atoi(row_count->GetText());
-
-	XMLElement* row_length = orchard -> FirstChildElement("row_length");
-	rowLength = atof(row_length->GetText());
-
-	XMLElement* row_width = orchard -> FirstChildElement("row_width");
-	rowWidth = atof(row_width->GetText());
-
-	XMLElement* trunk_pole_spacing = orchard -> FirstChildElement("trunk_pole_spacing");
-	trunkPoleSpacing = atof(trunk_pole_spacing->GetText()); */
+    std::vector<float> beaconPositions;
 
 	// Assumption: bitmap is big enough for orchard generation.
 	// bitmap image centre is at (0,0,0,0)
@@ -132,8 +115,12 @@ void Generator::loadOrchard(int rowCount, float rowLength, float rowWidth, float
 			 * add beacons at start and end of each row
 			 */
 			if (i == 0 && j < rowCount) {
+			    beaconPositions.push_back(x - SEPARATION);
+			    beaconPositions.push_back(y-rowWidth/2.0);
 				outfile << "beacon( pose [ " << (x - SEPARATION) << " " << (y-rowWidth/2.0) << " 0.000 0.000 ] name \"beacon" << j << "\" color \"random\")" << endl;
 			} else if (i == columnCount - 1 && j < rowCount) {
+			    beaconPositions.push_back(x + SEPARATION);
+			    beaconPositions.push_back(y-rowWidth/2.0);
 				outfile << "beacon( pose [ " << (x + SEPARATION) << " " << (y-rowWidth/2.0) << " 0.000 0.000 ] name \"beacon" << (j + 7) << "\" color \"random\")" << endl;
 			}
 
@@ -167,6 +154,7 @@ void Generator::loadOrchard(int rowCount, float rowLength, float rowWidth, float
 		// increase x
 		x += trunkPoleSpacing;
 	}
+	return beaconPositions;
 }
 
 /**
