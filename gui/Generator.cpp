@@ -270,7 +270,8 @@ void Generator::loadAnimals()
 
 void Generator::loadTallWeeds()
 {
-    numWeeds = rand() % 8 + 2; //between 2 and 10
+//hardcoded to 10 for now - also is 10 in mainwindow.h file
+    numWeeds = 10;//rand() % 8 + 2; //between 2 and 10
     
     outfile << "#Generate tall weeds" << endl;
     for(int i = 0; i < numWeeds; i++){
