@@ -50,6 +50,7 @@
            <height>139</height>
           </rect>
          </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_3"/>
         </widget>
        </widget>
       </item>
@@ -78,6 +79,7 @@
            <height>139</height>
           </rect>
          </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_4"/>
         </widget>
        </widget>
       </item>
@@ -106,7 +108,7 @@
            <height>139</height>
           </rect>
          </property>
-         <zorder></zorder>
+         <layout class="QHBoxLayout" name="horizontalLayout_5"/>
         </widget>
        </widget>
       </item>
@@ -126,106 +128,27 @@
       </item>
       <item>
        <layout class="QGridLayout" name="gridLayout">
-        <item row="4" column="0">
+        <item row="0" column="1">
+         <widget class="QSpinBox" name="pickerSpinner"/>
+        </item>
+        <item row="5" column="0">
          <widget class="QLabel" name="spacingLabel">
           <property name="text">
            <string>Pole/Trunk spacing</string>
           </property>
          </widget>
         </item>
-        <item row="3" column="3">
-         <widget class="QCheckBox" name="tractorLabel">
-          <property name="text">
-           <string>Tractor</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="3">
-         <widget class="QCheckBox" name="dogLabel">
-          <property name="text">
-           <string>Dog</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QLineEdit" name="pickerRobotsField">
-          <property name="text">
-           <string>1</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="4">
-         <widget class="QCheckBox" name="blindPersonLabel">
-          <property name="text">
-           <string>Blind Person</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QLineEdit" name="carrierRobotsField">
-          <property name="text">
-           <string>1</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="carrierRobotsLabel">
-          <property name="text">
-           <string>Carrier Robots</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="6">
-         <spacer name="horizontalSpacer_2">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="3" column="0">
+        <item row="4" column="0">
          <widget class="QLabel" name="rowWidthLabel">
           <property name="text">
            <string>Row width</string>
           </property>
          </widget>
         </item>
-        <item row="3" column="1">
-         <widget class="QLineEdit" name="rowWidthField">
+        <item row="2" column="0">
+         <widget class="QLabel" name="carrierRobotsLabel">
           <property name="text">
-           <string>3.5</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="3">
-         <widget class="QCheckBox" name="catLabel">
-          <property name="text">
-           <string>Cat</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="2">
-         <spacer name="horizontalSpacer_5">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="4" column="1">
-         <widget class="QLineEdit" name="spacingField">
-          <property name="text">
-           <string>2.5</string>
+           <string>Carrier Robots</string>
           </property>
          </widget>
         </item>
@@ -236,10 +159,82 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="4">
-         <widget class="QCheckBox" name="neighbourLabel">
+        <item row="2" column="1">
+         <widget class="QSpinBox" name="carrierSpinner"/>
+        </item>
+        <item row="4" column="1">
+         <widget class="QSpinBox" name="rowWidthSpinner"/>
+        </item>
+        <item row="5" column="1">
+         <widget class="QSpinBox" name="poleTrunkSpacingSpinner"/>
+        </item>
+        <item row="4" column="3">
+         <widget class="QSpinBox" name="dogSpinner"/>
+        </item>
+        <item row="4" column="2">
+         <widget class="QLabel" name="dogLabel">
           <property name="text">
-           <string>Neighbour</string>
+           <string>Dog</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="4">
+         <widget class="QLabel" name="neighborLabel">
+          <property name="text">
+           <string>Neighbor</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="5">
+         <widget class="QSpinBox" name="neighborSpinner"/>
+        </item>
+        <item row="0" column="2">
+         <widget class="QLabel" name="rowNumberLabel">
+          <property name="text">
+           <string>Row Number</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="3">
+         <widget class="QSpinBox" name="rowNumberSpinner"/>
+        </item>
+        <item row="2" column="2">
+         <widget class="QLabel" name="workerLabel">
+          <property name="text">
+           <string>Worker</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="3">
+         <widget class="QSpinBox" name="workerSpinner"/>
+        </item>
+        <item row="0" column="4">
+         <widget class="QLabel" name="blindPersonLabel">
+          <property name="text">
+           <string>Blind Person</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="2">
+         <widget class="QLabel" name="catLabel">
+          <property name="text">
+           <string>Cat</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="5">
+         <widget class="QSpinBox" name="blindPersonSpinner"/>
+        </item>
+        <item row="4" column="5">
+         <widget class="QSpinBox" name="tractorSpinner"/>
+        </item>
+        <item row="5" column="3">
+         <widget class="QSpinBox" name="catSpinner"/>
+        </item>
+        <item row="4" column="4">
+         <widget class="QLabel" name="tractorLabel">
+          <property name="text">
+           <string>Tractor</string>
           </property>
          </widget>
         </item>
@@ -286,8 +281,6 @@ color: rgb(255, 255, 255);</string>
      </layout>
     </item>
    </layout>
-   <zorder>pickerRobotsLabel</zorder>
-   <zorder>carrierRobotsLabel</zorder>
    <zorder></zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">

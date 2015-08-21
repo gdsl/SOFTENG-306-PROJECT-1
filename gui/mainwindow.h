@@ -47,10 +47,16 @@ private:
     vector<string> launchFileEntityList;
     int numPickers;
     int numCarriers;
-    int numRows = 7;
-    int numBeacons = 14;
+    int numRows;
+    int rowWidth;
+    int poleTrunkSpacing;
+    int numBeacons;
     int numDogs;
+    int numCats;
     int numWorkers;
+    int numBlindPerson;
+    int numNeighbors;
+    int numTractors;
 //	void updateGUI(const QString buffer);
 //	void *print_message_function( void *ptr );
 //	void exec(string cmd);
