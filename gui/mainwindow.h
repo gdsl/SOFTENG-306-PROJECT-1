@@ -36,7 +36,7 @@ public:
 private slots:
 	void on_launchButton_clicked();
 	void on_closeButton_clicked();
-    void on_generateButton_clicked();
+    void on_displayStatusButton_clicked();
 
 private:
     Ui::MainWindow *ui;

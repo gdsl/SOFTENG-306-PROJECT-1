@@ -1,14 +1,12 @@
 /**
  * Generator header file. Converts xml documents to world file
  */
-#include "tinyxml2.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
 #include <fstream>
 #include <vector>
 
-using namespace tinyxml2;
 using namespace std;
 
 class Generator
@@ -40,8 +38,6 @@ class Generator
 	private:
 		string inputName;
 		string outputName;
-		XMLDocument doc;
-		XMLElement* rootElement;
 		ofstream outfile;
 		string colourArray[14] = { "PeachPuff", "NavajoWhite", "LemonChiffon", "AliceBlue", "Lavender", "thistle", "LightSalmon", "PaleTurquoise", "PaleGreen", "beige", "plum", "LightGrey", "LightSkyBlue", "SpringGreen" };
     int colourCount = 0;

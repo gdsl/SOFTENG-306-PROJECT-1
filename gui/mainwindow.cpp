@@ -92,11 +92,13 @@ void MainWindow::on_closeButton_clicked()
 	//close roslaunch and close all rostopics
 	system("pkill stage");
 	system("pkill rostopic");
+	system("pkill roslaunch");	
 }
 
-void MainWindow::on_generateButton_clicked()
+void MainWindow::on_displayStatusButton_clicked()
 {
-    MainWindow::generate();
+	startReadingTopics();
+    //MainWindow::generate();
 }
 
 
