@@ -36,7 +36,7 @@ public:
 private slots:
 	void on_launchButton_clicked();
 	void on_closeButton_clicked();
-    void on_generateButton_clicked();
+    void on_displayStatusButton_clicked();
 
 private:
     Ui::MainWindow *ui;
@@ -44,9 +44,7 @@ private:
     vector<QListWidget*> uiListRobots;
     vector<QListWidget*> uiListAnimals;
     vector<string> launchFileEntityList;
-    vector<int> pickerRobotsPositions;
-    vector<int> carrierRobotsPositions;
-    vector<float> beaconPositions;   
+  
     int numPickers;
     int numCarriers;
     int numRows = 7;

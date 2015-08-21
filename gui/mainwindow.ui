@@ -189,7 +189,7 @@
      <string>Carrier Robots</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="generateButton">
+   <widget class="QPushButton" name="displayStatusButton">
     <property name="geometry">
      <rect>
       <x>620</x>
@@ -199,7 +199,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Generate world file</string>
+     <string>Display Statuses</string>
     </property>
    </widget>
    <widget class="QScrollArea" name="robotScroll">
