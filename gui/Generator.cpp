@@ -270,7 +270,7 @@ void Generator::loadAnimals()
 
 void Generator::loadTallWeeds()
 {
-    numWeeds = 10;//rand() % 15 - 5;
+    numWeeds = rand() % 8 + 2; //between 2 and 10
     
     outfile << "#Generate tall weeds" << endl;
     for(int i = 0; i < numWeeds; i++){
@@ -330,7 +330,9 @@ void Generator::writeLaunchFile(){
             xml.SetAttrib( "name", "CarrierRobotnode" );
             xml.SetAttrib( "type", "CarrierRobot" );
             int carrierPos = (i - numWeeds - numBeacons - pickerNumber)*2;
-            oss << carrierRobotsPositions[carrierPos] << " " << carrierRobotsPositions[carrierPos+1] << " " << pickerNumber;
+            int firstPicker = numWeeds + numBeacons;
+            int lastPicker = firstPicker + pickerNumber - 1;
+            oss << carrierRobotsPositions[carrierPos] << " " << carrierRobotsPositions[carrierPos+1] << " " << firstPicker << " " << lastPicker;
         } else if (i < numWeeds + numBeacons + pickerNumber + carrierNumber + workerNumber) { //AlphaPersons (workers)
             xml.SetAttrib( "name", "AlphaPersonnode" );
             xml.SetAttrib( "type", "AlphaPerson" );
