@@ -163,7 +163,7 @@ void MainWindow::generate() {
 	pickerRobotsPositions = generator.loadPickerRobots(numPickers);
 	carrierRobotsPositions = generator.loadCarrierRobots(numCarriers);
 	generator.loadPeople(numWorkers);
-	generator.loadAnimals(numDogs);
+	generator.loadAnimals(numDogs, rowWidth, spacing);
 
 	generator.write();
     writeLaunchFile();

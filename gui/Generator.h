@@ -20,7 +20,7 @@ class Generator
 		std::vector<int> loadPickerRobots(int pickerNumber);
 		std::vector<int> loadCarrierRobots(int carrierNumber);
 		void loadPeople(int workerNumber);
-		void loadAnimals(int dogNumbers);
+		void loadAnimals(int dogNumbers, float rowWidth, float spacing);
         void loadTallWeeds();
 		void write();
 
