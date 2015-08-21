@@ -24,8 +24,9 @@ MainWindow::MainWindow(QWidget *parent) :
     uiListAnimals.reserve(50); 
     uiListPeoples.reserve(50);
     
-    //ui->robotScroll->widget()->layout()->setAlignment(Qt::AlignLeft);
-    //ui->animalScroll->widget()->layout()->setAlignment(Qt::AlignLeft);
+    ui->robotScroll->widget()->layout()->setAlignment(Qt::AlignLeft);
+    ui->peopleScroll->widget()->layout()->setAlignment(Qt::AlignLeft);
+    ui->animalScroll->widget()->layout()->setAlignment(Qt::AlignLeft);
 }
 
 void MainWindow::startReadingTopics() {
@@ -78,7 +79,7 @@ void MainWindow::on_launchButton_clicked()
     usleep(1000000); //1 second
     //qDebug("started reading!!!!!!!!!!!!!!!!!!!!!!!!!!1");
 	//emit MainWindow::requestProcess();
-	//startReadingTopics();
+	startReadingTopics();
 }
 
 void MainWindow::on_closeButton_clicked()
@@ -97,10 +98,18 @@ void MainWindow::on_generateButton_clicked()
 void MainWindow::generate() {
     writeXml();
 
-    numPickers = ui->pickerRobotsField->text().toInt(&ok, 10);
-    numCarriers = ui->carrierRobotsField->text().toInt(&ok, 10);
-    numWorkers = ui->workersField->text().toInt(&ok, 10);
-    numDogs = ui->dogsField->text().toInt(&ok, 10);
+    // initialise variables
+    numPickers = ui->pickerSpinner->value();
+    numCarriers = ui->carrierSpinner->value();
+    numWorkers = ui->workerSpinner->value();
+    numDogs = ui->dogSpinner->value();
+    numCats = ui->catSpinner->value();
+    rowWidth = ui->rowWidthSpinner->value();
+    poleTrunkSpacing = ui->poleTrunkSpacingSpinner->value();
+    numRows = ui->rowNumberSpinner->value();
+    numBlindPerson = ui->blindPersonSpinner->value();
+    numNeighbors = ui->neighborSpinner->value();
+    numTractors = ui->tractorSpinner->value();
 
     uiListPeoples.clear();
     uiListRobots.clear();
@@ -120,23 +129,26 @@ void MainWindow::generate() {
         launchFileEntityList.push_back("CarrierRobot");
     }
     for (int i = 0; i < numWorkers; i++) {
-        uiListAnimals.push_back(createNewItem("Human_Worker"));
+        uiListPeoples.push_back(createNewItem("Human_Worker"));
         launchFileEntityList.push_back("AlphaPerson");
     }
     for (int i = 0; i < numDogs; i++) {
         uiListAnimals.push_back(createNewItem("Animal_Dog"));
         launchFileEntityList.push_back("AlphaDog");
     }
+
+    // Add the other gui
+
     //clear the layout
-    QLayoutItem *item;
-    while (( item = ui->robotScroll->widget()->layout()->takeAt(0)) != 0 ){
-        delete item->widget();
-        delete item;
-    }
-    while (( item = ui->animalScroll->widget()->layout()->takeAt(0)) != 0 ){
-        delete item->widget();
-        delete item;
-    }
+//    QLayoutItem *item;
+//    while (( item = ui->robotScroll->widget()->layout()->takeAt(0)) != 0 ){
+//        delete item->widget();
+//        delete item;
+//    }
+//    while (( item = ui->animalScroll->widget()->layout()->takeAt(0)) != 0 ){
+//        delete item->widget();
+//        delete item;
+//    }
     //add all widgets back
     string colourArray[9] = { "red", "orange", "yellow", "green", "blue", "purple", "magenta", "aqua", "fuchsia" };
     for (int i = 0; i < uiListRobots.size(); i++) {
@@ -179,58 +191,58 @@ void MainWindow::writeXml() {
             xml.IntoElem();
                 xml.AddElem( "row_count", 7);
                 xml.AddElem( "row_length", 70);
-                xml.AddElem( "row_width", ui->rowWidthField->text().toStdString() );
-                xml.AddElem( "trunk_pole_spacing", ui->spacingField->text().toStdString() );
+                xml.AddElem( "row_width", ui->rowWidthSpinner->value() );
+                xml.AddElem( "trunk_pole_spacing", ui->poleTrunkSpacingSpinner->value() );
             xml.OutOfElem();
             xml.AddElem("robots");
             xml.IntoElem();
-                xml.AddElem( "picker_number", ui->pickerRobotsField->text().toInt(&ok, 10) );
-                xml.AddElem( "carrier_number", ui->carrierRobotsField->text().toInt(&ok, 10) );
+                xml.AddElem( "picker_number", ui->pickerSpinner->value() );
+                xml.AddElem( "carrier_number", ui->carrierSpinner->value() );
             xml.OutOfElem();
             xml.AddElem("people");
             xml.IntoElem();
-                xml.AddElem( "worker_number", ui->workersField->text().toInt(&ok, 10) );
+                xml.AddElem( "worker_number", ui->workerSpinner->value() );
             xml.OutOfElem();
             xml.AddElem("animals");
             xml.IntoElem();
-                xml.AddElem( "dog_number", ui->dogsField->text().toInt(&ok, 10) );
+                xml.AddElem( "dog_number", ui->dogSpinner->value() );
             xml.OutOfElem();
         xml.OutOfElem();
     xml.OutOfElem();
     xml.Save( "world/generatedOrchard.xml" );
 }
 
-//void MainWindow::writeLaunchFile(){
-//    //writes to the launch file
-//    CMarkup xml;
-//    bool ok;
-//    xml.AddElem("launch");
-//    xml.IntoElem();
-//        xml.AddElem("node");
-//        xml.SetAttrib( "name", "stage" );
-//        xml.SetAttrib( "pkg", "stage_ros" );
-//        xml.SetAttrib( "type", "stageros" );
-//        xml.SetAttrib( "args", "$(find se306project)/world/test.world" );
-//        for (int i = 0; i < launchFileEntityList.size(); i++) {
-//            xml.AddElem("group");
-//            ostringstream oss;
-//            oss << "robot_" << i;
-//            xml.SetAttrib("ns", oss.str());
-//            xml.IntoElem();
-//            xml.AddElem("node");
-//                xml.SetAttrib( "name", launchFileEntityList[i]+"node" );
-//                xml.SetAttrib( "pkg", "se306project" );
-//                xml.SetAttrib( "type", launchFileEntityList[i] );
-//                if (launchFileEntityList[i] == "Beacon") {
-//                    ostringstream oss;
-//                    oss << "/beacon" << i+1 << "/";
-//                    xml.SetAttrib( "args", oss.str() );
-//                }
-//            xml.OutOfElem();
-//        }
-//    xml.OutOfElem();
-//    xml.Save("launch/test.launch");
-//}
+void MainWindow::writeLaunchFile(){
+    //writes to the launch file
+    CMarkup xml;
+    bool ok;
+    xml.AddElem("launch");
+    xml.IntoElem();
+        xml.AddElem("node");
+        xml.SetAttrib( "name", "stage" );
+        xml.SetAttrib( "pkg", "stage_ros" );
+        xml.SetAttrib( "type", "stageros" );
+        xml.SetAttrib( "args", "$(find se306project)/world/test.world" );
+        for (int i = 0; i < launchFileEntityList.size(); i++) {
+            xml.AddElem("group");
+            ostringstream oss;
+            oss << "robot_" << i;
+            xml.SetAttrib("ns", oss.str());
+            xml.IntoElem();
+            xml.AddElem("node");
+                xml.SetAttrib( "name", launchFileEntityList[i]+"node" );
+                xml.SetAttrib( "pkg", "se306project" );
+                xml.SetAttrib( "type", launchFileEntityList[i] );
+                if (launchFileEntityList[i] == "Beacon") {
+                    ostringstream oss;
+                    oss << "/beacon" << i+1 << "/";
+                    xml.SetAttrib( "args", oss.str() );
+                }
+            xml.OutOfElem();
+        }
+    xml.OutOfElem();
+    xml.Save("launch/test.launch");
+}
 
 QListWidget* MainWindow::createNewItem(string type) {
     QListWidget *list = new QListWidget;
@@ -250,7 +262,7 @@ QListWidget* MainWindow::createNewItem(string type) {
     QListWidgetItem *item6 = new QListWidgetItem;
     list->addItem(item6);
 
-    list->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    //list->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     //list->setFixedSize(180,150);
     return list;
 }
