@@ -2,22 +2,24 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <vector>
-
+#include <sstream>
+#include "Markup.h"
 /**
  * Generator constructor. Takes in input name and output name.
  * Input name specifies XML document to load.
  * Output name specifies world file output name.
  */
-Generator::Generator(/*string inputName, */string outputName)
+Generator::Generator(string outputName, int pickerNumber, int carrierNumber, int dogNumber, int workerNumber, float rowWidth, float spacing)
 {
 	//this->inputName = inputName;
 	this->outputName = outputName;
+	this->pickerNumber = pickerNumber;
+	this->carrierNumber = carrierNumber;
+	this->dogNumber = dogNumber;
+	this->workerNumber = workerNumber;
+	this->rowWidth = rowWidth;
+	this->spacing = spacing;
 
-	// Load xml document
-	//doc.LoadFile(inputName.c_str());
-	// Return root element
-	//rootElement = doc.RootElement();
-	// Create world file
 	outfile.open(outputName.c_str());
 
 	// Comments and loading inc files.
@@ -54,27 +56,17 @@ void Generator::write()
  */
 void Generator::loadWorld()
 {
-	// resolution
-	//XMLElement* resolutionElement = rootElement -> FirstChildElement("resolution");
 	// resolution comment
 	outfile << "# set the resolution of the underlying raytrace model in meters" << endl;
 	outfile << "resolution " << 0.02 << endl;
-	//outfile << "resolution " << resolutionElement->GetText() << endl;
 
 	// interval sim
-	//XMLElement* interval_sim = rootElement -> FirstChildElement("interval_sim");
 	outfile << "# simulation timestep in milliseconds" << endl;
 	outfile << "interval_sim " << 100 << endl;
-	//outfile << "interval_sim " << interval_sim->GetText() << endl;
 
 	// interval real
-	//XMLElement* interval_real = rootElement -> FirstChildElement("interval_real");
 	outfile << "# real-time interval between simulation updates in milliseconds" << endl;
 	outfile << "interval_real " << 100 << endl;
-	//outfile << "interval_real " << interval_real->GetText() << endl;
-
-	//XMLElement* paused = rootElement -> FirstChildElement("paused");
-	//outfile << "paused " << paused->GetText() << endl << endl;
     outfile << "paused " << 0 << endl << endl;
 }
 
@@ -82,23 +74,19 @@ void Generator::loadWorld()
  * Loads orchard environment. Places trunk/pole/fruit vine and puts beacon
  returns position of beacons
  */
-std::vector<float> Generator::loadOrchard(int rowCount, float rowLength, float rowWidth, float trunkPoleSpacing)
+void Generator::loadOrchard()
 {
-    std::vector<float> beaconPositions;
-
 	// Assumption: bitmap is big enough for orchard generation.
 	// bitmap image centre is at (0,0,0,0)
 	// x and y values used in pose
 	double x, y;
 
 	// initial x
-	//x = -1 * (rowLength/2);
 	x = -30;
 	// initial y
-	//y = (rowCount * rowWidth)/2;
     y = 20.4;    
     
-	int columnCount = rowLength / trunkPoleSpacing;
+	int columnCount = rowLength / spacing;
 
 	// Comments for orchard file
 	outfile << "# Orchard and beacon models" << endl;
@@ -152,19 +140,16 @@ std::vector<float> Generator::loadOrchard(int rowCount, float rowLength, float r
 	    y = initialY;
 
 	    // increase x
-	    x += trunkPoleSpacing;
+	    x += spacing;
     }
-	
-	return beaconPositions;
 }
 
 
 /**
  * Load robots into world file
  */
-std::vector<int> Generator::loadPickerRobots(int pickerNumber)
+void Generator::loadPickerRobots()
 {
-    std::vector<int> pickerRobotsPositions;
 	// Generate robot comment
 	outfile << "# Generate robots" << endl;
 
@@ -187,13 +172,10 @@ std::vector<int> Generator::loadPickerRobots(int pickerNumber)
 		outfile << "PickerRobot( pose [ " << x << " " << y << " 0 " << theta << " ] name \"Picker" << i+1 << "\" color \"" << colour << "\")" << endl;
 		y -= 4;
 	}
-
-    return pickerRobotsPositions;
 }
 
-std::vector<int> Generator::loadCarrierRobots(int carrierNumber)
+void Generator::loadCarrierRobots()
 {
-    std::vector<int> carrierRobotsPositions;
     int y = 24;
 	// Generate carrier robot comment
 	outfile << "# Carrier robot" << endl;
@@ -210,23 +192,14 @@ std::vector<int> Generator::loadCarrierRobots(int carrierNumber)
 	}
 
 	outfile << endl;
-	return carrierRobotsPositions;
 }
 
 /**
  * Load people to world file
  */
-void Generator::loadPeople(int workerNumber, float rowWidth, float spacing)
+void Generator::loadPeople()
 {
-	//XMLElement* models = rootElement->FirstChildElement("models");
-	//XMLElement* people = models->FirstChildElement("people");
-
 	outfile << "# Generate people" << endl;
-
-	// Worker number
-	//XMLElement* worker_number = people->FirstChildElement("worker_number");
-	//int workerNumber = atoi(worker_number->GetText());
-
 	outfile << "# Generate workers" << endl;
     
     float totalRowWidth = rowWidth * 8;
@@ -255,32 +228,15 @@ void Generator::loadPeople(int workerNumber, float rowWidth, float spacing)
         }
     }
     
-/*	for (int i = 0; i < workerNumber; i++) {
-		// generate random x and y coord. People region.
-		// range -25 to -1
-		int x = rand() % 25 - 25;
-		// range -10 to -20
-		int y = rand() % 10 - 11;
-		outfile << "human( pose [ " << x << " " << y << " 0.000 0.000 ] name \"Worker" << i+1 << "\" color \"blue\")" << endl;
-	} */
-
 	outfile << endl;
 }
 
 /**
  * Load animals to world file
  */
-void Generator::loadAnimals(int dogNumbers, float rowWidth, float spacing)
+void Generator::loadAnimals()
 {
-	//XMLElement* models = rootElement->FirstChildElement("models");
-	//XMLElement* animals = models->FirstChildElement("animals");
-
 	outfile << "# Generate animals" << endl;
-
-	// Dog number
-	//XMLElement* dog_numbers = animals->FirstChildElement("dog_number");
-	//int dogNumbers = atoi(dog_numbers->GetText());
-
 	outfile << "# Generate dog" << endl;
     
     float totalRowWidth = rowWidth * 8;
@@ -292,7 +248,7 @@ void Generator::loadAnimals(int dogNumbers, float rowWidth, float spacing)
     
     int rowEnd = 20 - totalRowWidth;
     
-    for(int i = 0; i < dogNumbers; i++) {
+    for(int i = 0; i < dogNumber; i++) {
         int x = rand() % 82 - 36;
         int y = rand() % 52 - 26;
     
@@ -309,31 +265,86 @@ void Generator::loadAnimals(int dogNumbers, float rowWidth, float spacing)
         }
     }
     
-    
-/*	for (int i = 0; i < dogNumbers; i++) {
-		// generate random x and y coord. Animal region.
-		// range 0 to 24
-		int x = rand() % 25;
-		// range -10 to -20
-		int y = rand() % 10 - 11;
-		outfile << "dog( pose [ " << x << " " << y << " 0.000 0.000 ] name \"Dog" << i+1 << "\" color \"random\")" << endl;
-	} */
-
 	outfile << endl;
 }
 
 void Generator::loadTallWeeds()
 {
-    int numTallWeed = rand() % 15 - 5;
+    numWeeds = 10;//rand() % 15 - 5;
     
     outfile << "#Generate tall weeds" << endl;
-    for(int i = 0; i < numTallWeed; i++){
+    for(int i = 0; i < numWeeds; i++){
         int x = rand() % 82 - 36;
         int y = rand() % 52 - 26;
         
         outfile << "tallWeed( pose [ " << x << " " << y << " 0.000 0.000 ] name \"TallWeed" << i+1 << "\" color \"ForestGreen\")" << endl;
     }
 }
+
+void Generator::writeLaunchFile(){
+    //writes to the launch file
+    CMarkup xml;
+    bool ok;
+    xml.AddElem("launch");
+    xml.IntoElem();
+    xml.AddElem("node");
+    xml.SetAttrib( "name", "stage" );
+    xml.SetAttrib( "pkg", "stage_ros" );
+    xml.SetAttrib( "type", "stageros" );
+    xml.SetAttrib( "args", "$(find se306project)/world/test.world" );
+    int numBeacons = rowCount * 2;
+    int totalObjects = numWeeds + numBeacons + pickerNumber + carrierNumber + dogNumber + workerNumber;
+    for (int i = 0; i < totalObjects; i++) {
+        xml.AddElem("group");
+        ostringstream oss;
+        oss << "robot_" << i;
+        xml.SetAttrib("ns", oss.str());
+        oss.str("");
+        oss.clear();
+        xml.IntoElem();
+        xml.AddElem("node");
+        xml.SetAttrib( "pkg", "se306project" );
+        
+        if (i < numWeeds) { //weeds
+            xml.SetAttrib( "name", "TallWeednode" );
+            xml.SetAttrib( "type", "TallWeed" );
+            int alphaPersonNumber = rowCount*2 + numWeeds + pickerNumber + carrierNumber;
+            oss << "/tallweed" << i+1 << "/ /robot_" << alphaPersonNumber << "/status";
+        } else if (i < numWeeds + numBeacons) { //beacons
+            xml.SetAttrib( "name", "Beaconnode" );
+            xml.SetAttrib( "type", "Beacon" );
+            int num = i+1-numWeeds;
+            if (num < 8) {
+                num = num * 2 -1;
+            } else {
+                num = (num - 7) * 2;
+            }
+            int beaconPos = (i - numWeeds)*2;
+            oss << "/beacon" << num << "/ " << beaconPositions[beaconPos] << " " << beaconPositions[beaconPos+1];
+        } else if (i < numWeeds + numBeacons + pickerNumber) { //picker robots
+            xml.SetAttrib( "name", "PickerRobotnode" );
+            xml.SetAttrib( "type", "PickerRobot" );
+            int pickerPos = (i - numWeeds - numBeacons)*2;
+            oss << pickerRobotsPositions[pickerPos] << " " << pickerRobotsPositions[pickerPos+1];
+        } else if (i < numWeeds + numBeacons + pickerNumber + carrierNumber) { //carriers
+            xml.SetAttrib( "name", "CarrierRobotnode" );
+            xml.SetAttrib( "type", "CarrierRobot" );
+            int carrierPos = (i - numWeeds - numBeacons - pickerNumber)*2;
+            oss << carrierRobotsPositions[carrierPos] << " " << carrierRobotsPositions[carrierPos+1] << " " << pickerNumber;
+        } else if (i < numWeeds + numBeacons + pickerNumber + carrierNumber + workerNumber) { //AlphaPersons (workers)
+            xml.SetAttrib( "name", "AlphaPersonnode" );
+            xml.SetAttrib( "type", "AlphaPerson" );
+        } else if (i < numWeeds + numBeacons + pickerNumber + carrierNumber + workerNumber + dogNumber) { //dogs
+            xml.SetAttrib( "name", "AlphaDognode" );
+            xml.SetAttrib( "type", "AlphaDog" );
+        }
+        xml.SetAttrib( "args", oss.str() );
+        xml.OutOfElem();
+    }   
+    xml.OutOfElem();
+    xml.Save("launch/test.launch");
+}          
+
 /*
 int main(int argc, char **argv)
 {

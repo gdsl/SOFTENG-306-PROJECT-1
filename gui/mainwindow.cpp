@@ -6,14 +6,13 @@
 #include "worker.h"
 #include <QThread>
 #include <QListWidget>
-#include <sstream>
-#include "Markup.h"
+#include "unistd.h"
 #include <QLayout>
 #include "Generator.h"
-#include "unistd.h"
 #include <QDebug>
 #include <vector>
 #include "KeyReceiver.h"
+#include <sstream>
 
 using namespace std;
 
@@ -160,20 +159,20 @@ void MainWindow::generate() {
         ui->animalScroll->widget()->layout()->addWidget(uiListAnimals[i]);
     }
     
-    Generator generator(/*"world/generatedOrchard.xml", */"world/test.world");
+    Generator generator("world/test.world", numPickers, numCarriers, numDogs, numWorkers, rowWidth, spacing);
 	generator.loadWorld();
     generator.loadTallWeeds();
-	beaconPositions = generator.loadOrchard(7, 70, rowWidth, spacing);
-	pickerRobotsPositions = generator.loadPickerRobots(numPickers);
-	carrierRobotsPositions = generator.loadCarrierRobots(numCarriers);
-	generator.loadPeople(numWorkers, rowWidth, spacing);
-	generator.loadAnimals(numDogs, rowWidth, spacing);
+	generator.loadOrchard();
+	generator.loadPickerRobots();
+	generator.loadCarrierRobots();
+	generator.loadPeople();
+	generator.loadAnimals();
 
 	generator.write();
-    writeLaunchFile();
+    generator.writeLaunchFile();
 
 }
-
+/*
 void MainWindow::writeXml() {
     CMarkup xml;
     bool ok;
@@ -213,63 +212,9 @@ void MainWindow::writeXml() {
     xml.OutOfElem();
     xml.Save( "world/generatedOrchard.xml" );
 }
+*/
 
-void MainWindow::writeLaunchFile(){
-    //writes to the launch file
-    CMarkup xml;
-    bool ok;
-    xml.AddElem("launch");
-    xml.IntoElem();
-        xml.AddElem("node");
-        xml.SetAttrib( "name", "stage" );
-        xml.SetAttrib( "pkg", "stage_ros" );
-        xml.SetAttrib( "type", "stageros" );
-        xml.SetAttrib( "args", "$(find se306project)/world/test.world" );
-        int pickerPos = 0;
-        int carrierPos = 0;
-        int beaconPos = 0;
-        for (int i = 0; i < launchFileEntityList.size(); i++) {
-            xml.AddElem("group");
-            ostringstream oss;
-            oss << "robot_" << i;
-            xml.SetAttrib("ns", oss.str());
-            xml.IntoElem();
-            xml.AddElem("node");
-                xml.SetAttrib( "name", launchFileEntityList[i]+"node" );
-                xml.SetAttrib( "pkg", "se306project" );
-                xml.SetAttrib( "type", launchFileEntityList[i] );
-                if (launchFileEntityList[i] == "Beacon") {
-                    ostringstream oss;
-                    int num = i+1-numWeeds;
-                    if (num < 8) {
-                        num = num * 2 -1;
-                    } else {
-                        num = (num - 7) * 2;
-                    }
-                    oss << "/beacon" << num << "/ " << beaconPositions[beaconPos] << " " << beaconPositions[beaconPos+1]; ;
-                    beaconPos += 2;
-                    xml.SetAttrib( "args", oss.str() );
-                } else if (launchFileEntityList[i] == "TallWeed") {
-                    ostringstream oss;
-                    int alphaPersonNumber = numRows*2 + numWeeds + numPickers + numCarriers;
-                    oss << "/tallweed" << i+1 << "/ /robot_" << alphaPersonNumber << "/status";
-                    xml.SetAttrib( "args", oss.str() );
-                } else if (launchFileEntityList[i] == "PickerRobot") {
-                    ostringstream oss;
-                    oss << pickerRobotsPositions[pickerPos] << " " << pickerRobotsPositions[pickerPos+1];
-                    pickerPos += 2;
-                    xml.SetAttrib( "args", oss.str() );
-                } else if (launchFileEntityList[i] == "CarrierRobot") {
-                    ostringstream oss;
-                    oss << carrierRobotsPositions[carrierPos] << " " << carrierRobotsPositions[carrierPos+1] << " " << numPickers;
-                    carrierPos += 2;
-                    xml.SetAttrib( "args", oss.str() );
-                }
-            xml.OutOfElem();
-        }   
-    xml.OutOfElem();
-    xml.Save("launch/test.launch");
-}
+
 
 QListWidget* MainWindow::createNewItem(string type) {
     QListWidget *list = new QListWidget;

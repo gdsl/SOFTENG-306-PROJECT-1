@@ -14,16 +14,29 @@ using namespace std;
 class Generator
 {
 	public:
-		Generator(/*string inputName, */string outputName);
+		Generator(string outputName, int pickerNumber, int carrierNumber, int dogNumber, int workerNumber, float rowWidth, float spacing);
 		void loadWorld();
-		std::vector<float> loadOrchard(int rowCount, float rowLength, float rowWidth, float trunkPoleSpacing);
-		std::vector<int> loadPickerRobots(int pickerNumber);
-		std::vector<int> loadCarrierRobots(int carrierNumber);
-		void loadPeople(int workerNumber, float rowWidth, float spacing);
-		void loadAnimals(int dogNumbers, float rowWidth, float spacing);
+		void loadOrchard();
+		void loadPickerRobots();
+		void loadCarrierRobots();
+		void loadPeople();
+		void loadAnimals();
         void loadTallWeeds();
+        void writeLaunchFile();
 		void write();
-
+		int rowCount = 7;
+		float rowLength = 70;
+		int pickerNumber;
+		int carrierNumber;
+		int dogNumber;
+		int workerNumber;
+		float rowWidth;
+		float spacing;
+		int numWeeds;
+        vector<int> pickerRobotsPositions;
+        vector<int> carrierRobotsPositions;
+        vector<float> beaconPositions; 
+        
 	private:
 		string inputName;
 		string outputName;
