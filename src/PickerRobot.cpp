@@ -19,6 +19,7 @@ PickerRobot::PickerRobot(std::string status){
 PickerRobot::PickerRobot(double x,double y,double theta,double linearVel, double angularVel,std::string status)
 	:Robot( x, y, theta, linearVel,  angularVel){
 	this->setStatus(status);
+    this->setState(DISPATCH);
 }
 
 PickerRobot::~PickerRobot(){
@@ -29,9 +30,10 @@ std::string previousStatus = "Moving";
 std::string obstacleStatus = "No obstacles";
 double distance=1;
 //destination of next beacon
-double destX=-32;
-double destY;
+double destX = 0;
+double destY = 0;
 bool atDestX = false, atDestY = false;
+//subscriber to subscribe to the destination beacon
 ros::Subscriber beacon_sub;
 int beaconNumber = 1;
 
@@ -92,18 +94,29 @@ void recieveCarrierRobotStatus(const se306project::carrier_status::ConstPtr& msg
  * Method for the carrier robot's states transition and implementation
  */
 void PickerRobot::stateLogic(){
-	if(pickerRobot.getBinCapacity()>=BIN_CAPACITY){
-		pickerRobot.setStatus("Full");
-		pickerRobot.addMovementFront("forward_x",0,0,1);
-		pickerRobot.move();
-		//TODO halt movement
-	}
-	if (pickerRobot.getStatus().compare("Moving")==0){
-		pickerRobot.move();
-		if(pickerRobot.getMovementQueueSize()<1){
-			pickerRobot.setStatus("Full");
-		}
-	}
+//	if(pickerRobot.getBinCapacity()>=BIN_CAPACITY){
+//		pickerRobot.setStatus("Full");
+//		pickerRobot.addMovementFront("forward_x",0,0,1);
+//		pickerRobot.move();
+//		//TODO halt movement
+//	}
+//	if (pickerRobot.getStatus().compare("Moving")==0){
+//		pickerRobot.move();
+//		if(pickerRobot.getMovementQueueSize()<1){
+//			pickerRobot.setStatus("Full");
+//		}
+//	}
+    if (pickerRobot.getState() == DISPATCH) {
+        
+    } else if (pickerRobot.getState() == PICKING) {
+        
+    } else if (pickerRobot.getState() == GO_TO_NEXT_BEACON) {
+        
+    } else if (pickerRobot.getState() == FULL_BIN) {
+        
+    } else if (pickerRobot.getState() == FINISHED) {
+        
+    }
 }
 /*
  * Method for the logic of PickerRobot running its movement queue.
@@ -116,43 +129,44 @@ void PickerRobot::movement(){
     //if the Picker has received the destination of the next beacon
     //add the horizontal movement to the movement queue
     //if the robot is not at its destination
-    if (pickerRobot.getMovementQueueSize() == 0) {
-        if (!atDestX) {            
-            //check if the Robot needs to go West
-            if (currentX > destX) {
-                //calculate the distance to move backwards along X axis
-                distanceToMove = -(currentX - destX);
-                //make sure the Robot is facing West, if not, turn it West.
-                if (pickerRobot.getDirectionFacing() != WEST) {pickerRobot.faceWest(1);}                
-            //otherwise it means the Robot needs to go East
-            } else if (currentX < destX) {
-                distanceToMove = destX - currentX;
-                //make sure the Robot is facing West, if not, turn it West.
-                if (pickerRobot.getDirectionFacing() != EAST) {pickerRobot.faceEast(1);}
-            }
-            pickerRobot.addMovement("forward_x", distanceToMove, 1);
-        } else {
-            //now add the vertical movement to the movement queue
-            if (!atDestY) {
-                //check if the Robot needs to go South
-                if (currentY > destY) {
-                    //calculate the distance to move backwards along Y axis
-                    distanceToMove = -(currentY - destY);
-                    //make sure the Robot is facing South, if not, turn it South.
-                    if (pickerRobot.getDirectionFacing() != SOUTH) {
-                        pickerRobot.faceSouth(1);                    
-                    }                
-                //otherwise it means the Robot needs to go North
-                } else if (currentY < destY) {
-                    distanceToMove = destY - currentY;
-                    //make sure the Robot is facing North, if not, turn it North.
-                    if (pickerRobot.getDirectionFacing() != NORTH) {pickerRobot.faceNorth(1);}
+    if (destX != 0 && destY != 0) {
+        if (pickerRobot.getMovementQueueSize() == 0) {
+            if (!atDestX) {            
+                //check if the Robot needs to go West
+                if (currentX > destX) {
+                    //calculate the distance to move backwards along X axis
+                    distanceToMove = -(currentX - destX);
+                    //make sure the Robot is facing West, if not, turn it West.
+                    if (pickerRobot.getDirectionFacing() != WEST) {pickerRobot.faceWest(1);}                
+                //otherwise it means the Robot needs to go East
+                } else if (currentX < destX) {
+                    distanceToMove = destX - currentX;
+                    //make sure the Robot is facing West, if not, turn it West.
+                    if (pickerRobot.getDirectionFacing() != EAST) {pickerRobot.faceEast(1);}
                 }
-                pickerRobot.addMovement("forward_y", distanceToMove, 1);
-            }            
+                pickerRobot.addMovement("forward_x", distanceToMove, 1);
+            } else {
+                //now add the vertical movement to the movement queue
+                if (!atDestY) {
+                    //check if the Robot needs to go South
+                    if (currentY > destY) {
+                        //calculate the distance to move backwards along Y axis
+                        distanceToMove = -(currentY - destY);
+                        //make sure the Robot is facing South, if not, turn it South.
+                        if (pickerRobot.getDirectionFacing() != SOUTH) {
+                            pickerRobot.faceSouth(1);                    
+                        }                
+                    //otherwise it means the Robot needs to go North
+                    } else if (currentY < destY) {
+                        distanceToMove = destY - currentY;
+                        //make sure the Robot is facing North, if not, turn it North.
+                        if (pickerRobot.getDirectionFacing() != NORTH) {pickerRobot.faceNorth(1);}
+                    }
+                    pickerRobot.addMovement("forward_y", distanceToMove, 1);
+                }            
+            }
         }
     }
-    
     
 }
 

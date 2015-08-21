@@ -12,3 +12,11 @@ Robot::Robot(double x,double y,double theta,double linearVel, double angularVel)
 Robot::~Robot() {
 	// TODO Auto-generated destructor stub
 }
+
+Robot::State Robot::getState() {
+    return state;   
+}
+
+void Robot::setState(Robot::State state) {
+    this->state = state;   
+}
