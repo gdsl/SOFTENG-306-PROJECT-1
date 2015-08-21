@@ -122,6 +122,7 @@ void Generator::loadOrchard(int rowCount, float rowLength, float rowWidth, float
 
 	for (int i = 0; i < columnCount; i++) {
 		double initialY = y;
+		int beaconCount = 1;
 
 		// row number
 		outfile << "# row " << i+1 << endl;
@@ -132,9 +133,9 @@ void Generator::loadOrchard(int rowCount, float rowLength, float rowWidth, float
 			 * add beacons at start and end of each row
 			 */
 			if (i == 0 && j < rowCount) {
-				outfile << "beacon( pose [ " << (x - SEPARATION) << " " << (y-rowWidth/2.0) << " 0.000 0.000 ] name \"beacon" << j << "\" color \"random\")" << endl;
+				outfile << "beacon( pose [ " << (x - SEPARATION) << " " << (y-rowWidth/2.0) << " 0.000 0.000 ] name \"beacon" << beaconCount << "\" color \"random\")" << endl;
 			} else if (i == columnCount - 1 && j < rowCount) {
-				outfile << "beacon( pose [ " << (x + SEPARATION) << " " << (y-rowWidth/2.0) << " 0.000 0.000 ] name \"beacon" << (j + 7) << "\" color \"random\")" << endl;
+				outfile << "beacon( pose [ " << (x + SEPARATION) << " " << (y-rowWidth/2.0) << " 0.000 0.000 ] name \"beacon" << (beaconCount + 1) << "\" color \"random\")" << endl;
 			}
 
 			/*
@@ -154,8 +155,9 @@ void Generator::loadOrchard(int rowCount, float rowLength, float rowWidth, float
 				outfile << "fruitVine( pose [ " << x << " " << (y-rowWidth/2.0) << " 1.8 0.000 ] color \"green\")" << endl;				
 			}
 
-			// update y
+			// update y and beaconCount
 			y -= rowWidth;
+			beaconCount = beaconCount + 2;
 		}
 
 		// newline
