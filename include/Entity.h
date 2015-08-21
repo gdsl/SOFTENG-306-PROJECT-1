@@ -90,7 +90,7 @@ class Entity
 		//movement queue
         std::vector<Movement> movementQueue;
         std::vector<Movement> avoidanceQueue; //vector for lsit of avoidance movements
-		Direction directionFacing=NORTH;//initialse to west originally
+		Direction directionFacing=NORTH;//initialse to north originally
 
 		void moveForward(double distance,double vel, std::string direction, int queueNum);
 		void rotate(double angleToRotateTo,double angleSpeed,int queueNum);

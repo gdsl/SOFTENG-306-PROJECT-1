@@ -40,7 +40,7 @@ void callBackStageOdm(const nav_msgs::Odometry msg){
 
 void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 	carrierRobot.stageLaser_callback(msg);
-
+/*
 	if (carrierRobot.getMinDistance() < 1&&carrierRobot.getStatus().compare("Idle")!=0) {
 
 		if(carrierRobot.getCriticalIntensity()>=4){//if its human or dog stop
@@ -80,7 +80,7 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 		obstacleStatus = "Obstacle nearby";
 	} else {
 		obstacleStatus = "No obstacles";
-	}
+	}*/
 }
 
 /*
@@ -91,7 +91,7 @@ void recievePickerRobotStatus(const se306project::robot_status::ConstPtr& msg)
 {
 	//Check the status of Carrier robot so see how it should act
 	//when status is arrived it means that the carrier robot has arrived at picker
-	if (carrierRobot.getStatus().compare("Arrived")==0){
+	/*if (carrierRobot.getStatus().compare("Arrived")==0){
 		//Change status to transporting as the carrier robot is now taking away the full bin
 		carrierRobot.setStatus("Transporting");
 		carrierRobot.faceWest(1);
@@ -111,7 +111,7 @@ void recievePickerRobotStatus(const se306project::robot_status::ConstPtr& msg)
 		}
 	}else if (carrierRobot.getStatus().compare("Obstacle nearby") == 0) {
 
-	}
+	}*/
 }
 /**
  * Method for the carrier robot's states transition and implementation
