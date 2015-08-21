@@ -13,9 +13,9 @@ CarrierRobot::CarrierRobot() {
 /*
  * Constructor for carrier Robot with status
  */
-CarrierRobot::CarrierRobot(std::string status){
+CarrierRobot::CarrierRobot(double x,double y,double theta,double linearVel, double angularVel,std::string status)
+	:Robot( x, y, theta, linearVel,  angularVel){
 	this->setStatus(status);
-
 }
 
 /*
@@ -142,11 +142,19 @@ void CarrierRobot::stateLogic(){
 
 int main(int argc, char **argv)
 {
-	//initialise carrierRobot so method can be invoke on it
-	carrierRobot=CarrierRobot("Idle");
-
 	//You must call ros::init() first of all. ros::init() function needs to see argc and argv. The third argument is the name of the node
 	ros::init(argc, argv, "CarrierRobot");
+    
+    // convert input parameters for Robot initialization from String to respective types
+    std::string xString = argv[1];
+    std::string yString = argv[2];
+    double xPos = atof(xString.c_str());
+    double yPos = atof(yString.c_str());
+    ROS_INFO("x start: %f", xPos);
+    ROS_INFO("y start: %f", yPos);
+    
+    //initialize the Carrier robot with the correct position, velocity and state parameters.
+	carrierRobot=CarrierRobot(xPos,yPos,0,0,0,"Idle");
 
 	//NodeHandle is the main access point to communicate with ros.
 	ros::NodeHandle n;

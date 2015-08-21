@@ -199,7 +199,6 @@ void atBeacon(ros::NodeHandle n) {
 
 int main(int argc, char **argv)
 {
-	//pickerRobot=PickerRobot("Moving");
 	//You must call ros::init() first of all. ros::init() function needs to see argc and argv. The third argument is the name of the node
 	ros::init(argc, argv, "PickerRobot");
 	
@@ -214,7 +213,6 @@ int main(int argc, char **argv)
     //initialize the Picker robot with the correct position, velocity and state parameters.
 	pickerRobot=PickerRobot(xPos,yPos,M_PI/2,0,0,"Moving");
 	//pickerRobot=PickerRobot(-42,24,M_PI/2,0,0,"Moving");
-	//pickerRobot=PickerRobot("Moving");	
 
 	//NodeHandle is the main access point to communicate with ros.
 	ros::NodeHandle n;

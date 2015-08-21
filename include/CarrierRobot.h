@@ -10,6 +10,7 @@
 class CarrierRobot: public Robot {
 public:
 	CarrierRobot();
+    CarrierRobot(double x,double y,double theta,double linearVel, double angularVel,std::string status);
 	CarrierRobot(std::string status);
 	virtual ~CarrierRobot();
 	virtual void stateLogic();
