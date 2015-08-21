@@ -40,7 +40,7 @@ void callBackStageOdm(const nav_msgs::Odometry msg){
 void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 	carrierRobot.stageLaser_callback(msg);
 
-	if (carrierRobot.getMinDistance() < 1) {
+	if (carrierRobot.getMinDistance() < 1&&carrierRobot.getStatus().compare("Idle")!=0) {
 
 		if(carrierRobot.getCriticalIntensity()>=4){//if its human or dog stop
 			carrierRobot.addMovementFront("forward_x",0,0,1);
@@ -154,7 +154,7 @@ int main(int argc, char **argv)
     ROS_INFO("y start: %f", yPos);
     
     //initialize the Carrier robot with the correct position, velocity and state parameters.
-	carrierRobot=CarrierRobot(xPos,yPos,0,0,0,"Idle");
+	carrierRobot=CarrierRobot(xPos,yPos,M_PI/2,0,0,"Idle");
 
 	//NodeHandle is the main access point to communicate with ros.
 	ros::NodeHandle n;
@@ -173,7 +173,7 @@ int main(int argc, char **argv)
     //relative to the obstacle information
     carrierRobot.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000, callBackLaserScan);
     //subscribe to the status of picker robot
-	ros::Subscriber mysub_object = n.subscribe<se306project::robot_status>("/robot_0/status",1000,recievePickerRobotStatus);
+	ros::Subscriber mysub_object = n.subscribe<se306project::robot_status>("/robot_24/status",1000,recievePickerRobotStatus);
 
 
 	//a count of how many messages we have sent
@@ -192,7 +192,7 @@ int main(int argc, char **argv)
 		status_msg.pos_theta=carrierRobot.getTheta(); //add angle to message to broadcast
 		status_msg.obstacle = obstacleStatus;
 		pub.publish(status_msg);	//publish message
-		carrierRobot.stateLogic();
+		//carrierRobot.stateLogic();
 		loop_rate.sleep();
 		++count; // increase counter
 	}
