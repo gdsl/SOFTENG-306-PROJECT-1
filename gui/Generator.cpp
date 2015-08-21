@@ -279,9 +279,11 @@ void Generator::loadAnimals(int dogNumbers)
 
 void Generator::loadTallWeeds()
 {
+    int numTallWeed = rand() % 15 - 5;
+    
     outfile << "#Generate tall weeds" << endl;
-    for(int i = 0; i < 10; i++){
-        int x = rand() % 92 - 42;
+    for(int i = 0; i < numTallWeed; i++){
+        int x = rand() % 82 - 36;
         int y = rand() % 52 - 26;
         
         outfile << "tallWeed( pose [ " << x << " " << y << " 0.000 0.000 ] name \"TallWeed" << i+1 << "\" color \"ForestGreen\")" << endl;
