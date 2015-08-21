@@ -40,8 +40,8 @@ void callBackStageOdm(const nav_msgs::Odometry msg){
 
 void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 	carrierRobot.stageLaser_callback(msg);
-/*
-	if (carrierRobot.getMinDistance() < 1&&carrierRobot.getStatus().compare("Idle")!=0) {
+
+	if (carrierRobot.getMinDistance() < 1) {
 
 		if(carrierRobot.getCriticalIntensity()>=4){//if its human or dog stop
 			carrierRobot.addMovementFront("forward_x",0,0,1);
@@ -80,7 +80,7 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 		obstacleStatus = "Obstacle nearby";
 	} else {
 		obstacleStatus = "No obstacles";
-	}*/
+	}
 }
 
 /*
@@ -91,7 +91,7 @@ void recievePickerRobotStatus(const se306project::robot_status::ConstPtr& msg)
 {
 	//Check the status of Carrier robot so see how it should act
 	//when status is arrived it means that the carrier robot has arrived at picker
-	/*if (carrierRobot.getStatus().compare("Arrived")==0){
+	if (carrierRobot.getStatus().compare("Arrived")==0){
 		//Change status to transporting as the carrier robot is now taking away the full bin
 		carrierRobot.setStatus("Transporting");
 		carrierRobot.faceWest(1);
@@ -111,7 +111,7 @@ void recievePickerRobotStatus(const se306project::robot_status::ConstPtr& msg)
 		}
 	}else if (carrierRobot.getStatus().compare("Obstacle nearby") == 0) {
 
-	}*/
+	}
 }
 /**
  * Method for the carrier robot's states transition and implementation
@@ -155,7 +155,7 @@ int main(int argc, char **argv)
     ROS_INFO("y start: %f", yPos);
     
     //initialize the Carrier robot with the correct position, velocity and state parameters.
-	carrierRobot=CarrierRobot(xPos,yPos,M_PI/2,0,0,"Idle");
+	carrierRobot=CarrierRobot(xPos,yPos,0,0,0,"Idle");
 
 	//NodeHandle is the main access point to communicate with ros.
 	ros::NodeHandle n;
@@ -193,7 +193,7 @@ int main(int argc, char **argv)
 		status_msg.pos_theta=carrierRobot.getTheta(); //add angle to message to broadcast
 		status_msg.obstacle = obstacleStatus;
 		pub.publish(status_msg);	//publish message
-		//carrierRobot.stateLogic();
+		carrierRobot.stateLogic();
 		loop_rate.sleep();
 		++count; // increase counter
 	}
