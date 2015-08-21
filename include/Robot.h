@@ -15,7 +15,7 @@ public:
 	//method for the robots state logic for transition and implementation
 	virtual void stateLogic()=0;
     //State enum for all subclasses of Robot
-    enum State {IDLE, DISPATCH, GO_TO_NEXT_BEACON, PICKING, FULL_BIN, FINISHED};
+    enum State {IDLE, DISPATCH, GO_TO_NEXT_BEACON, PICKING, FULL_BIN, FINISHED ,TRANSPORTING, RETURN,ARRIVED,MOVING};
     State getState();
     void setState(State state);
 

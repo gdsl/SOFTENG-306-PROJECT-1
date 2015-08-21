@@ -31,6 +31,7 @@ CarrierRobot carrierRobot;
 //std::string status="Idle";
 std::string previousStatus = "Idle";
 std::string obstacleStatus = "No obstacles";
+bool carrierInFront = false;
 /*
  * Wrapper method for the callBackStageOdm method
  */
@@ -41,6 +42,17 @@ void callBackStageOdm(const nav_msgs::Odometry msg){
 void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 	carrierRobot.stageLaser_callback(msg);
 
+    //detecting carrier in front
+    int l=msg.intensities.size();
+    carrierInFront = false;
+    for (int i = 0; i<l; i++) {
+        if (msg.intensities[i] == 3) {
+            carrierInFront = true;
+            break;
+        }
+    }
+
+    
 	if (carrierRobot.getMinDistance() < 1) {
 
 		if(carrierRobot.getCriticalIntensity()>=4){//if its human or dog stop
@@ -101,22 +113,31 @@ void recievePickerRobotStatus(const se306project::robot_status::ConstPtr& msg)
 		//carrierRobot.setDesireLocation(false);//refresh that it can recieve more desire location
 	}else if(carrierRobot.getStatus().compare("Idle")==0){
 		//when the carrier robot is idle and the picker robot is full the carrier robot move to it.
-		if ((msg->status).compare("Full")==0){
+		if ((msg->status).compare("Full") == 0){
 			// carrier robot will approach picker but will leave a space to avoid colliding
+            if ( !carrierInFront ) {
+                carrierRobot.setState(Robot::MOVING);
+                carrierRobot.faceEast(1);
+                
+                
+            } else {
+                
+            }
+
+            /*
 			carrierRobot.faceSouth(1);
 			carrierRobot.addMovement("forward_y",-std::abs(double((msg->pos_y)-carrierRobot.getY())),1);
 			carrierRobot.faceEast(1);
 			carrierRobot.addMovement("forward_x",double((msg->pos_x)-carrierRobot.getX()-3), 1);
-			carrierRobot.setStatus("Moving");
+			carrierRobot.setStatus("Moving");*/
 		}
-	}else if (carrierRobot.getStatus().compare("Obstacle nearby") == 0) {
-
 	}
 }
 /**
  * Method for the carrier robot's states transition and implementation
  */
 void CarrierRobot::stateLogic(){
+    /*
 	if(carrierRobot.getStatus().compare("Transporting")==0){
 		//if the carrier is in transporting state move
 		//if the carrier is transporting it will move to bin drop off area (the driveway)
@@ -138,7 +159,20 @@ void CarrierRobot::stateLogic(){
 	}else if (obstacleStatus.compare("Obstacle nearby")==0){
 		carrierRobot.setStatus("Moving");
 		carrierRobot.move();
-	}
+	}*/
+    if (carrierRobot.getState() == IDLE) { 
+       carrierRobot.setStatus("Idle"); 
+    } else if (carrierRobot.getState() == MOVING) {
+        carrierRobot.setStatus("Moving");   
+             
+    } else if (carrierRobot.getState() == ARRIVED) {
+        carrierRobot.setStatus("Arrived");
+    } else if (carrierRobot.getState() == TRANSPORTING) {
+        carrierRobot.setStatus("Transporting"); 
+    } else if (carrierRobot.getState() == RETURN) {
+        carrierRobot.setStatus("Returning");
+    } 
+    
 }
 
 int main(int argc, char **argv)
@@ -174,7 +208,7 @@ int main(int argc, char **argv)
     //relative to the obstacle information
     carrierRobot.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000, callBackLaserScan);
     //subscribe to the status of picker robot
-	ros::Subscriber mysub_object = n.subscribe<se306project::robot_status>("/robot_0/status",1000,recievePickerRobotStatus);
+	ros::Subscriber mysub_object = n.subscribe<se306project::robot_status>("/robot_27/status",1000,recievePickerRobotStatus);
 
 
 	//a count of how many messages we have sent
