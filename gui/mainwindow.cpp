@@ -13,6 +13,7 @@
 #include "unistd.h"
 #include <QDebug>
 #include <vector>
+#include "KeyReceiver.h"
 
 using namespace std;
 
@@ -28,6 +29,9 @@ MainWindow::MainWindow(QWidget *parent) :
     
     ui->robotScroll->widget()->layout()->setAlignment(Qt::AlignLeft);
     ui->animalScroll->widget()->layout()->setAlignment(Qt::AlignLeft);
+    
+    KeyReceiver* key = new KeyReceiver();
+    ui->animalScroll->installEventFilter(key);
 }
 
 void MainWindow::startReadingTopics() {

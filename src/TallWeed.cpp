@@ -44,7 +44,7 @@ int main(int argc, char **argv)
     //subscribe to worker
      worker_sub = n.subscribe<nav_msgs::Odometry>(argv[2], 1000, workerCallback);
      //test if argv[2] is really the status of the person
-	ROS_FATAL("argv[2] is: %s", argv[2]);
+	ROS_INFO("argv[2] is: %s", argv[2]);
 
     ros::Rate loop_rate(10); 
 	nav_msgs::Odometry tempMessage; 
