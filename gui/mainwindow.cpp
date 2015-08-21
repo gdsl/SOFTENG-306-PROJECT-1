@@ -162,7 +162,7 @@ void MainWindow::generate() {
 	generator.loadOrchard(7, 70, rowWidth, spacing);
 	pickerRobotsPositions = generator.loadPickerRobots(numPickers);
 	carrierRobotsPositions = generator.loadCarrierRobots(numCarriers);
-	generator.loadPeople(numWorkers);
+	generator.loadPeople(numWorkers, rowWidth, spacing);
 	generator.loadAnimals(numDogs, rowWidth, spacing);
 
 	generator.write();

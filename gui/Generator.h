@@ -19,7 +19,7 @@ class Generator
 		void loadOrchard(int rowCount, float rowLength, float rowWidth, float trunkPoleSpacing);
 		std::vector<int> loadPickerRobots(int pickerNumber);
 		std::vector<int> loadCarrierRobots(int carrierNumber);
-		void loadPeople(int workerNumber);
+		void loadPeople(int workerNumber, float rowWidth, float spacing);
 		void loadAnimals(int dogNumbers, float rowWidth, float spacing);
         void loadTallWeeds();
 		void write();

@@ -226,7 +226,7 @@ std::vector<int> Generator::loadCarrierRobots(int carrierNumber)
 /**
  * Load people to world file
  */
-void Generator::loadPeople(int workerNumber)
+void Generator::loadPeople(int workerNumber, float rowWidth, float spacing)
 {
 	//XMLElement* models = rootElement->FirstChildElement("models");
 	//XMLElement* people = models->FirstChildElement("people");
@@ -238,14 +238,41 @@ void Generator::loadPeople(int workerNumber)
 	//int workerNumber = atoi(worker_number->GetText());
 
 	outfile << "# Generate workers" << endl;
-	for (int i = 0; i < workerNumber; i++) {
+    
+    float totalRowWidth = rowWidth * 8;
+    float yOffset = rowWidth / 2;
+    
+    int columnCount = 70 / spacing;
+    int halfColumnCount = columnCount / 2;
+    float xOffset = spacing / 2;
+    
+    int rowEnd = 20 - totalRowWidth;
+    
+    for(int i = 0; i < workerNumber; i++) {
+        int x = rand() % 82 - 36;
+        int y = rand() % 52 - 26;
+    
+        if( (x > -30) && (x < 40) && (y < 20) && (y > rowEnd)) {
+            int xMult = (((rand() % columnCount + 1) * 2) - 1);
+            float xPos = -30 + (xMult * xOffset);
+        
+            int yMult = (((rand() % 8 + 1) * 2) - 1);
+            float yPos = 20.4 - (yMult * yOffset);
+        
+            outfile << "human( pose [ " << xPos << " " << yPos << " 0.000 0.000 ] name \"Worker" << i+1 << "\" color \"blue\")" << endl;
+        } else {
+            outfile << "human( pose [ " << x << " " << y << " 0.000 0.000 ] name \"Worker" << i+1 << "\" color \"blue\")" << endl;
+        }
+    }
+    
+/*	for (int i = 0; i < workerNumber; i++) {
 		// generate random x and y coord. People region.
 		// range -25 to -1
 		int x = rand() % 25 - 25;
 		// range -10 to -20
 		int y = rand() % 10 - 11;
 		outfile << "human( pose [ " << x << " " << y << " 0.000 0.000 ] name \"Worker" << i+1 << "\" color \"blue\")" << endl;
-	}
+	} */
 
 	outfile << endl;
 }
@@ -286,7 +313,7 @@ void Generator::loadAnimals(int dogNumbers, float rowWidth, float spacing)
             int yMult = (((rand() % 8 + 1) * 2) - 1);
             float yPos = 20.4 - (yMult * yOffset);
         
-            outfile << "dog( pose [ " << xPos << " " << yPos << " 0.000 0.000 ] name \"SpecialDog" << yMult << "\" color \"random\")" << endl;
+            outfile << "dog( pose [ " << xPos << " " << yPos << " 0.000 0.000 ] name \"Dog" << i+1 << "\" color \"random\")" << endl;
         } else {
             outfile << "dog( pose [ " << x << " " << y << " 0.000 0.000 ] name \"Dog" << i+1 << "\" color \"random\")" << endl;
         }
