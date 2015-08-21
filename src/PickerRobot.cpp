@@ -1,5 +1,6 @@
 #include "ros/ros.h"
 #include <sstream>
+#include <stdlib.h>
 #include "Robot.h"
 #include "se306project/robot_status.h"
 #include "se306project/carrier_status.h"
@@ -31,6 +32,8 @@ double distance=1;
 double destX=-32;
 double destY;
 bool atDestX = false, atDestY = false;
+ros::Subscriber beacon_sub;
+int beaconNumber = 1;
 
 /**
  * Getter method for the bin capacity of the picker robot
@@ -131,21 +134,21 @@ void PickerRobot::movement(){
         } else {
             //now add the vertical movement to the movement queue
             if (!atDestY) {
-		    //check if the Robot needs to go South
-		    if (currentY > destY) {
-		        //calculate the distance to move backwards along Y axis
-		        distanceToMove = -(currentY - destY);
-		        //make sure the Robot is facing South, if not, turn it South.
-		        if (pickerRobot.getDirectionFacing() != SOUTH) {
-		            pickerRobot.faceSouth(1);                    
-		        }                
-		    //otherwise it means the Robot needs to go North
-		    } else if (currentY < destY) {
-		        distanceToMove = destY - currentY;
-		        //make sure the Robot is facing North, if not, turn it North.
-		        if (pickerRobot.getDirectionFacing() != NORTH) {pickerRobot.faceNorth(1);}
-		    }
-		    pickerRobot.addMovement("forward_y", distanceToMove, 1);
+                //check if the Robot needs to go South
+                if (currentY > destY) {
+                    //calculate the distance to move backwards along Y axis
+                    distanceToMove = -(currentY - destY);
+                    //make sure the Robot is facing South, if not, turn it South.
+                    if (pickerRobot.getDirectionFacing() != SOUTH) {
+                        pickerRobot.faceSouth(1);                    
+                    }                
+                //otherwise it means the Robot needs to go North
+                } else if (currentY < destY) {
+                    distanceToMove = destY - currentY;
+                    //make sure the Robot is facing North, if not, turn it North.
+                    if (pickerRobot.getDirectionFacing() != NORTH) {pickerRobot.faceNorth(1);}
+                }
+                pickerRobot.addMovement("forward_y", distanceToMove, 1);
             }            
         }
     }
@@ -174,15 +177,21 @@ void beaconCallback(const nav_msgs::Odometry msg) {
     else {atDestY = false;}
     
     //debugging purposes
-    ROS_INFO("Beacon_1 x position is: %f", destX);
-	ROS_INFO("Beacon_1 y position is: %f", destY);
+    ROS_INFO("Next beacon x position is: %f", destX);
+	ROS_INFO("Next beacon y position is: %f", destY);
 }
 
-void atBeacon() {
+void atBeacon(ros::NodeHandle n) {
     if (atDestX && atDestY) {
-        //pickerRobot.movementComplete();
-        //resubscribe the beacon subscriber to the next beacon
- 
+        //resubscribe the beacon subscriber to the next beacon after converting the beacon number to a string
+        beaconNumber++;
+        std::string beaconNumberS;
+        std::stringstream out;
+        out << beaconNumber;
+        beaconNumberS = out.str();
+        beacon_sub = n.subscribe<nav_msgs::Odometry>("/beacon" + beaconNumberS + "/", 1000, beaconCallback);
+        atDestX = false;
+        atDestY = false;
     }
     
     
@@ -194,8 +203,17 @@ int main(int argc, char **argv)
 	//You must call ros::init() first of all. ros::init() function needs to see argc and argv. The third argument is the name of the node
 	ros::init(argc, argv, "PickerRobot");
 	
-	//pickerRobot=PickerRobot(argv[1],argv[2],0,0,0,"Moving");
-	pickerRobot=PickerRobot(-42,24,M_PI/2,0,0,"Moving");
+    // convert input parameters for Robot initialization from String to respective types
+    std::string xString = argv[1];
+    std::string yString = argv[2];
+    double xPos = atof(xString.c_str());
+    double yPos = atof(yString.c_str());
+    ROS_INFO("x start: %f", xPos);
+    ROS_INFO("y start: %f", yPos);
+    
+    //initialize the Picker robot with the correct position, velocity and state parameters.
+	pickerRobot=PickerRobot(xPos,yPos,M_PI/2,0,0,"Moving");
+	//pickerRobot=PickerRobot(-42,24,M_PI/2,0,0,"Moving");
 	//pickerRobot=PickerRobot("Moving");	
 
 	//NodeHandle is the main access point to communicate with ros.
@@ -213,13 +231,8 @@ int main(int argc, char **argv)
 	//subscribe to carrier robot's status message
 	ros::Subscriber mysub_object = n.subscribe<se306project::carrier_status>("/robot_1/status",1000,recieveCarrierRobotStatus);
     
-    // create subscribers for all beacons on world
-    ros:: Subscriber beacon1_sub = n.subscribe<nav_msgs::Odometry>("/beacon1/", 1000, beaconCallback);
-    //ros:: Subscriber beacon2_sub = n.subscribe<nav_msgs::Odometry>("/beacon2/", 1000, beaconCallback);
-        
-    // add them all to the beacon queue so the PickerRobot can process them one at a time
-    pickerRobot.beaconQueue.push_back(beacon1_sub);
-    //pickerRobot.beaconQueue.push_back(beacon2_sub);
+    // assign beacon subscriber to the first beacon for this Picker robot's path.
+    beacon_sub = n.subscribe<nav_msgs::Odometry>("/beacon1/", 1000, beaconCallback);
 
 	// initalise robot status message
 	se306project::robot_status status_msg;
@@ -244,7 +257,7 @@ int main(int argc, char **argv)
 		status_msg.obstacle = obstacleStatus;
 		pub.publish(status_msg);//publish the message for other node
         
-        //atBeacon();
+        atBeacon(n);
         pickerRobot.movement();
         pickerRobot.move();
 		//TODO debug

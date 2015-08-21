@@ -5,7 +5,6 @@
 #include <geometry_msgs/Point.h>
 #include <nav_msgs/Odometry.h>
 #include "Robot.h"
-#include <vector>
 
 /**
  * PickerRobot class header file
@@ -19,7 +18,6 @@ public:
 	virtual ~PickerRobot();
 	void movement();
 	virtual void stateLogic();
-    std::vector<ros::Subscriber> beaconQueue;
 	int getBinCapacity();
 	void setBinCapacity(int bin_capacity);
 
