@@ -118,6 +118,8 @@ void recievePickerRobotStatus(const se306project::robot_status::ConstPtr& msg)
             if ( !carrierInFront ) {
                 carrierRobot.setState(Robot::MOVING);
                 carrierRobot.faceEast(1);
+                carrierRobot.addMovement("foward_x",5,1);
+                
                 
                 
             } else {
@@ -190,7 +192,7 @@ int main(int argc, char **argv)
     
     //initialize the Carrier robot with the correct position, velocity and state parameters.
 	carrierRobot=CarrierRobot(xPos,yPos,0,0,0,"Idle");
-
+    //carrierRobot.setState(Robot::IDLE);
 	//NodeHandle is the main access point to communicate with ros.
 	ros::NodeHandle n;
 
@@ -207,9 +209,11 @@ int main(int argc, char **argv)
 
     //relative to the obstacle information
     carrierRobot.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000, callBackLaserScan);
-    //subscribe to the status of picker robot
-	ros::Subscriber mysub_object = n.subscribe<se306project::robot_status>("/robot_27/status",1000,recievePickerRobotStatus);
-
+    //subscribe to the status of picker 
+    //ros::Subscriber mysub_object = n.subscribe<se306project::robot_status>("/robot_0/status",1000,recievePickerRobotStatus);
+    std::string number(argv[3]);
+    std::string topicName = "/robot_" + number + "/status";
+    ros::Subscriber mysub_object = n.subscribe<se306project::robot_status>(topicName,1000,recievePickerRobotStatus);
 
 	//a count of how many messages we have sent
 	int count = 0;
