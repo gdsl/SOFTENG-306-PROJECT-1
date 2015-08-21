@@ -10,6 +10,7 @@
 class Robot :public Entity {
 public:
 	Robot();
+	Robot(double x,double y,double theta,double linearVel, double angularVel);
 	virtual ~Robot();
 	//method for the robots state logic for transition and implementation
 	virtual void stateLogic()=0;

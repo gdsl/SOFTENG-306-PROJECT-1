@@ -323,7 +323,7 @@ void Entity::moveForward(double pos, double vel, std::string direction,int queue
 	}
 	if (!desireLocation){//TODO slow down
 		ROS_INFO("mfpos: %f", pos);
-		if (std::abs(position-pos)>=0.1){
+		if (std::abs(position-pos)>=0.01){
 			if(std::abs(position-pos)<=0.2){
 				linearVelocity=0.1;
 			}else if(std::abs(position-pos)<=1){

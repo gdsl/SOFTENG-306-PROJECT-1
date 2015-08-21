@@ -14,6 +14,7 @@
 class PickerRobot: public Robot {
 public:
 	PickerRobot();
+	PickerRobot(double x,double y,double theta,double linearVel, double angularVel,std::string status);
 	PickerRobot(std::string status);
 	virtual ~PickerRobot();
 	void movement();
