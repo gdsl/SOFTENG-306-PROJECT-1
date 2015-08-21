@@ -1,6 +1,7 @@
 #include "ros/ros.h"
 #include "std_msgs/String.h"
 #include "geometry_msgs/Twist.h"
+#include "se306project/human_status.h"
 #include <sstream>
 #include "TallWeed.h"
  
@@ -17,11 +18,11 @@ TallWeed::~TallWeed() {
 TallWeed tallWeed;
 ros:: Subscriber worker_sub;
 
-void workerCallback(const nav_msgs::Odometry msg) {
-    double destX = msg.pose.pose.position.x;
-    double destY = msg.pose.pose.position.y;
-    ROS_INFO("Worker x position is: %f", destX);
-	ROS_INFO("Worker y position is: %f", destY);
+void workerCallback(const se306project::human_status::ConstPtr& msg) {
+    //double destX = msg.pose.pose.position.x;
+    //double destY = msg.pose.pose.position.y;
+    //ROS_INFO("Worker x position is: %f", destX);
+	//ROS_INFO("Worker y position is: %f", destY);
 }
 
 void stage_callback(nav_msgs::Odometry msg) {
@@ -42,9 +43,9 @@ int main(int argc, char **argv)
     ros::Publisher robotNode_location_pub = n.advertise<nav_msgs::Odometry>(argv[1],1000);
     tallWeed.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000,stage_callback);
     //subscribe to worker
-     worker_sub = n.subscribe<nav_msgs::Odometry>(argv[2], 1000, workerCallback);
+     worker_sub = n.subscribe<se306project::human_status>(argv[2], 1000, workerCallback);
      //test if argv[2] is really the status of the person
-	ROS_FATAL("argv[2] is: %s", argv[2]);
+	ROS_INFO("argv[2] is: %s", argv[2]);
 
     ros::Rate loop_rate(10); 
 	nav_msgs::Odometry tempMessage; 

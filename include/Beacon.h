@@ -13,6 +13,7 @@
 class Beacon: public Entity {
 public:
 	Beacon();
+    Beacon(double x, double y, double theta, double linearVelocity, double angularVelocity);
 	virtual ~Beacon();
 	
 };

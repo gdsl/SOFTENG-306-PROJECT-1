@@ -59,19 +59,12 @@ define pretendLaserBase ranger #For animal and humans which should not have lase
 
 define pickerLaser laserBase
 ()
-
 define carrierLaser laserBase
-()
-define beaconLaser laserBase
-()
-
-define dogLaser pretendLaserBase
 ()
 define humanLaser laserBase
 ()
-define beaconLaser pretendLaserBase
+define pretendLaser pretendLaserBase
 ()
-
 
 define human position
 (
@@ -201,7 +194,7 @@ define dog position
   point[0] [  -0.50   0.05 ] 
   z [ 0.35 0.50 ]
 			)
-  dogLaser(pose [ 0.050 0.000 0 0.000 ])
+  pretendLaser(pose [ 500.00 0.000 5 0.000 ])
   obstacle_return 1
   ranger_return 5
 
@@ -254,7 +247,7 @@ define beacon position
   gui_nose 0
   ranger_return 0
   obstacle_return 0
-  #beaconLaser(pose [ 0.00 0.000 0 0.000 ])
+  pretendLaser(pose [ -500.00 0.000 5 0.000 ])
 )
 
 define tallWeed position
@@ -263,5 +256,6 @@ define tallWeed position
   obstacle_return 1
   ranger_return 1
   gui_noise 0
+  pretendLaser(pose [ 500.00 0.000 5 0.000 ])
 )
 

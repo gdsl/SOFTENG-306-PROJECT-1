@@ -80,28 +80,11 @@ void Generator::loadWorld()
 
 /**
  * Loads orchard environment. Places trunk/pole/fruit vine and puts beacon
+ returns position of beacons
  */
-void Generator::loadOrchard(int rowCount, float rowLength, float rowWidth, float trunkPoleSpacing)
+std::vector<float> Generator::loadOrchard(int rowCount, float rowLength, float rowWidth, float trunkPoleSpacing)
 {
-	//XMLElement* models = rootElement -> FirstChildElement("models");
-
-	// orchard element
-	//XMLElement* orchard = models -> FirstChildElement("orchard");
-
-	// initialise variables
-	/*float rowCount, rowLength, rowWidth, trunkPoleSpacing;
-
-	XMLElement* row_count = orchard -> FirstChildElement("row_count");
-	rowCount = atoi(row_count->GetText());
-
-	XMLElement* row_length = orchard -> FirstChildElement("row_length");
-	rowLength = atof(row_length->GetText());
-
-	XMLElement* row_width = orchard -> FirstChildElement("row_width");
-	rowWidth = atof(row_width->GetText());
-
-	XMLElement* trunk_pole_spacing = orchard -> FirstChildElement("trunk_pole_spacing");
-	trunkPoleSpacing = atof(trunk_pole_spacing->GetText()); */
+    std::vector<float> beaconPositions;
 
 	// Assumption: bitmap is big enough for orchard generation.
 	// bitmap image centre is at (0,0,0,0)
@@ -120,54 +103,61 @@ void Generator::loadOrchard(int rowCount, float rowLength, float rowWidth, float
 	// Comments for orchard file
 	outfile << "# Orchard and beacon models" << endl;
 
-	for (int i = 0; i < columnCount; i++) {
-		double initialY = y;
+    for (int i = 0; i < columnCount; i++) {
+		    double initialY = y;
+		    int beaconCount = 1;
 
-		// row number
-		outfile << "# row " << i+1 << endl;
+		    // row number
+		    outfile << "# row " << i+1 << endl;
+        for (int j = 0; j < rowCount+1; j++) {
+		    /*
+		     * add beacons at start and end of each row
+		     */
+		    if (i == 0 && j < rowCount) {
+		        beaconPositions.push_back(x - SEPARATION);
+		        beaconPositions.push_back(y-rowWidth/2.0);
+			    outfile << "beacon( pose [ " << (x - SEPARATION) << " " << (y-rowWidth/2.0) << " 0.000 0.000 ] name \"beacon" << beaconCount << "\" color \"random\")" << endl;
+		    } else if (i == columnCount - 1 && j < rowCount) {
+		        beaconPositions.push_back(x + SEPARATION);
+		        beaconPositions.push_back(y-rowWidth/2.0);
+			    outfile << "beacon( pose [ " << (x + SEPARATION) << " " << (y-rowWidth/2.0) << " 0.000 0.000 ] name \"beacon" << (beaconCount + 1) << "\" color \"random\")" << endl;
+		    }
 
-		for (int j = 0; j < rowCount+1; j++) {
+		    /*
+		     * Add trunk at even column, pole on odd column
+		     */
+		    if (i % 2 == 0) {
+			    outfile << "trunk( pose [ " << x << " " << y << " 0.000 0.000 ] color \"green\")" << endl;
+		    } else {
+			    outfile << "pole( pose [ " << x << " " << y << " 0.000 0.000 ] color \"brown\")" << endl;
+		    }
 
-			/*
-			 * add beacons at start and end of each row
-			 */
-			if (i == 0 && j < rowCount) {
-				outfile << "beacon( pose [ " << (x - SEPARATION) << " " << (y-rowWidth/2.0) << " 0.000 0.000 ] name \"beacon" << j << "\" color \"random\")" << endl;
-			} else if (i == columnCount - 1 && j < rowCount) {
-				outfile << "beacon( pose [ " << (x + SEPARATION) << " " << (y-rowWidth/2.0) << " 0.000 0.000 ] name \"beacon" << (j + 7) << "\" color \"random\")" << endl;
-			}
+		    /*
+		     * add fruit vines except last row
+		     * Height is hardcoded to trunk height.
+		     */
+		    if (j < rowCount) {
+			    outfile << "fruitVine( pose [ " << x << " " << (y-rowWidth/2.0) << " 1.8 0.000 ] color \"green\")" << endl;				
+		    }
 
-			/*
-			 * Add trunk at even column, pole on odd column
-			 */
-			if (i % 2 == 0) {
-				outfile << "trunk( pose [ " << x << " " << y << " 0.000 0.000 ] color \"green\")" << endl;
-			} else {
-				outfile << "pole( pose [ " << x << " " << y << " 0.000 0.000 ] color \"brown\")" << endl;
-			}
+		    // update y and beaconCount
+		    y -= rowWidth;
+		    beaconCount = beaconCount + 2;
+	    }
 
-			/*
-			 * add fruit vines except last row
-			 * Height is hardcoded to trunk height.
-			 */
-			if (j < rowCount) {
-				outfile << "fruitVine( pose [ " << x << " " << (y-rowWidth/2.0) << " 1.8 0.000 ] color \"green\")" << endl;				
-			}
+	    // newline
+	    outfile << endl;
 
-			// update y
-			y -= rowWidth;
-		}
+	    // reset y
+	    y = initialY;
 
-		// newline
-		outfile << endl;
-
-		// reset y
-		y = initialY;
-
-		// increase x
-		x += trunkPoleSpacing;
-	}
+	    // increase x
+	    x += trunkPoleSpacing;
+    }
+	
+	return beaconPositions;
 }
+
 
 /**
  * Load robots into world file

@@ -16,7 +16,7 @@ class Generator
 	public:
 		Generator(/*string inputName, */string outputName);
 		void loadWorld();
-		void loadOrchard(int rowCount, float rowLength, float rowWidth, float trunkPoleSpacing);
+		std::vector<float> loadOrchard(int rowCount, float rowLength, float rowWidth, float trunkPoleSpacing);
 		std::vector<int> loadPickerRobots(int pickerNumber);
 		std::vector<int> loadCarrierRobots(int carrierNumber);
 		void loadPeople(int workerNumber, float rowWidth, float spacing);
