@@ -40,7 +40,7 @@ int startBeacon = 0, finishBeacon = 0;
 //current beacon
 int currentBeacon = 0;
 //boolean to signal if the Picker has subscribed to its next beacon
-bool hasNewBeacon();
+bool hasNewBeacon;
 
 /**
  * Getter method for the bin capacity of the picker robot
@@ -111,16 +111,25 @@ void PickerRobot::stateLogic(ros::NodeHandle n){
 //			pickerRobot.setStatus("Full");
 //		}
 //	}
+    
+    //if the Picker robot is currently executing movements, it means that it has not yet reached its next target beacon
+    //only if the next beacon has been reached, should a state update occur.
     if (pickerRobot.getMovementQueueSize() == 0) {
+        
+        //reset this boolean to indicate that the Picker has not yet received directions from its next target beacon
+        hasNewBeacon = false;
+        
         //if the current state is dispatch then the Picker Robot should move to the starting position of its picking path.
         //this is the first beacon along its path.
         if (pickerRobot.getState() == DISPATCH) {
+            ROS_INFO("IM HERE");
             //set the current beacon to be the starting beacon
             currentBeacon = startBeacon;
             //subscribe to the new beacon
             subscribeNextBeacon(n);
             pickerRobot.movement();
-            pickerRobot.setState(PICKING);
+            //if the Picker has received directions from next beacon, proceed to next state as it involves the next beacon
+            if (hasNewBeacon) {pickerRobot.setState(PICKING);}
 
         } else if (pickerRobot.getState() == PICKING) {
             //check if the Picker Robot is moving East or West along a row of kiwi fruit and adjust next beacon number accordingly
@@ -132,7 +141,7 @@ void PickerRobot::stateLogic(ros::NodeHandle n){
             pickerRobot.movement();
             //change state so when movements are complete, Picker should be at end of row and this state change will cause it to
             //move down to the next row
-            pickerRobot.setState(GO_TO_NEXT_BEACON);
+            if (hasNewBeacon) {pickerRobot.setState(GO_TO_NEXT_BEACON);}
 
         } else if (pickerRobot.getState() == GO_TO_NEXT_BEACON) {
             //check if the Picker has reached the final beacon in its fruit picking path
@@ -146,7 +155,7 @@ void PickerRobot::stateLogic(ros::NodeHandle n){
                 pickerRobot.movement();
                 //change state to PICKING so the next time this code is executed, it will tell the Picker to start
                 //picking the row it is at
-                pickerRobot.setState(PICKING);
+                if (hasNewBeacon) {pickerRobot.setState(PICKING);}
             }
 
         } else if (pickerRobot.getState() == FULL_BIN) {
@@ -204,6 +213,7 @@ void PickerRobot::movement(){
                 }            
             }
         }
+        hasNewBeacon = true;
     }
     
 }
@@ -229,8 +239,8 @@ void beaconCallback(const nav_msgs::Odometry msg) {
     else {atDestY = false;}
     
     //debugging purposes
-    //ROS_INFO("Next beacon x position is: %f", destX);
-	//ROS_INFO("Next beacon y position is: %f", destY);
+    ROS_INFO("Next beacon x position is: %f", destX);
+	ROS_INFO("Next beacon y position is: %f", destY);
 }
 
 
@@ -238,18 +248,15 @@ void beaconCallback(const nav_msgs::Odometry msg) {
  * Resubscribe the beacon subscriber to the next beacon after converting the beacon number to a string
  * Assumes the beacon number has already been updated to contain the next destination beacon.
  */
-void subscribeNextBeacon(ros::NodeHandle n) {
-    if (atDestX && atDestY) {
-        std::string currentBeaconS;
-        std::stringstream out;
-        out << currentBeacon;
-        currentBeaconS = out.str();
-        beacon_sub = n.subscribe<nav_msgs::Odometry>("/beacon" + currentBeaconS + "/", 1000, beaconCallback);
-        atDestX = false;
-        atDestY = false;
-    }
-    
-    
+void PickerRobot::subscribeNextBeacon(ros::NodeHandle n) {
+    ROS_INFO("I MADE IT HERE TOO");
+    std::string currentBeaconS;
+    std::stringstream out;
+    out << currentBeacon;
+    currentBeaconS = out.str();
+    beacon_sub = n.subscribe<nav_msgs::Odometry>("/beacon" + currentBeaconS + "/", 1000, beaconCallback);
+    atDestX = false;
+    atDestY = false;
 }
 
 int main(int argc, char **argv)
@@ -264,6 +271,11 @@ int main(int argc, char **argv)
     double yPos = atof(yString.c_str());
     ROS_INFO("x start: %f", xPos);
     ROS_INFO("y start: %f", yPos);
+    
+    //HARD CODED BEACON PATH UNTIL MULTIPLE PICKER WORKLOAD SPLITTING CODE IS IMPLEMENTED
+    startBeacon = 1;
+    currentBeacon = 1;
+    finishBeacon = 14;
     
     //initialize the Picker robot with the correct position, velocity and state parameters.
 	pickerRobot=PickerRobot(xPos,yPos,M_PI/2,0,0,"Moving");
@@ -313,7 +325,7 @@ int main(int argc, char **argv)
         //subscribeNextBeacon(n);
         //pickerRobot.movement();
         //pickerRobot.move();
-        pickerRobot.stateLogic();
+        pickerRobot.stateLogic(n);
 		//TODO debug
 //		if(count==7){			
 //			pickerRobot.move();

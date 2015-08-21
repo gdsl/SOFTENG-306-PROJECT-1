@@ -20,6 +20,7 @@ public:
 	virtual void stateLogic(ros::NodeHandle n);
 	int getBinCapacity();
 	void setBinCapacity(int bin_capacity);
+    void subscribeNextBeacon(ros::NodeHandle n);
 
 private:
 	int bin_capacity=0; 
