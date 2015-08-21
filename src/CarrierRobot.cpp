@@ -174,7 +174,7 @@ int main(int argc, char **argv)
     //relative to the obstacle information
     carrierRobot.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000, callBackLaserScan);
     //subscribe to the status of picker robot
-	ros::Subscriber mysub_object = n.subscribe<se306project::robot_status>("/robot_24/status",1000,recievePickerRobotStatus);
+	ros::Subscriber mysub_object = n.subscribe<se306project::robot_status>("/robot_0/status",1000,recievePickerRobotStatus);
 
 
 	//a count of how many messages we have sent
