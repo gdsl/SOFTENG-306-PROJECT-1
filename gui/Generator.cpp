@@ -390,7 +390,7 @@ void Generator::writeLaunchFile(){
             xml.SetAttrib( "name", "PickerRobotnode" );
             xml.SetAttrib( "type", "PickerRobot" );
             int pickerPos = (i - numWeeds - numBeacons)*2;
-            oss << pickerRobotsPositions[pickerPos] << " " << pickerRobotsPositions[pickerPos+1] << " " << pickerPathPositions[pickerPos] << " " << pickerPathPositions[pickerPos+1];
+            oss << pickerRobotsPositions[pickerPos] << " " << pickerRobotsPositions[pickerPos+1] << " " << pickerPathPositions[pickerPos] << " " << pickerPathPositions[pickerPos+1] << " " << rowWidth;
         } else if (i < numWeeds + numBeacons + pickerNumber + carrierNumber) { //carriers
             xml.SetAttrib( "name", "CarrierRobotnode" );
             xml.SetAttrib( "type", "CarrierRobot" );
