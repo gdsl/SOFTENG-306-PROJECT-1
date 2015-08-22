@@ -308,6 +308,18 @@ define CarrierRobot position
 
 )
 
+define tractor position
+(
+  #properties as name value pairs
+  size [3 2 1]
+  drive "diff"
+  pretendLaser(pose [ -500.00 0.000 5 0.000 ])
+
+  obstacle_return 1
+  ranger_return 5
+
+)
+
 define beacon position
 (
   size [0.1 0.1 0.1]

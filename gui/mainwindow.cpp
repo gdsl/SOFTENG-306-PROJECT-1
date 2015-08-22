@@ -11,7 +11,6 @@
 #include "Generator.h"
 #include <QDebug>
 #include <vector>
-#include "KeyReceiver.h"
 #include <sstream>
 
 using namespace std;
@@ -29,8 +28,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->robotScroll->widget()->layout()->setAlignment(Qt::AlignLeft);
     ui->animalScroll->widget()->layout()->setAlignment(Qt::AlignLeft);
     
-    KeyReceiver* key = new KeyReceiver();
+    key = new KeyReceiver();
     ui->animalScroll->installEventFilter(key);
+    
 }
 
 void MainWindow::startReadingTopics() {
@@ -174,6 +174,7 @@ void MainWindow::generate() {
 	generator.loadCarrierRobots();
 	generator.loadPeople();
 	generator.loadAnimals();
+	generator.loadTractor();
 	generator.write();
 	generator.writeLaunchFile();
 

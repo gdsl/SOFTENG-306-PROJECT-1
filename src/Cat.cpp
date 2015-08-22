@@ -36,7 +36,6 @@ void stage_callback(nav_msgs::Odometry msg) {
 int main(int argc, char **argv) 
 {
     
-	// Initialise ros    
 	ros::init(argc,argv,"Animal");
 
 	// Create ros handler for this node

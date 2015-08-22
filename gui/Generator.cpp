@@ -4,6 +4,7 @@
 #include <vector>
 #include <sstream>
 #include "Markup.h"
+#include <math.h> 
 /**
  * Generator constructor. Takes in input name and output name.
  * Input name specifies XML document to load.
@@ -303,6 +304,46 @@ void Generator::loadTallWeeds()
     }
 }
 
+
+void Generator::loadTractor() {
+    outfile << "#Generate tractor" << endl;
+    outfile << "tractor( pose [ 0.00 -10.00 0.000 0.000 ] name \"Tractor\" color \"Blue\")" << endl;
+}
+
+void Generator::calculatePickerPaths() {
+    //variables to hold start and end beacons for each pickers path
+    int nextStartBeacon = 0, nextFinishBeacon = 0;
+    float pickersRemaining = float(pickerNumber);
+    float rowsRemaining = 7.0;
+    int numOfRows;
+    //for each Picker robot calculate its path to pick kiwifruit
+    for (int i = 0; i < pickerNumber; i++) {
+        //calculate number of rows this Picker should be allocated
+        numOfRows = int(ceil(rowsRemaining/pickersRemaining));
+        //convert this into Beacon numbers
+        //check if the Robot before (if there is one before this one) finishes at an even numbered or odd numbered beacon
+        if ((nextFinishBeacon % 2) == 1) {
+            nextStartBeacon = nextFinishBeacon + 2;
+        } else {
+            nextStartBeacon = nextFinishBeacon + 1;
+        }
+        //if an odd number of rows is to be picked
+        if ((numOfRows % 2) == 1) {
+            nextFinishBeacon = nextStartBeacon + (numOfRows * 2) - 1;
+        }
+        //or if an even number of rows is to be picked
+        else {
+            nextFinishBeacon = nextStartBeacon + (numOfRows * 2) - 2;
+        }
+        pickerPathPositions.push_back(nextStartBeacon);
+        pickerPathPositions.push_back(nextFinishBeacon);
+
+        //update rows and pickers remaining to be allocated
+        pickersRemaining = pickersRemaining - 1.0;
+        rowsRemaining = rowsRemaining - float(numOfRows);            
+    }
+}
+
 void Generator::writeLaunchFile(){
     //writes to the launch file
     CMarkup xml;
@@ -314,8 +355,10 @@ void Generator::writeLaunchFile(){
     xml.SetAttrib( "pkg", "stage_ros" );
     xml.SetAttrib( "type", "stageros" );
     xml.SetAttrib( "args", "$(find se306project)/world/test.world" );
+    calculatePickerPaths(); // calculate the picking paths each Picker will take
     int numBeacons = rowCount * 2;
-    int totalObjects = numWeeds + numBeacons + pickerNumber + carrierNumber + dogNumber + catNumber + workerNumber;
+    int totalObjects = numWeeds + numBeacons + pickerNumber + carrierNumber + dogNumber + catNumber + workerNumber + 1; // 1 tractor
+
     for (int i = 0; i < totalObjects; i++) {
         xml.AddElem("group");
         ostringstream oss;
@@ -347,7 +390,7 @@ void Generator::writeLaunchFile(){
             xml.SetAttrib( "name", "PickerRobotnode" );
             xml.SetAttrib( "type", "PickerRobot" );
             int pickerPos = (i - numWeeds - numBeacons)*2;
-            oss << pickerRobotsPositions[pickerPos] << " " << pickerRobotsPositions[pickerPos+1];
+            oss << pickerRobotsPositions[pickerPos] << " " << pickerRobotsPositions[pickerPos+1] << " " << pickerPathPositions[pickerPos] << " " << pickerPathPositions[pickerPos+1];
         } else if (i < numWeeds + numBeacons + pickerNumber + carrierNumber) { //carriers
             xml.SetAttrib( "name", "CarrierRobotnode" );
             xml.SetAttrib( "type", "CarrierRobot" );
@@ -361,10 +404,17 @@ void Generator::writeLaunchFile(){
         } else if (i < numWeeds + numBeacons + pickerNumber + carrierNumber + workerNumber + dogNumber) { //dogs
             xml.SetAttrib( "name", "AlphaDognode" );
             xml.SetAttrib( "type", "AlphaDog" );
+<<<<<<< HEAD
         } else if (i < numWeeds + numBeacons + pickerNumber + carrierNumber + workerNumber + dogNumber + catNumber) { //cats
             xml.SetAttrib( "name", "Catnode" );
             xml.SetAttrib( "type", "Cat" );
 	}
+=======
+        } else if (i < numWeeds + numBeacons + pickerNumber + carrierNumber + workerNumber + dogNumber + 1) { //tractor
+            xml.SetAttrib( "name", "Tractornode" );
+            xml.SetAttrib( "type", "Tractor" );
+        }
+>>>>>>> 9291eb2fcc6ea6c1843e53809f508dbb2f828522
         xml.SetAttrib( "args", oss.str() );
         xml.OutOfElem();
     }   

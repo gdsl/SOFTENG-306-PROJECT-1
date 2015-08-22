@@ -20,8 +20,10 @@ class Generator
 		void loadPeople();
 		void loadAnimals();
         void loadTallWeeds();
+        void loadTractor();
         void writeLaunchFile();
 		void write();
+        void calculatePickerPaths();
 		int rowCount = 7;
 		float rowLength = 70;
 		int pickerNumber;
@@ -35,6 +37,7 @@ class Generator
         vector<int> pickerRobotsPositions;
         vector<int> carrierRobotsPositions;
         vector<float> beaconPositions; 
+        vector<int> pickerPathPositions;
         
 	private:
 		string inputName;
