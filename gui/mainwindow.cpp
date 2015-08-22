@@ -8,7 +8,6 @@
 #include <QListWidget>
 #include "unistd.h"
 #include <QLayout>
-#include "Generator.h"
 #include <QDebug>
 #include <vector>
 #include <sstream>

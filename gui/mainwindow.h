@@ -7,6 +7,7 @@
 #include <QtGui/QMainWindow>
 #include <QListWidget>
 #include "KeyReceiver.h"
+#include "Generator.h"
 
 using namespace std;
 

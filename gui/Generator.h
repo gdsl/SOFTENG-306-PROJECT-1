@@ -13,7 +13,7 @@ using namespace std;
 class Generator
 {
 	public:
-		Generator(GeneratorModel &model);
+		Generator(const GeneratorModel& model);
 		void loadWorld();
 		void loadOrchard();
 		void loadPickerRobots();

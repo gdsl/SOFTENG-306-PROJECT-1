@@ -12,7 +12,7 @@
  * Input name specifies XML document to load.
  * Output name specifies world file output name.
  */
-Generator::Generator(GeneratorModel &model)
+Generator::Generator(const GeneratorModel& model)
 {
 	this->model = model;
 
