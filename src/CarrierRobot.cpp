@@ -155,6 +155,15 @@ void recievePickerRobotStatus(const se306project::robot_status::ConstPtr& msg)
 		}
 	}
 }
+
+/**
+ *Method for carrier robot status callback
+ */
+void receiveCarrierRobotStatus(const se306project::robot_status::ConstPtr& msg)
+{
+
+}
+    
 /**
  * Method for the carrier robot's states transition and implementation
  */
@@ -222,8 +231,6 @@ int main(int argc, char **argv)
     //relative to the obstacle information
     carrierRobot.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000, callBackLaserScan);
     //subscribe to the status of picker 
-
-
     //getting picker robot starting number and ending number;    
     std::string start(argv[3]);
     std::string end(argv[4]);
@@ -242,6 +249,25 @@ int main(int argc, char **argv)
         array[index] = n.subscribe<se306project::robot_status>(topicName,1000,recievePickerRobotStatus);
         index++;
     } 
+
+    //subscribe to other carrier
+    std::string start(argv[5]);
+    std::string end(argv[6]);
+    int a = atoi(start.c_str());
+    int b = atoi(end.c_str());
+    int size = e-s+1;
+    
+    //subscribing all the carrier robot
+    /*
+    ros::Subscriber *carrierArray = new ros::Subscriber[size];
+    int index = 0;
+    for (int i = a; i<=b; i++) {
+        std::stringstream convert;
+        convert << i;
+        topicName = "/robot_" + convert.str() + "/status";
+        carrierArray[index] = n.subscribe<se306project::robot_status>(topicName,1000,recievePickerRobotStatus);
+        index++;
+    } */
 
 	//a count of how many messages we have sent
 	int count = 0;
@@ -268,5 +294,6 @@ int main(int argc, char **argv)
 	}
 
     delete[] array;
+    delete[] carrierArray;
 	return 0;
 }
