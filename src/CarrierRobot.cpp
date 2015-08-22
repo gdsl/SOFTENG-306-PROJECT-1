@@ -236,14 +236,17 @@ int main(int argc, char **argv)
     //relative to the obstacle information
     carrierRobot.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000, callBackLaserScan);
     //subscribe to the status of picker 
-    //ros::Subscriber mysub_object = n.subscribe<se306project::robot_status>("/robot_0/status",1000,recievePickerRobotStatus);
+
+
+    //getting picker robot starting number and ending number;    
     std::string start(argv[3]);
     std::string end(argv[4]);
-
     int s = atoi(start.c_str());
     int e = atoi(end.c_str());
     int size = e-s+1;
-    std::string topicName;  
+    std::string topicName; 
+    
+    //subscribing all the picker robot
     ros::Subscriber *array = new ros::Subscriber[size];
     int index = 0;
     for (int i = s; i<=e; i++) {
@@ -252,7 +255,7 @@ int main(int argc, char **argv)
         topicName = "/robot_" + convert.str() + "/status";
         array[index] = n.subscribe<se306project::robot_status>(topicName,1000,recievePickerRobotStatus);
         index++;
-    }
+    } 
 
 	//a count of how many messages we have sent
 	int count = 0;
@@ -281,4 +284,3 @@ int main(int argc, char **argv)
     delete[] array;
 	return 0;
 }
-
