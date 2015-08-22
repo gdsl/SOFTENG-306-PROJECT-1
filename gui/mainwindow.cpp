@@ -6,10 +6,13 @@
 #include "worker.h"
 #include <QThread>
 #include <QListWidget>
-#include <sstream>
-#include "Markup.h"
-#include "Generator.h"
 #include "unistd.h"
+#include <QLayout>
+#include "Generator.h"
+#include <QDebug>
+#include <vector>
+#include "KeyReceiver.h"
+#include <sstream>
 
 using namespace std;
 
@@ -27,12 +30,15 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->robotScroll->widget()->layout()->setAlignment(Qt::AlignLeft);
     ui->peopleScroll->widget()->layout()->setAlignment(Qt::AlignLeft);
     ui->animalScroll->widget()->layout()->setAlignment(Qt::AlignLeft);
+    
+    KeyReceiver* key = new KeyReceiver();
+    ui->animalScroll->installEventFilter(key);
 }
 
 void MainWindow::startReadingTopics() {
     int totalDynamicStuff = numPickers + numCarriers + numWorkers + numDogs;
     
-	for (int i = numBeacons; i < numBeacons + totalDynamicStuff ; i++) {
+	for (int i = numBeacons+numWeeds; i < numBeacons + numWeeds + totalDynamicStuff ; i++) {
 		QThread *thread = new QThread(this);    
 		Worker *worker = new Worker();
 		
@@ -58,7 +64,7 @@ MainWindow::~MainWindow()
 void MainWindow::onUpdateGUI( QString id, QString str, int i )
 {
 	//update the gui for robots
-	int idNum = id.toInt()-numBeacons;
+	int idNum = id.toInt()-numBeacons-numWeeds;
 	
 	if (idNum < numCarriers+numPickers) {
 	    QListWidget *qlw = ((QListWidget*)ui->robotScroll->widget()->layout()->itemAt(idNum)->widget());
@@ -87,11 +93,13 @@ void MainWindow::on_closeButton_clicked()
 	//close roslaunch and close all rostopics
 	system("pkill stage");
 	system("pkill rostopic");
+	system("pkill roslaunch");	
 }
 
-void MainWindow::on_generateButton_clicked()
+void MainWindow::on_displayStatusButton_clicked()
 {
-    MainWindow::generate();
+	startReadingTopics();
+    //MainWindow::generate();
 }
 
 
@@ -117,6 +125,9 @@ void MainWindow::generate() {
     uiListAnimals.clear();
     launchFileEntityList.clear();
 
+	for (int i = 0; i < numWeeds; i++) {
+		launchFileEntityList.push_back("TallWeed");
+	}
     for (int i = 0; i < numRows; i++) {
         launchFileEntityList.push_back("Beacon");
         launchFileEntityList.push_back("Beacon");
@@ -151,7 +162,7 @@ void MainWindow::generate() {
 //        delete item;
 //    }
     //add all widgets back
-    string colourArray[9] = { "red", "orange", "yellow", "green", "blue", "purple", "magenta", "aqua", "fuchsia" };
+    string colourArray[14] = { "PeachPuff", "NavajoWhite", "LemonChiffon", "AliceBlue", "Lavender", "thistle", "LightSalmon", "PaleTurquoise", "PaleGreen", "beige", "plum", "LightGrey", "LightSkyBlue", "SpringGreen" };
     for (int i = 0; i < uiListRobots.size(); i++) {
         ui->robotScroll->widget()->layout()->addWidget(uiListRobots[i]);
         QListWidget *robotQL = ((QListWidget*)ui->robotScroll->widget()->layout()->itemAt(i)->widget());
@@ -161,21 +172,25 @@ void MainWindow::generate() {
     for (int i = 0; i < uiListAnimals.size(); i++) {
         ui->animalScroll->widget()->layout()->addWidget(uiListAnimals[i]);
     }
+
     for (int i = 0; i < uiListPeoples.size(); i++) {
     	ui->peopleScroll->widget()->layout()->addWidget(uiListPeoples[i]);
     }
-
-    writeLaunchFile();
-    Generator generator("world/generatedOrchard.xml", "world/test.world");
+    
+    Generator generator("world/test.world", numPickers, numCarriers, numDogs, numWorkers, rowWidth, spacing);
 	generator.loadWorld();
+    generator.loadTallWeeds();
 	generator.loadOrchard();
-	generator.loadRobots();
+	generator.loadPickerRobots();
+	generator.loadCarrierRobots();
 	generator.loadPeople();
 	generator.loadAnimals();
+
 	generator.write();
+    generator.writeLaunchFile();
 
 }
-
+/*
 void MainWindow::writeXml() {
     CMarkup xml;
     bool ok;
@@ -215,38 +230,7 @@ void MainWindow::writeXml() {
     xml.OutOfElem();
     xml.Save( "world/generatedOrchard.xml" );
 }
-
-void MainWindow::writeLaunchFile(){
-    //writes to the launch file
-    CMarkup xml;
-    bool ok;
-    xml.AddElem("launch");
-    xml.IntoElem();
-        xml.AddElem("node");
-        xml.SetAttrib( "name", "stage" );
-        xml.SetAttrib( "pkg", "stage_ros" );
-        xml.SetAttrib( "type", "stageros" );
-        xml.SetAttrib( "args", "$(find se306project)/world/test.world" );
-        for (int i = 0; i < launchFileEntityList.size(); i++) {
-            xml.AddElem("group");
-            ostringstream oss;
-            oss << "robot_" << i;
-            xml.SetAttrib("ns", oss.str());
-            xml.IntoElem();
-            xml.AddElem("node");
-                xml.SetAttrib( "name", launchFileEntityList[i]+"node" );
-                xml.SetAttrib( "pkg", "se306project" );
-                xml.SetAttrib( "type", launchFileEntityList[i] );
-                if (launchFileEntityList[i] == "Beacon") {
-                    ostringstream oss;
-                    oss << "/beacon" << i+1 << "/";
-                    xml.SetAttrib( "args", oss.str() );
-                }
-            xml.OutOfElem();
-        }
-    xml.OutOfElem();
-    xml.Save("launch/test.launch");
-}
+*/
 
 QListWidget* MainWindow::createNewItem(string type) {
     QListWidget *list = new QListWidget;

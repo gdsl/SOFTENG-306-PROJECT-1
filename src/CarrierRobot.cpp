@@ -8,16 +8,15 @@
  */
 CarrierRobot::CarrierRobot() {
 	// TODO Auto-generated constructor stub
-
 }
 
 /*
  * Constructor for carrier Robot with status
  */
-CarrierRobot::CarrierRobot(std::string status){
-	// TODO Auto-generated constructor stub
+CarrierRobot::CarrierRobot(double x,double y,double theta,double linearVel, double angularVel,std::string status)
+	:Robot( x, y, theta, linearVel,  angularVel){
 	this->setStatus(status);
-
+    this->setState(IDLE);
 }
 
 /*
@@ -42,14 +41,43 @@ void callBackStageOdm(const nav_msgs::Odometry msg){
 void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 	carrierRobot.stageLaser_callback(msg);
 
-	if (carrierRobot.getMinDistance() < 1) {
-		if(obstacleStatus.compare("Obstacle nearby")!=0){
-			obstacleStatus = "Obstacle nearby";
-			//TODO implement real avoidance currently temp to test
-			//carrierRobot.addMovementFront(,carrierRobot.getTheta()+1,1);
-			carrierRobot.addMovementFront("rotation",carrierRobot.getTheta()+M_PI,1);
-			//carrierRobot.addMovementFront("rotation",carrierRobot.getTheta()+M_PI/2,1);
+	if (carrierRobot.getMinDistance() < 1&&carrierRobot.getStatus().compare("Idle")!=0) {
+
+		if(carrierRobot.getCriticalIntensity()>=4){//if its human or dog stop
+			carrierRobot.addMovementFront("forward_x",0,0,1);
+			//carrierRobot.move();
+		}else{
+			if(carrierRobot.getAvoidanceQueueSize()<=0){
+				if(carrierRobot.getDirectionFacing()== carrierRobot.NORTH&&obstacleStatus.compare("Obstacle nearby")!=0){
+					carrierRobot.addMovementFront("rotation",M_PI/2,1,1);
+					carrierRobot.addMovementFront("forward_x",3,1,1);
+					carrierRobot.addMovementFront("rotation",0, 1,1);
+					carrierRobot.addMovementFront("forward_y",3,1,1);
+					carrierRobot.addMovementFront("rotation",M_PI/2,1,1);
+					carrierRobot.addMovementFront("forward_x",-3,1,1);
+					carrierRobot.addMovementFront("rotation",M_PI,1,1);
+					carrierRobot.addMovementFront("forward_x",0,0,1);//this is at front of front
+					//carrierRobot.move();
+				}
+				if(carrierRobot.getDirectionFacing()== carrierRobot.EAST&&obstacleStatus.compare("Obstacle nearby")!=0){
+					carrierRobot.addMovementFront("rotation",0, 1,1);
+					carrierRobot.addMovementFront("forward_y",3,1,1);
+					carrierRobot.addMovementFront("rotation",M_PI/2, 1,1);
+					carrierRobot.addMovementFront("forward_x",3,0,1);
+					carrierRobot.addMovementFront("rotation",0, 1,1);
+					carrierRobot.addMovementFront("forward_y",-3,1,1);
+					carrierRobot.addMovementFront("rotation",-M_PI/2, 1,1);
+					carrierRobot.addMovementFront("forward_x",0,0,1);//this is at front of front
+					//carrierRobot.move();
+				}
+			}else{
+				//halt movement if already have avoidance logic
+				carrierRobot.addMovementFront("forward_x",0,0,1);
+				carrierRobot.move();
+			}
 		}
+		//halt movement if already have avoidance logic
+		obstacleStatus = "Obstacle nearby";
 	} else {
 		obstacleStatus = "No obstacles";
 	}
@@ -61,10 +89,6 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
  */
 void recievePickerRobotStatus(const se306project::robot_status::ConstPtr& msg)
 {
-	//ROS_INFO("sub echoing pub: %d",msg->my_counter);
-	//ROS_INFO("sub echoing pub: %s",msg->status.c_str());
-	//ROS_INFO("sub echoing pub: %f",msg->pos_x);
-
 	//Check the status of Carrier robot so see how it should act
 	//when status is arrived it means that the carrier robot has arrived at picker
 	if (carrierRobot.getStatus().compare("Arrived")==0){
@@ -96,7 +120,7 @@ void CarrierRobot::stateLogic(){
 	if(carrierRobot.getStatus().compare("Transporting")==0){
 		//if the carrier is in transporting state move
 		//if the carrier is transporting it will move to bin drop off area (the driveway)
-		if(carrierRobot.movementQueue.size()<1){
+		if(carrierRobot.getMovementQueueSize()<1){
 			carrierRobot.setStatus("Idle"); //when carrier robot complete transporting full bin to driveway it
 			//become Idle again (free)
 			carrierRobot.setDesireLocation(false);//refresh that it can recieve more desire location
@@ -104,11 +128,13 @@ void CarrierRobot::stateLogic(){
 		carrierRobot.move();
 	}else if(carrierRobot.getStatus().compare("Moving")==0){
 		//check if the robot has anymore movement in queue if not set state to arrive
-		if(carrierRobot.movementQueue.size()<1){
+		if(carrierRobot.getMovementQueueSize()<1){
 			//carrierRobot.setStatus("Arrived");
 		}
 		//if the carrier is in moving state, move
+		//if (obstacleStatus.compare("Obstacle nearby")!=0){
 		carrierRobot.move();
+		//}
 	}else if (obstacleStatus.compare("Obstacle nearby")==0){
 		carrierRobot.setStatus("Moving");
 		carrierRobot.move();
@@ -117,11 +143,19 @@ void CarrierRobot::stateLogic(){
 
 int main(int argc, char **argv)
 {
-	//initialise carrierRobot so method can be invoke on it
-	carrierRobot=CarrierRobot("Idle");
-
 	//You must call ros::init() first of all. ros::init() function needs to see argc and argv. The third argument is the name of the node
 	ros::init(argc, argv, "CarrierRobot");
+    
+    // convert input parameters for Robot initialization from String to respective types
+    std::string xString = argv[1];
+    std::string yString = argv[2];
+    double xPos = atof(xString.c_str());
+    double yPos = atof(yString.c_str());
+    ROS_INFO("x start: %f", xPos);
+    ROS_INFO("y start: %f", yPos);
+    
+    //initialize the Carrier robot with the correct position, velocity and state parameters.
+	carrierRobot=CarrierRobot(xPos,yPos,M_PI/2,0,0,"Idle");
 
 	//NodeHandle is the main access point to communicate with ros.
 	ros::NodeHandle n;
@@ -139,7 +173,7 @@ int main(int argc, char **argv)
 
     //relative to the obstacle information
     carrierRobot.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000, callBackLaserScan);
-	//subscribe to the status of picker robot
+    //subscribe to the status of picker robot
 	ros::Subscriber mysub_object = n.subscribe<se306project::robot_status>("/robot_0/status",1000,recievePickerRobotStatus);
 
 
@@ -165,3 +199,4 @@ int main(int argc, char **argv)
 	}
 	return 0;
 }
+
