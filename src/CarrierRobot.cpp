@@ -165,8 +165,8 @@ void recievePickerRobotStatus(const se306project::robot_status::ConstPtr& msg)
                         carrierRobot.setYDistanceTravel(pickerY - carrierRobot.getY());
                         carrierRobot.addMovement("forward_y",carrierRobot.getYDistanceTravel(),1);
                         
-                        //double pickerX = msg->pos_x;
-                        double pickerX = -5;
+                        double pickerX = msg->pos_x;
+                        //double pickerX = -5;
                         carrierRobot.faceEast(1);
                         //xDistanceTravel = pickerX - carrierRobot.getX() -10;
                         carrierRobot.setXDistanceTravel(pickerX - carrierRobot.getX() -10);
