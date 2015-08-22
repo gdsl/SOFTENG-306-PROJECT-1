@@ -4,6 +4,7 @@
 #include <vector>
 #include <sstream>
 #include "Markup.h"
+#include <QDebug>
 /**
  * Generator constructor. Takes in input name and output name.
  * Input name specifies XML document to load.
@@ -295,6 +296,7 @@ void Generator::writeLaunchFile(){
     xml.SetAttrib( "args", "$(find se306project)/world/test.world" );
     int numBeacons = rowCount * 2;
     int totalObjects = numWeeds + numBeacons + pickerNumber + carrierNumber + dogNumber + workerNumber;
+    	    qDebug("1111111111111111111122");
     for (int i = 0; i < totalObjects; i++) {
         xml.AddElem("group");
         ostringstream oss;
@@ -305,7 +307,7 @@ void Generator::writeLaunchFile(){
         xml.IntoElem();
         xml.AddElem("node");
         xml.SetAttrib( "pkg", "se306project" );
-        
+            	    qDebug("1111111111111111111123");
         if (i < numWeeds) { //weeds
             xml.SetAttrib( "name", "TallWeednode" );
             xml.SetAttrib( "type", "TallWeed" );
@@ -321,26 +323,33 @@ void Generator::writeLaunchFile(){
                 num = (num - 7) * 2;
             }
             int beaconPos = (i - numWeeds)*2;
+            qDebug() << beaconPos << " " << beaconPositions.size();
+                                            	    qDebug("11111111111111111111389");
             oss << "/beacon" << num << "/ " << beaconPositions[beaconPos] << " " << beaconPositions[beaconPos+1];
         } else if (i < numWeeds + numBeacons + pickerNumber) { //picker robots
             xml.SetAttrib( "name", "PickerRobotnode" );
             xml.SetAttrib( "type", "PickerRobot" );
+                                	    qDebug("1111111111111111111134");
             int pickerPos = (i - numWeeds - numBeacons)*2;
             oss << pickerRobotsPositions[pickerPos] << " " << pickerRobotsPositions[pickerPos+1];
         } else if (i < numWeeds + numBeacons + pickerNumber + carrierNumber) { //carriers
             xml.SetAttrib( "name", "CarrierRobotnode" );
             xml.SetAttrib( "type", "CarrierRobot" );
+                                	    qDebug("1111111111111111111133");
             int carrierPos = (i - numWeeds - numBeacons - pickerNumber)*2;
             int firstPicker = numWeeds + numBeacons;
             int lastPicker = firstPicker + pickerNumber - 1;
             oss << carrierRobotsPositions[carrierPos] << " " << carrierRobotsPositions[carrierPos+1] << " " << firstPicker << " " << lastPicker;
         } else if (i < numWeeds + numBeacons + pickerNumber + carrierNumber + workerNumber) { //AlphaPersons (workers)
+                            	    qDebug("1111111111111111111132");
             xml.SetAttrib( "name", "AlphaPersonnode" );
             xml.SetAttrib( "type", "AlphaPerson" );
         } else if (i < numWeeds + numBeacons + pickerNumber + carrierNumber + workerNumber + dogNumber) { //dogs
+                    	    qDebug("1111111111111111111131");
             xml.SetAttrib( "name", "AlphaDognode" );
             xml.SetAttrib( "type", "AlphaDog" );
         }
+            	    qDebug("1111111111111111111124");
         xml.SetAttrib( "args", oss.str() );
         xml.OutOfElem();
     }   

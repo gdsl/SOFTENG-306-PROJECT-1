@@ -271,6 +271,13 @@
        </spacer>
       </item>
       <item>
+       <widget class="QPushButton" name="closeButton">
+        <property name="text">
+         <string>Close</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="launchButton">
         <property name="styleSheet">
          <string notr="true">background-color: rgb(85, 170, 255);
@@ -282,9 +289,9 @@ color: rgb(255, 255, 255);</string>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="generateButton">
+       <widget class="QPushButton" name="displayStatusButton">
         <property name="text">
-         <string>Generate world file</string>
+         <string>Display Status</string>
         </property>
        </widget>
       </item>
@@ -298,8 +305,8 @@ color: rgb(255, 255, 255);</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1037</width>
-     <height>21</height>
+     <width>1036</width>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuOrchard_Simulator">

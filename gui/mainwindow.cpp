@@ -57,6 +57,10 @@ void MainWindow::startReadingTopics() {
 
 MainWindow::~MainWindow()
 {
+    //close roslaunch and close all rostopics
+	system("pkill stage");
+	system("pkill rostopic");
+	system("pkill roscore");
     delete ui;
 }
 
@@ -82,21 +86,14 @@ void MainWindow::onUpdateGUI( QString id, QString str, int i )
 void MainWindow::on_launchButton_clicked()
 {
     MainWindow::generate();
-	
+	    qDebug("1111111111111111111112");
 	//launch roslaunch
 	system("roslaunch se306project test.launch &");
     usleep(1000000); //1 second
     //qDebug("started reading!!!!!!!!!!!!!!!!!!!!!!!!!!1");
 	//emit MainWindow::requestProcess();
 	startReadingTopics();
-}
 
-void MainWindow::on_closeButton_clicked()
-{  
-	//close roslaunch and close all rostopics
-	system("pkill stage");
-	system("pkill rostopic");
-	system("pkill roslaunch");	
 }
 
 void MainWindow::on_displayStatusButton_clicked()
@@ -122,7 +119,6 @@ void MainWindow::generate() {
     numNeighbors = ui->neighborSpinner->value();
     numTractors = ui->tractorSpinner->value();
     numBeacons = numRows*2;
-
     uiListPeoples.clear();
     uiListRobots.clear();
     uiListAnimals.clear();
@@ -179,7 +175,6 @@ void MainWindow::generate() {
     for (int i = 0; i < uiListPeoples.size(); i++) {
     	ui->peopleScroll->widget()->layout()->addWidget(uiListPeoples[i]);
     }
-    
     Generator generator("world/test.world", numPickers, numCarriers, numDogs, numWorkers, rowWidth, poleTrunkSpacing);
 	generator.loadWorld();
     generator.loadTallWeeds();
@@ -188,9 +183,10 @@ void MainWindow::generate() {
 	generator.loadCarrierRobots();
 	generator.loadPeople();
 	generator.loadAnimals();
-
 	generator.write();
+		    qDebug("1111111111111111111123");
     generator.writeLaunchFile();
+    	    qDebug("1111111111111111111125");
 
 }
 /*
