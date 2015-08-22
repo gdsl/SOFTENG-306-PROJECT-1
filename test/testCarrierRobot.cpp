@@ -51,14 +51,14 @@ TEST(CarrierRobot, setDesireLocationOfCarrier) {
 	EXPECT_TRUE(carrierRobot.getDesireLocation());
 }
 
-TEST(MoveForward, moveForwardWhenNotAtDestinationCarrier) {
-	CarrierRobot carrierRobot;
-	ros::NodeHandle n;
-	carrierRobot.robotNode_stage_pub=n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
-	carrierRobot.setPose(10, 10, 5);
-	carrierRobot.moveForward(15, 1, "x");
-	EXPECT_EQ(carrierRobot.getLin(), 1);
-}
+//TEST(MoveForward, moveForwardWhenNotAtDestinationCarrier) {
+//	CarrierRobot carrierRobot;
+//	ros::NodeHandle n;
+//	carrierRobot.robotNode_stage_pub=n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
+//	carrierRobot.setPose(10, 10, 5);
+//	carrierRobot.moveForward(15, 1, "x");
+//	EXPECT_EQ(carrierRobot.getLin(), 1);
+//}
 
 int main(int argc,char **argv) {
 	ros::init(argc, argv, "testCarrierRobot");

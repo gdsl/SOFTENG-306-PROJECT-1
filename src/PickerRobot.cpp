@@ -10,17 +10,23 @@
 #include <string>
 
 PickerRobot::PickerRobot():Robot(){
-
+    this->bin_capacity=0;
+    this->pick_range=pick_range;
 }
 
 PickerRobot::PickerRobot(std::string status){
 	this->setStatus(status);
+    this->bin_capacity=0;
+    this->pick_range=pick_range;
 }
 
-PickerRobot::PickerRobot(double x,double y,double theta,double linearVel, double angularVel,std::string status)
+PickerRobot::PickerRobot(double x,double y,double theta,double linearVel, double angularVel,std::string status,double pick_range)
 	:Robot( x, y, theta, linearVel,  angularVel){
 	this->setStatus(status);
     this->setState(DISPATCH);
+    this->bin_capacity=0;
+    this->pick_range=pick_range;
+
 }
 
 PickerRobot::~PickerRobot(){
@@ -60,6 +66,20 @@ void PickerRobot::setBinCapacity(int bin_capacity){
 	this->bin_capacity=bin_capacity;
 }
 
+/**
+ * Getter method for the pick range of the picker robot
+ */
+double PickerRobot::getPickRange(){
+	return pick_range;
+}
+
+/**
+ * Setter method for the pick range of the picker robot
+ */
+void PickerRobot::setPickRange(double pick_range){
+	this->pick_range=pick_range;
+}
+
 /*
  * Wrapper method for the callBackStageOdm method (in Entity)
  */
@@ -69,11 +89,15 @@ void callBackStageOdm(const nav_msgs::Odometry msg){
 
 void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 	pickerRobot.stageLaser_callback(msg);
-	int pickrange=2;
-	if (pickerRobot.getStatus().compare("Moving")==0){
+	if (pickerRobot.getStatus().compare("Picking")==0){
 		//TODO if(msg.ranges[0]<=pickrange&&msg.intensities[0]==1){
-		if(msg.ranges[0]<=pickrange&&msg.ranges[7]>=pickrange){
+		ROS_INFO("Laser %d",pickerRobot.getBinCapacity());
+		ROS_INFO("pick range %f",pickerRobot.getPickRange());
+		if(msg.ranges[0]<=pickerRobot.getPickRange()&&msg.intensities[0]==1&&msg.ranges[5]>=pickerRobot.getPickRange()){
 			pickerRobot.setBinCapacity(pickerRobot.getBinCapacity()+2);
+			if(pickerRobot.getBinCapacity()>=BIN_CAPACITY){
+				pickerRobot.setState(Robot::FULL_BIN);
+			}
 		}
 	}
 	if (pickerRobot.getMinDistance() < 1) {
@@ -88,6 +112,7 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
  */
 void recieveCarrierRobotStatus(const se306project::carrier_status::ConstPtr& msg){
 	if (msg->status.compare("Transporting")==0&&pickerRobot.getStatus().compare("Full")==0){
+		//TODO reset status
 		if (distance==1){
 			distance=5;
 		}else if (distance ==5){
@@ -118,7 +143,10 @@ void PickerRobot::stateLogic(ros::NodeHandle n){
     
     //if the Picker robot is currently executing movements, it means that it has not yet reached its next target beacon
     //only if the next beacon has been reached, should a state update occur.
-    if (pickerRobot.getMovementQueueSize() == 0) {
+    if(pickerRobot.getState() == FULL_BIN) {
+    	pickerRobot.setStatus("Full");
+    	pickerRobot.addMovementFront("forward_x",0,0,1);//halt when full
+    }else if (pickerRobot.getMovementQueueSize() == 0) {
         
         //reset this boolean to indicate that the Picker has not yet received directions from its next target beacon
         //hasNewBeacon = false;
@@ -133,6 +161,7 @@ void PickerRobot::stateLogic(ros::NodeHandle n){
             if (hasNewBeacon) {
                 pickerRobot.movement();
                 pickerRobot.setState(PICKING);
+                pickerRobot.setStatus("Moving");
             }
             //TODO looks like picking state is getting set too early (logically) functional should be fine
         } else if (pickerRobot.getState() == PICKING) {
@@ -152,6 +181,7 @@ void PickerRobot::stateLogic(ros::NodeHandle n){
             if (hasNewBeacon) {
                 pickerRobot.movement();
                 pickerRobot.setState(GO_TO_NEXT_BEACON);
+                pickerRobot.setStatus("Picking");
                 //as messages have arrived and movements have been added to queue, this can be set to false for the next time this State is set
                 targetBeaconSet = false;
             }
@@ -175,14 +205,16 @@ void PickerRobot::stateLogic(ros::NodeHandle n){
                 if (hasNewBeacon) {
                     pickerRobot.movement();
                     pickerRobot.setState(PICKING);
+                    pickerRobot.setStatus("Moving");
                     //as messages have arrived and movements have been added to queue, this can be set to false for the next time this State is set
                     targetBeaconSet = false;
                 }
             }
 
-        } else if (pickerRobot.getState() == FULL_BIN) {
-
-        } else if (pickerRobot.getState() == FINISHED) {
+        } /*else if (pickerRobot.getState() == FULL_BIN) {
+        	pickerRobot.setStatus("Full");
+        	pickerRobot.addMovementFront("forward_x",0,0,1);//halt when full
+        }*/ else if (pickerRobot.getState() == FINISHED) {
 
         }
         //ROS_INFO("current beacon = %d", currentBeacon);
@@ -305,11 +337,13 @@ int main(int argc, char **argv)
     // convert input parameters for Robot initialization from String to respective types
     std::string xString = argv[1];
     std::string yString = argv[2];    
+    std::string pickRangeString = argv[5];
     double xPos = atof(xString.c_str());
     double yPos = atof(yString.c_str());
+    double pickRange = (atof(pickRangeString.c_str()))/2+0.1;
     ROS_INFO("x start: %f", xPos);
     ROS_INFO("y start: %f", yPos);
-    
+    ROS_INFO("pick range %f",pickRange);
     //assign start and finish beacons from input parameters of launch file
     std::string startString = argv[3];
     std::string finishString = argv[4];
@@ -320,7 +354,7 @@ int main(int argc, char **argv)
     currentBeacon = startBeacon;
     
     //initialize the Picker robot with the correct position, velocity and state parameters.
-	pickerRobot=PickerRobot(xPos,yPos,M_PI/2,0,0,"Moving");
+	pickerRobot=PickerRobot(xPos,yPos,M_PI/2,0,0,"Moving",pickRange);
 
 	//NodeHandle is the main access point to communicate with ros.
 	ros::NodeHandle n;
