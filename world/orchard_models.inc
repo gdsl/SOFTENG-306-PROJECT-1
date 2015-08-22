@@ -50,7 +50,8 @@ define pretendLaserBase ranger #For animal and humans which should not have lase
 (
 	sensor
 	(
-		range [ 0.0 0.0 ] # set tp zero
+		size [ 0 0 0 ]
+		range [ 0.0 0.0 ] # set to zero
 		fov 0
 		samples 0
 	)
@@ -58,19 +59,12 @@ define pretendLaserBase ranger #For animal and humans which should not have lase
 
 define pickerLaser laserBase
 ()
-
 define carrierLaser laserBase
-()
-define beaconLaser laserBase
-()
-
-define dogLaser pretendLaserBase
 ()
 define humanLaser laserBase
 ()
-define beaconLaser pretendLaserBase
+define pretendLaser pretendLaserBase
 ()
-
 
 define human position
 (
@@ -200,7 +194,74 @@ define dog position
   point[0] [  -0.50   0.05 ] 
   z [ 0.35 0.50 ]
 			)
-  dogLaser(pose [ 0.050 0.000 0 0.000 ])
+  pretendLaser(pose [ 500.00 0.000 5 0.000 ])
+  obstacle_return 1
+  ranger_return 5
+
+)
+
+define cat position
+(
+
+  # These corresponds to the maximum x y and z of the cat in meters.
+  size [1.00 0.300 0.500]
+  drive "diff"
+
+  # left hindleg
+  block (
+  points 4
+  point[3] [  0.50   -0.15 ] 
+  point[2] [  0.40   -0.15 ] 
+  point[1] [  0.40   -0.05 ] 
+  point[0] [  0.50   -0.05 ] 
+  z [ 0.0 0.200 ]
+			)
+  # right hindleg
+  block (
+  points 4
+  point[3] [  0.50   0.15 ] 
+  point[2] [  0.40   0.15 ] 
+  point[1] [  0.40   0.05 ] 
+  point[0] [  0.50   0.05 ] 
+  z [ 0.0 0.200 ]
+			)
+  # left foreleg
+  block (
+  points 4
+  point[3] [  -0.40   -0.15 ] 
+  point[2] [  -0.30   -0.15 ] 
+  point[1] [  -0.30   -0.05 ] 
+  point[0] [  -0.40   -0.05 ] 
+  z [ 0.0 0.200 ]
+			)
+  # right foreleg
+  block (
+  points 4
+  point[3] [  -0.40   0.15 ] 
+  point[2] [  -0.30   0.15 ] 
+  point[1] [  -0.30   0.05 ] 
+  point[0] [  -0.40   0.05 ] 
+  z [ 0.0 0.200 ]
+			)
+  # main body
+  block (
+  points 4
+  point[3] [  -0.40  -0.15 ] 
+  point[2] [  0.50   -0.15 ] 
+  point[1] [  0.50    0.15 ] 
+  point[0] [  -0.40   0.15 ] 
+  z [ 0.200 0.400 ]
+			)
+  # head
+  block (
+  points 4
+  point[3] [  -0.50   -0.05 ] 
+  point[2] [  -0.40   -0.05 ] 
+  point[1] [  -0.40   0.05 ] 
+  point[0] [  -0.50   0.05 ] 
+  z [ 0.35 0.50 ]
+			)
+  pretendLaser(pose [ 500.00 0.000 5 0.000 ])
   obstacle_return 1
   ranger_return 5
 
@@ -247,12 +308,33 @@ define CarrierRobot position
 
 )
 
+define tractor position
+(
+  #properties as name value pairs
+  size [3 2 1]
+  drive "diff"
+  pretendLaser(pose [ -500.00 0.000 5 0.000 ])
+
+  obstacle_return 1
+  ranger_return 5
+
+)
+
 define beacon position
 (
   size [0.1 0.1 0.1]
   gui_nose 0
   ranger_return 0
   obstacle_return 0
-  beaconLaser(pose [ 0.050 0.000 0 0.000 ])
+  pretendLaser(pose [ -500.00 0.000 5 0.000 ])
+)
+
+define tallWeed position
+(
+  size [0.3 0.3 1.0]
+  obstacle_return 1
+  ranger_return 1
+  gui_noise 0
+  pretendLaser(pose [ 500.00 0.000 5 0.000 ])
 )
 

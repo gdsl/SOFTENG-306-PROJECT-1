@@ -41,7 +41,12 @@ Entity::Entity(double x, double y, double theta, double linearVelocity, double a
 	//set the default obstacle angle as a value larger than 180
 	this->obstacleAngle=270;
 	this->criticalIntensity=0;
-
+	this->numOfScan=0; //variable for the scan number alternat from 0 to 1
+	this->previousScanDistance=0; //variable for the critical scan distance previous
+	this->previousScanIntensity=0; //variable for the critical scan intensity previous
+	this->previousScanNumber=0; //variable for the numberth of the previous scan critical object
+	this->previousScanNumberMin=0; //variable for the min numberth of the previous scan critcial object can be scan
+	this->previousScanNumberMax=0; //variable for the max numberth of the previous scan critcial object can be scan
 }
 
 Movement currentMovement;//create field for current movement of the node.
@@ -91,20 +96,66 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg)
 	//range vector means distance measure corresponds to the a set of angles
 
 	// reset values
+	bool found=false;
 	minDistance = 10;
 	obstacleAngle = 270;
-	criticalIntensity=0;
+	criticalIntensity=0; //the critical intensity of the surrounding specific subclass should implement avoidance plan
 	int l=msg.ranges.size(); // sizeof(msg.ranges[0]);
-	for (int i=45; i<l-45; i++){
-		if (msg.ranges[i]< minDistance) {
+	for (int i=45; i<l-45; i++){ //only process the object in +45 to -45 degree of the nodes laser
+		if (msg.ranges[i]< minDistance) {//work out the minimum distance object
 			minDistance = msg.ranges[i];
 			obstacleAngle= (i/l) * msg.angle_increment + msg.angle_min;
 		}
 		if (msg.ranges[i]<1){//work most fatal intensity
-			if(msg.intensities[i]>criticalIntensity){
-				criticalIntensity=msg.intensities[i];
+			if(numOfScan==0){
+				if(msg.intensities[i]>previousScanIntensity){
+					previousScanIntensity=msg.intensities[i];//record first scan intensity
+					previousScanDistance=msg.ranges[i];//record first scan range
+					previousScanNumber=i;
+				}
 			}
 		}
+	}
+	if(numOfScan==1){//check if there is perpendicular movement
+		if(previousScanDistance<msg.ranges[previousScanNumber]&&previousScanIntensity==msg.intensities[previousScanNumber]){//obstacle got closer
+			criticalIntensity=previousScanIntensity;
+		}else{
+			int currentMax=previousScanNumber;
+			int currentMin=previousScanNumber;
+			for(int i=previousScanNumber;i<l-45;i++){//work out max number of scan critical object still can be observed
+				if(previousScanIntensity!=msg.intensities[i]&&!found){
+					currentMax=i-1;
+					found=true;
+				}
+			}
+			found=false;
+			for(int i=previousScanNumber;i>44;i--){//work out min number of scan critical object still can be observed
+				if(previousScanIntensity!=msg.intensities[i]&&!found){
+					currentMin=i+1;
+					found=true;
+				}
+			}
+			if (currentMax!=previousScanNumberMax||currentMin!=previousScanNumberMin){//it is moving horizontally or rotating
+				criticalIntensity=4;//halt movement
+			}
+		}
+		numOfScan=0;
+	}else{
+		for(int i=previousScanNumber;i<l-45;i++){//work out max number of scan critical object still can be observed
+			if(previousScanIntensity!=msg.intensities[i]&&!found){
+				previousScanNumberMax=i-1;
+				found=true;
+			}
+		}
+		found=false;
+		for(int i=previousScanNumber;i>44;i--){//work out min number of scan critical object still can be observed
+			if(previousScanIntensity!=msg.intensities[i]&&!found){
+				previousScanNumberMin=i+1;
+				found=true;
+			}
+		}
+		criticalIntensity=4;//halt movement
+		numOfScan+=1;
 	}
 }
 
@@ -124,18 +175,31 @@ void Entity::updateOdometry()
  * Message to get node to start going through the movement queue
  */
 void Entity::move(){
-	if(movementQueue.size()>0){
+	if(avoidanceQueue.size()>0){
+		desireLocation=false;
+		currentMovement=avoidanceQueue.front();
+		if(currentMovement.getType().compare("forward_x")==0){
+			//call move forward for x direction
+			moveForward(currentMovement.getPos(),currentMovement.getVel(),"x",1);
+		}else if (currentMovement.getType().compare("forward_y")==0){
+			//call move forward for y direction
+			moveForward(currentMovement.getPos(),currentMovement.getVel(),"y",1);
+		}else{
+			//call rotate
+			rotate(currentMovement.getPos(),currentMovement.getVel(),1);
+		}
+	}else if(movementQueue.size()>0){
 		desireLocation=false;
 		currentMovement=movementQueue.front();
 		if(currentMovement.getType().compare("forward_x")==0){
 			//call move forward for x direction
-			moveForward(currentMovement.getPos(),currentMovement.getVel(),"x");
+			moveForward(currentMovement.getPos(),currentMovement.getVel(),"x",2);
 		}else if (currentMovement.getType().compare("forward_y")==0){
 			//call move forward for y direction
-			moveForward(currentMovement.getPos(),currentMovement.getVel(),"y");
+			moveForward(currentMovement.getPos(),currentMovement.getVel(),"y",2);
 		}else{
 			//call rotate
-			rotate(currentMovement.getPos(),currentMovement.getVel());
+			rotate(currentMovement.getPos(),currentMovement.getVel(),2);
 		}
 	}else{
 		desireLocation=true;
@@ -143,7 +207,7 @@ void Entity::move(){
 }
 
 /**
- * Message to remove movements to queue
+ * Method to remove movements from movement queue
  */
 void Entity::movementComplete(){
 	//convert to position
@@ -151,12 +215,32 @@ void Entity::movementComplete(){
 	desireLocation=true;
 }
 
+/**
+ * Method to remove movements to from avoidance queue
+ */
+void Entity::avoidanceComplete(){
+	//convert to position
+	avoidanceQueue.erase(avoidanceQueue.begin());
+	desireLocation=true;
+}
+
+/**
+ * Method to get the size of the vector of the movement queue
+ */
 int Entity::getMovementQueueSize() {
 	return movementQueue.size();
 }
 
 /**
+ * Method to get the size of the vector of the avoidance queue
+ */
+int Entity::getAvoidanceQueueSize() {
+	return avoidanceQueue.size();
+}
+/**
  * Method to add movements to movement queue
+ * Distance: the value relative to the absolute frame of reference
+ * eg if +5(north) in y then distance is 5 if -5(south) in y then distance is -5
  */
 void Entity::addMovement(std::string type, double distance,double velocity){
 	//convert to position
@@ -200,12 +284,12 @@ void Entity::addMovement(std::string type, double distance,double velocity){
  * Method to add movements to front of movement queue
  * Distance: the value relative to the absolute frame of reference
  * eg if +5(north) in y then distance is 5 if -5(south) in y then distance is -5
+ * queueNum of queue 1 for avoidance 2 for movements
  */
-void Entity::addMovementFront(std::string type, double distance,double velocity){
+void Entity::addMovementFront(std::string type, double distance,double velocity, int queueNum){
 	//convert to position
 	double pos=0;
 	if (type.compare("rotation")!=0){
-		bool useCurrent=true; //boolean to check if current location should be use
 		if((type.compare("forward_x"))==0){
 			pos=x+distance;
 		}else if ((type.compare("forward_y"))==0){
@@ -216,7 +300,11 @@ void Entity::addMovementFront(std::string type, double distance,double velocity)
 	}
 	//ROS_INFO("pos: %f", pos);
 	Movement m=Movement(type,pos,velocity);
-	movementQueue.insert(movementQueue.begin(),m);
+	if(queueNum==2){
+		movementQueue.insert(movementQueue.begin(),m);
+	}else{
+		avoidanceQueue.insert(avoidanceQueue.begin(),m);
+	}
 }
 
 /**
@@ -224,8 +312,9 @@ void Entity::addMovementFront(std::string type, double distance,double velocity)
  * Note unit is in meters
  * input:	double vel: the velocity of the entity moving forward
  *			double pos: the absolute position to move to
+ *			int queueNum: which queue is dispatch from 1 for avoidance 2 for movement
  */
-void Entity::moveForward(double pos, double vel, std::string direction){
+void Entity::moveForward(double pos, double vel, std::string direction,int queueNum){
 	double position=0;
 	if (direction.compare("x")==0){
 		position=x;
@@ -234,7 +323,7 @@ void Entity::moveForward(double pos, double vel, std::string direction){
 	}
 	if (!desireLocation){//TODO slow down
 		ROS_INFO("mfpos: %f", pos);
-		if (std::abs(position-pos)>=0.1){
+		if (std::abs(position-pos)>=0.01){
 			if(std::abs(position-pos)<=0.2){
 				linearVelocity=0.1;
 			}else if(std::abs(position-pos)<=1){
@@ -257,7 +346,11 @@ void Entity::moveForward(double pos, double vel, std::string direction){
 				}
 			}
 		}else{
-			movementComplete();//call method complete to remove complete movement from queue
+			if (queueNum==2){
+				movementComplete();//call method complete to remove complete movement from queue
+			}else{
+				avoidanceComplete();//call method to remove from avoidance queue
+			}
 			linearVelocity=0;
 		}
 	}else{
@@ -272,8 +365,9 @@ void Entity::moveForward(double pos, double vel, std::string direction){
  * Message to rotate the entity.
  * Input:	double angleToRotate: In radians, the angle entity will rotate to relative to absoulte frame.
  *			double angleSpeed: how fast we want the entity to rotate. Note its speed so always +ve
+ *			int queueNum: which queue is dispatch from 1 for avoidance 2 for movement
  */
-void Entity::rotate(double angleToRotateTo, double angleSpeed){
+void Entity::rotate(double angleToRotateTo, double angleSpeed, int queueNum){
 	//Check if angleToRotateTo and the current angle is similar. If not rotate.
 	if (std::abs(angleToRotateTo-theta)>0.0001){
 		if (std::abs(angleToRotateTo-theta)<(0.002)){//slow down speed when very near
@@ -311,7 +405,11 @@ void Entity::rotate(double angleToRotateTo, double angleSpeed){
 		}else if(theta<-M_PI/2+0.1 && theta>((-M_PI/2)-0.1)){ //if facing south then velocity should be negative since overshoot
 			directionFacing=SOUTH;
 		}
-		movementComplete();//call method complete to remove complete movement from queue
+		if (queueNum==2){
+			movementComplete();//call method complete to remove complete movement from queue
+		}else{
+			avoidanceComplete();//call method to remove from avoidance queue
+		}
 		//if angle similar stop rotating
 		angularVelocity=0;
 		linearVelocity=0;
@@ -400,6 +498,20 @@ double Entity::getLin() {
  */
 double Entity::getAng() {
 	return angularVelocity;
+}
+
+/**
+ * Setter method for linear velocity of entity
+ */
+void Entity::setLin(double lv) {
+	linearVelocity = lv;
+}
+
+/**
+ * Setter method for angular velocity of entity
+ */
+void Entity::setAng(double av) {
+	angularVelocity = av;
 }
 
 /**

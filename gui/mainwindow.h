@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <QtGui/QMainWindow>
 #include <QListWidget>
-
+#include "KeyReceiver.h"
 
 using namespace std;
 
@@ -36,7 +36,7 @@ public:
 private slots:
 	void on_launchButton_clicked();
 	void on_closeButton_clicked();
-    void on_generateButton_clicked();
+    void on_displayStatusButton_clicked();
 
 private:
     Ui::MainWindow *ui;
@@ -44,12 +44,17 @@ private:
     vector<QListWidget*> uiListRobots;
     vector<QListWidget*> uiListAnimals;
     vector<string> launchFileEntityList;
+  
     int numPickers;
     int numCarriers;
     int numRows = 7;
     int numBeacons = 14;
+    int numWeeds = 10;
     int numDogs;
+    int numCats;
     int numWorkers;
+    KeyReceiver* key;
+    
 //	void updateGUI(const QString buffer);
 //	void *print_message_function( void *ptr );
 //	void exec(string cmd);
