@@ -4,7 +4,9 @@
 #include <vector>
 #include <sstream>
 #include "Markup.h"
+#include <QDebug>
 #include <math.h> 
+
 /**
  * Generator constructor. Takes in input name and output name.
  * Input name specifies XML document to load.
@@ -357,6 +359,7 @@ void Generator::writeLaunchFile(){
     xml.SetAttrib( "args", "$(find se306project)/world/test.world" );
     calculatePickerPaths(); // calculate the picking paths each Picker will take
     int numBeacons = rowCount * 2;
+
     int totalObjects = numWeeds + numBeacons + pickerNumber + carrierNumber + dogNumber + catNumber + workerNumber + 1; // 1 tractor
 
     for (int i = 0; i < totalObjects; i++) {
@@ -369,7 +372,6 @@ void Generator::writeLaunchFile(){
         xml.IntoElem();
         xml.AddElem("node");
         xml.SetAttrib( "pkg", "se306project" );
-        
         if (i < numWeeds) { //weeds
             xml.SetAttrib( "name", "TallWeednode" );
             xml.SetAttrib( "type", "TallWeed" );
@@ -385,6 +387,7 @@ void Generator::writeLaunchFile(){
                 num = (num - 7) * 2;
             }
             int beaconPos = (i - numWeeds)*2;
+            qDebug() << beaconPos << " " << beaconPositions.size();
             oss << "/beacon" << num << "/ " << beaconPositions[beaconPos] << " " << beaconPositions[beaconPos+1];
         } else if (i < numWeeds + numBeacons + pickerNumber) { //picker robots
             xml.SetAttrib( "name", "PickerRobotnode" );
@@ -397,7 +400,9 @@ void Generator::writeLaunchFile(){
             int carrierPos = (i - numWeeds - numBeacons - pickerNumber)*2;
             int firstPicker = numWeeds + numBeacons;
             int lastPicker = firstPicker + pickerNumber - 1;
-            oss << carrierRobotsPositions[carrierPos] << " " << carrierRobotsPositions[carrierPos+1] << " " << firstPicker << " " << lastPicker << " " << carrierNumber;
+            int firstCarrier = lastPicker + 1;
+            int lastCarrier = firstCarrier + carrierNumber - 1;
+            oss << carrierRobotsPositions[carrierPos] << " " << carrierRobotsPositions[carrierPos+1] << " " << firstPicker << " " << lastPicker << " " << firstCarrier << " " << lastCarrier;
         } else if (i < numWeeds + numBeacons + pickerNumber + carrierNumber + workerNumber) { //AlphaPersons (workers)
             xml.SetAttrib( "name", "AlphaPersonnode" );
             xml.SetAttrib( "type", "AlphaPerson" );

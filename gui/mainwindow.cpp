@@ -19,13 +19,15 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-       
     ui->setupUi(this);
-   
+
+    // Ask vector capacity to reserve atleast n elements
     uiListRobots.reserve(50);  
     uiListAnimals.reserve(50); 
+    uiListPeoples.reserve(50);
     
     ui->robotScroll->widget()->layout()->setAlignment(Qt::AlignLeft);
+    ui->peopleScroll->widget()->layout()->setAlignment(Qt::AlignLeft);
     ui->animalScroll->widget()->layout()->setAlignment(Qt::AlignLeft);
     
     key = new KeyReceiver();
@@ -35,17 +37,17 @@ MainWindow::MainWindow(QWidget *parent) :
 
 void MainWindow::startReadingTopics() {
     bool ok;
-    int totalDynamicStuff = numPickers + numCarriers + numWorkers + numDogs + numCats;
+    int totalDynamicStuff = numPickers + numCarriers + numWorkers + numDogs + numCats + numTractors;
     
 	for (int i = numBeacons+numWeeds; i < numBeacons + numWeeds + totalDynamicStuff ; i++) {
-		QThread *thread = new QThread(this);    
+		QThread *thread = new QThread(this);
 		Worker *worker = new Worker();
-		
+
 		worker->moveToThread(thread);
 	    stringstream out;
 		out << i;
 		worker->setId( out.str());
-		    
+
 		connect(thread, SIGNAL(started()), worker, SLOT(executeScript())); //started() signal is by default called by thread->start
 		connect(worker, SIGNAL(requestNewLabel(QString, QString, int)), this, SLOT(onUpdateGUI(QString, QString, int))); //custom signal which calls the slot for onUpdateGUI
 		connect(thread, SIGNAL(destroyed()), worker, SLOT(deleteLater()));
@@ -56,6 +58,10 @@ void MainWindow::startReadingTopics() {
 
 MainWindow::~MainWindow()
 {
+    //close roslaunch and close all rostopics
+	system("pkill stage");
+	system("pkill rostopic");
+	system("pkill roscore");
     delete ui;
 }
 
@@ -64,12 +70,15 @@ void MainWindow::onUpdateGUI( QString id, QString str, int i )
 {
 	//update the gui for robots
 	int idNum = id.toInt()-numBeacons-numWeeds;
-	
+
 	if (idNum < numCarriers+numPickers) {
 	    QListWidget *qlw = ((QListWidget*)ui->robotScroll->widget()->layout()->itemAt(idNum)->widget());
     	qlw->item(i)->setText(str);
+    } else if (idNum < numCarriers+numPickers+numWorkers){
+    	QListWidget *qlw = ((QListWidget*)ui->peopleScroll->widget()->layout()->itemAt(idNum-(numCarriers + numPickers))->widget());
+    	qlw->item(i)->setText(str);
     } else {
-	    QListWidget *qlw = ((QListWidget*)ui->animalScroll->widget()->layout()->itemAt(idNum-(numCarriers + numPickers))->widget());
+    	QListWidget *qlw = ((QListWidget*)ui->animalScroll->widget()->layout()->itemAt(idNum-(numCarriers + numPickers+numWorkers))->widget());
     	qlw->item(i)->setText(str);
     }
 
@@ -78,21 +87,12 @@ void MainWindow::onUpdateGUI( QString id, QString str, int i )
 void MainWindow::on_launchButton_clicked()
 {
     MainWindow::generate();
-	
 	//launch roslaunch
 	system("roslaunch se306project test.launch &");
     usleep(1000000); //1 second
-    //qDebug("started reading!!!!!!!!!!!!!!!!!!!!!!!!!!1");
 	//emit MainWindow::requestProcess();
 	startReadingTopics();
-}
 
-void MainWindow::on_closeButton_clicked()
-{  
-	//close roslaunch and close all rostopics
-	system("pkill stage");
-	system("pkill rostopic");
-	system("pkill roslaunch");	
 }
 
 void MainWindow::on_displayStatusButton_clicked()
@@ -101,48 +101,49 @@ void MainWindow::on_displayStatusButton_clicked()
     //MainWindow::generate();
 }
 
+void MainWindow::on_closeButton_clicked() {
+	system("pkill stage");
+	system("pkill rostopic");
+	system("pkill roscore");
+}
+
 
 void MainWindow::generate() {
     //writeXml();
-    bool ok;
-    numPickers = ui->pickerRobotsField->text().toInt(&ok, 10);
-    numCarriers = ui->carrierRobotsField->text().toInt(&ok, 10);
-    numWorkers = ui->workersField->text().toInt(&ok, 10);
-    numDogs = ui->dogsField->text().toInt(&ok, 10);
-    numCats = ui->catsField->text().toInt(&ok, 10);
-    float rowWidth = ui->rowWidthField->text().toFloat(&ok);
-    float spacing = ui->spacingField->text().toFloat(&ok);
+
+    // initialise variables
+    numPickers = ui->pickerSpinner->value();
+    numCarriers = ui->carrierSpinner->value();
+    numWorkers = ui->workerSpinner->value();
+    numDogs = ui->dogSpinner->value();
+    numCats = ui->catSpinner->value();
+    rowWidth = ui->rowWidthField->text().toDouble();
+    poleTrunkSpacing = ui->spacingField->text().toDouble();
+    rowLength = ui->rowLengthField->text().toDouble();
+    numRows = ui->rowNumberSpinner->value();
+    numBlindPerson = ui->blindPersonSpinner->value();
+    numNeighbors = ui->neighborSpinner->value();
+    numTractors = ui->tractorSpinner->value();
+    numBeacons = numRows*2;
     
+    uiListPeoples.clear();
     uiListRobots.clear();
     uiListAnimals.clear();
-    launchFileEntityList.clear();
-    
-    for (int i = 0; i < numWeeds; i++) {
-        launchFileEntityList.push_back("TallWeed");    
-    }
-    for (int i = 0; i < numRows; i++) {
-        launchFileEntityList.push_back("Beacon");
-        launchFileEntityList.push_back("Beacon");
-    }
+
     for (int i = 0; i < numPickers; i++) {
         uiListRobots.push_back(createNewItem("Picker"));
-        launchFileEntityList.push_back("PickerRobot");
     }
     for (int i = 0; i < numCarriers; i++) {
         uiListRobots.push_back(createNewItem("Carrier"));
-        launchFileEntityList.push_back("CarrierRobot");
     }
     for (int i = 0; i < numWorkers; i++) {
-        uiListAnimals.push_back(createNewItem("Human_Worker"));
-        launchFileEntityList.push_back("AlphaPerson"); 
+        uiListPeoples.push_back(createNewItem("Human_Worker"));
     }
     for (int i = 0; i < numDogs; i++) {
-        uiListAnimals.push_back(createNewItem("Animal_Dog")); 
-        launchFileEntityList.push_back("AlphaDog");  
+        uiListAnimals.push_back(createNewItem("Animal_Dog"));
     }
     for (int i = 0; i < numCats; i++) {
         uiListAnimals.push_back(createNewItem("Animal_Cat")); 
-        launchFileEntityList.push_back("Cat");  
     }
     //clear the layout
     QLayoutItem *item;
@@ -151,6 +152,10 @@ void MainWindow::generate() {
         delete item;
     }
     while (( item = ui->animalScroll->widget()->layout()->takeAt(0)) != 0 ){
+        delete item->widget();
+        delete item;
+    }
+    while (( item = ui->peopleScroll->widget()->layout()->takeAt(0)) != 0 ){
         delete item->widget();
         delete item;
     }
@@ -165,8 +170,11 @@ void MainWindow::generate() {
     for (int i = 0; i < uiListAnimals.size(); i++) {
         ui->animalScroll->widget()->layout()->addWidget(uiListAnimals[i]);
     }
+    for (int i = 0; i < uiListPeoples.size(); i++) {
+    	ui->peopleScroll->widget()->layout()->addWidget(uiListPeoples[i]);
+    }
+    Generator generator("world/test.world", numPickers, numCarriers, numDogs, numCats, numWorkers, rowWidth, poleTrunkSpacing);
     
-    Generator generator("world/test.world", numPickers, numCarriers, numDogs, numCats, numWorkers, rowWidth, spacing);
 	generator.loadWorld();
 	generator.loadTallWeeds();
 	generator.loadOrchard();
@@ -174,6 +182,9 @@ void MainWindow::generate() {
 	generator.loadCarrierRobots();
 	generator.loadPeople();
 	generator.loadAnimals();
+	
+	generator.write();
+    generator.writeLaunchFile();
 	generator.loadTractor();
 	generator.write();
 	generator.writeLaunchFile();
@@ -197,23 +208,23 @@ void MainWindow::writeXml() {
         xml.IntoElem();
             xml.AddElem("orchard");
             xml.IntoElem();
-                xml.AddElem( "row_count", 7);
-                xml.AddElem( "row_length", 70);
-                xml.AddElem( "row_width", ui->rowWidthField->text().toStdString() );
-                xml.AddElem( "trunk_pole_spacing", ui->spacingField->text().toStdString() );
+                xml.AddElem( "row_count", ui->rowNumberSpinner->value());
+                xml.AddElem( "row_length", ui->rowLengthSpinner->value());
+                xml.AddElem( "row_width", ui->rowWidthSpinner->value() );
+                xml.AddElem( "trunk_pole_spacing", ui->poleTrunkSpacingSpinner->value() );
             xml.OutOfElem();
             xml.AddElem("robots");
             xml.IntoElem();
-                xml.AddElem( "picker_number", ui->pickerRobotsField->text().toInt(&ok, 10) );
-                xml.AddElem( "carrier_number", ui->carrierRobotsField->text().toInt(&ok, 10) );
+                xml.AddElem( "picker_number", ui->pickerSpinner->value() );
+                xml.AddElem( "carrier_number", ui->carrierSpinner->value() );
             xml.OutOfElem();
-            xml.AddElem("people");   
-            xml.IntoElem();             
-                xml.AddElem( "worker_number", ui->workersField->text().toInt(&ok, 10) );
+            xml.AddElem("people");
+            xml.IntoElem();
+                xml.AddElem( "worker_number", ui->workerSpinner->value() );
             xml.OutOfElem();
-            xml.AddElem("animals"); 
-            xml.IntoElem(); 
-                xml.AddElem( "dog_number", ui->dogsField->text().toInt(&ok, 10) );
+            xml.AddElem("animals");
+            xml.IntoElem();
+                xml.AddElem( "dog_number", ui->dogSpinner->value() );
             xml.OutOfElem();
         xml.OutOfElem();
     xml.OutOfElem();
@@ -221,15 +232,13 @@ void MainWindow::writeXml() {
 }
 */
 
-
-
 QListWidget* MainWindow::createNewItem(string type) {
     QListWidget *list = new QListWidget;
     QListWidgetItem *item = new QListWidgetItem;
     string typeLabel("Type: ");
     item->setText((typeLabel + type).c_str());
     list->addItem(item);
-    
+
     QListWidgetItem *item2 = new QListWidgetItem;
     list->addItem(item2);
     QListWidgetItem *item3 = new QListWidgetItem;
@@ -240,9 +249,8 @@ QListWidget* MainWindow::createNewItem(string type) {
     list->addItem(item5);
     QListWidgetItem *item6 = new QListWidgetItem;
     list->addItem(item6);
-    
-    list->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    list->setFixedSize(180,150);
+
+    list->setMinimumWidth(200);
     return list;
 }
 
