@@ -481,6 +481,20 @@ double Entity::getAng() {
 }
 
 /**
+ * Setter method for linear velocity of entity
+ */
+void Entity::setLin(double lv) {
+	linearVelocity = lv;
+}
+
+/**
+ * Setter method for angular velocity of entity
+ */
+void Entity::setAng(double av) {
+	angularVelocity = av;
+}
+
+/**
  * Getter method for min distance of obstacle from entity
  */
 

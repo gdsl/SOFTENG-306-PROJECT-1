@@ -20,6 +20,7 @@
 		</people>
 		<animals>
 			<dog_number>1</dog_number>
+			<cat_number>1</cat_number>
 		</animals>
 	</models>
 </world>

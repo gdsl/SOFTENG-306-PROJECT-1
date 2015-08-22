@@ -91,6 +91,7 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
             } 
         }
     }
+
 }
 
 /*
@@ -215,7 +216,7 @@ int main(int argc, char **argv)
     ROS_INFO("y start: %f", yPos);
     
     //initialize the Carrier robot with the correct position, velocity and state parameters.
-	carrierRobot=CarrierRobot(xPos,yPos,0,0,0,"Idle");
+	carrierRobot=CarrierRobot(xPos,yPos,M_PI/2,0,0,"Idle");
     carrierRobot.setState(Robot::IDLE);
     
 	//NodeHandle is the main access point to communicate with ros.

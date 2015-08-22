@@ -1,20 +1,18 @@
 /**
  * Generator header file. Converts xml documents to world file
  */
-#include "tinyxml2.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
 #include <fstream>
 #include <vector>
 
-using namespace tinyxml2;
 using namespace std;
 
 class Generator
 {
 	public:
-		Generator(string outputName, int pickerNumber, int carrierNumber, int dogNumber, int workerNumber, float rowWidth, float spacing);
+		Generator(string outputName, int pickerNumber, int carrierNumber, int dogNumber, int catNumber, int workerNumber, float rowWidth, float spacing);
 		void loadWorld();
 		void loadOrchard();
 		void loadPickerRobots();
@@ -22,13 +20,16 @@ class Generator
 		void loadPeople();
 		void loadAnimals();
         void loadTallWeeds();
+        void loadTractor();
         void writeLaunchFile();
 		void write();
+        void calculatePickerPaths();
 		int rowCount = 7;
 		float rowLength = 70;
 		int pickerNumber;
 		int carrierNumber;
 		int dogNumber;
+		int catNumber;
 		int workerNumber;
 		float rowWidth;
 		float spacing;
@@ -36,12 +37,11 @@ class Generator
         vector<int> pickerRobotsPositions;
         vector<int> carrierRobotsPositions;
         vector<float> beaconPositions; 
+        vector<int> pickerPathPositions;
         
 	private:
 		string inputName;
 		string outputName;
-		XMLDocument doc;
-		XMLElement* rootElement;
 		ofstream outfile;
 		string colourArray[14] = { "PeachPuff", "NavajoWhite", "LemonChiffon", "AliceBlue", "Lavender", "thistle", "LightSalmon", "PaleTurquoise", "PaleGreen", "beige", "plum", "LightGrey", "LightSkyBlue", "SpringGreen" };
     int colourCount = 0;
