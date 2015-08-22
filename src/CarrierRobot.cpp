@@ -251,11 +251,12 @@ int main(int argc, char **argv)
     } 
 
     //subscribe to other carrier
+    /*
     std::string start(argv[5]);
     std::string end(argv[6]);
     int a = atoi(start.c_str());
     int b = atoi(end.c_str());
-    int size = e-s+1;
+    int size = e-s+1;*/
     
     //subscribing all the carrier robot
     /*
@@ -294,6 +295,6 @@ int main(int argc, char **argv)
 	}
 
     delete[] array;
-    delete[] carrierArray;
+    //delete[] carrierArray;
 	return 0;
 }
