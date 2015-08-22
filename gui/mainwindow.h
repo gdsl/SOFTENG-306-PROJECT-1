@@ -35,24 +35,31 @@ public:
 
 private slots:
 	void on_launchButton_clicked();
-	void on_closeButton_clicked();
     void on_displayStatusButton_clicked();
+    void on_closeButton_clicked();
 
 private:
     Ui::MainWindow *ui;
     QListWidget *uiList[4] = {NULL, NULL, NULL, NULL};
     vector<QListWidget*> uiListRobots;
     vector<QListWidget*> uiListAnimals;
+    vector<QListWidget*> uiListPeoples;
     vector<string> launchFileEntityList;
   
     int numPickers;
     int numCarriers;
-    int numRows = 7;
-    int numBeacons = 14;
-    int numWeeds = 10;
+    int numRows;
+    float rowWidth;
+    float rowLength;
+    float poleTrunkSpacing;
     int numDogs;
     int numCats;
     int numWorkers;
+    int numBlindPerson;
+    int numNeighbors;
+    int numTractors;
+    int numBeacons;
+    int numWeeds = 10;
     KeyReceiver* key;
     
 //	void updateGUI(const QString buffer);
