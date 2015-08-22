@@ -8,9 +8,7 @@
 /*
  * Default constructor for carrier Robot
  */
-CarrierRobot::CarrierRobot() {
-	// TODO Auto-generated constructor stub
-}
+CarrierRobot::CarrierRobot() {}
 
 /*
  * Constructor for carrier Robot with status
@@ -19,24 +17,58 @@ CarrierRobot::CarrierRobot(double x,double y,double theta,double linearVel, doub
 	:Robot( x, y, theta, linearVel,  angularVel){
 	this->setStatus(status);
     this->setState(IDLE);
+    carrierInFront = true;
+    initialMovement = false;
+    yDistanceTravel = 0;
+    xDistanceTravel = 0;
 }
 
 /*
  * Default destructor for carrier Robot
  */
-CarrierRobot::~CarrierRobot() {
-	// TODO Auto-generated destructor stub
+CarrierRobot::~CarrierRobot() {}
+
+// getter function
+bool CarrierRobot::isInitialMovement() {
+    return this->initialMovement;
 }
+
+bool CarrierRobot::isCarrierInFront() {
+    return this->carrierInFront;
+}
+
+double CarrierRobot::getYDistanceTravel() {
+    return this->yDistanceTravel;
+}
+
+double CarrierRobot::getXDistanceTravel() {
+    return this->xDistanceTravel;
+}
+
+//setter function
+void CarrierRobot::setYDistanceTravel(double y) {
+    this->yDistanceTravel = y;
+}
+
+void CarrierRobot::setXDistanceTravel(double x) {
+    this->xDistanceTravel = x;
+}
+
+void CarrierRobot::setCarrierInFront(bool front) {
+    this->carrierInFront = front;
+}
+
+void CarrierRobot::setInitialMovement(bool initial) {
+    this->initialMovement = initial;
+}
+
+
 
 //create carrier robot and status
 CarrierRobot carrierRobot;
 //std::string status="Idle";
 std::string previousStatus = "Idle";
 std::string obstacleStatus = "No obstacles";
-bool carrierInFront = true;
-bool initialMovement = false;
-double yDistanceTravel = 0;
-double xDistanceTravel = 0;
 std::vector<std::pair<double,double> > seenPointList;
 /*
  * Wrapper method for the callBackStageOdm method
@@ -49,12 +81,12 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 	carrierRobot.stageLaser_callback(msg);
 
     //detecting carrier in front
-    if (initialMovement) {
+    if (carrierRobot.isInitialMovement()) {
         int l=msg.intensities.size();
-        carrierInFront = false;
+        carrierRobot.setCarrierInFront(false);
         for (int i = 45; i<l-45; i++) {
             if (msg.intensities[i] == 3) {
-                carrierInFront = true;
+                carrierRobot.setCarrierInFront(true);
                 break;
             } 
         }
@@ -74,14 +106,14 @@ void recievePickerRobotStatus(const se306project::robot_status::ConstPtr& msg)
         carrierRobot.setState(Robot::TRANSPORTING);
         if (carrierRobot.getMovementQueueSize() == 0) {
             carrierRobot.faceWest(1);
-            carrierRobot.addMovement("forward_x", -1*xDistanceTravel,1);
-            if (yDistanceTravel >= 0 ) {
+            carrierRobot.addMovement("forward_x", -1*carrierRobot.getXDistanceTravel(),1);
+            if (carrierRobot.getYDistanceTravel() >= 0 ) {
                 carrierRobot.faceSouth(1);
             }
             else {
                 carrierRobot.faceNorth(1);
             }
-            carrierRobot.addMovement("forward_y", -1*yDistanceTravel,1);
+            carrierRobot.addMovement("forward_y", -1*carrierRobot.getYDistanceTravel(),1);
             carrierRobot.faceWest(1);
             carrierRobot.addMovement("forward_x", -10,1);
         }
@@ -89,7 +121,7 @@ void recievePickerRobotStatus(const se306project::robot_status::ConstPtr& msg)
 		//when the carrier robot is idle and the picker robot is full the carrier robot move to it.
 		if ((msg->status).compare("Full") == 0){
 			// carrier robot will approach picker but will leave a space to avoid colliding
-            if (initialMovement) {
+            if (carrierRobot.isInitialMovement()) {
                 bool seen = false;
                 std::pair<double,double> currentPoint;
                 currentPoint.first = -5;
@@ -104,7 +136,7 @@ void recievePickerRobotStatus(const se306project::robot_status::ConstPtr& msg)
                 }                
 
 
-                if ( !carrierInFront && !seen) {
+                if ( !(carrierRobot.isCarrierInFront()) && !seen) {
                     carrierRobot.setState(Robot::MOVING);    
                     if (carrierRobot.getMovementQueueSize() <= 1) {
                         
@@ -117,16 +149,18 @@ void recievePickerRobotStatus(const se306project::robot_status::ConstPtr& msg)
                         } else {
                            carrierRobot.faceSouth(1);
                         }
-                        yDistanceTravel = pickerY - carrierRobot.getY();
-                        carrierRobot.addMovement("forward_y",yDistanceTravel,1);
+                        //yDistanceTravel = pickerY - carrierRobot.getY();
+                        carrierRobot.setYDistanceTravel(pickerY - carrierRobot.getY());
+                        carrierRobot.addMovement("forward_y",carrierRobot.getYDistanceTravel(),1);
                         
                         //double pickerX = msg->pos_x;
                         double pickerX = -5;
                         carrierRobot.faceEast(1);
-                        xDistanceTravel = pickerX - carrierRobot.getX() -10;
-                        carrierRobot.addMovement("forward_x",xDistanceTravel,1);                                       
+                        //xDistanceTravel = pickerX - carrierRobot.getX() -10;
+                        carrierRobot.setXDistanceTravel(pickerX - carrierRobot.getX() -10);
+                        carrierRobot.addMovement("forward_x",carrierRobot.getXDistanceTravel(),1);                                       
                     }
-                } else if (!seen && carrierInFront) {
+                } else if ( !seen && carrierRobot.isCarrierInFront() ) {
                     seenPointList.push_back(currentPoint);  
                 }
             }
@@ -222,7 +256,7 @@ int main(int argc, char **argv)
 		pub.publish(status_msg);	//publish message
 		carrierRobot.stateLogic();
         carrierRobot.move();
-        if (carrierRobot.getMovementQueueSize() == 0) initialMovement = true; 
+        if (carrierRobot.getMovementQueueSize() == 0) carrierRobot.setInitialMovement(true);
 		loop_rate.sleep();
 		++count; // increase counter
 	}
