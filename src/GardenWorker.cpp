@@ -126,7 +126,7 @@ int main(int argc, char **argv)
 
 	int index = 0;
 	for (int i = s; i < e+1; i++) {
-		topicName = "/robot_" + i + "/odom";
+		topicName = "/robot_" + i + "/base_pose_ground_truth";
 		gardenWorker.tallweed_pose_sub[index] = n.subscribe<nav_msgs::Odometry>(topicName,1000,&GardenWorker::updateNearestWeed, &gardenWorker);
 		index++;
 	}

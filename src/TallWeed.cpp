@@ -47,7 +47,7 @@ int main(int argc, char **argv)
 
     int index = 0;
     for (int i = s; s < e+1; i++) {
-		topicName = "/robot_" + i + "/odom";
+		topicName = "/robot_" + i + "/base_pose_ground_truth";
 		tallWeed.workerSubscribers[index] = n.subscribe<nav_msgs::Odometry>(topicName,1000,&TallWeed::workerCallback,&tallWeed);
 		index++;
     }
