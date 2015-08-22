@@ -10,13 +10,13 @@
  * Input name specifies XML document to load.
  * Output name specifies world file output name.
  */
-Generator::Generator(string outputName, int pickerNumber, int carrierNumber, int dogNumber, int workerNumber, float rowWidth, float spacing)
+Generator::Generator(string outputName, int pickerNumber, int carrierNumber, int dogNumber, int catNumber, int workerNumber, float rowWidth, float spacing)
 {
-	//this->inputName = inputName;
 	this->outputName = outputName;
 	this->pickerNumber = pickerNumber;
 	this->carrierNumber = carrierNumber;
 	this->dogNumber = dogNumber;
+	this->catNumber = catNumber;
 	this->workerNumber = workerNumber;
 	this->rowWidth = rowWidth;
 	this->spacing = spacing;
@@ -238,7 +238,7 @@ void Generator::loadPeople()
 void Generator::loadAnimals()
 {
 	outfile << "# Generate animals" << endl;
-	outfile << "# Generate dog" << endl;
+	outfile << "# Generate dogs" << endl;
     
     float totalRowWidth = rowWidth * 8;
     float yOffset = rowWidth / 2;
@@ -249,6 +249,7 @@ void Generator::loadAnimals()
     
     int rowEnd = 20 - totalRowWidth;
     
+	// Generate dogs
     for(int i = 0; i < dogNumber; i++) {
         int x = rand() % 82 - 36;
         int y = rand() % 52 - 26;
@@ -265,7 +266,27 @@ void Generator::loadAnimals()
             outfile << "dog( pose [ " << x << " " << y << " 0.000 0.000 ] name \"Dog" << i+1 << "\" color \"random\")" << endl;
         }
     }
+	
+	outfile << "# Generate cats" << endl;
+
+	// Generate cats
+	for(int i = 0; i < catNumber; i++) {
+        int x = rand() % 82 - 36;
+        int y = rand() % 52 - 26;
     
+        if( (x > -30) && (x < 40) && (y < 20) && (y > rowEnd)) {
+            int xMult = (((rand() % columnCount + 1) * 2) - 1);
+            float xPos = -30 + (xMult * xOffset);
+        
+            int yMult = (((rand() % 8 + 1) * 2) - 1);
+            float yPos = 20.4 - (yMult * yOffset);
+        
+            outfile << "cat( pose [ " << xPos << " " << yPos << " 0.000 0.000 ] name \"Cat" << i+1 << "\" color \"random\")" << endl;
+        } else {
+            outfile << "cat( pose [ " << x << " " << y << " 0.000 0.000 ] name \"Cat" << i+1 << "\" color \"random\")" << endl;
+        }
+    }
+
 	outfile << endl;
 }
 
@@ -336,7 +357,8 @@ void Generator::writeLaunchFile(){
     xml.SetAttrib( "args", "$(find se306project)/world/test.world" );
     calculatePickerPaths(); // calculate the picking paths each Picker will take
     int numBeacons = rowCount * 2;
-    int totalObjects = numWeeds + numBeacons + pickerNumber + carrierNumber + dogNumber + workerNumber + 1; //1 tractor
+    int totalObjects = numWeeds + numBeacons + pickerNumber + carrierNumber + dogNumber + catNumber + workerNumber + 1; // 1 tractor
+
     for (int i = 0; i < totalObjects; i++) {
         xml.AddElem("group");
         ostringstream oss;
@@ -382,10 +404,17 @@ void Generator::writeLaunchFile(){
         } else if (i < numWeeds + numBeacons + pickerNumber + carrierNumber + workerNumber + dogNumber) { //dogs
             xml.SetAttrib( "name", "AlphaDognode" );
             xml.SetAttrib( "type", "AlphaDog" );
+<<<<<<< HEAD
+        } else if (i < numWeeds + numBeacons + pickerNumber + carrierNumber + workerNumber + dogNumber + catNumber) { //cats
+            xml.SetAttrib( "name", "Catnode" );
+            xml.SetAttrib( "type", "Cat" );
+	}
+=======
         } else if (i < numWeeds + numBeacons + pickerNumber + carrierNumber + workerNumber + dogNumber + 1) { //tractor
             xml.SetAttrib( "name", "Tractornode" );
             xml.SetAttrib( "type", "Tractor" );
         }
+>>>>>>> 9291eb2fcc6ea6c1843e53809f508dbb2f828522
         xml.SetAttrib( "args", oss.str() );
         xml.OutOfElem();
     }   

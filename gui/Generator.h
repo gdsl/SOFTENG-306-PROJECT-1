@@ -12,7 +12,7 @@ using namespace std;
 class Generator
 {
 	public:
-		Generator(string outputName, int pickerNumber, int carrierNumber, int dogNumber, int workerNumber, float rowWidth, float spacing);
+		Generator(string outputName, int pickerNumber, int carrierNumber, int dogNumber, int catNumber, int workerNumber, float rowWidth, float spacing);
 		void loadWorld();
 		void loadOrchard();
 		void loadPickerRobots();
@@ -29,6 +29,7 @@ class Generator
 		int pickerNumber;
 		int carrierNumber;
 		int dogNumber;
+		int catNumber;
 		int workerNumber;
 		float rowWidth;
 		float spacing;

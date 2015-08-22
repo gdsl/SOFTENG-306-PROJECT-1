@@ -26,5 +26,9 @@
         <node pkg="se306project" name="beacon" type="Beacon" args="/beacon2/"/>
     </group>
 
+	<group ns="robot_6">
+		<node pkg="se306project" name="catnode" type="Cat"/>
+	</group>
+
 
 </launch>

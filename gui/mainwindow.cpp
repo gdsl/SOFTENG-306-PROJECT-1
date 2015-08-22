@@ -35,7 +35,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 void MainWindow::startReadingTopics() {
     bool ok;
-    int totalDynamicStuff = numPickers + numCarriers + numWorkers + numDogs;
+    int totalDynamicStuff = numPickers + numCarriers + numWorkers + numDogs + numCats;
     
 	for (int i = numBeacons+numWeeds; i < numBeacons + numWeeds + totalDynamicStuff ; i++) {
 		QThread *thread = new QThread(this);    
@@ -109,6 +109,7 @@ void MainWindow::generate() {
     numCarriers = ui->carrierRobotsField->text().toInt(&ok, 10);
     numWorkers = ui->workersField->text().toInt(&ok, 10);
     numDogs = ui->dogsField->text().toInt(&ok, 10);
+    numCats = ui->catsField->text().toInt(&ok, 10);
     float rowWidth = ui->rowWidthField->text().toFloat(&ok);
     float spacing = ui->spacingField->text().toFloat(&ok);
     
@@ -139,6 +140,10 @@ void MainWindow::generate() {
         uiListAnimals.push_back(createNewItem("Animal_Dog")); 
         launchFileEntityList.push_back("AlphaDog");  
     }
+    for (int i = 0; i < numCats; i++) {
+        uiListAnimals.push_back(createNewItem("Animal_Cat")); 
+        launchFileEntityList.push_back("Cat");  
+    }
     //clear the layout
     QLayoutItem *item;
     while (( item = ui->robotScroll->widget()->layout()->takeAt(0)) != 0 ){
@@ -161,18 +166,17 @@ void MainWindow::generate() {
         ui->animalScroll->widget()->layout()->addWidget(uiListAnimals[i]);
     }
     
-    Generator generator("world/test.world", numPickers, numCarriers, numDogs, numWorkers, rowWidth, spacing);
+    Generator generator("world/test.world", numPickers, numCarriers, numDogs, numCats, numWorkers, rowWidth, spacing);
 	generator.loadWorld();
-    generator.loadTallWeeds();
+	generator.loadTallWeeds();
 	generator.loadOrchard();
 	generator.loadPickerRobots();
 	generator.loadCarrierRobots();
 	generator.loadPeople();
 	generator.loadAnimals();
 	generator.loadTractor();
-
 	generator.write();
-    generator.writeLaunchFile();
+	generator.writeLaunchFile();
 
 }
 /*
