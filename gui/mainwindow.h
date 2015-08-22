@@ -48,9 +48,9 @@ private:
   
     int numPickers;
     int numCarriers;
-    int numRows;
+    int numRows = 7;
     float rowWidth;
-    float rowLength;
+    float rowLength = 70;
     float poleTrunkSpacing;
     int numDogs;
     int numCats;
@@ -59,6 +59,7 @@ private:
     int numNeighbors;
     int numTractors;
     int numBeacons;
+    int numGardeners;
     int numWeeds = 10;
     KeyReceiver* key;
     
