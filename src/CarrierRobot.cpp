@@ -78,7 +78,100 @@ void callBackStageOdm(const nav_msgs::Odometry msg){
 }
 
 void callBackLaserScan(const sensor_msgs::LaserScan msg) {
-	carrierRobot.stageLaser_callback(msg);
+	carrierRobot.stageLaser_callback(msg);//call super class callback which is where the laser scanning logic is designed
+
+	if (carrierRobot.getAvoidanceCase()!=Entity::NONE) {//check if there is need to avoid obstacle
+		if(carrierRobot.getState()!=Robot::IDLE){//check if robot is idle or not
+			if(carrierRobot.getAvoidanceCase()==Entity::WEED){// if its weed stop
+				carrierRobot.addMovementFront("forward_x",0,0,1);//add empty movement to front of avoidance to stop
+				obstacleStatus = "Weed! Help!";
+			}else if(carrierRobot.getAvoidanceCase()==Entity::LIVING_OBJ){//if its human or animal stop
+				carrierRobot.addMovementFront("forward_x",0,0,1);//add empty movement to front of avoidance to stop
+			}else if(carrierRobot.getAvoidanceCase()==Entity::HALT){//if its halt stop
+				carrierRobot.addMovementFront("forward_x",0,0,1);//add empty movement to front of avoidance to stop
+			}else if(carrierRobot.getAvoidanceCase()==Entity::STATIONARY&& carrierRobot.getCriticalIntensity()>1){//if its stationary robot
+				if(carrierRobot.getDirectionFacing()== carrierRobot.NORTH){
+					carrierRobot.addMovementFront("rotation",M_PI/2,1,1);
+					carrierRobot.addMovementFront("forward_x",3,1,1);
+					carrierRobot.addMovementFront("rotation",0, 1,1);
+					carrierRobot.addMovementFront("forward_y",3,1,1);
+					carrierRobot.addMovementFront("rotation",M_PI/2,1,1);
+					carrierRobot.addMovementFront("forward_x",-3,1,1);
+					carrierRobot.addMovementFront("rotation",M_PI,1,1);
+					carrierRobot.addMovementFront("forward_x",0,0,1);//this is at front of front
+					//carrierRobot.move();
+				}else if(carrierRobot.getDirectionFacing()== carrierRobot.SOUTH){
+					carrierRobot.addMovementFront("rotation",-M_PI/2,1,1);
+					carrierRobot.addMovementFront("forward_x",3,1,1);
+					carrierRobot.addMovementFront("rotation",0, 1,1);
+					carrierRobot.addMovementFront("forward_y",-3,1,1);
+					carrierRobot.addMovementFront("rotation",-M_PI/2,1,1);
+					carrierRobot.addMovementFront("forward_x",-3,1,1);
+					carrierRobot.addMovementFront("rotation",M_PI,1,1);
+					carrierRobot.addMovementFront("forward_x",0,0,1);//this is at front of front
+					//carrierRobot.move();
+				}else if(carrierRobot.getDirectionFacing()== carrierRobot.EAST){
+					carrierRobot.addMovementFront("rotation",0, 1,1);
+					carrierRobot.addMovementFront("forward_y",3,1,1);
+					carrierRobot.addMovementFront("rotation",M_PI/2, 1,1);
+					carrierRobot.addMovementFront("forward_x",3,0,1);
+					carrierRobot.addMovementFront("rotation",0, 1,1);
+					carrierRobot.addMovementFront("forward_y",-3,1,1);
+					carrierRobot.addMovementFront("rotation",-M_PI/2, 1,1);
+					carrierRobot.addMovementFront("forward_x",0,0,1);//this is at front of front
+					//carrierRobot.move();
+				}else if(carrierRobot.getDirectionFacing()== carrierRobot.WEST){
+					carrierRobot.addMovementFront("rotation",M_PI, 1,1);
+					carrierRobot.addMovementFront("forward_y",3,1,1);
+					carrierRobot.addMovementFront("rotation",M_PI/2, 1,1);
+					carrierRobot.addMovementFront("forward_x",-3,0,1);
+					carrierRobot.addMovementFront("rotation",M_PI, 1,1);
+					carrierRobot.addMovementFront("forward_y",-3,1,1);
+					carrierRobot.addMovementFront("rotation",-M_PI/2, 1,1);
+					carrierRobot.addMovementFront("forward_x",0,0,1);//this is at front of front
+					//carrierRobot.move();
+				}
+			}else if(carrierRobot.getAvoidanceCase()==Entity::PERPENDICULAR){
+				if(carrierRobot.getDirectionFacing()== carrierRobot.NORTH||carrierRobot.getDirectionFacing()== carrierRobot.SOUTH){
+					//if robot moving in the y direction give way
+					carrierRobot.addMovementFront("forward_x",0,0,1);
+				}
+			}else if(carrierRobot.getAvoidanceCase()==Entity::FACE_ON){
+				if(carrierRobot.getAvoidanceQueueSize()<=0){
+					if(carrierRobot.getDirectionFacing()== carrierRobot.NORTH&&obstacleStatus.compare("Obstacle nearby")!=0){
+						carrierRobot.addMovementFront("rotation",M_PI/2,1,1);
+						carrierRobot.addMovementFront("forward_x",3,1,1);
+						carrierRobot.addMovementFront("rotation",0, 1,1);
+						carrierRobot.addMovementFront("forward_y",3,1,1);
+						carrierRobot.addMovementFront("rotation",M_PI/2,1,1);
+						carrierRobot.addMovementFront("forward_x",-3,1,1);
+						carrierRobot.addMovementFront("rotation",M_PI,1,1);
+						carrierRobot.addMovementFront("forward_x",0,0,1);//this is at front of front
+						//carrierRobot.move();
+					}else if(carrierRobot.getDirectionFacing()== carrierRobot.EAST&&obstacleStatus.compare("Obstacle nearby")!=0){
+						carrierRobot.addMovementFront("rotation",0, 1,1);
+						carrierRobot.addMovementFront("forward_y",3,1,1);
+						carrierRobot.addMovementFront("rotation",M_PI/2, 1,1);
+						carrierRobot.addMovementFront("forward_x",3,0,1);
+						carrierRobot.addMovementFront("rotation",0, 1,1);
+						carrierRobot.addMovementFront("forward_y",-3,1,1);
+						carrierRobot.addMovementFront("rotation",-M_PI/2, 1,1);
+						carrierRobot.addMovementFront("forward_x",0,0,1);//this is at front of front
+						//carrierRobot.move();
+					}
+				}else{
+					//halt movement if already have avoidance logic
+					carrierRobot.addMovementFront("forward_x",0,0,1);
+					//carrierRobot.move();
+				}
+			}
+			//get carrier to move
+			carrierRobot.move();
+		}
+		obstacleStatus = "Obstacle nearby";
+	} else {
+		obstacleStatus = "No obstacles";
+	}
 }
 
 /*

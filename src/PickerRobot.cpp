@@ -17,10 +17,12 @@ PickerRobot::PickerRobot(std::string status){
 	this->setStatus(status);
 }
 
-PickerRobot::PickerRobot(double x,double y,double theta,double linearVel, double angularVel,std::string status)
+PickerRobot::PickerRobot(double x,double y,double theta,double linearVel, double angularVel,std::string status,double pick_range)
 	:Robot( x, y, theta, linearVel,  angularVel){
 	this->setStatus(status);
     this->setState(DISPATCH);
+    this->setPickRange(pick_range);
+
 }
 
 PickerRobot::~PickerRobot(){
@@ -60,6 +62,20 @@ void PickerRobot::setBinCapacity(int bin_capacity){
 	this->bin_capacity=bin_capacity;
 }
 
+/**
+ * Getter method for the pick range of the picker robot
+ */
+double PickerRobot::getPickRange(){
+	return pick_range;
+}
+
+/**
+ * Setter method for the pick range of the picker robot
+ */
+void PickerRobot::setPickRange(double pick_range){
+	this->pick_range=pick_range;
+}
+
 /*
  * Wrapper method for the callBackStageOdm method (in Entity)
  */
@@ -69,11 +85,10 @@ void callBackStageOdm(const nav_msgs::Odometry msg){
 
 void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 	pickerRobot.stageLaser_callback(msg);
-	int pickrange=2;
-	if (pickerRobot.getStatus().compare("Moving")==0){
+	if (pickerRobot.getState()==Robot::PICKING){
 		//TODO if(msg.ranges[0]<=pickrange&&msg.intensities[0]==1){
-		if(msg.ranges[0]<=pickrange&&msg.ranges[7]>=pickrange){
-			pickerRobot.setBinCapacity(pickerRobot.getBinCapacity()+2);
+		if(msg.ranges[0]<=pickerRobot.getPickRange()&&msg.ranges[7]>=pickerRobot.getPickRange()){
+			pickerRobot.setBinCapacity(pickerRobot.getBinCapacity()+1);
 		}
 	}
 	if (pickerRobot.getMinDistance() < 1) {
@@ -305,8 +320,10 @@ int main(int argc, char **argv)
     // convert input parameters for Robot initialization from String to respective types
     std::string xString = argv[1];
     std::string yString = argv[2];    
+    std::string pickRangeString = argv[3];
     double xPos = atof(xString.c_str());
     double yPos = atof(yString.c_str());
+    double pickRange = (atof(pickRangeString.c_str()))/2+0.5;
     ROS_INFO("x start: %f", xPos);
     ROS_INFO("y start: %f", yPos);
     
@@ -320,7 +337,7 @@ int main(int argc, char **argv)
     currentBeacon = startBeacon;
     
     //initialize the Picker robot with the correct position, velocity and state parameters.
-	pickerRobot=PickerRobot(xPos,yPos,M_PI/2,0,0,"Moving");
+	pickerRobot=PickerRobot(xPos,yPos,M_PI/2,0,0,"Moving",pickRange);
 
 	//NodeHandle is the main access point to communicate with ros.
 	ros::NodeHandle n;
