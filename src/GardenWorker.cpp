@@ -120,14 +120,17 @@ int main(int argc, char **argv)
 	int s = atoi(start.c_str());
 	int e = atoi(end.c_str());
 	int size = e-s+1;
-	std::string topicName;
+	std::stringstream topicName;
 
 	gardenWorker.tallweed_pose_sub = new ros::Subscriber[size];
 
 	int index = 0;
 	for (int i = s; i < e+1; i++) {
-		topicName = "/robot_" + i + "/base_pose_ground_truth";
-		gardenWorker.tallweed_pose_sub[index] = n.subscribe<nav_msgs::Odometry>(topicName,1000,&GardenWorker::updateNearestWeed, &gardenWorker);
+		//reset stringstream
+		topicName.str(std::string());
+		// give in topicname
+		topicName << "/robot_" << i << "/base_pose_ground_truth";
+		gardenWorker.tallweed_pose_sub[index] = n.subscribe<nav_msgs::Odometry>(topicName.str(),1000,&GardenWorker::updateNearestWeed, &gardenWorker);
 		index++;
 	}
 

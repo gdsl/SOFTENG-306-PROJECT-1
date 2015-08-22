@@ -41,14 +41,15 @@ int main(int argc, char **argv)
     int s = atoi(start.c_str());
     int e = atoi(end.c_str());
     int size = e-s+1;
-    std::string topicName;
+    std::stringstream topicName;
 
     tallWeed.workerSubscribers = new ros::Subscriber[size];
 
     int index = 0;
     for (int i = s; s < e+1; i++) {
-		topicName = "/robot_" + i + "/base_pose_ground_truth";
-		tallWeed.workerSubscribers[index] = n.subscribe<nav_msgs::Odometry>(topicName,1000,&TallWeed::workerCallback,&tallWeed);
+    	topicName.str(std::string());
+		topicName << "/robot_" << i << "/base_pose_ground_truth";
+		tallWeed.workerSubscribers[index] = n.subscribe<nav_msgs::Odometry>(topicName.str(),1000,&TallWeed::workerCallback,&tallWeed);
 		index++;
     }
 
