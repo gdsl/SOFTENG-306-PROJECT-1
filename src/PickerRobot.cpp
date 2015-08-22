@@ -263,6 +263,7 @@ int main(int argc, char **argv)
 		//assign to status message
 		status_msg.my_counter = count++;//add counter to message to broadcast
 		status_msg.status=pickerRobot.getStatus();//add status to message to broadcast
+        status_msg.status ="Full";
 		status_msg.pos_x=pickerRobot.getX(); //add x to message to broadcast
 		status_msg.pos_y=pickerRobot.getY();//add y to message to broadcast
 		status_msg.pos_theta=pickerRobot.getTheta(); //add angle to message to broadcast

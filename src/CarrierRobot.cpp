@@ -107,13 +107,14 @@ void recievePickerRobotStatus(const se306project::robot_status::ConstPtr& msg)
         if (carrierRobot.getMovementQueueSize() == 0) {
             carrierRobot.faceWest(1);
             carrierRobot.addMovement("forward_x", -1*carrierRobot.getXDistanceTravel(),1);
-            if (carrierRobot.getYDistanceTravel() >= 0 ) {
+            
+            if (carrierRobot.getY() > 0) {
                 carrierRobot.faceSouth(1);
-            }
-            else {
+            } else {
                 carrierRobot.faceNorth(1);
             }
-            carrierRobot.addMovement("forward_y", -1*carrierRobot.getYDistanceTravel(),1);
+            carrierRobot.addMovement("forward_y", 0-carrierRobot.getY(),1);
+            
             carrierRobot.faceWest(1);
             carrierRobot.addMovement("forward_x", -10,1);
         }
@@ -185,13 +186,15 @@ void CarrierRobot::stateLogic(){
         carrierRobot.setStatus("Transporting"); 
 
         if (carrierRobot.getMovementQueueSize() == 0 ) {
-            carrierRobot.setState(Robot::RETURN);
+            carrierRobot.setState(Robot::QUEUE);
             carrierRobot.faceNorth(1);
+            double distance = 24 - carrierRobot.getY();
+            carrierRobot.addMovement("forward_y", distance, 1);
         }
-    } else if (carrierRobot.getState() == RETURN) {
-        carrierRobot.setStatus("Returning");
+    } else if (carrierRobot.getState() == QUEUE) {
+        carrierRobot.setStatus("Queueing");
     
-         if (carrierRobot.getMovementQueueSize() == 0 ) {
+         if (carrierRobot.getMovementQueueSize() == 0 && carrierRobot.getY() >= 23.99 ) {
             carrierRobot.setState(Robot::IDLE);
         }
     } 
@@ -233,9 +236,22 @@ int main(int argc, char **argv)
     carrierRobot.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000, callBackLaserScan);
     //subscribe to the status of picker 
     //ros::Subscriber mysub_object = n.subscribe<se306project::robot_status>("/robot_0/status",1000,recievePickerRobotStatus);
-    std::string number(argv[3]);
-    std::string topicName = "/robot_" + number + "/status";
-    ros::Subscriber mysub_object = n.subscribe<se306project::robot_status>(topicName,1000,recievePickerRobotStatus);
+    std::string start(argv[3]);
+    std::string end(argv[4]);
+
+    int s = atoi(start.c_str());
+    int e = atoi(end.c_str());
+    int size = e-s+1;
+    std::string topicName;  
+    ros::Subscriber *array = new ros::Subscriber[size];
+    int index = 0;
+    for (int i = s; i<=e; i++) {
+        std::stringstream convert;
+        convert << i;
+        topicName = "/robot_" + convert.str() + "/status";
+        array[index] = n.subscribe<se306project::robot_status>(topicName,1000,recievePickerRobotStatus);
+        index++;
+    }
 
 	//a count of how many messages we have sent
 	int count = 0;
@@ -260,6 +276,8 @@ int main(int argc, char **argv)
 		loop_rate.sleep();
 		++count; // increase counter
 	}
+
+    delete[] array;
 	return 0;
 }
 
