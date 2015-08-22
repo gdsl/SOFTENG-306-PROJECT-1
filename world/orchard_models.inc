@@ -14,19 +14,19 @@ define modelBase model
 define trunk modelBase
 (
   size [0.500 0.500 1.800]
-  gui_nose 0
+  gui_noise 0
 )
 
 define pole modelBase
 (
   size [0.400 0.400 2.500]
-  gui_nose 0
+  gui_noise 0
 )
 
 define fruitVine modelBase
 (
     size [0.100 3.500 0.100]
-    gui_nose 0
+    gui_noise 0
 )
 
 define laserBase ranger
@@ -316,14 +316,14 @@ define tractor position
   pretendLaser(pose [ -500.00 0.000 5 0.000 ])
 
   obstacle_return 1
-  ranger_return 5
+  ranger_return 7
 
 )
 
 define beacon position
 (
   size [0.1 0.1 0.1]
-  gui_nose 0
+  gui_noise 0
   ranger_return 0
   obstacle_return 0
   pretendLaser(pose [ -500.00 0.000 5 0.000 ])
@@ -333,8 +333,8 @@ define tallWeed position
 (
   size [0.3 0.3 1.0]
   obstacle_return 1
-  ranger_return 1
-  gui_noise 0
+  ranger_return 6
+  #gui_noise 0
   pretendLaser(pose [ 500.00 0.000 5 0.000 ])
 )
 
