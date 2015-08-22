@@ -51,6 +51,7 @@ private:
     int numBeacons = 14;
     int numWeeds = 10;
     int numDogs;
+    int numCats;
     int numWorkers;
     
 //	void updateGUI(const QString buffer);
