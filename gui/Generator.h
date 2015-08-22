@@ -6,14 +6,14 @@
 #include <string>
 #include <fstream>
 #include <vector>
-#include "../include/GeneratorModel.h"
+#include "GeneratorModel.h"
 
 using namespace std;
 
 class Generator
 {
 	public:
-		Generator(GeneratorModel model);
+		Generator(GeneratorModel &model);
 		void loadWorld();
 		void loadOrchard();
 		void loadPickerRobots();

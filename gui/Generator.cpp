@@ -12,11 +12,11 @@
  * Input name specifies XML document to load.
  * Output name specifies world file output name.
  */
-Generator::Generator(GeneratorModel model)
+Generator::Generator(GeneratorModel &model)
 {
 	this->model = model;
 
-	outfile.open(outputName.c_str());
+	outfile.open("world/test.world");
 
 	// Comments and loading inc files.
 	outfile << "# Authors: Team Test Drive" << endl << endl;
@@ -386,7 +386,7 @@ void Generator::writeLaunchFile(){
             xml.SetAttrib( "name", "PickerRobotnode" );
             xml.SetAttrib( "type", "PickerRobot" );
             int pickerPos = (i - model.weed - numBeacons)*2;
-            oss << pickerRobotsPositions[pickerPos] << " " << pickerRobotsPositions[pickerPos+1] << " " << pickerPathPositions[pickerPos] << " " << pickerPathPositions[pickerPos+1] << " " << rowWidth;
+            oss << pickerRobotsPositions[pickerPos] << " " << pickerRobotsPositions[pickerPos+1] << " " << pickerPathPositions[pickerPos] << " " << pickerPathPositions[pickerPos+1] << " " << model.rowWidth;
         } else if (i < model.weed + numBeacons + model.pickerRobots + model.carrierRobots) { //carriers
             xml.SetAttrib( "name", "CarrierRobotnode" );
             xml.SetAttrib( "type", "CarrierRobot" );

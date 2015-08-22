@@ -33,14 +33,13 @@ MainWindow::MainWindow(QWidget *parent) :
     
     key = new KeyReceiver();
     ui->animalScroll->installEventFilter(key);
-    
 }
 
 void MainWindow::startReadingTopics() {
     bool ok;
-    int totalDynamicStuff = numPickers + numCarriers + numWorkers + numDogs + numCats + numTractors;
+    int totalDynamicStuff = model.pickerRobots + model.carrierRobots + model.workers + model.dogs + model.cats + model.tractors;
     
-	for (int i = numBeacons+numWeeds; i < numBeacons + numWeeds + totalDynamicStuff ; i++) {
+	for (int i = model.beacons+model.weed; i < model.beacons + model.weed + totalDynamicStuff ; i++) {
 		QThread *thread = new QThread(this);
 		Worker *worker = new Worker();
 
@@ -71,16 +70,16 @@ MainWindow::~MainWindow()
 void MainWindow::onUpdateGUI( QString id, QString str, int i )
 {
 	//update the gui for robots
-	int idNum = id.toInt()-numBeacons-numWeeds;
+	int idNum = id.toInt()-model.beacons-model.weed;
 
-	if (idNum < numCarriers+numPickers) {
+	if (idNum < model.carrierRobots+model.pickerRobots) {
 	    QListWidget *qlw = ((QListWidget*)ui->robotScroll->widget()->layout()->itemAt(idNum)->widget());
     	qlw->item(i)->setText(str);
-    } else if (idNum < numCarriers+numPickers+numWorkers){
-    	QListWidget *qlw = ((QListWidget*)ui->peopleScroll->widget()->layout()->itemAt(idNum-(numCarriers + numPickers))->widget());
+    } else if (idNum < model.carrierRobots+model.pickerRobots+model.workers){
+    	QListWidget *qlw = ((QListWidget*)ui->peopleScroll->widget()->layout()->itemAt(idNum-(model.carrierRobots + model.pickerRobots))->widget());
     	qlw->item(i)->setText(str);
     } else {
-    	QListWidget *qlw = ((QListWidget*)ui->animalScroll->widget()->layout()->itemAt(idNum-(numCarriers + numPickers+numWorkers))->widget());
+    	QListWidget *qlw = ((QListWidget*)ui->animalScroll->widget()->layout()->itemAt(idNum-(model.carrierRobots + model.pickerRobots + model.workers))->widget());
     	qlw->item(i)->setText(str);
     }
 
@@ -133,19 +132,19 @@ void MainWindow::generate() {
     uiListRobots.clear();
     uiListAnimals.clear();
 
-    for (int i = 0; i < numPickers; i++) {
+    for (int i = 0; i < model.pickerRobots; i++) {
         uiListRobots.push_back(createNewItem("Picker"));
     }
-    for (int i = 0; i < numCarriers; i++) {
+    for (int i = 0; i < model.carrierRobots; i++) {
         uiListRobots.push_back(createNewItem("Carrier"));
     }
-    for (int i = 0; i < numWorkers; i++) {
+    for (int i = 0; i < model.workers; i++) {
         uiListPeoples.push_back(createNewItem("Human_Worker"));
     }
-    for (int i = 0; i < numDogs; i++) {
+    for (int i = 0; i < model.dogs; i++) {
         uiListAnimals.push_back(createNewItem("Animal_Dog"));
     }
-    for (int i = 0; i < numCats; i++) {
+    for (int i = 0; i < model.cats; i++) {
         uiListAnimals.push_back(createNewItem("Animal_Cat")); 
     }
     //clear the layout
@@ -176,7 +175,7 @@ void MainWindow::generate() {
     for (int i = 0; i < uiListPeoples.size(); i++) {
     	ui->peopleScroll->widget()->layout()->addWidget(uiListPeoples[i]);
     }
-    Generator generator("world/test.world", model);
+    Generator generator(model);
     
 	generator.loadWorld();
 	generator.loadTallWeeds();

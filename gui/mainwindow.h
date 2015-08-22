@@ -7,7 +7,6 @@
 #include <QtGui/QMainWindow>
 #include <QListWidget>
 #include "KeyReceiver.h"
-#include "../include/GeneratorModel.h"
 
 using namespace std;
 
@@ -34,6 +33,9 @@ public:
 	void writeLaunchFile();
     ~MainWindow();
 
+    // GeneratorModel
+    GeneratorModel model;
+
 private slots:
 	void on_launchButton_clicked();
     void on_displayStatusButton_clicked();
@@ -47,7 +49,6 @@ private:
     vector<QListWidget*> uiListPeoples;
     vector<string> launchFileEntityList;
   
-    GeneratorModel model;
     KeyReceiver* key;
     
 //	void updateGUI(const QString buffer);
