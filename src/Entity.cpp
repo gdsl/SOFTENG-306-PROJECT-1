@@ -445,7 +445,7 @@ void Entity::rotate(double angleToRotateTo, double angleSpeed, int queueNum){
 void Entity::determineStatus(){
 	// Logic to determine current status of Entity - Walking/Idle/Turning
 	// Convert radians to degrees
-	angle = roundf(theta * 57.2957795 * 100) / 100;
+	double angle = roundf(theta * 57.2957795 * 100) / 100;
 	// Check if entity is moving (and therefore 'walking')
 	if (linearVelocity > 0.01) {
 		status = "Walking";

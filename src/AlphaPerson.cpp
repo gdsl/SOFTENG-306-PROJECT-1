@@ -209,8 +209,23 @@ int main(int argc, char **argv)
         ros::spinOnce();
         loop_rate.sleep();
 
+	/*// ******** MOVE THIS FUNCTION TO ENTITY - REFACTOR **************
 	// Logic to determine current status of Human - Walking/Idle/Turning
-	alphaPerson.determineStatus();
+	// Convert radians to degrees
+	radians = alphaPerson.getTheta();
+	angle = roundf(radians * 57.2957795 * 100) / 100;
+	// Check if human is moving (and therefore 'walking')
+	if (alphaPerson.getLin() > 0.01) {
+		status = "Walking";
+	}
+	// Check if human is facing North/East/South/West AND not moving (and therefore 'idle')
+	else if ((angle == -360) || (angle == -270) || (angle == -180) || (angle == -90) || (angle == 0) || (angle == 90) || (angle == 180) || (angle == 270) || (angle == 360) && (alphaPerson.getLin() == 0)) {
+		status = "Idle";
+	}
+	else {
+		status = "Turning";
+	}*/
+        alphaPerson.determineStatus();
     }
     return 0;
 }

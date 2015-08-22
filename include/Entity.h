@@ -53,6 +53,7 @@ class Entity
 		void updateOdometry();
 		void setDesireLocation(bool desireLocation);
 		void setStatus(std::string status);
+                void determineStatus();
 		void setLin(double lv);
 		void setAng(double av);
 		
