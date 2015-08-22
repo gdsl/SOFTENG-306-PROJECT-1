@@ -5,59 +5,62 @@
 #include <sstream>
 #include "TallWeed.h"
  
-TallWeed::TallWeed() : Entity() {
-    
-}
+TallWeed::TallWeed() : Entity() {}
 
 TallWeed::~TallWeed() {
 
 }
 
-
-
-TallWeed tallWeed;
-ros:: Subscriber worker_sub;
-
-void workerCallback(const se306project::gardenworker_status::ConstPtr& msg) {
-    //double destX = msg.pose.pose.position.x;
-    //double destY = msg.pose.pose.position.y;
-    //ROS_INFO("Worker x position is: %f", destX);
-	//ROS_INFO("Worker y position is: %f", destY);
+void TallWeed::workerCallback(const nav_msgs::Odometry msg) {
+    double destX = msg.pose.pose.position.x;
+    double destY = msg.pose.pose.position.y;
+    ROS_INFO("Worker x position is: %f", destX);
+	ROS_INFO("Worker y position is: %f", destY);
 }
 
-void stage_callback(nav_msgs::Odometry msg) {
-    tallWeed.stageOdom_callback(msg);
+void TallWeed::stageOdom_callback(nav_msgs::Odometry msg) {
+    Entity::stageOdom_callback(msg);
 }
 
 int main(int argc, char **argv) 
 {
-    
-    
     //initialise ros    
     ros::init(argc,argv,"tallWeed");
 
     //create ros handler for this node
     ros::NodeHandle n;
     
+    TallWeed tallWeed;
+
     tallWeed.robotNode_stage_pub = n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
-    ros::Publisher robotNode_location_pub = n.advertise<nav_msgs::Odometry>("weed",1000);
-    tallWeed.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000,stage_callback);
+    tallWeed.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000,&TallWeed::stageOdom_callback,&tallWeed);
+
     //subscribe to worker
-    worker_sub = n.subscribe<se306project::gardenworker_status>("gardenworker", 1000, workerCallback);
-     //test if argv[2] is really the status of the person
-	ROS_INFO("argv[2] is: %s", argv[2]);
+    std::string start(argv[2]);
+    std::string end(argv[3]);
+    int s = atoi(start.c_str());
+    int e = atoi(end.c_str());
+    int size = e-s+1;
+    std::string topicName;
+
+    tallWeed.workerSubscribers = new ros::Subscriber[size];
+
+    int index = 0;
+    for (int i = s; s < e+1; i++) {
+		topicName = "/robot_" + i + "/odom";
+		tallWeed.workerSubscribers[index] = n.subscribe<nav_msgs::Odometry>(topicName,1000,&TallWeed::workerCallback,&tallWeed);
+		index++;
+    }
+
+    //test if argv[2] is really the status of the person
+	//ROS_INFO("argv[2] is: %s", argv[2]);
 
     ros::Rate loop_rate(10); 
-	nav_msgs::Odometry tempMessage; 
+	//nav_msgs::Odometry tempMessage;
     while (ros::ok())
     {
-        tempMessage.pose.pose.position.x = tallWeed.getX();
-        tempMessage.pose.pose.position.y = tallWeed.getY();  
-        robotNode_location_pub.publish(tempMessage);
-
 	    ros::spinOnce();
         loop_rate.sleep();
-        
     }
     return 0;
 }

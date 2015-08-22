@@ -6,13 +6,7 @@
 /**
  * Default constructor for GardenWorker
  */
-GardenWorker::GardenWorker():Person()
-{
-	targetX = 0;
-	targetY = 0;
-	weedCounter = 0;
-	setStatus("Idle");
-}
+GardenWorker::GardenWorker():GardenWorker(0,0,0,0,0){}
 
 /**
  * Call super class constructor
@@ -79,7 +73,7 @@ void GardenWorker::next(std::string action)
 void GardenWorker::stageLaser_callback(const sensor_msgs::LaserScan msg)
 {
 	// invoke parent stagelaser
-	Person::stageLaser_callback(msg);
+	//Person::stageLaser_callback(msg);
 	ROS_ERROR("TESTING");
 }
 
@@ -110,12 +104,32 @@ int main(int argc, char **argv)
 	//create ros handler for this node
 	ros::NodeHandle n;
 
-	GardenWorker gardenWorker(0,0,0,0,0);
+	// argv[1] = topic name
+	// argv[2] = tallweed node start index
+	// argv[3] = tallweed node end index
+
+	GardenWorker gardenWorker;
 	gardenWorker.robotNode_stage_pub = n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
 	gardenWorker.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth", 1000, &GardenWorker::stageOdom_callback, &gardenWorker);
 	gardenWorker.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000, &GardenWorker::stageLaser_callback, &gardenWorker);
-	gardenWorker.tallweed_pose_sub = n.subscribe<nav_msgs::Odometry>("weed",1000, &GardenWorker::updateNearestWeed, &gardenWorker);
-	gardenWorker.gardenworker_status_pub = n.advertise<se306project::gardenworker_status>("gardenworker",1000);
+	gardenWorker.gardenworker_status_pub = n.advertise<se306project::gardenworker_status>(argv[1],1000);
+
+	// subscribe to every tallweed
+	std::string start(argv[2]);
+	std::string end(argv[3]);
+	int s = atoi(start.c_str());
+	int e = atoi(end.c_str());
+	int size = e-s+1;
+	std::string topicName;
+
+	gardenWorker.tallweed_pose_sub = new ros::Subscriber[size];
+
+	int index = 0;
+	for (int i = s; i < e+1; i++) {
+		topicName = "/robot_" + i + "/odom";
+		gardenWorker.tallweed_pose_sub[index] = n.subscribe<nav_msgs::Odometry>(topicName,1000,&GardenWorker::updateNearestWeed, &gardenWorker);
+		index++;
+	}
 
 	ros::Rate loop_rate(10);
 

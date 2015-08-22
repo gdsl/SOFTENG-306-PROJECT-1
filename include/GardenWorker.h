@@ -11,7 +11,7 @@ public:
 	GardenWorker(double x, double y, double theta, double linearVelocity, double angularVelocity);
 
 	ros::Publisher gardenworker_status_pub;
-	ros::Subscriber tallweed_pose_sub;
+	ros::Subscriber *tallweed_pose_sub;
 
 	// Finds nearest weed and updates variable
 	void updateNearestWeed(nav_msgs::Odometry msg);

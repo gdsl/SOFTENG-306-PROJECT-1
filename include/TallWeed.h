@@ -15,6 +15,11 @@ public:
 	TallWeed();
 	virtual ~TallWeed();
 	
+	ros::Subscriber *workerSubscribers;
+
+	// callback
+	void workerCallback(nav_msgs::Odometry);
+	void stageOdom_callback(nav_msgs::Odometry msg);
 };
 
 #endif /* SE306PROJECT_SRC_TALLWEED_ */
