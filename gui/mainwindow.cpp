@@ -36,22 +36,22 @@ MainWindow::MainWindow(QWidget *parent) :
 }
 
 void MainWindow::startReadingTopics() {
-    int totalDynamicStuff = numPickers + numCarriers + numWorkers + numDogs;
-    
-	for (int i = numBeacons+numWeeds; i < numBeacons + numWeeds + totalDynamicStuff ; i++) {
-		QThread *thread = new QThread(this);    
-		Worker *worker = new Worker();
-		
-		worker->moveToThread(thread);
-	    stringstream out;
-		out << i;
-		worker->setId( out.str());
-		    
-		connect(thread, SIGNAL(started()), worker, SLOT(executeScript())); //started() signal is by default called by thread->start
-		connect(worker, SIGNAL(requestNewLabel(QString, QString, int)), this, SLOT(onUpdateGUI(QString, QString, int))); //custom signal which calls the slot for onUpdateGUI
-		connect(thread, SIGNAL(destroyed()), worker, SLOT(deleteLater()));
-		thread->start();
-    }
+//    int totalDynamicStuff = numPickers + numCarriers + numWorkers + numDogs;
+//
+//	for (int i = numBeacons+numWeeds; i < numBeacons + numWeeds + totalDynamicStuff ; i++) {
+//		QThread *thread = new QThread(this);
+//		Worker *worker = new Worker();
+//
+//		worker->moveToThread(thread);
+//	    stringstream out;
+//		out << i;
+//		worker->setId( out.str());
+//
+//		connect(thread, SIGNAL(started()), worker, SLOT(executeScript())); //started() signal is by default called by thread->start
+//		connect(worker, SIGNAL(requestNewLabel(QString, QString, int)), this, SLOT(onUpdateGUI(QString, QString, int))); //custom signal which calls the slot for onUpdateGUI
+//		connect(thread, SIGNAL(destroyed()), worker, SLOT(deleteLater()));
+//		thread->start();
+//    }
 }
 
 
@@ -64,15 +64,15 @@ MainWindow::~MainWindow()
 void MainWindow::onUpdateGUI( QString id, QString str, int i )
 {
 	//update the gui for robots
-	int idNum = id.toInt()-numBeacons-numWeeds;
-	
-	if (idNum < numCarriers+numPickers) {
-	    QListWidget *qlw = ((QListWidget*)ui->robotScroll->widget()->layout()->itemAt(idNum)->widget());
-    	qlw->item(i)->setText(str);
-    } else {
-	    QListWidget *qlw = ((QListWidget*)ui->animalScroll->widget()->layout()->itemAt(idNum-(numCarriers + numPickers))->widget());
-    	qlw->item(i)->setText(str);
-    }
+//	int idNum = id.toInt()-numBeacons-numWeeds;
+//
+//	if (idNum < numCarriers+numPickers) {
+//	    QListWidget *qlw = ((QListWidget*)ui->robotScroll->widget()->layout()->itemAt(idNum)->widget());
+//    	qlw->item(i)->setText(str);
+//    } else {
+//	    QListWidget *qlw = ((QListWidget*)ui->animalScroll->widget()->layout()->itemAt(idNum-(numCarriers + numPickers))->widget());
+//    	qlw->item(i)->setText(str);
+//    }
 
 }
 
@@ -104,7 +104,7 @@ void MainWindow::on_displayStatusButton_clicked()
 
 
 void MainWindow::generate() {
-    writeXml();
+    //writeXml();
 
     // initialise variables
     numPickers = ui->pickerSpinner->value();
@@ -177,7 +177,7 @@ void MainWindow::generate() {
     	ui->peopleScroll->widget()->layout()->addWidget(uiListPeoples[i]);
     }
     
-    Generator generator("world/test.world", numPickers, numCarriers, numDogs, numWorkers, rowWidth, spacing);
+    Generator generator("world/test.world", numPickers, numCarriers, numDogs, numWorkers, rowWidth, poleTrunkSpacing);
 	generator.loadWorld();
     generator.loadTallWeeds();
 	generator.loadOrchard();

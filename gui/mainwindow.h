@@ -59,6 +59,7 @@ private:
     int numNeighbors;
     int numTractors;
     int numBeacons;
+    int numWeeds = 10;
 //	void updateGUI(const QString buffer);
 //	void *print_message_function( void *ptr );
 //	void exec(string cmd);
