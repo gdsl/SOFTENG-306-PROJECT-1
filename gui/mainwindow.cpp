@@ -11,7 +11,6 @@
 #include "Generator.h"
 #include <QDebug>
 #include <vector>
-#include "KeyReceiver.h"
 #include <sstream>
 
 using namespace std;
@@ -31,13 +30,15 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->peopleScroll->widget()->layout()->setAlignment(Qt::AlignLeft);
     ui->animalScroll->widget()->layout()->setAlignment(Qt::AlignLeft);
     
-    KeyReceiver* key = new KeyReceiver();
+    key = new KeyReceiver();
     ui->animalScroll->installEventFilter(key);
+    
 }
 
 void MainWindow::startReadingTopics() {
-    int totalDynamicStuff = numPickers + numCarriers + numWorkers + numDogs;
-
+    bool ok;
+    int totalDynamicStuff = numPickers + numCarriers + numWorkers + numDogs + numCats + numTractors;
+    
 	for (int i = numBeacons+numWeeds; i < numBeacons + numWeeds + totalDynamicStuff ; i++) {
 		QThread *thread = new QThread(this);
 		Worker *worker = new Worker();
@@ -86,11 +87,9 @@ void MainWindow::onUpdateGUI( QString id, QString str, int i )
 void MainWindow::on_launchButton_clicked()
 {
     MainWindow::generate();
-	    qDebug("1111111111111111111112");
 	//launch roslaunch
 	system("roslaunch se306project test.launch &");
     usleep(1000000); //1 second
-    //qDebug("started reading!!!!!!!!!!!!!!!!!!!!!!!!!!1");
 	//emit MainWindow::requestProcess();
 	startReadingTopics();
 
@@ -100,6 +99,12 @@ void MainWindow::on_displayStatusButton_clicked()
 {
 	startReadingTopics();
     //MainWindow::generate();
+}
+
+void MainWindow::on_closeButton_clicked() {
+	system("pkill stage");
+	system("pkill rostopic");
+	system("pkill roscore");
 }
 
 
@@ -112,54 +117,48 @@ void MainWindow::generate() {
     numWorkers = ui->workerSpinner->value();
     numDogs = ui->dogSpinner->value();
     numCats = ui->catSpinner->value();
-    rowWidth = ui->rowWidthSpinner->value();
-    poleTrunkSpacing = ui->poleTrunkSpacingSpinner->value();
+    rowWidth = ui->rowWidthField->text().toDouble();
+    poleTrunkSpacing = ui->spacingField->text().toDouble();
+    rowLength = ui->rowLengthField->text().toDouble();
     numRows = ui->rowNumberSpinner->value();
     numBlindPerson = ui->blindPersonSpinner->value();
     numNeighbors = ui->neighborSpinner->value();
     numTractors = ui->tractorSpinner->value();
     numBeacons = numRows*2;
+    
     uiListPeoples.clear();
     uiListRobots.clear();
     uiListAnimals.clear();
-    launchFileEntityList.clear();
 
-	for (int i = 0; i < numWeeds; i++) {
-		launchFileEntityList.push_back("TallWeed");
-	}
-    for (int i = 0; i < numRows; i++) {
-        launchFileEntityList.push_back("Beacon");
-        launchFileEntityList.push_back("Beacon");
-    }
     for (int i = 0; i < numPickers; i++) {
         uiListRobots.push_back(createNewItem("Picker"));
-        launchFileEntityList.push_back("PickerRobot");
     }
     for (int i = 0; i < numCarriers; i++) {
         uiListRobots.push_back(createNewItem("Carrier"));
-        launchFileEntityList.push_back("CarrierRobot");
     }
     for (int i = 0; i < numWorkers; i++) {
         uiListPeoples.push_back(createNewItem("Human_Worker"));
-        launchFileEntityList.push_back("AlphaPerson");
     }
     for (int i = 0; i < numDogs; i++) {
         uiListAnimals.push_back(createNewItem("Animal_Dog"));
-        launchFileEntityList.push_back("AlphaDog");
     }
-
-    // Add the other gui
-
+    for (int i = 0; i < numCats; i++) {
+        uiListAnimals.push_back(createNewItem("Animal_Cat")); 
+    }
     //clear the layout
-//    QLayoutItem *item;
-//    while (( item = ui->robotScroll->widget()->layout()->takeAt(0)) != 0 ){
-//        delete item->widget();
-//        delete item;
-//    }
-//    while (( item = ui->animalScroll->widget()->layout()->takeAt(0)) != 0 ){
-//        delete item->widget();
-//        delete item;
-//    }
+    QLayoutItem *item;
+    while (( item = ui->robotScroll->widget()->layout()->takeAt(0)) != 0 ){
+        delete item->widget();
+        delete item;
+    }
+    while (( item = ui->animalScroll->widget()->layout()->takeAt(0)) != 0 ){
+        delete item->widget();
+        delete item;
+    }
+    while (( item = ui->peopleScroll->widget()->layout()->takeAt(0)) != 0 ){
+        delete item->widget();
+        delete item;
+    }
     //add all widgets back
     string colourArray[14] = { "PeachPuff", "NavajoWhite", "LemonChiffon", "AliceBlue", "Lavender", "thistle", "LightSalmon", "PaleTurquoise", "PaleGreen", "beige", "plum", "LightGrey", "LightSkyBlue", "SpringGreen" };
     for (int i = 0; i < uiListRobots.size(); i++) {
@@ -171,22 +170,24 @@ void MainWindow::generate() {
     for (int i = 0; i < uiListAnimals.size(); i++) {
         ui->animalScroll->widget()->layout()->addWidget(uiListAnimals[i]);
     }
-
     for (int i = 0; i < uiListPeoples.size(); i++) {
     	ui->peopleScroll->widget()->layout()->addWidget(uiListPeoples[i]);
     }
-    Generator generator("world/test.world", numPickers, numCarriers, numDogs, numWorkers, rowWidth, poleTrunkSpacing);
+    Generator generator("world/test.world", numPickers, numCarriers, numDogs, numCats, numWorkers, rowWidth, poleTrunkSpacing);
+    
 	generator.loadWorld();
-    generator.loadTallWeeds();
+	generator.loadTallWeeds();
 	generator.loadOrchard();
 	generator.loadPickerRobots();
 	generator.loadCarrierRobots();
 	generator.loadPeople();
 	generator.loadAnimals();
+	
 	generator.write();
-		    qDebug("1111111111111111111123");
     generator.writeLaunchFile();
-    	    qDebug("1111111111111111111125");
+	generator.loadTractor();
+	generator.write();
+	generator.writeLaunchFile();
 
 }
 /*

@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <QtGui/QMainWindow>
 #include <QListWidget>
-
+#include "KeyReceiver.h"
 
 using namespace std;
 
@@ -36,6 +36,7 @@ public:
 private slots:
 	void on_launchButton_clicked();
     void on_displayStatusButton_clicked();
+    void on_closeButton_clicked();
 
 private:
     Ui::MainWindow *ui;
@@ -48,9 +49,9 @@ private:
     int numPickers;
     int numCarriers;
     int numRows;
-    int rowWidth;
-    int rowLength;
-    int poleTrunkSpacing;
+    float rowWidth;
+    float rowLength;
+    float poleTrunkSpacing;
     int numDogs;
     int numCats;
     int numWorkers;
@@ -59,6 +60,8 @@ private:
     int numTractors;
     int numBeacons;
     int numWeeds = 10;
+    KeyReceiver* key;
+    
 //	void updateGUI(const QString buffer);
 //	void *print_message_function( void *ptr );
 //	void exec(string cmd);

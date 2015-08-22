@@ -52,3 +52,5 @@ void Worker::exec(string cmd) {
 		pclose(stream);
 	}
 }
+
+

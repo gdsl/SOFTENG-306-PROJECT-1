@@ -47,7 +47,7 @@
            <x>0</x>
            <y>0</y>
            <width>1014</width>
-           <height>139</height>
+           <height>145</height>
           </rect>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_3"/>
@@ -76,7 +76,7 @@
            <x>0</x>
            <y>0</y>
            <width>1014</width>
-           <height>139</height>
+           <height>145</height>
           </rect>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_4"/>
@@ -105,7 +105,7 @@
            <x>0</x>
            <y>0</y>
            <width>1014</width>
-           <height>139</height>
+           <height>145</height>
           </rect>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_5"/>
@@ -118,8 +118,23 @@
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
        <widget class="QLabel" name="configLabel">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="font">
+         <font>
+          <family>Ubuntu</family>
+          <pointsize>18</pointsize>
+          <weight>7</weight>
+          <italic>false</italic>
+          <bold>false</bold>
+         </font>
+        </property>
         <property name="styleSheet">
-         <string notr="true">font: 63 18pt &quot;Ubuntu&quot;;</string>
+         <string notr="true">font: 63 12pt &quot;Ubuntu&quot;;</string>
         </property>
         <property name="text">
          <string>Configuration</string>
@@ -128,8 +143,22 @@
       </item>
       <item>
        <layout class="QGridLayout" name="gridLayout">
+        <property name="verticalSpacing">
+         <number>0</number>
+        </property>
+        <item row="5" column="2">
+         <widget class="QLabel" name="catLabel">
+          <property name="text">
+           <string>Cat</string>
+          </property>
+         </widget>
+        </item>
         <item row="0" column="1">
-         <widget class="QSpinBox" name="pickerSpinner"/>
+         <widget class="QSpinBox" name="pickerSpinner">
+          <property name="value">
+           <number>1</number>
+          </property>
+         </widget>
         </item>
         <item row="5" column="0">
          <widget class="QLabel" name="spacingLabel">
@@ -160,16 +189,25 @@
          </widget>
         </item>
         <item row="2" column="1">
-         <widget class="QSpinBox" name="carrierSpinner"/>
-        </item>
-        <item row="4" column="1">
-         <widget class="QSpinBox" name="rowWidthSpinner"/>
-        </item>
-        <item row="5" column="1">
-         <widget class="QSpinBox" name="poleTrunkSpacingSpinner"/>
+         <widget class="QSpinBox" name="carrierSpinner">
+          <property name="value">
+           <number>1</number>
+          </property>
+         </widget>
         </item>
         <item row="4" column="3">
-         <widget class="QSpinBox" name="dogSpinner"/>
+         <widget class="QSpinBox" name="dogSpinner">
+          <property name="value">
+           <number>1</number>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="3">
+         <widget class="QSpinBox" name="rowNumberSpinner">
+          <property name="value">
+           <number>7</number>
+          </property>
+         </widget>
         </item>
         <item row="4" column="2">
          <widget class="QLabel" name="dogLabel">
@@ -185,31 +223,12 @@
           </property>
          </widget>
         </item>
-        <item row="0" column="3">
-         <widget class="QSpinBox" name="rowNumberSpinner"/>
-        </item>
-        <item row="5" column="2">
-         <widget class="QLabel" name="catLabel">
-          <property name="text">
-           <string>Cat</string>
-          </property>
-         </widget>
-        </item>
-        <item row="5" column="3">
-         <widget class="QSpinBox" name="catSpinner"/>
-        </item>
         <item row="5" column="4">
          <widget class="QLabel" name="tractorLabel">
           <property name="text">
            <string>Tractor</string>
           </property>
          </widget>
-        </item>
-        <item row="5" column="5">
-         <widget class="QSpinBox" name="tractorSpinner"/>
-        </item>
-        <item row="4" column="5">
-         <widget class="QSpinBox" name="neighborSpinner"/>
         </item>
         <item row="4" column="4">
          <widget class="QLabel" name="neighborLabel">
@@ -218,8 +237,36 @@
           </property>
          </widget>
         </item>
+        <item row="5" column="5">
+         <widget class="QSpinBox" name="tractorSpinner">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="value">
+           <number>1</number>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="5">
+         <widget class="QSpinBox" name="neighborSpinner">
+          <property name="value">
+           <number>1</number>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="3">
+         <widget class="QSpinBox" name="catSpinner">
+          <property name="value">
+           <number>1</number>
+          </property>
+         </widget>
+        </item>
         <item row="2" column="5">
-         <widget class="QSpinBox" name="blindPersonSpinner"/>
+         <widget class="QSpinBox" name="blindPersonSpinner">
+          <property name="value">
+           <number>1</number>
+          </property>
+         </widget>
         </item>
         <item row="2" column="4">
          <widget class="QLabel" name="blindPersonLabel">
@@ -236,7 +283,11 @@
          </widget>
         </item>
         <item row="0" column="5">
-         <widget class="QSpinBox" name="workerSpinner"/>
+         <widget class="QSpinBox" name="workerSpinner">
+          <property name="value">
+           <number>1</number>
+          </property>
+         </widget>
         </item>
         <item row="2" column="2">
          <widget class="QLabel" name="rowLengthLabel">
@@ -246,7 +297,43 @@
          </widget>
         </item>
         <item row="2" column="3">
-         <widget class="QSpinBox" name="rowLengthSpinner"/>
+         <widget class="QLineEdit" name="rowLengthField">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>70</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QLineEdit" name="rowWidthField">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>3.5</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <widget class="QLineEdit" name="spacingField">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>2.5</string>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -271,7 +358,20 @@
        </spacer>
       </item>
       <item>
+       <widget class="QPushButton" name="pushButton">
+        <property name="toolTip">
+         <string>Click this to take the tractor for a test drive! Drive over weeds to remove</string>
+        </property>
+        <property name="text">
+         <string>Test Drive!</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="closeButton">
+        <property name="toolTip">
+         <string>Close the simulator</string>
+        </property>
         <property name="text">
          <string>Close</string>
         </property>
@@ -279,6 +379,9 @@
       </item>
       <item>
        <widget class="QPushButton" name="launchButton">
+        <property name="toolTip">
+         <string>Launch the simulator</string>
+        </property>
         <property name="styleSheet">
          <string notr="true">background-color: rgb(85, 170, 255);
 color: rgb(255, 255, 255);</string>
@@ -290,6 +393,9 @@ color: rgb(255, 255, 255);</string>
       </item>
       <item>
        <widget class="QPushButton" name="displayStatusButton">
+        <property name="toolTip">
+         <string>Click this to display status messages on the panels above</string>
+        </property>
         <property name="text">
          <string>Display Status</string>
         </property>
@@ -298,6 +404,7 @@ color: rgb(255, 255, 255);</string>
      </layout>
     </item>
    </layout>
+   <zorder></zorder>
    <zorder></zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">

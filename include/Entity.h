@@ -48,7 +48,9 @@ class Entity
 		void updateOdometry();
 		void setDesireLocation(bool desireLocation);
 		void setStatus(std::string status);
-
+		void setLin(double lv);
+		void setAng(double av);
+		
 		//get method
 		double getX();
 		double getY();

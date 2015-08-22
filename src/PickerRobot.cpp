@@ -7,6 +7,7 @@
 #include "PickerRobot.h"
 #include "Constants.h"
 #include <vector>
+#include <string>
 
 PickerRobot::PickerRobot():Robot(){
 
@@ -303,21 +304,23 @@ int main(int argc, char **argv)
 	
     // convert input parameters for Robot initialization from String to respective types
     std::string xString = argv[1];
-    std::string yString = argv[2];
+    std::string yString = argv[2];    
     double xPos = atof(xString.c_str());
     double yPos = atof(yString.c_str());
     ROS_INFO("x start: %f", xPos);
     ROS_INFO("y start: %f", yPos);
     
-    //HARD CODED BEACON PATH UNTIL MULTIPLE PICKER WORKLOAD SPLITTING CODE IS IMPLEMENTED
-    //assign current beacon to the first beacon along this Picker Robot's path
-    startBeacon = 1;
-    currentBeacon = 1;
-    finishBeacon = 14;
+    //assign start and finish beacons from input parameters of launch file
+    std::string startString = argv[3];
+    std::string finishString = argv[4];
+    std::stringstream ss(startString);
+    ss >> startBeacon;
+    std::stringstream ss2(finishString);
+    ss2 >> finishBeacon;
+    currentBeacon = startBeacon;
     
     //initialize the Picker robot with the correct position, velocity and state parameters.
 	pickerRobot=PickerRobot(xPos,yPos,M_PI/2,0,0,"Moving");
-	//pickerRobot=PickerRobot(-42,24,M_PI/2,0,0,"Moving");
 
 	//NodeHandle is the main access point to communicate with ros.
 	ros::NodeHandle n;
@@ -361,17 +364,8 @@ int main(int argc, char **argv)
 		status_msg.obstacle = obstacleStatus;
 		pub.publish(status_msg);//publish the message for other node
         
-        //subscribeNextBeacon(n);
-        //pickerRobot.movement();
-        //pickerRobot.move();
         pickerRobot.stateLogic(n);
-		//TODO debug
-//		if(count==7){			
-//			pickerRobot.move();
-//		}
-//		if(count>7){
-//			pickerRobot.stateLogic();
-//		}
+        
 		ros::spinOnce();
 		loop_rate.sleep();
 		++count;

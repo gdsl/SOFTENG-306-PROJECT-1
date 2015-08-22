@@ -12,7 +12,7 @@ using namespace std;
 class Generator
 {
 	public:
-		Generator(string outputName, int pickerNumber, int carrierNumber, int dogNumber, int workerNumber, float rowWidth, float spacing);
+		Generator(string outputName, int pickerNumber, int carrierNumber, int dogNumber, int catNumber, int workerNumber, float rowWidth, float spacing);
 		void loadWorld();
 		void loadOrchard();
 		void loadPickerRobots();
@@ -20,13 +20,16 @@ class Generator
 		void loadPeople();
 		void loadAnimals();
         void loadTallWeeds();
+        void loadTractor();
         void writeLaunchFile();
 		void write();
+        void calculatePickerPaths();
 		int rowCount = 7;
 		float rowLength = 70;
 		int pickerNumber;
 		int carrierNumber;
 		int dogNumber;
+		int catNumber;
 		int workerNumber;
 		float rowWidth;
 		float spacing;
@@ -34,6 +37,7 @@ class Generator
         vector<int> pickerRobotsPositions;
         vector<int> carrierRobotsPositions;
         vector<float> beaconPositions; 
+        vector<int> pickerPathPositions;
         
 	private:
 		string inputName;

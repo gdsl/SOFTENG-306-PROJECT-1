@@ -36,7 +36,6 @@ void stage_callback(nav_msgs::Odometry msg) {
 int main(int argc, char **argv) 
 {
     
-	// Initialise ros    
 	ros::init(argc,argv,"Animal");
 
 	// Create ros handler for this node
@@ -55,8 +54,9 @@ int main(int argc, char **argv)
 	{
 		// Message to stage 
 		Cat.move();
+		Cat.addMovement("forward_x", 10, 1);
         
-    		if (Cat.getMovementQueueSize() == 0) {
+    		/*if (Cat.getMovementQueueSize() == 0) {
 			Cat.faceWest(1);
 			Cat.addMovement("forward_x",-5,1);
 			Cat.faceSouth(1);
@@ -65,7 +65,7 @@ int main(int argc, char **argv)
 			Cat.addMovement("forward_x",5,1);
 			Cat.faceNorth(1);
 			Cat.addMovement("forward_y",1.25,1);
-		}
+		}*/
 
 		// Add Cat variables to status message to be broadcast
 		status_msg.status=status;
