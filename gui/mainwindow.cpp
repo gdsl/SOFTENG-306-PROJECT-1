@@ -19,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+	system("pkill roslaunch");
     ui->setupUi(this);
 
     // Ask vector capacity to reserve atleast n elements
@@ -59,6 +60,7 @@ void MainWindow::startReadingTopics() {
 MainWindow::~MainWindow()
 {
     //close roslaunch and close all rostopics
+	system("pkill roslaunch");
 	system("pkill stage");
 	system("pkill rostopic");
 	system("pkill roscore");
@@ -102,6 +104,7 @@ void MainWindow::on_displayStatusButton_clicked()
 }
 
 void MainWindow::on_closeButton_clicked() {
+	system("pkill roslaunch");
 	system("pkill stage");
 	system("pkill rostopic");
 	system("pkill roscore");
@@ -117,12 +120,13 @@ void MainWindow::generate() {
     numWorkers = ui->workerSpinner->value();
     numDogs = ui->dogSpinner->value();
     numCats = ui->catSpinner->value();
-    rowWidth = ui->rowWidthField->text().toDouble();
-    poleTrunkSpacing = ui->spacingField->text().toDouble();
-    rowLength = ui->rowLengthField->text().toDouble();
+    rowWidth = ui->rowWidthSpinner->value();
+    poleTrunkSpacing = ui->spacingSpinner->value();
+    rowLength = 70;
     numRows = ui->rowNumberSpinner->value();
     numBlindPerson = ui->blindPersonSpinner->value();
     numNeighbors = ui->neighborSpinner->value();
+    numGardeners = ui->gardenerSpinner->value();
     numTractors = ui->tractorSpinner->value();
     numBeacons = numRows*2;
     
