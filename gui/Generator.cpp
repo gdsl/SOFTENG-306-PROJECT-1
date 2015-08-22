@@ -404,23 +404,19 @@ void Generator::writeLaunchFile(){
         } else if (i < numWeeds + numBeacons + pickerNumber + carrierNumber + workerNumber + dogNumber) { //dogs
             xml.SetAttrib( "name", "AlphaDognode" );
             xml.SetAttrib( "type", "AlphaDog" );
-<<<<<<< HEAD
         } else if (i < numWeeds + numBeacons + pickerNumber + carrierNumber + workerNumber + dogNumber + catNumber) { //cats
             xml.SetAttrib( "name", "Catnode" );
             xml.SetAttrib( "type", "Cat" );
-	}
-=======
-        } else if (i < numWeeds + numBeacons + pickerNumber + carrierNumber + workerNumber + dogNumber + 1) { //tractor
+        } else if (i < numWeeds + numBeacons + pickerNumber + carrierNumber + workerNumber + dogNumber + catNumber + 1) { //tractor
             xml.SetAttrib( "name", "Tractornode" );
             xml.SetAttrib( "type", "Tractor" );
         }
->>>>>>> 9291eb2fcc6ea6c1843e53809f508dbb2f828522
         xml.SetAttrib( "args", oss.str() );
         xml.OutOfElem();
     }   
     xml.OutOfElem();
     xml.Save("launch/test.launch");
-}          
+}        
 
 /*
 int main(int argc, char **argv)
