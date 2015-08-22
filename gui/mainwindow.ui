@@ -178,16 +178,6 @@
           </property>
          </widget>
         </item>
-        <item row="2" column="4">
-         <widget class="QLabel" name="neighborLabel">
-          <property name="text">
-           <string>Neighbor</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="5">
-         <widget class="QSpinBox" name="neighborSpinner"/>
-        </item>
         <item row="0" column="2">
          <widget class="QLabel" name="rowNumberLabel">
           <property name="text">
@@ -198,23 +188,6 @@
         <item row="0" column="3">
          <widget class="QSpinBox" name="rowNumberSpinner"/>
         </item>
-        <item row="2" column="2">
-         <widget class="QLabel" name="workerLabel">
-          <property name="text">
-           <string>Worker</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="3">
-         <widget class="QSpinBox" name="workerSpinner"/>
-        </item>
-        <item row="0" column="4">
-         <widget class="QLabel" name="blindPersonLabel">
-          <property name="text">
-           <string>Blind Person</string>
-          </property>
-         </widget>
-        </item>
         <item row="5" column="2">
          <widget class="QLabel" name="catLabel">
           <property name="text">
@@ -222,21 +195,58 @@
           </property>
          </widget>
         </item>
-        <item row="0" column="5">
-         <widget class="QSpinBox" name="blindPersonSpinner"/>
-        </item>
-        <item row="4" column="5">
-         <widget class="QSpinBox" name="tractorSpinner"/>
-        </item>
         <item row="5" column="3">
          <widget class="QSpinBox" name="catSpinner"/>
         </item>
-        <item row="4" column="4">
+        <item row="5" column="4">
          <widget class="QLabel" name="tractorLabel">
           <property name="text">
            <string>Tractor</string>
           </property>
          </widget>
+        </item>
+        <item row="5" column="5">
+         <widget class="QSpinBox" name="tractorSpinner"/>
+        </item>
+        <item row="4" column="5">
+         <widget class="QSpinBox" name="neighborSpinner"/>
+        </item>
+        <item row="4" column="4">
+         <widget class="QLabel" name="neighborLabel">
+          <property name="text">
+           <string>Neighbor</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="5">
+         <widget class="QSpinBox" name="blindPersonSpinner"/>
+        </item>
+        <item row="2" column="4">
+         <widget class="QLabel" name="blindPersonLabel">
+          <property name="text">
+           <string>Blind Person</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="4">
+         <widget class="QLabel" name="workerLabel">
+          <property name="text">
+           <string>Worker</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="5">
+         <widget class="QSpinBox" name="workerSpinner"/>
+        </item>
+        <item row="2" column="2">
+         <widget class="QLabel" name="rowLengthLabel">
+          <property name="text">
+           <string>Row Length</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="3">
+         <widget class="QSpinBox" name="rowLengthSpinner"/>
         </item>
        </layout>
       </item>

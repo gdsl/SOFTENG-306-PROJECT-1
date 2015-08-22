@@ -110,6 +110,7 @@ void MainWindow::generate() {
     numBlindPerson = ui->blindPersonSpinner->value();
     numNeighbors = ui->neighborSpinner->value();
     numTractors = ui->tractorSpinner->value();
+    numBeacons = numRows*2;
 
     uiListPeoples.clear();
     uiListRobots.clear();
@@ -160,6 +161,9 @@ void MainWindow::generate() {
     for (int i = 0; i < uiListAnimals.size(); i++) {
         ui->animalScroll->widget()->layout()->addWidget(uiListAnimals[i]);
     }
+    for (int i = 0; i < uiListPeoples.size(); i++) {
+    	ui->peopleScroll->widget()->layout()->addWidget(uiListPeoples[i]);
+    }
 
     writeLaunchFile();
     Generator generator("world/generatedOrchard.xml", "world/test.world");
@@ -189,8 +193,8 @@ void MainWindow::writeXml() {
         xml.IntoElem();
             xml.AddElem("orchard");
             xml.IntoElem();
-                xml.AddElem( "row_count", 7);
-                xml.AddElem( "row_length", 70);
+                xml.AddElem( "row_count", ui->rowNumberSpinner->value());
+                xml.AddElem( "row_length", ui->rowLengthSpinner->value());
                 xml.AddElem( "row_width", ui->rowWidthSpinner->value() );
                 xml.AddElem( "trunk_pole_spacing", ui->poleTrunkSpacingSpinner->value() );
             xml.OutOfElem();
@@ -262,8 +266,7 @@ QListWidget* MainWindow::createNewItem(string type) {
     QListWidgetItem *item6 = new QListWidgetItem;
     list->addItem(item6);
 
-    //list->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    //list->setFixedSize(180,150);
+    list->setMinimumWidth(200);
     return list;
 }
 

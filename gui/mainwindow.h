@@ -49,6 +49,7 @@ private:
     int numCarriers;
     int numRows;
     int rowWidth;
+    int rowLength;
     int poleTrunkSpacing;
     int numDogs;
     int numCats;
@@ -56,7 +57,7 @@ private:
     int numBlindPerson;
     int numNeighbors;
     int numTractors;
-    int numBeacons = 14;
+    int numBeacons;
 //	void updateGUI(const QString buffer);
 //	void *print_message_function( void *ptr );
 //	void exec(string cmd);
