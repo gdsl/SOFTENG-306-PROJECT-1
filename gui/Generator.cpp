@@ -397,7 +397,7 @@ void Generator::writeLaunchFile(){
             int carrierPos = (i - numWeeds - numBeacons - pickerNumber)*2;
             int firstPicker = numWeeds + numBeacons;
             int lastPicker = firstPicker + pickerNumber - 1;
-            oss << carrierRobotsPositions[carrierPos] << " " << carrierRobotsPositions[carrierPos+1] << " " << firstPicker << " " << lastPicker;
+            oss << carrierRobotsPositions[carrierPos] << " " << carrierRobotsPositions[carrierPos+1] << " " << firstPicker << " " << lastPicker << " " << carrierNumber;
         } else if (i < numWeeds + numBeacons + pickerNumber + carrierNumber + workerNumber) { //AlphaPersons (workers)
             xml.SetAttrib( "name", "AlphaPersonnode" );
             xml.SetAttrib( "type", "AlphaPerson" );
