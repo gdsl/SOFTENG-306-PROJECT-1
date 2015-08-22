@@ -347,6 +347,7 @@ void CarrierRobot::stateLogic(){
             carrierRobot.setState(Robot::IDLE);
         }
     } 
+    carrierRobot.move();
     
 }
 
@@ -438,7 +439,7 @@ int main(int argc, char **argv)
 		status_msg.obstacle = obstacleStatus;
 		pub.publish(status_msg);	//publish message
 		carrierRobot.stateLogic();
-        carrierRobot.move();
+        //carrierRobot.move();
         ros::spinOnce();
 		loop_rate.sleep();
 		++count; // increase counter

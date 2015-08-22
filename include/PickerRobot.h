@@ -25,8 +25,8 @@ public:
     void subscribeNextBeacon(ros::NodeHandle n);
 
 private:
-	int bin_capacity=0; 
-	double pick_range=2;
+	int bin_capacity;
+	double pick_range;
     
 };
 
