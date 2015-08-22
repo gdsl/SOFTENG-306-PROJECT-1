@@ -282,6 +282,12 @@ void Generator::loadTallWeeds()
     }
 }
 
+
+void Generator::loadTractor() {
+    outfile << "#Generate tractor" << endl;
+    outfile << "tractor( pose [ 0.00 -20.00 0.000 0.000 ] name \"Tractor\" color \"Blue\")" << endl;
+}
+
 void Generator::writeLaunchFile(){
     //writes to the launch file
     CMarkup xml;
@@ -294,7 +300,7 @@ void Generator::writeLaunchFile(){
     xml.SetAttrib( "type", "stageros" );
     xml.SetAttrib( "args", "$(find se306project)/world/test.world" );
     int numBeacons = rowCount * 2;
-    int totalObjects = numWeeds + numBeacons + pickerNumber + carrierNumber + dogNumber + workerNumber;
+    int totalObjects = numWeeds + numBeacons + pickerNumber + carrierNumber + dogNumber + workerNumber + 1; //1 tractor
     for (int i = 0; i < totalObjects; i++) {
         xml.AddElem("group");
         ostringstream oss;
@@ -340,6 +346,9 @@ void Generator::writeLaunchFile(){
         } else if (i < numWeeds + numBeacons + pickerNumber + carrierNumber + workerNumber + dogNumber) { //dogs
             xml.SetAttrib( "name", "AlphaDognode" );
             xml.SetAttrib( "type", "AlphaDog" );
+        } else if (i < numWeeds + numBeacons + pickerNumber + carrierNumber + workerNumber + dogNumber + 1) { //tractor
+            xml.SetAttrib( "name", "Tractornode" );
+            xml.SetAttrib( "type", "Tractor" );
         }
         xml.SetAttrib( "args", oss.str() );
         xml.OutOfElem();

@@ -38,7 +38,6 @@ void stage_callback(nav_msgs::Odometry msg) {
 int main(int argc, char **argv) 
 {
     
-    
     //initialise ros    
     ros::init(argc,argv,"Animal");
 

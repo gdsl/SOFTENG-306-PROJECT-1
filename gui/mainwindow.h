@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <QtGui/QMainWindow>
 #include <QListWidget>
-
+#include "KeyReceiver.h"
 
 using namespace std;
 
@@ -52,6 +52,7 @@ private:
     int numWeeds = 10;
     int numDogs;
     int numWorkers;
+    KeyReceiver* key;
     
 //	void updateGUI(const QString buffer);
 //	void *print_message_function( void *ptr );

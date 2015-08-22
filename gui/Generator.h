@@ -20,6 +20,7 @@ class Generator
 		void loadPeople();
 		void loadAnimals();
         void loadTallWeeds();
+        void loadTractor();
         void writeLaunchFile();
 		void write();
 		int rowCount = 7;
