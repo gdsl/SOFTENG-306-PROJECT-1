@@ -58,14 +58,14 @@ TEST(AlphaPerson, setDesireLocationOfPerson) {
  * Velocity of Robot should be set to value given as the Robot should be moving towards its
  * horizontal or vertical destination.
  * WILL NOT WORK UNTIL ROBOT PUBLISHERS ARE INITIALIZED IN CONSTRUCTORS.*/
-TEST(MoveForward, moveForwardWhenNotAtDestinationAlpha) {
-	AlphaPerson alphaPerson;
-	ros::NodeHandle n;
-	alphaPerson.robotNode_stage_pub=n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
-	alphaPerson.setPose(10, 10, 5);
-	alphaPerson.moveForward(15, 1, "x");
-	EXPECT_EQ(alphaPerson.getLin(), 1);
-}
+//TEST(MoveForward, moveForwardWhenNotAtDestinationAlpha) {
+//	AlphaPerson alphaPerson;
+//	ros::NodeHandle n;
+//	alphaPerson.robotNode_stage_pub=n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
+//	alphaPerson.setPose(10, 10, 5);
+//	alphaPerson.moveForward(15, 1, "x");
+//	EXPECT_EQ(alphaPerson.getLin(), 1);
+//}
 
 int main(int argc, char**argv) {
 	ros::init(argc, argv, "testAlphaPerson");

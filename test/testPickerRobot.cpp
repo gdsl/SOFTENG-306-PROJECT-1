@@ -51,14 +51,14 @@ TEST(PickerRobot, setDesireLocationOfPicker) {
 	EXPECT_TRUE(pickerRobot.getDesireLocation());
 }
 
-TEST(PickerRobot, moveForwardWhenNotAtDestinationPicker) {
-	PickerRobot pickerRobot;
-	ros::NodeHandle n;
-	pickerRobot.robotNode_stage_pub=n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
-	pickerRobot.setPose(10, 10, 5);
-	pickerRobot.moveForward(15, 1, "x");
-	EXPECT_EQ(pickerRobot.getLin(), 1);
-}
+//TEST(PickerRobot, moveForwardWhenNotAtDestinationPicker) {
+//	PickerRobot pickerRobot;
+//	ros::NodeHandle n;
+//	pickerRobot.robotNode_stage_pub=n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
+//	pickerRobot.setPose(10, 10, 5);
+//	pickerRobot.moveForward(15, 1, "x");
+//	EXPECT_EQ(pickerRobot.getLin(), 1);
+//}
 
 int main(int argc,char **argv) {
 	ros::init(argc, argv, "testPickerRobot");
