@@ -8,6 +8,7 @@
 #include <vector>
 #include <string>
 #include "Movement.h"
+#include "Constants.h"
 #include <sensor_msgs/LaserScan.h>
 
 /**
@@ -47,6 +48,7 @@ Entity::Entity(double x, double y, double theta, double linearVelocity, double a
 	this->previousScanNumber=0; //variable for the numberth of the previous scan critical object
 	this->previousScanNumberMin=0; //variable for the min numberth of the previous scan critcial object can be scan
 	this->previousScanNumberMax=0; //variable for the max numberth of the previous scan critcial object can be scan
+	this->avoidanceCase=NONE;
 }
 
 Movement currentMovement;//create field for current movement of the node.
@@ -97,11 +99,12 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg)
 
 	// reset values
 	bool found=false;
+	avoidanceCase=NONE;
 	minDistance = 10;
 	obstacleAngle = 270;
 	criticalIntensity=0; //the critical intensity of the surrounding specific subclass should implement avoidance plan
 	int l=msg.ranges.size(); // sizeof(msg.ranges[0]);
-	for (int i=45; i<l-45; i++){ //only process the object in +45 to -45 degree of the nodes laser
+	for (int i=41; i<l-41; i++){ //only process the object in +49 to -49 degree of the nodes laser
 		if (msg.ranges[i]< minDistance) {//work out the minimum distance object
 			minDistance = msg.ranges[i];
 			obstacleAngle= (i/l) * msg.angle_increment + msg.angle_min;
@@ -116,46 +119,57 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg)
 			}
 		}
 	}
-	if(numOfScan==1){//check if there is perpendicular movement
-		if(previousScanDistance<msg.ranges[previousScanNumber]&&previousScanIntensity==msg.intensities[previousScanNumber]){//obstacle got closer
-			criticalIntensity=previousScanIntensity;
+	if(minDistance<1&&previousScanIntensity>1){
+		if(previousScanIntensity==WEED_INTENSITY){
+			avoidanceCase=WEED;//the object in way is weed
+		}else if(previousScanIntensity>=LIVING_MIN_INTENSITY){
+			avoidanceCase=LIVING_OBJ;//the object is a living object that is not weed
 		}else{
-			int currentMax=previousScanNumber;
-			int currentMin=previousScanNumber;
-			for(int i=previousScanNumber;i<l-45;i++){//work out max number of scan critical object still can be observed
-				if(previousScanIntensity!=msg.intensities[i]&&!found){
-					currentMax=i-1;
-					found=true;
+			if(numOfScan==1){//check if there is perpendicular movement
+				if(previousScanDistance<msg.ranges[previousScanNumber]&&previousScanIntensity==msg.intensities[previousScanNumber]){//obstacle got closer
+					criticalIntensity=previousScanIntensity;//set the critical intensity as object got closer
+					avoidanceCase=FACE_ON;//the object is face on
+				}else{
+					int currentMax=previousScanNumber;
+					int currentMin=previousScanNumber;
+					for(int i=previousScanNumber;i<l-45;i++){//work out max number of scan critical object still can be observed
+						if(previousScanIntensity!=msg.intensities[i]&&!found){
+							currentMax=i-1;
+							found=true;
+						}
+					}
+					found=false;
+					for(int i=previousScanNumber;i>44;i--){//work out min number of scan critical object still can be observed
+						if(previousScanIntensity!=msg.intensities[i]&&!found){
+							currentMin=i+1;
+							found=true;
+						}
+					}
+					if (currentMax!=previousScanNumberMax||currentMin!=previousScanNumberMin){//it is moving horizontally or rotating
+						avoidanceCase=PERPENDICULAR;//avoidance case is perpendicular
+					}else{
+						avoidanceCase=STATIONARY;//if x or y distance didnt change then obj must be stationary
+					}
 				}
-			}
-			found=false;
-			for(int i=previousScanNumber;i>44;i--){//work out min number of scan critical object still can be observed
-				if(previousScanIntensity!=msg.intensities[i]&&!found){
-					currentMin=i+1;
-					found=true;
+				numOfScan=0;
+			}else{
+				for(int i=previousScanNumber;i<l-41;i++){//work out max number of scan critical object still can be observed
+					if(previousScanIntensity!=msg.intensities[i]&&!found){
+						previousScanNumberMax=i-1;
+						found=true;
+					}
 				}
-			}
-			if (currentMax!=previousScanNumberMax||currentMin!=previousScanNumberMin){//it is moving horizontally or rotating
-				criticalIntensity=4;//halt movement
-			}
-		}
-		numOfScan=0;
-	}else{
-		for(int i=previousScanNumber;i<l-45;i++){//work out max number of scan critical object still can be observed
-			if(previousScanIntensity!=msg.intensities[i]&&!found){
-				previousScanNumberMax=i-1;
-				found=true;
+				found=false;
+				for(int i=previousScanNumber;i>41;i--){//work out min number of scan critical object still can be observed
+					if(previousScanIntensity!=msg.intensities[i]&&!found){
+						previousScanNumberMin=i+1;
+						found=true;
+					}
+				}
+				avoidanceCase=HALT;//halt current movement
+				numOfScan+=1;
 			}
 		}
-		found=false;
-		for(int i=previousScanNumber;i>44;i--){//work out min number of scan critical object still can be observed
-			if(previousScanIntensity!=msg.intensities[i]&&!found){
-				previousScanNumberMin=i+1;
-				found=true;
-			}
-		}
-		criticalIntensity=4;//halt movement
-		numOfScan+=1;
 	}
 }
 
@@ -237,6 +251,14 @@ int Entity::getMovementQueueSize() {
 int Entity::getAvoidanceQueueSize() {
 	return avoidanceQueue.size();
 }
+
+/**
+ * Method to get the avoidance cases
+ */
+Entity::AvoidanceCase Entity::getAvoidanceCase() {
+	return avoidanceCase;
+}
+
 /**
  * Method to add movements to movement queue
  * Distance: the value relative to the absolute frame of reference

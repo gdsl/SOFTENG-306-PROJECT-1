@@ -4,6 +4,8 @@
 #include "se306project/robot_status.h"
 #include <utility>
 #include <vector>
+#include <iostream>
+#include <string>
 
 /*
  * Default constructor for carrier Robot
@@ -70,6 +72,26 @@ CarrierRobot carrierRobot;
 std::string previousStatus = "Idle";
 std::string obstacleStatus = "No obstacles";
 std::vector<std::pair<double,double> > seenPointList;
+double targetX = 0;
+double targetY = 0;
+
+//string splitting function, taken from: http://stackoverflow.com/questions/236129/split-a-string-in-c
+std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
+    std::stringstream ss(s);
+    std::string item;
+    while (std::getline(ss, item, delim)) {
+        elems.push_back(item);
+    }
+    return elems;
+}
+
+
+std::vector<std::string> split(const std::string &s, char delim) {
+    std::vector<std::string> elems;
+    split(s, delim, elems);
+    return elems;
+}
+//=====
 /*
  * Wrapper method for the callBackStageOdm method
  */
@@ -78,7 +100,100 @@ void callBackStageOdm(const nav_msgs::Odometry msg){
 }
 
 void callBackLaserScan(const sensor_msgs::LaserScan msg) {
-	carrierRobot.stageLaser_callback(msg);
+	carrierRobot.stageLaser_callback(msg);//call super class callback which is where the laser scanning logic is designed
+
+	if (carrierRobot.getAvoidanceCase()!=Entity::NONE) {//check if there is need to avoid obstacle
+		if(carrierRobot.getState()!=Robot::IDLE){//check if robot is idle or not
+			if(carrierRobot.getAvoidanceCase()==Entity::WEED){// if its weed stop
+				carrierRobot.addMovementFront("forward_x",0,0,1);//add empty movement to front of avoidance to stop
+				obstacleStatus = "Weed! Help!";
+			}else if(carrierRobot.getAvoidanceCase()==Entity::LIVING_OBJ){//if its human or animal stop
+				carrierRobot.addMovementFront("forward_x",0,0,1);//add empty movement to front of avoidance to stop
+			}else if(carrierRobot.getAvoidanceCase()==Entity::HALT){//if its halt stop
+				carrierRobot.addMovementFront("forward_x",0,0,1);//add empty movement to front of avoidance to stop
+			}else if(carrierRobot.getAvoidanceCase()==Entity::STATIONARY&& carrierRobot.getCriticalIntensity()>1){//if its stationary robot
+				if(carrierRobot.getDirectionFacing()== carrierRobot.NORTH){
+					carrierRobot.addMovementFront("rotation",M_PI/2,1,1);
+					carrierRobot.addMovementFront("forward_x",3,1,1);
+					carrierRobot.addMovementFront("rotation",0, 1,1);
+					carrierRobot.addMovementFront("forward_y",3,1,1);
+					carrierRobot.addMovementFront("rotation",M_PI/2,1,1);
+					carrierRobot.addMovementFront("forward_x",-3,1,1);
+					carrierRobot.addMovementFront("rotation",M_PI,1,1);
+					carrierRobot.addMovementFront("forward_x",0,0,1);//this is at front of front
+					//carrierRobot.move();
+				}else if(carrierRobot.getDirectionFacing()== carrierRobot.SOUTH){
+					carrierRobot.addMovementFront("rotation",-M_PI/2,1,1);
+					carrierRobot.addMovementFront("forward_x",3,1,1);
+					carrierRobot.addMovementFront("rotation",0, 1,1);
+					carrierRobot.addMovementFront("forward_y",-3,1,1);
+					carrierRobot.addMovementFront("rotation",-M_PI/2,1,1);
+					carrierRobot.addMovementFront("forward_x",-3,1,1);
+					carrierRobot.addMovementFront("rotation",M_PI,1,1);
+					carrierRobot.addMovementFront("forward_x",0,0,1);//this is at front of front
+					//carrierRobot.move();
+				}else if(carrierRobot.getDirectionFacing()== carrierRobot.EAST){
+					carrierRobot.addMovementFront("rotation",0, 1,1);
+					carrierRobot.addMovementFront("forward_y",3,1,1);
+					carrierRobot.addMovementFront("rotation",M_PI/2, 1,1);
+					carrierRobot.addMovementFront("forward_x",3,0,1);
+					carrierRobot.addMovementFront("rotation",0, 1,1);
+					carrierRobot.addMovementFront("forward_y",-3,1,1);
+					carrierRobot.addMovementFront("rotation",-M_PI/2, 1,1);
+					carrierRobot.addMovementFront("forward_x",0,0,1);//this is at front of front
+					//carrierRobot.move();
+				}else if(carrierRobot.getDirectionFacing()== carrierRobot.WEST){
+					carrierRobot.addMovementFront("rotation",M_PI, 1,1);
+					carrierRobot.addMovementFront("forward_y",3,1,1);
+					carrierRobot.addMovementFront("rotation",M_PI/2, 1,1);
+					carrierRobot.addMovementFront("forward_x",-3,0,1);
+					carrierRobot.addMovementFront("rotation",M_PI, 1,1);
+					carrierRobot.addMovementFront("forward_y",-3,1,1);
+					carrierRobot.addMovementFront("rotation",-M_PI/2, 1,1);
+					carrierRobot.addMovementFront("forward_x",0,0,1);//this is at front of front
+					//carrierRobot.move();
+				}
+			}else if(carrierRobot.getAvoidanceCase()==Entity::PERPENDICULAR){
+				if(carrierRobot.getDirectionFacing()== carrierRobot.NORTH||carrierRobot.getDirectionFacing()== carrierRobot.SOUTH){
+					//if robot moving in the y direction give way
+					carrierRobot.addMovementFront("forward_x",0,0,1);
+				}
+			}else if(carrierRobot.getAvoidanceCase()==Entity::FACE_ON){
+				if(carrierRobot.getAvoidanceQueueSize()<=0){
+					if(carrierRobot.getDirectionFacing()== carrierRobot.NORTH&&obstacleStatus.compare("Obstacle nearby")!=0){
+						carrierRobot.addMovementFront("rotation",M_PI/2,1,1);
+						carrierRobot.addMovementFront("forward_x",3,1,1);
+						carrierRobot.addMovementFront("rotation",0, 1,1);
+						carrierRobot.addMovementFront("forward_y",3,1,1);
+						carrierRobot.addMovementFront("rotation",M_PI/2,1,1);
+						carrierRobot.addMovementFront("forward_x",-3,1,1);
+						carrierRobot.addMovementFront("rotation",M_PI,1,1);
+						carrierRobot.addMovementFront("forward_x",0,0,1);//this is at front of front
+						//carrierRobot.move();
+					}else if(carrierRobot.getDirectionFacing()== carrierRobot.EAST&&obstacleStatus.compare("Obstacle nearby")!=0){
+						carrierRobot.addMovementFront("rotation",0, 1,1);
+						carrierRobot.addMovementFront("forward_y",3,1,1);
+						carrierRobot.addMovementFront("rotation",M_PI/2, 1,1);
+						carrierRobot.addMovementFront("forward_x",3,0,1);
+						carrierRobot.addMovementFront("rotation",0, 1,1);
+						carrierRobot.addMovementFront("forward_y",-3,1,1);
+						carrierRobot.addMovementFront("rotation",-M_PI/2, 1,1);
+						carrierRobot.addMovementFront("forward_x",0,0,1);//this is at front of front
+						//carrierRobot.move();
+					}
+				}else{
+					//halt movement if already have avoidance logic
+					carrierRobot.addMovementFront("forward_x",0,0,1);
+					//carrierRobot.move();
+				}
+			}
+			//get carrier to move
+			carrierRobot.move();
+		}
+		obstacleStatus = "Obstacle nearby";
+	} else {
+		obstacleStatus = "No obstacles";
+	}
 }
 
 /*
@@ -109,8 +224,8 @@ void recievePickerRobotStatus(const se306project::robot_status::ConstPtr& msg)
 	}else if(carrierRobot.getStatus().compare("Idle")==0){
 		//when the carrier robot is idle and the picker robot is full the carrier robot move to it.
 		if ((msg->status).compare("Full") == 0){
-			// carrier robot will approach picker but will leave a space to avoid colliding
-            if (carrierRobot.isInitialMovement()) {
+
+                //check the list of points that carrier robot seen
                 bool seen = false;
                 std::pair<double,double> currentPoint;
                 currentPoint.first = -5;
@@ -123,15 +238,17 @@ void recievePickerRobotStatus(const se306project::robot_status::ConstPtr& msg)
                     }
                 }                
 
-
+                //if the carrier robot have not seen the point or other carrier is not moving to the point
+                //dispatch the current carrier to this point
                 if (!seen) {
                     carrierRobot.setState(Robot::MOVING);    
                     if (carrierRobot.getMovementQueueSize() <= 1) {
-                        
+                        targetX = currentPoint.first;
+                        targetY = currentPoint.second;
                         carrierRobot.faceEast(1);
                         carrierRobot.addMovement("forward_x",10,1);
-                       // double pickerY = msg->pos_y;
-                        double pickerY = 8.15;
+                        double pickerY = msg->pos_y;
+                        //double pickerY = 8.15;
                         if (pickerY >= carrierRobot.getY() ){
                            carrierRobot.faceNorth(1);
                         } else {
@@ -141,18 +258,17 @@ void recievePickerRobotStatus(const se306project::robot_status::ConstPtr& msg)
                         carrierRobot.setYDistanceTravel(pickerY - carrierRobot.getY());
                         carrierRobot.addMovement("forward_y",carrierRobot.getYDistanceTravel(),1);
                         
-                        //double pickerX = msg->pos_x;
-                        double pickerX = -5;
+                        double pickerX = msg->pos_x;
+                        //double pickerX = -5;
                         carrierRobot.faceEast(1);
                         //xDistanceTravel = pickerX - carrierRobot.getX() -10;
-                        carrierRobot.setXDistanceTravel(pickerX - carrierRobot.getX() -10);
+                        double distanceBetween = 3.15;
+                        carrierRobot.setXDistanceTravel(pickerX - carrierRobot.getX() -10 - distanceBetween);
                         carrierRobot.addMovement("forward_x",carrierRobot.getXDistanceTravel(),1);                                       
                     }
-                } else {
-                   
-                }
+                } 
             }
-		}
+		
 	}
 }
 
@@ -161,7 +277,36 @@ void recievePickerRobotStatus(const se306project::robot_status::ConstPtr& msg)
  */
 void receiveCarrierRobotStatus(const se306project::robot_status::ConstPtr& msg)
 {
+    //checking the other carrier target location while waiting to be dispatch
+    if (carrierRobot.getState() == Robot::IDLE) {
+        std::string status = msg->status;
+        //only want the carrier robot that is moving toward the picker robots
+        if (status.find("Moving") !=  std::string::npos) {
+            std::vector<std::string> stringList = split(status,' ');
 
+            double x;
+            double y;
+            std::stringstream convertX(stringList[1]);
+            std::stringstream convertY(stringList[2]);
+            
+            if (!(convertX >> x)) x = 0;
+            if (!(convertY >> y)) y = 0;
+            
+            //check if the point is not in seen list already then add it in.
+            std::pair<double,double> currentPoint;
+            currentPoint.first = x;
+            currentPoint.second = y;
+            bool seen = false;
+            for (std::vector<std::pair<double,double> >::iterator it = seenPointList.begin(); it != seenPointList.end(); ++it) {
+                if (*it == currentPoint) {
+                    seen = true;
+                    break;
+                }
+            }
+
+            if (!seen) seenPointList.push_back(currentPoint);
+        }
+    }
 }
     
 /**
@@ -171,7 +316,13 @@ void CarrierRobot::stateLogic(){
     if (carrierRobot.getState() == IDLE) { 
        carrierRobot.setStatus("Idle"); 
     } else if (carrierRobot.getState() == MOVING) {
-        carrierRobot.setStatus("Moving");   
+        std::stringstream convert;
+        convert << "Moving";
+        convert << " ";
+        convert << targetX;
+        convert << " ";
+        convert << targetY;
+        carrierRobot.setStatus(convert.str());   
 
         if (carrierRobot.getMovementQueueSize() == 0 ) {
             carrierRobot.setState(Robot::ARRIVED);
@@ -180,8 +331,9 @@ void CarrierRobot::stateLogic(){
         carrierRobot.setStatus("Arrived");
     } else if (carrierRobot.getState() == TRANSPORTING) {
         carrierRobot.setStatus("Transporting"); 
-
+        
         if (carrierRobot.getMovementQueueSize() == 0 ) {
+            //move up the queue line to the dispatch area.
             carrierRobot.setState(Robot::QUEUE);
             carrierRobot.faceNorth(1);
             double distance = 24 - carrierRobot.getY();
@@ -191,9 +343,12 @@ void CarrierRobot::stateLogic(){
         carrierRobot.setStatus("Queueing");
     
          if (carrierRobot.getMovementQueueSize() == 0 && carrierRobot.getY() >= 23.99 ) {
+            //if the robot is in the dispatch area, switch idle state and ready to dispatch
+            seenPointList.clear();
             carrierRobot.setState(Robot::IDLE);
         }
     } 
+    carrierRobot.move();
     
 }
 
@@ -212,7 +367,7 @@ int main(int argc, char **argv)
     
     //initialize the Carrier robot with the correct position, velocity and state parameters.
 	carrierRobot=CarrierRobot(xPos,yPos,M_PI/2,0,0,"Idle");
-    carrierRobot.setState(Robot::IDLE);
+    carrierRobot.setState(Robot::TRANSPORTING);
     
 	//NodeHandle is the main access point to communicate with ros.
 	ros::NodeHandle n;
@@ -251,35 +406,32 @@ int main(int argc, char **argv)
     } 
 
     //subscribe to other carrier
-    /*
-    std::string start(argv[5]);
-    std::string end(argv[6]);
-    int a = atoi(start.c_str());
-    int b = atoi(end.c_str());
-    int size = e-s+1;*/
+    std::string carrierStart(argv[5]);
+    std::string carrierEnd(argv[6]);
+    int a = atoi(carrierStart.c_str());
+    int b = atoi(carrierEnd.c_str());
+    size = b-a+1;
     
     //subscribing all the carrier robot
-    /*
+    
     ros::Subscriber *carrierArray = new ros::Subscriber[size];
-    int index = 0;
+    index = 0;
     for (int i = a; i<=b; i++) {
         std::stringstream convert;
         convert << i;
         topicName = "/robot_" + convert.str() + "/status";
-        carrierArray[index] = n.subscribe<se306project::robot_status>(topicName,1000,recievePickerRobotStatus);
+        carrierArray[index] = n.subscribe<se306project::robot_status>(topicName,1000,receiveCarrierRobotStatus);
         index++;
-    } */
+    } 
 
 	//a count of how many messages we have sent
 	int count = 0;
 	//carrier status message initialisation
 	se306project::carrier_status status_msg;
-    carrierRobot.addMovement("forward_y", 0.25, 1);
     
 	//ROS loop
 	while (ros::ok())
-	{
-		ros::spinOnce();
+	{		
 		status_msg.my_counter=count;		//add counter to message
 		status_msg.status=carrierRobot.getStatus();		//add status to message
 		status_msg.pos_x=carrierRobot.getX(); //add x to message to broadcast
@@ -288,13 +440,13 @@ int main(int argc, char **argv)
 		status_msg.obstacle = obstacleStatus;
 		pub.publish(status_msg);	//publish message
 		carrierRobot.stateLogic();
-        carrierRobot.move();
-        if (carrierRobot.getMovementQueueSize() == 0) carrierRobot.setInitialMovement(true);
+        //carrierRobot.move();
+        ros::spinOnce();
 		loop_rate.sleep();
 		++count; // increase counter
 	}
 
     delete[] array;
-    //delete[] carrierArray;
+    delete[] carrierArray;
 	return 0;
 }
