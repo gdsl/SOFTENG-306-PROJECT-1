@@ -79,19 +79,6 @@ void callBackStageOdm(const nav_msgs::Odometry msg){
 
 void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 	carrierRobot.stageLaser_callback(msg);
-
-    //detecting carrier in front
-    if (carrierRobot.isInitialMovement()) {
-        int l=msg.intensities.size();
-        carrierRobot.setCarrierInFront(false);
-        for (int i = 45; i<l-45; i++) {
-            if (msg.intensities[i] == 3) {
-                carrierRobot.setCarrierInFront(true);
-                break;
-            } 
-        }
-    }
-
 }
 
 /*
@@ -130,7 +117,6 @@ void recievePickerRobotStatus(const se306project::robot_status::ConstPtr& msg)
                 currentPoint.second = 8.15;
 
                 for (std::vector<std::pair<double,double> >::iterator it = seenPointList.begin(); it != seenPointList.end(); ++it) {
-                    
                     if (*it == currentPoint) {
                         seen = true;            
                         break;
@@ -138,7 +124,7 @@ void recievePickerRobotStatus(const se306project::robot_status::ConstPtr& msg)
                 }                
 
 
-                if ( !(carrierRobot.isCarrierInFront()) && !seen) {
+                if (!seen) {
                     carrierRobot.setState(Robot::MOVING);    
                     if (carrierRobot.getMovementQueueSize() <= 1) {
                         
@@ -162,8 +148,8 @@ void recievePickerRobotStatus(const se306project::robot_status::ConstPtr& msg)
                         carrierRobot.setXDistanceTravel(pickerX - carrierRobot.getX() -10);
                         carrierRobot.addMovement("forward_x",carrierRobot.getXDistanceTravel(),1);                                       
                     }
-                } else if ( !seen && carrierRobot.isCarrierInFront() ) {
-                    seenPointList.push_back(currentPoint);  
+                } else {
+                   
                 }
             }
 		}
