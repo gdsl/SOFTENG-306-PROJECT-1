@@ -115,20 +115,19 @@ void MainWindow::generate() {
     //writeXml();
 
     // initialise variables
-    numPickers = ui->pickerSpinner->value();
-    numCarriers = ui->carrierSpinner->value();
-    numWorkers = ui->workerSpinner->value();
-    numDogs = ui->dogSpinner->value();
-    numCats = ui->catSpinner->value();
-    rowWidth = ui->rowWidthSpinner->value();
-    poleTrunkSpacing = ui->spacingSpinner->value();
-    rowLength = 70;
-    numRows = ui->rowNumberSpinner->value();
-    numBlindPerson = ui->blindPersonSpinner->value();
-    numNeighbors = ui->neighborSpinner->value();
-    numGardeners = ui->gardenerSpinner->value();
-    numTractors = ui->tractorSpinner->value();
-    numBeacons = numRows*2;
+    model.pickerRobots = ui->pickerSpinner->value();
+    model.carrierRobots = ui->carrierSpinner->value();
+    model.workers = ui->workerSpinner->value();
+    model.dogs = ui->dogSpinner->value();
+    model.cats = ui->catSpinner->value();
+    model.rowWidth = ui->rowWidthSpinner->value();
+    model.poleTrunkSpacing = ui->spacingSpinner->value();
+    model.rowCount = ui->rowNumberSpinner->value();
+    model.blindPerson = ui->blindPersonSpinner->value();
+    model.neighbors = ui->neighborSpinner->value();
+    model.gardeners = ui->gardenerSpinner->value();
+    //model.tractors = ui->tractorSpinner->value();
+    model.beacons = model.rowCount*2;
     
     uiListPeoples.clear();
     uiListRobots.clear();
@@ -177,7 +176,7 @@ void MainWindow::generate() {
     for (int i = 0; i < uiListPeoples.size(); i++) {
     	ui->peopleScroll->widget()->layout()->addWidget(uiListPeoples[i]);
     }
-    Generator generator("world/test.world", numPickers, numCarriers, numDogs, numCats, numWorkers, rowWidth, poleTrunkSpacing);
+    Generator generator("world/test.world", model);
     
 	generator.loadWorld();
 	generator.loadTallWeeds();
