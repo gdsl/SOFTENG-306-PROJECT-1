@@ -50,6 +50,7 @@ class Entity
 		void updateOdometry();
 		void setDesireLocation(bool desireLocation);
 		void setStatus(std::string status);
+                void determineStatus();
 
 		//get method
 		double getX();

@@ -320,6 +320,26 @@ void Entity::rotate(double angleToRotateTo, double angleSpeed){
 }
 
 /**
+ *Method to determine the status
+ */
+void Entity::determineStatus(){
+	// Logic to determine current status of Entity - Walking/Idle/Turning
+	// Convert radians to degrees
+	angle = roundf(theta * 57.2957795 * 100) / 100;
+	// Check if entity is moving (and therefore 'walking')
+	if (linearVelocity > 0.01) {
+		status = "Walking";
+	}
+	// Check if entity is facing North/East/South/West AND not moving (and therefore 'idle')
+	else if ((angle == -360) || (angle == -270) || (angle == -180) || (angle == -90) || (angle == 0) || (angle == 90) || (angle == 180) || (angle == 270) || (angle == 360) && (linearVelocity == 0)) {
+		status = "Idle";
+	}
+	else {
+		status = "Turning";
+	}
+}
+
+/**
  * Message to rotate the entity such that it faces North
  */
 void Entity::faceNorth(double angleSpeed){
@@ -425,7 +445,7 @@ void Entity::setDesireLocation(bool desireLocation){
  * Getter method for status of the entity
  */
 std::string Entity::getStatus() {
-	return status;
+       return status;
 }
 
 /**
