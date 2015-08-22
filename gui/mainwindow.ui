@@ -326,6 +326,33 @@
      <layout class="QHBoxLayout" name="horizontalLayout_2"/>
     </widget>
    </widget>
+   <widget class="QLabel" name="pickerRobotsLabel_4">
+    <property name="geometry">
+     <rect>
+      <x>350</x>
+      <y>520</y>
+      <width>111</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Cat number</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="catsField">
+    <property name="geometry">
+     <rect>
+      <x>490</x>
+      <y>520</y>
+      <width>113</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>1</string>
+    </property>
+   </widget>
+   <zorder>displayStatusButton</zorder>
    <zorder>robotScroll</zorder>
    <zorder>robotLabel</zorder>
    <zorder>settingsLabel</zorder>
@@ -340,12 +367,13 @@
    <zorder>animalLabel</zorder>
    <zorder>carrierRobotsField</zorder>
    <zorder>carrierRobotsLabel</zorder>
-   <zorder>generateButton</zorder>
    <zorder>workersField</zorder>
    <zorder>pickerRobotsLabel_2</zorder>
    <zorder>pickerRobotsLabel_3</zorder>
    <zorder>dogsField</zorder>
    <zorder>animalScroll</zorder>
+   <zorder>pickerRobotsLabel_4</zorder>
+   <zorder>catsField</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -353,7 +381,7 @@
      <x>0</x>
      <y>0</y>
      <width>1037</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuOrchard_Simulator">
