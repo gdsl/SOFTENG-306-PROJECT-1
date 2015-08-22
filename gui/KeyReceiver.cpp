@@ -17,6 +17,7 @@ void KeyReceiver::fireKeyData(){
     if (lastKeyPressed == 0) {
             qDebug("none KEY");
         system("rostopic pub tractor std_msgs/String \"none\" --once &");
+        timer->stop();
     } else if (lastKeyPressed == 1) {
             qDebug("left KEY");
         system("rostopic pub tractor std_msgs/String \"left\" --once &");
@@ -36,6 +37,7 @@ void KeyReceiver::fireKeyData(){
 bool KeyReceiver::eventFilter(QObject* obj, QEvent* event)
 {
     if (event->type()==QEvent::KeyPress) {
+        timer->start(3000); //time specified in ms
         QKeyEvent* key = static_cast<QKeyEvent*>(event);
         if ( (key->key()==Qt::Key_Left) ) {
             lastKeyPressed = 1;

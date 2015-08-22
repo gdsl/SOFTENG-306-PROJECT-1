@@ -41,7 +41,7 @@ void callBackStageOdm(const nav_msgs::Odometry msg){
 void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 	carrierRobot.stageLaser_callback(msg);
 
-	if (carrierRobot.getMinDistance() < 1) {
+	if (carrierRobot.getMinDistance() < 1&&carrierRobot.getStatus().compare("Idle")!=0) {
 
 		if(carrierRobot.getCriticalIntensity()>=4){//if its human or dog stop
 			carrierRobot.addMovementFront("forward_x",0,0,1);
@@ -155,7 +155,7 @@ int main(int argc, char **argv)
     ROS_INFO("y start: %f", yPos);
     
     //initialize the Carrier robot with the correct position, velocity and state parameters.
-	carrierRobot=CarrierRobot(xPos,yPos,0,0,0,"Idle");
+	carrierRobot=CarrierRobot(xPos,yPos,M_PI/2,0,0,"Idle");
 
 	//NodeHandle is the main access point to communicate with ros.
 	ros::NodeHandle n;
