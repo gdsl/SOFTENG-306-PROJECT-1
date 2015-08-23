@@ -29,16 +29,21 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->robotScroll->widget()->layout()->setAlignment(Qt::AlignLeft);
     ui->peopleScroll->widget()->layout()->setAlignment(Qt::AlignLeft);
     ui->animalScroll->widget()->layout()->setAlignment(Qt::AlignLeft);
-    
-    key = new KeyReceiver();
-    ui->animalScroll->installEventFilter(key);
+}
+
+void MainWindow::setKey(KeyReceiver *k) {
+    key = k;
+}
+
+int MainWindow::getLastKeyPressed() {
+    return key->lastKeyPressed;
 }
 
 void MainWindow::startReadingTopics() {
     bool ok;
-    int totalDynamicStuff = model.pickerRobots + model.carrierRobots + model.workers + model.dogs + model.cats + model.tractors;
+    int totalNodes = model.getTotalNodes();
     
-	for (int i = model.beacons+model.weed; i < model.beacons + model.weed + totalDynamicStuff ; i++) {
+	for (int i = model.beacons+model.weed; i < totalNodes ; i++) {
 		QThread *thread = new QThread(this);
 		Worker *worker = new Worker();
 
@@ -58,6 +63,7 @@ void MainWindow::startReadingTopics() {
 MainWindow::~MainWindow()
 {
     //close roslaunch and close all rostopics
+	system("pkill Tractor");
 	system("pkill roslaunch");
 	system("pkill stage");
 	system("pkill rostopic");
@@ -101,8 +107,25 @@ void MainWindow::on_displayStatusButton_clicked()
     //MainWindow::generate();
 }
 
+void MainWindow::on_testDriveButton_clicked()
+{
+    if (!startedTestDrive) {
+        //start the sender to tractor in new thread             
+        Worker *worker = new Worker();
+        worker->setMainWindow(this);
+        QThread *thread = new QThread(this);
+        worker->moveToThread(thread);
+        connect(thread, SIGNAL(started()), worker, SLOT(sendToTractor()));
+        thread->start();
+        startedTestDrive = true;
+        ui->robotScroll->setFocus();
+    }
+}
+
 void MainWindow::on_closeButton_clicked() {
+	system("pkill Tractor");
 	system("pkill roslaunch");
+	startedTestDrive = false;
 	system("pkill stage");
 	system("pkill rostopic");
 	system("pkill roscore");
@@ -183,14 +206,16 @@ void MainWindow::generate() {
 	generator.loadCarrierRobots();
 	generator.loadPeople();
 	generator.loadAnimals();
-	
-	generator.write();
-    generator.writeLaunchFile();
 	generator.loadTractor();
 	generator.write();
 	generator.writeLaunchFile();
 
 }
+
+int MainWindow::getTotalNodesFromModel() {
+    return model.getTotalNodes();
+}
+
 /*
 void MainWindow::writeXml() {
     CMarkup xml;

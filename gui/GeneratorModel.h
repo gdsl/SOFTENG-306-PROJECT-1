@@ -22,4 +22,6 @@ public:
 	int tractors;
 	int beacons;
 	int weed;
+	
+	int getTotalNodes();
 };

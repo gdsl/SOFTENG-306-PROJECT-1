@@ -253,7 +253,7 @@
         <item row="4" column="5">
          <widget class="QSpinBox" name="neighborSpinner">
           <property name="value">
-           <number>1</number>
+           <number>0</number>
           </property>
          </widget>
         </item>
@@ -267,7 +267,7 @@
         <item row="2" column="5">
          <widget class="QSpinBox" name="blindPersonSpinner">
           <property name="value">
-           <number>1</number>
+           <number>0</number>
           </property>
          </widget>
         </item>
@@ -302,7 +302,7 @@
         <item row="2" column="3">
          <widget class="QSpinBox" name="gardenerSpinner">
           <property name="value">
-           <number>1</number>
+           <number>0</number>
           </property>
          </widget>
         </item>
@@ -349,7 +349,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton">
+       <widget class="QPushButton" name="testDriveButton">
         <property name="toolTip">
          <string>Click this to take the tractor for a test drive! Drive over weeds to remove</string>
         </property>

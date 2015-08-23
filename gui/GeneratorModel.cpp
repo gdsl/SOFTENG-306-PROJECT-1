@@ -23,3 +23,7 @@ GeneratorModel::GeneratorModel()
 	beacons = 0;
 	weed = 10;
 }
+
+int GeneratorModel::getTotalNodes() {
+    return weed + beacons + pickerRobots + carrierRobots + workers + dogs + cats + blindPerson + neighbors + gardeners;
+}

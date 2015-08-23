@@ -356,7 +356,7 @@ void Generator::writeLaunchFile(){
     calculatePickerPaths(); // calculate the picking paths each Picker will take
     int numBeacons = model.rowCount * 2;
 
-    int totalObjects = model.weed + numBeacons + model.pickerRobots + model.carrierRobots + model.dogs + model.cats + model.workers + model.tractors; // 1 tractor
+    int totalObjects = model.weed + numBeacons + model.pickerRobots + model.carrierRobots + model.dogs + model.cats + model.workers; // total objects in world
 
     for (int i = 0; i < totalObjects; i++) {
         xml.AddElem("group");
