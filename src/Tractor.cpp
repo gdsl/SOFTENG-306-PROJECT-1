@@ -1,6 +1,7 @@
 #include <ros/console.h>
 #include "std_msgs/String.h"
 #include "Tractor.h"
+#include <sstream>
 
 /*
  * Default constructor for carrier Robot
@@ -81,7 +82,10 @@ int main(int argc, char **argv)
 
 
 	ros::Rate loop_rate(10);
-    tractor.robotNode_stage_pub = n.advertise<geometry_msgs::Twist>("robot_25/cmd_vel",1000);
+
+    std::ostringstream oss;
+    oss << "robot_" << xString.c_str() << "/cmd_vel";
+    tractor.robotNode_stage_pub = n.advertise<geometry_msgs::Twist>(oss.str().c_str(),1000);
 	//Broadcast the node's status information for other to subscribe to.
 	//ros::Publisher pub=n.advertise<se306project::carrier_status>("status",1000);
 

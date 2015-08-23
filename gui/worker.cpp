@@ -65,7 +65,9 @@ void Worker::setMainWindow(MainWindow *m) {
 //for sending to Tractor
 void Worker::sendToTractor() {
     FILE *in;
-    if (!(in = popen("../../devel/lib/se306project/Tractor lol", "w"))) {
+    ostringstream oss;
+    oss << "../../devel/lib/se306project/Tractor " << mw->getTotalNodesFromModel();
+    if (!(in = popen(oss.str().c_str(), "w"))) {
         qDebug("failed to run tractor node");
         return;
     }

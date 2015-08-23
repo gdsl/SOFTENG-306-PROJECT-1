@@ -34,6 +34,7 @@ public:
 	void writeLaunchFile();
 	void setKey(KeyReceiver *k);
 	int getLastKeyPressed();
+	int getTotalNodesFromModel();
     ~MainWindow();
 
     // GeneratorModel

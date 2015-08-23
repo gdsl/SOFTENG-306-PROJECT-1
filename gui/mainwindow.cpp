@@ -41,9 +41,9 @@ int MainWindow::getLastKeyPressed() {
 
 void MainWindow::startReadingTopics() {
     bool ok;
-    int totalDynamicStuff = model.pickerRobots + model.carrierRobots + model.workers + model.dogs + model.cats + model.tractors;
+    int totalNodes = model.getTotalNodes();
     
-	for (int i = model.beacons+model.weed; i < model.beacons + model.weed + totalDynamicStuff ; i++) {
+	for (int i = model.beacons+model.weed; i < totalNodes ; i++) {
 		QThread *thread = new QThread(this);
 		Worker *worker = new Worker();
 
@@ -118,6 +118,7 @@ void MainWindow::on_testDriveButton_clicked()
         connect(thread, SIGNAL(started()), worker, SLOT(sendToTractor()));
         thread->start();
         startedTestDrive = true;
+        ui->robotScroll->setFocus();
     }
 }
 
@@ -210,6 +211,11 @@ void MainWindow::generate() {
 	generator.writeLaunchFile();
 
 }
+
+int MainWindow::getTotalNodesFromModel() {
+    return model.getTotalNodes();
+}
+
 /*
 void MainWindow::writeXml() {
     CMarkup xml;
