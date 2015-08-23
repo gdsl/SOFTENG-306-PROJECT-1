@@ -33,6 +33,7 @@ class Generator
         vector<float> beaconPositions; 
         vector<int> pickerPathPositions;
         vector<float> workerPositions;
+        vector<float> gardenerPositions;
         
 	private:
 		string inputName;

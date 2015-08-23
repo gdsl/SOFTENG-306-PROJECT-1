@@ -74,7 +74,7 @@ void GardenWorker::stageLaser_callback(const sensor_msgs::LaserScan msg)
 {
 	// invoke parent stagelaser
 	//Person::stageLaser_callback(msg);
-	ROS_ERROR("TESTING");
+	//ROS_ERROR("TESTING");
 }
 
 uint GardenWorker::getWeedCounter()
@@ -94,7 +94,7 @@ int GardenWorker::getTargetY()
 
 void GardenWorker::stageOdom_callback(const nav_msgs::Odometry msg)
 {
-	Person::stageOdom_callback(msg);
+	//Person::stageOdom_callback(msg);
 }
 
 int main(int argc, char **argv)
@@ -119,19 +119,24 @@ int main(int argc, char **argv)
 	std::string end(argv[3]);
 	int s = atoi(start.c_str());
 	int e = atoi(end.c_str());
-	int size = e-s+1;
-	std::stringstream topicName;
 
-	gardenWorker.tallweed_pose_sub = new ros::Subscriber[size];
+	// -1 means no beacons, do not subscribe to weed else subscribe
+	if (!(s == -1 && e == -1)) {
+		int size = e-s+1;
+		std::stringstream topicName;
 
-	int index = 0;
-	for (int i = s; i < e+1; i++) {
-		//reset stringstream
-		topicName.str(std::string());
-		// give in topicname
-		topicName << "/robot_" << i << "/base_pose_ground_truth";
-		gardenWorker.tallweed_pose_sub[index] = n.subscribe<nav_msgs::Odometry>(topicName.str(),1000,&GardenWorker::updateNearestWeed, &gardenWorker);
-		index++;
+		gardenWorker.tallweed_pose_sub = new ros::Subscriber[size];
+
+		int index = 0;
+		for (int i = s; i < e+1; i++) {
+			//reset stringstream
+			topicName.str(std::string());
+			// give in topicname
+			topicName << "/robot_" << i << "/base_pose_ground_truth";
+			gardenWorker.tallweed_pose_sub[index] = n.subscribe<nav_msgs::Odometry>(topicName.str(),1000,&GardenWorker::updateNearestWeed, &gardenWorker);
+			index++;
+		}
+
 	}
 
 	ros::Rate loop_rate(10);

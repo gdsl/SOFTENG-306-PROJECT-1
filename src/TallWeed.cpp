@@ -40,17 +40,22 @@ int main(int argc, char **argv)
     std::string end(argv[3]);
     int s = atoi(start.c_str());
     int e = atoi(end.c_str());
-    int size = e-s+1;
-    std::stringstream topicName;
 
-    tallWeed.workerSubscribers = new ros::Subscriber[size];
+    if (!(s == -1 && e == -1)) {
+        ROS_ERROR("1");
+        int size = e-s+1;
+        std::stringstream topicName;
 
-    int index = 0;
-    for (int i = s; s < e+1; i++) {
-    	topicName.str(std::string());
-		topicName << "/robot_" << i << "/base_pose_ground_truth";
-		tallWeed.workerSubscribers[index] = n.subscribe<nav_msgs::Odometry>(topicName.str(),1000,&TallWeed::workerCallback,&tallWeed);
-		index++;
+        tallWeed.workerSubscribers = new ros::Subscriber[size];
+        ROS_ERROR("2");
+        int index = 0;
+        for (int i = s; s < e+1; i++) {
+            topicName.str(std::string());
+            topicName << "/robot_" << i << "/base_pose_ground_truth";
+            tallWeed.workerSubscribers[index] = n.subscribe<nav_msgs::Odometry>(topicName.str(),1000,&TallWeed::workerCallback,&tallWeed);
+            index++;
+        }
+        ROS_ERROR("3");
     }
 
     //test if argv[2] is really the status of the person

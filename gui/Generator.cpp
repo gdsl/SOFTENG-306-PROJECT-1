@@ -227,6 +227,30 @@ void Generator::loadPeople()
         }
     }
     
+    // Generate gardenworkers
+    outfile << "# Generate gardenworkers" << endl;
+    for (int i = 0; i < model.gardeners; i++) {
+    	// Generate gardenworkers same position as workers
+    	int x = rand() % 82 - 36;
+        int y = rand() % 52 - 26;
+
+        if( (x > -30) && (x < 40) && (y < 20) && (y > rowEnd)) {
+            int xMult = (((rand() % columnCount + 1) * 2) - 1);
+            float xPos = -30 + (xMult * xOffset);
+        
+            int yMult = (((rand() % 8 + 1) * 2) - 1);
+            float yPos = 20.4 - (yMult * yOffset);
+            gardenerPositions.push_back(xPos);
+            gardenerPositions.push_back(yPos);
+            outfile << "gardenWorker( pose [ " << xPos << " " << yPos << " 0.000 -90.000 ] name \"GardenWorker" << i+1 << "\" color \"blue\")" << endl;
+        } else {
+            gardenerPositions.push_back(x);
+            gardenerPositions.push_back(y);
+            outfile << "gardenWorker( pose [ " << x << " " << y << " 0.000 -90.000 ] name \"GardenWorker" << i+1 << "\" color \"blue\")" << endl;
+        }
+
+    }
+
 	outfile << endl;
 }
 
@@ -354,9 +378,8 @@ void Generator::writeLaunchFile(){
     xml.SetAttrib( "type", "stageros" );
     xml.SetAttrib( "args", "$(find se306project)/world/test.world" );
     calculatePickerPaths(); // calculate the picking paths each Picker will take
-    int numBeacons = model.rowCount * 2;
 
-    int totalObjects = model.weed + numBeacons + model.pickerRobots + model.carrierRobots + model.dogs + model.cats + model.workers; // total objects in world
+    int totalObjects = model.getTotalNodes(); // total objects in world
 
     for (int i = 0; i < totalObjects; i++) {
         xml.AddElem("group");
@@ -372,8 +395,16 @@ void Generator::writeLaunchFile(){
             xml.SetAttrib( "name", "TallWeednode" );
             xml.SetAttrib( "type", "TallWeed" );
             int alphaPersonNumber = model.rowCount*2 + model.weed + model.pickerRobots + model.carrierRobots;
-            oss << "/tallweed" << i+1 << "/ /robot_" << alphaPersonNumber << "/status";
-        } else if (i < model.weed + numBeacons) { //beacons
+
+            int subscribeIndex = model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers;
+
+            if (model.gardeners > 0) {
+            	oss << "/tallweed" << i+1 << "/ " << subscribeIndex << " " << subscribeIndex+model.gardeners-1;
+            } else {
+            	oss << "/tallweed" << i+1 << "/ -1 -1";
+            }
+
+        } else if (i < model.weed + model.beacons) { //beacons
             xml.SetAttrib( "name", "Beaconnode" );
             xml.SetAttrib( "type", "Beacon" );
             int num = i+1-model.weed;
@@ -385,32 +416,41 @@ void Generator::writeLaunchFile(){
             int beaconPos = (i - model.weed)*2;
             qDebug() << beaconPos << " " << beaconPositions.size();
             oss << "/beacon" << num << "/ " << beaconPositions[beaconPos] << " " << beaconPositions[beaconPos+1];
-        } else if (i < model.weed + numBeacons + model.pickerRobots) { //picker robots
+        } else if (i < model.weed + model.beacons + model.pickerRobots) { //picker robots
             xml.SetAttrib( "name", "PickerRobotnode" );
             xml.SetAttrib( "type", "PickerRobot" );
-            int pickerPos = (i - model.weed - numBeacons)*2;
+            int pickerPos = (i - model.weed - model.beacons)*2;
             oss << pickerRobotsPositions[pickerPos] << " " << pickerRobotsPositions[pickerPos+1] << " " << pickerPathPositions[pickerPos] << " " << pickerPathPositions[pickerPos+1] << " " << model.rowWidth;
-        } else if (i < model.weed + numBeacons + model.pickerRobots + model.carrierRobots) { //carriers
+        } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots) { //carriers
             xml.SetAttrib( "name", "CarrierRobotnode" );
             xml.SetAttrib( "type", "CarrierRobot" );
-            int carrierPos = (i - model.weed - numBeacons - model.pickerRobots)*2;
-            int firstPicker = model.weed + numBeacons;
+            int carrierPos = (i - model.weed - model.beacons - model.pickerRobots)*2;
+            int firstPicker = model.weed + model.beacons;
             int lastPicker = firstPicker + model.pickerRobots - 1;
             int firstCarrier = lastPicker + 1;
             int lastCarrier = firstCarrier + model.carrierRobots - 1;
             oss << carrierRobotsPositions[carrierPos] << " " << carrierRobotsPositions[carrierPos+1] << " " << firstPicker << " " << lastPicker << " " << firstCarrier << " " << lastCarrier;
-        } else if (i < model.weed + numBeacons + model.pickerRobots + model.carrierRobots + model.workers) { //AlphaPersons (workers)
+        } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers) { //AlphaPersons (workers)
             xml.SetAttrib( "name", "AlphaPersonnode" );
             xml.SetAttrib( "type", "AlphaPerson" );
-            int workerPos = (i - model.weed - numBeacons - model.pickerRobots - model.carrierRobots)*2;
+            int workerPos = (i - model.weed - model.beacons - model.pickerRobots - model.carrierRobots)*2;
             oss << workerPositions[workerPos] << " " << workerPositions[workerPos+1];
-        } else if (i < model.weed + numBeacons + model.pickerRobots + model.carrierRobots + model.workers + model.dogs) { //dogs
+        } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.gardeners) {
+        	xml.SetAttrib("name", "GardenWorkernode");
+        	xml.SetAttrib("type", "GardenWorker");
+        	if (model.weed > 0) {
+        		oss << "/robot_" << i << "/ 0 " << model.weed-1;
+        	} else {
+        		oss << "/robot_" << i << "/ -1 -1";
+        	}
+        	
+        } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.gardeners + model.dogs) { //dogs
             xml.SetAttrib( "name", "AlphaDognode" );
             xml.SetAttrib( "type", "AlphaDog" );
-        } else if (i < model.weed + numBeacons + model.pickerRobots + model.carrierRobots + model.workers + model.dogs + model.cats) { //cats
+        } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.gardeners + model.dogs + model.cats) { //cats
             xml.SetAttrib( "name", "Catnode" );
             xml.SetAttrib( "type", "Cat" );
-        } else if (i < model.weed + numBeacons + model.pickerRobots + model.carrierRobots + model.workers + model.dogs + model.cats + model.tractors) { //tractor
+        } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.gardeners + model.dogs + model.cats + model.tractors) { //tractor
             xml.SetAttrib( "name", "Tractornode" );
             xml.SetAttrib( "type", "Tractor" );
         }
