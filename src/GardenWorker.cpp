@@ -67,6 +67,8 @@ void GardenWorker::stageLaser_callback(const sensor_msgs::LaserScan msg)
 	// invoke parent stagelaser
 	//Person::stageLaser_callback(msg);
 	//ROS_ERROR("TESTING");
+	//this->moveForward(1);
+	//this->moveForward(1.0);
 }
 
 int GardenWorker::getTargetX()

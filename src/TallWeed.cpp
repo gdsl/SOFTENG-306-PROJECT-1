@@ -11,12 +11,29 @@ TallWeed::~TallWeed() {
 
 }
 
+void TallWeed::update_position()
+{
+	// Generate new random position
+	int x = rand() % 82 - 36;
+	int y = rand() % 52 - 26;
+
+	ROS_ERROR("MADE IT");
+
+}
+
 void TallWeed::workerCallback(const se306project::robot_status msg) {
-	//std::string status = msg.status;
+	std::string status = msg.status;
     double destX = msg.pos_x;
     double destY = msg.pos_y;
-    ROS_INFO("Worker x position is: %f", destX);
-	ROS_INFO("Worker y position is: %f", destY);
+
+    if (status.compare("Done") == 0) {
+    	double distance = sqrt(pow(destX-getX(),2.0)+pow(destY-getY(),2.0));
+
+    	if (distance <= NEARBYDISTANCE) {
+    		update_position();
+    	}
+
+    }
 }
 
 void TallWeed::stageOdom_callback(nav_msgs::Odometry msg) {

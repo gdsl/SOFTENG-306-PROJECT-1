@@ -20,6 +20,10 @@ public:
 	// callback
 	void workerCallback(se306project::robot_status msg);
 	void stageOdom_callback(nav_msgs::Odometry msg);
+private:
+	const int NEARBYDISTANCE = 5;
+	// update position of tallweeed after worker is near it
+	void update_position();
 };
 
 #endif /* SE306PROJECT_SRC_TALLWEED_ */
