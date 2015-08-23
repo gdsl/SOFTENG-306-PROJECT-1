@@ -24,6 +24,7 @@ bool foundTree = false;
 bool isSearch = false;
 bool lookAtBottom = true;
 double yDistance = 0;
+double xDistance = 0;
 // Default human behaviour = walking
 std::string status="Walking";
 
@@ -94,12 +95,20 @@ void stage_laserCallback(sensor_msgs::LaserScan msg) {
                 } else {
                     avgY += 0.25;
                 }
+                xDistance = avgX - alphaPerson.getX();
                 yDistance = avgY - alphaPerson.getY() + 0.75;
             }
-            ROS_INFO("ALPHA PERSON x:%f y:%f",avgX,avgY);
+           // ROS_INFO("ALPHA PERSON x:%f y:%f",avgX,avgY);
         }
     }
 }
+
+void AlphaPerson::stageLogic() {
+
+
+}
+
+
 
 int main(int argc, char **argv) 
 {
@@ -107,6 +116,14 @@ int main(int argc, char **argv)
     
     //initialise ros    
     ros::init(argc,argv,"AlphaPerson");
+
+    // convert input parameters for person initialization from String to respective types
+    std::string xString = argv[1];
+    std::string yString = argv[2];
+    double xPos = atof(xString.c_str());
+    double yPos = atof(yString.c_str());
+
+    alphaPerson = AlphaPerson(xPos,yPos);
 
     //create ros handler for this node
     ros::NodeHandle n;
@@ -117,7 +134,7 @@ int main(int argc, char **argv)
     alphaPerson.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000,stage_positionCallback);
     alphaPerson.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000,stage_laserCallback);
     ros::Rate loop_rate(10); 
-    int state = 0;
+    int state = 2;
 	int count = 0;
 	se306project::human_status status_msg;
     int none = -1;
@@ -165,9 +182,9 @@ int main(int argc, char **argv)
             } else if (state == go_to_next_tree) {
                 isSearch = false;
                 foundTree = false;
-                alphaPerson.addMovement("forward_y",yDistance,1); //move down
+                alphaPerson.addMovement("forward_y",yDistance,1); //move down or up
                 alphaPerson.faceWest(1);
-                alphaPerson.addMovement("forward_x",-0.75,1);
+                alphaPerson.addMovement("forward_x",xDistance,1);
                 alphaPerson.faceSouth(1);
                 
                 state = trimming_tree;
