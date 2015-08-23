@@ -7,6 +7,7 @@
 #include <QtGui/QMainWindow>
 #include <QListWidget>
 #include "KeyReceiver.h"
+#include "Generator.h"
 
 using namespace std;
 
@@ -31,12 +32,19 @@ public:
 	void generate();
 	void writeXml();
 	void writeLaunchFile();
+	void setKey(KeyReceiver *k);
+	int getLastKeyPressed();
+	int getTotalNodesFromModel();
     ~MainWindow();
+
+    // GeneratorModel
+    GeneratorModel model;
 
 private slots:
 	void on_launchButton_clicked();
     void on_displayStatusButton_clicked();
     void on_closeButton_clicked();
+    void on_testDriveButton_clicked();
 
 private:
     Ui::MainWindow *ui;
@@ -46,22 +54,8 @@ private:
     vector<QListWidget*> uiListPeoples;
     vector<string> launchFileEntityList;
   
-    int numPickers;
-    int numCarriers;
-    int numRows;
-    float rowWidth;
-    float rowLength;
-    float poleTrunkSpacing;
-    int numDogs;
-    int numCats;
-    int numWorkers;
-    int numBlindPerson;
-    int numNeighbors;
-    int numTractors;
-    int numBeacons;
-    int numWeeds = 10;
     KeyReceiver* key;
-    
+    bool startedTestDrive = false;
 //	void updateGUI(const QString buffer);
 //	void *print_message_function( void *ptr );
 //	void exec(string cmd);

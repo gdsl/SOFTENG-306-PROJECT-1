@@ -6,13 +6,14 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include "GeneratorModel.h"
 
 using namespace std;
 
 class Generator
 {
 	public:
-		Generator(string outputName, int pickerNumber, int carrierNumber, int dogNumber, int catNumber, int workerNumber, float rowWidth, float spacing);
+		Generator(const GeneratorModel& model);
 		void loadWorld();
 		void loadOrchard();
 		void loadPickerRobots();
@@ -24,27 +25,21 @@ class Generator
         void writeLaunchFile();
 		void write();
         void calculatePickerPaths();
-		int rowCount = 7;
-		float rowLength = 70;
-		int pickerNumber;
-		int carrierNumber;
-		int dogNumber;
-		int catNumber;
-		int workerNumber;
-		float rowWidth;
-		float spacing;
-		int numWeeds;
+
+        GeneratorModel model;
+
         vector<int> pickerRobotsPositions;
         vector<int> carrierRobotsPositions;
         vector<float> beaconPositions; 
         vector<int> pickerPathPositions;
+        vector<float> workerPositions;
         
 	private:
 		string inputName;
 		string outputName;
 		ofstream outfile;
 		string colourArray[14] = { "PeachPuff", "NavajoWhite", "LemonChiffon", "AliceBlue", "Lavender", "thistle", "LightSalmon", "PaleTurquoise", "PaleGreen", "beige", "plum", "LightGrey", "LightSkyBlue", "SpringGreen" };
-    int colourCount = 0;
+		int colourCount = 0;
 		// static const variables
 		// distance between trunk/pole and beacon. x coord
 		int const static SEPARATION = 2;

@@ -8,7 +8,6 @@
 #include <QListWidget>
 #include "unistd.h"
 #include <QLayout>
-#include "Generator.h"
 #include <QDebug>
 #include <vector>
 #include <sstream>
@@ -19,6 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+	system("pkill roslaunch");
     ui->setupUi(this);
 
     // Ask vector capacity to reserve atleast n elements
@@ -29,17 +29,21 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->robotScroll->widget()->layout()->setAlignment(Qt::AlignLeft);
     ui->peopleScroll->widget()->layout()->setAlignment(Qt::AlignLeft);
     ui->animalScroll->widget()->layout()->setAlignment(Qt::AlignLeft);
-    
-    key = new KeyReceiver();
-    ui->animalScroll->installEventFilter(key);
-    
+}
+
+void MainWindow::setKey(KeyReceiver *k) {
+    key = k;
+}
+
+int MainWindow::getLastKeyPressed() {
+    return key->lastKeyPressed;
 }
 
 void MainWindow::startReadingTopics() {
     bool ok;
-    int totalDynamicStuff = numPickers + numCarriers + numWorkers + numDogs + numCats + numTractors;
+    int totalNodes = model.getTotalNodes();
     
-	for (int i = numBeacons+numWeeds; i < numBeacons + numWeeds + totalDynamicStuff ; i++) {
+	for (int i = model.beacons+model.weed; i < totalNodes ; i++) {
 		QThread *thread = new QThread(this);
 		Worker *worker = new Worker();
 
@@ -59,6 +63,8 @@ void MainWindow::startReadingTopics() {
 MainWindow::~MainWindow()
 {
     //close roslaunch and close all rostopics
+	system("pkill Tractor");
+	system("pkill roslaunch");
 	system("pkill stage");
 	system("pkill rostopic");
 	system("pkill roscore");
@@ -69,16 +75,16 @@ MainWindow::~MainWindow()
 void MainWindow::onUpdateGUI( QString id, QString str, int i )
 {
 	//update the gui for robots
-	int idNum = id.toInt()-numBeacons-numWeeds;
+	int idNum = id.toInt()-model.beacons-model.weed;
 
-	if (idNum < numCarriers+numPickers) {
+	if (idNum < model.carrierRobots+model.pickerRobots) {
 	    QListWidget *qlw = ((QListWidget*)ui->robotScroll->widget()->layout()->itemAt(idNum)->widget());
     	qlw->item(i)->setText(str);
-    } else if (idNum < numCarriers+numPickers+numWorkers){
-    	QListWidget *qlw = ((QListWidget*)ui->peopleScroll->widget()->layout()->itemAt(idNum-(numCarriers + numPickers))->widget());
+    } else if (idNum < model.carrierRobots+model.pickerRobots+model.workers){
+    	QListWidget *qlw = ((QListWidget*)ui->peopleScroll->widget()->layout()->itemAt(idNum-(model.carrierRobots + model.pickerRobots))->widget());
     	qlw->item(i)->setText(str);
     } else {
-    	QListWidget *qlw = ((QListWidget*)ui->animalScroll->widget()->layout()->itemAt(idNum-(numCarriers + numPickers+numWorkers))->widget());
+    	QListWidget *qlw = ((QListWidget*)ui->animalScroll->widget()->layout()->itemAt(idNum-(model.carrierRobots + model.pickerRobots + model.workers))->widget());
     	qlw->item(i)->setText(str);
     }
 
@@ -101,7 +107,25 @@ void MainWindow::on_displayStatusButton_clicked()
     //MainWindow::generate();
 }
 
+void MainWindow::on_testDriveButton_clicked()
+{
+    if (!startedTestDrive) {
+        //start the sender to tractor in new thread             
+        Worker *worker = new Worker();
+        worker->setMainWindow(this);
+        QThread *thread = new QThread(this);
+        worker->moveToThread(thread);
+        connect(thread, SIGNAL(started()), worker, SLOT(sendToTractor()));
+        thread->start();
+        startedTestDrive = true;
+        ui->robotScroll->setFocus();
+    }
+}
+
 void MainWindow::on_closeButton_clicked() {
+	system("pkill Tractor");
+	system("pkill roslaunch");
+	startedTestDrive = false;
 	system("pkill stage");
 	system("pkill rostopic");
 	system("pkill roscore");
@@ -112,37 +136,37 @@ void MainWindow::generate() {
     //writeXml();
 
     // initialise variables
-    numPickers = ui->pickerSpinner->value();
-    numCarriers = ui->carrierSpinner->value();
-    numWorkers = ui->workerSpinner->value();
-    numDogs = ui->dogSpinner->value();
-    numCats = ui->catSpinner->value();
-    rowWidth = ui->rowWidthField->text().toDouble();
-    poleTrunkSpacing = ui->spacingField->text().toDouble();
-    rowLength = ui->rowLengthField->text().toDouble();
-    numRows = ui->rowNumberSpinner->value();
-    numBlindPerson = ui->blindPersonSpinner->value();
-    numNeighbors = ui->neighborSpinner->value();
-    numTractors = ui->tractorSpinner->value();
-    numBeacons = numRows*2;
+    model.pickerRobots = ui->pickerSpinner->value();
+    model.carrierRobots = ui->carrierSpinner->value();
+    model.workers = ui->workerSpinner->value();
+    model.dogs = ui->dogSpinner->value();
+    model.cats = ui->catSpinner->value();
+    model.rowWidth = ui->rowWidthSpinner->value();
+    model.poleTrunkSpacing = ui->spacingSpinner->value();
+    model.rowCount = ui->rowNumberSpinner->value();
+    model.blindPerson = ui->blindPersonSpinner->value();
+    model.neighbors = ui->neighborSpinner->value();
+    model.gardeners = ui->gardenerSpinner->value();
+    //model.tractors = ui->tractorSpinner->value();
+    model.beacons = model.rowCount*2;
     
     uiListPeoples.clear();
     uiListRobots.clear();
     uiListAnimals.clear();
 
-    for (int i = 0; i < numPickers; i++) {
+    for (int i = 0; i < model.pickerRobots; i++) {
         uiListRobots.push_back(createNewItem("Picker"));
     }
-    for (int i = 0; i < numCarriers; i++) {
+    for (int i = 0; i < model.carrierRobots; i++) {
         uiListRobots.push_back(createNewItem("Carrier"));
     }
-    for (int i = 0; i < numWorkers; i++) {
+    for (int i = 0; i < model.workers; i++) {
         uiListPeoples.push_back(createNewItem("Human_Worker"));
     }
-    for (int i = 0; i < numDogs; i++) {
+    for (int i = 0; i < model.dogs; i++) {
         uiListAnimals.push_back(createNewItem("Animal_Dog"));
     }
-    for (int i = 0; i < numCats; i++) {
+    for (int i = 0; i < model.cats; i++) {
         uiListAnimals.push_back(createNewItem("Animal_Cat")); 
     }
     //clear the layout
@@ -173,7 +197,7 @@ void MainWindow::generate() {
     for (int i = 0; i < uiListPeoples.size(); i++) {
     	ui->peopleScroll->widget()->layout()->addWidget(uiListPeoples[i]);
     }
-    Generator generator("world/test.world", numPickers, numCarriers, numDogs, numCats, numWorkers, rowWidth, poleTrunkSpacing);
+    Generator generator(model);
     
 	generator.loadWorld();
 	generator.loadTallWeeds();
@@ -182,14 +206,16 @@ void MainWindow::generate() {
 	generator.loadCarrierRobots();
 	generator.loadPeople();
 	generator.loadAnimals();
-	
-	generator.write();
-    generator.writeLaunchFile();
 	generator.loadTractor();
 	generator.write();
 	generator.writeLaunchFile();
 
 }
+
+int MainWindow::getTotalNodesFromModel() {
+    return model.getTotalNodes();
+}
+
 /*
 void MainWindow::writeXml() {
     CMarkup xml;

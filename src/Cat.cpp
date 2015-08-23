@@ -96,7 +96,7 @@ int main(int argc, char **argv)
 	    
 		loop_rate.sleep();
 
-		// Logic to determine current status of Cat - Walking/Sleeping/Turning
+		/*// Logic to determine current status of Cat - Walking/Sleeping/Turning
 		// Convert radians to degrees
 		radians = Cat.getTheta();
 		angle = roundf(radians * 57.2957795 * 100) / 100;
@@ -111,7 +111,8 @@ int main(int argc, char **argv)
 		}
 		else {
 			status = "Turning";
-		}
+		}*/
+                Cat.determineStatus();
 	}
 	return 0;
 }
