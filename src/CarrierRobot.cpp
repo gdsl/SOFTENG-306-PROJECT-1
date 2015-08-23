@@ -104,6 +104,7 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 
 	if (carrierRobot.getAvoidanceCase()!=Entity::NONE) {//check if there is need to avoid obstacle
 		if(carrierRobot.getState()!=Robot::IDLE){//check if robot is idle or not
+			obstacleStatus = "Obstacle nearby";
 			if(carrierRobot.getAvoidanceCase()==Entity::WEED){// if its weed stop
 				carrierRobot.addMovementFront("forward_x",0,0,1);//add empty movement to front of avoidance to stop
 				obstacleStatus = "Weed! Help!";
@@ -190,7 +191,6 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 			//get carrier to move
 			carrierRobot.move();
 		}
-		obstacleStatus = "Obstacle nearby";
 	} else {
 		obstacleStatus = "No obstacles";
 	}
