@@ -31,29 +31,25 @@ double angle;
 
 void stage_callback(nav_msgs::Odometry msg) {
     alphaDog.stageOdom_callback(msg);
-    //alphaDog.setPose(x,y,0);
-
 }
 
-int main(int argc, char **argv) 
-{
-    
-	//initialise ros    
+int main(int argc, char **argv) {
+	// Initialise ros    
 	ros::init(argc,argv,"Animal");
 
-	//create ros handler for this node
+	// Create ros handler for this node
 	ros::NodeHandle n;
     
 	alphaDog.robotNode_stage_pub = n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
 	alphaDog.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000,stage_callback);
 	ros::Rate loop_rate(10); 
 	
-	//Broadcast the node's status information for other to subscribe to.
+	// Broadcast the node's status information for other to subscribe to.
 	ros::Publisher pub=n.advertise<se306project::animal_status>("status",1000);
 	se306project::animal_status status_msg;
-	//0 rotatiing to the side, 1, moving horizontally, 2 rotating to bnorth/south, 3 moving vertical, 4 stop
+	// 0 rotatiing to the side, 1, moving horizontally, 2 rotating to bnorth/south, 3 moving vertical, 4 stop
 	while (ros::ok()) {
-		//message to stage 
+		// Message to stage 
 		alphaDog.move();
         
     		if (alphaDog.getMovementQueueSize() == 0) {
