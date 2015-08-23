@@ -208,8 +208,8 @@ void Generator::loadPeople()
     int rowEnd = 20 - totalRowWidth;
     
     for(int i = 0; i < model.workers; i++) {
-        int x = rand() % 82 - 36;
-        int y = rand() % 52 - 26;
+        int x = -30 + (rand() % (40 - -30 +1));
+        int y = rowEnd + (rand() % (20 - rowEnd + 1));
     
         if( (x > -30) && (x < 40) && (y < 20) && (y > rowEnd)) {
             int xMult = (((rand() % columnCount + 1) * 2) - 1);
@@ -291,23 +291,13 @@ void Generator::loadAnimals()
 	
 	outfile << "# Generate cats" << endl;
 
+	int x = -20;
 	// Generate cats
 	for(int i = 0; i < model.cats; i++) {
-        int x = rand() % 82 - 36;
-        int y = rand() % 52 - 26;
-    
-        if( (x > -30) && (x < 40) && (y < 20) && (y > rowEnd)) {
-            int xMult = (((rand() % columnCount + 1) * 2) - 1);
-            float xPos = -30 + (xMult * xOffset);
-        
-            int yMult = (((rand() % 8 + 1) * 2) - 1);
-            float yPos = 20.4 - (yMult * yOffset);
-        
-            outfile << "cat( pose [ " << xPos << " " << yPos << " 0.000 0.000 ] name \"Cat" << i+1 << "\" color \"random\")" << endl;
-        } else {
-            outfile << "cat( pose [ " << x << " " << y << " 0.000 0.000 ] name \"Cat" << i+1 << "\" color \"random\")" << endl;
-        }
-    }
+		//outfile << "cat( pose [ -20.000 21.500 0.000 0.000 ] name \"Cat" << i+1 << "\" color \"random\")" << endl;
+        	outfile << "cat( pose [ " << x << " 21.500 0.000 0.000 ] name \"Cat" << i+1 << "\" color \"random\")" << endl;
+		x += 10;
+	}
 
 	outfile << endl;
 }

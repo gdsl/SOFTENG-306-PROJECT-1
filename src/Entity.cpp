@@ -104,9 +104,11 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg)
 	obstacleAngle = 270;
 	criticalIntensity=0; //the critical intensity of the surrounding specific subclass should implement avoidance plan
 	int l=msg.ranges.size(); // sizeof(msg.ranges[0]);
+	double currentIntensity=0;//varaible for current intensity
 	for (int i=41; i<l-41; i++){ //only process the object in +49 to -49 degree of the nodes laser
 		if (msg.ranges[i]< minDistance) {//work out the minimum distance object
 			minDistance = msg.ranges[i];
+			currentIntensity=msg.intensities[i];
 			obstacleAngle= (i/l) * msg.angle_increment + msg.angle_min;
 		}
 		if (msg.ranges[i]<1){//work most fatal intensity
@@ -119,7 +121,7 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg)
 			}
 		}
 	}
-	if(minDistance<1&&previousScanIntensity>1){
+	if(minDistance<1&&currentIntensity>1){
 		if(previousScanIntensity==WEED_INTENSITY){
 			avoidanceCase=WEED;//the object in way is weed
 		}else if(previousScanIntensity>=LIVING_MIN_INTENSITY){

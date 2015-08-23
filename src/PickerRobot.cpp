@@ -89,21 +89,102 @@ void callBackStageOdm(const nav_msgs::Odometry msg){
 
 void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 	pickerRobot.stageLaser_callback(msg);
-	if (pickerRobot.getStatus().compare("Picking")==0){
-		//TODO if(msg.ranges[0]<=pickrange&&msg.intensities[0]==1){
-		ROS_INFO("Laser %d",pickerRobot.getBinCapacity());
-		ROS_INFO("pick range %f",pickerRobot.getPickRange());
-		if(msg.ranges[0]<=pickerRobot.getPickRange()&&msg.intensities[0]==1&&msg.ranges[5]>=pickerRobot.getPickRange()){
-			pickerRobot.setBinCapacity(pickerRobot.getBinCapacity()+2);
-			if(pickerRobot.getBinCapacity()>=BIN_CAPACITY){
-				pickerRobot.setState(Robot::FULL_BIN);
+	if (pickerRobot.getAvoidanceCase()!=Entity::NONE) {//check if there is need to avoid obstacle
+		if(pickerRobot.getState()!=Robot::IDLE){//check if robot is idle or not
+			obstacleStatus = "Obstacle nearby";
+			if(pickerRobot.getAvoidanceCase()==Entity::WEED){// if its weed stop
+				pickerRobot.addMovementFront("forward_x",0,0,1);//add empty movement to front of avoidance to stop
+				obstacleStatus = "Weed! Help!";
+			}else if(pickerRobot.getAvoidanceCase()==Entity::LIVING_OBJ){//if its human or animal stop
+				pickerRobot.addMovementFront("forward_x",0,0,1);//add empty movement to front of avoidance to stop
+			}else if(pickerRobot.getAvoidanceCase()==Entity::HALT){//if its halt stop
+				pickerRobot.addMovementFront("forward_x",0,0,1);//add empty movement to front of avoidance to stop
+			}else if(pickerRobot.getAvoidanceCase()==Entity::STATIONARY&& pickerRobot.getCriticalIntensity()>1){//if its stationary robot
+					if(pickerRobot.getDirectionFacing()== pickerRobot.NORTH){
+						pickerRobot.addMovementFront("rotation",M_PI/2,1,1);
+						pickerRobot.addMovementFront("forward_x",3,1,1);
+						pickerRobot.addMovementFront("rotation",0, 1,1);
+						pickerRobot.addMovementFront("forward_y",3,1,1);
+						pickerRobot.addMovementFront("rotation",M_PI/2,1,1);
+						pickerRobot.addMovementFront("forward_x",-3,1,1);
+						pickerRobot.addMovementFront("rotation",M_PI,1,1);
+						pickerRobot.addMovementFront("forward_x",0,0,1);//this is at front of front
+						//pickerRobot.move();
+					}else if(pickerRobot.getDirectionFacing()== pickerRobot.SOUTH){
+						pickerRobot.addMovementFront("rotation",-M_PI/2,1,1);
+						pickerRobot.addMovementFront("forward_x",3,1,1);
+						pickerRobot.addMovementFront("rotation",0, 1,1);
+						pickerRobot.addMovementFront("forward_y",-3,1,1);
+						pickerRobot.addMovementFront("rotation",-M_PI/2,1,1);
+						pickerRobot.addMovementFront("forward_x",-3,1,1);
+						pickerRobot.addMovementFront("rotation",M_PI,1,1);
+						pickerRobot.addMovementFront("forward_x",0,0,1);//this is at front of front
+					}else if(pickerRobot.getDirectionFacing()== pickerRobot.EAST){
+						pickerRobot.addMovementFront("rotation",0, 1,1);
+						pickerRobot.addMovementFront("forward_y",3,1,1);
+						pickerRobot.addMovementFront("rotation",M_PI/2, 1,1);
+						pickerRobot.addMovementFront("forward_x",3,0,1);
+						pickerRobot.addMovementFront("rotation",0, 1,1);
+						pickerRobot.addMovementFront("forward_y",-3,1,1);
+						pickerRobot.addMovementFront("rotation",-M_PI/2, 1,1);
+						pickerRobot.addMovementFront("forward_x",0,0,1);//this is at front of front
+					}else if(pickerRobot.getDirectionFacing()== pickerRobot.WEST){
+						pickerRobot.addMovementFront("rotation",M_PI, 1,1);
+						pickerRobot.addMovementFront("forward_y",3,1,1);
+						pickerRobot.addMovementFront("rotation",M_PI/2, 1,1);
+						pickerRobot.addMovementFront("forward_x",-3,0,1);
+						pickerRobot.addMovementFront("rotation",M_PI, 1,1);
+						pickerRobot.addMovementFront("forward_y",-3,1,1);
+						pickerRobot.addMovementFront("rotation",-M_PI/2, 1,1);
+						pickerRobot.addMovementFront("forward_x",0,0,1);//this is at front of front
+					}
+			}else if(pickerRobot.getAvoidanceCase()==Entity::PERPENDICULAR){
+				if(pickerRobot.getDirectionFacing()== pickerRobot.NORTH||pickerRobot.getDirectionFacing()== pickerRobot.SOUTH){
+					//if robot moving in the y direction give way
+					pickerRobot.addMovementFront("forward_x",0,0,1);
+				}
+			}else if(pickerRobot.getAvoidanceCase()==Entity::FACE_ON){
+				if(pickerRobot.getAvoidanceQueueSize()<=0){
+					if(pickerRobot.getDirectionFacing()== pickerRobot.NORTH&&obstacleStatus.compare("Obstacle nearby")!=0){
+						pickerRobot.addMovementFront("rotation",M_PI/2,1,1);
+						pickerRobot.addMovementFront("forward_x",3,1,1);
+						pickerRobot.addMovementFront("rotation",0, 1,1);
+						pickerRobot.addMovementFront("forward_y",3,1,1);
+						pickerRobot.addMovementFront("rotation",M_PI/2,1,1);
+						pickerRobot.addMovementFront("forward_x",-3,1,1);
+						pickerRobot.addMovementFront("rotation",M_PI,1,1);
+						pickerRobot.addMovementFront("forward_x",0,0,1);//this is at front of front
+					}else if(pickerRobot.getDirectionFacing()== pickerRobot.EAST&&obstacleStatus.compare("Obstacle nearby")!=0){
+						pickerRobot.addMovementFront("rotation",0, 1,1);
+						pickerRobot.addMovementFront("forward_y",3,1,1);
+						pickerRobot.addMovementFront("rotation",M_PI/2, 1,1);
+						pickerRobot.addMovementFront("forward_x",3,0,1);
+						pickerRobot.addMovementFront("rotation",0, 1,1);
+						pickerRobot.addMovementFront("forward_y",-3,1,1);
+						pickerRobot.addMovementFront("rotation",-M_PI/2, 1,1);
+						pickerRobot.addMovementFront("forward_x",0,0,1);//this is at front of front
+					}
+				}else{
+					//halt movement if already have avoidance logic
+					pickerRobot.addMovementFront("forward_x",0,0,1);
+				}
+			}
+			//get carrier to move
+			pickerRobot.addMovementFront("forward_x",0,0,1);//this is at front of front
+			pickerRobot.move();
+		}
+	} else {
+		obstacleStatus = "No obstacles"; //only pick when obstacle detected
+		if (pickerRobot.getStatus().compare("Picking")==0){
+			ROS_INFO("Laser %d",pickerRobot.getBinCapacity());
+			ROS_INFO("pick range %f",pickerRobot.getPickRange());
+			if(msg.ranges[0]<=pickerRobot.getPickRange()&&msg.intensities[0]==1&&msg.ranges[5]>=pickerRobot.getPickRange()){
+				pickerRobot.setBinCapacity(pickerRobot.getBinCapacity()+1);
+				if(pickerRobot.getBinCapacity()>=BIN_CAPACITY){
+					pickerRobot.setState(Robot::FULL_BIN);
+				}
 			}
 		}
-	}
-	if (pickerRobot.getMinDistance() < 1) {
-		obstacleStatus = "Obstacle nearby";
-	} else {
-		obstacleStatus = "No obstacles";
 	}
 }
 /*
@@ -111,21 +192,15 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
  * This method is called when message is received.
  */
 void recieveCarrierRobotStatus(const se306project::carrier_status::ConstPtr& msg){
-	if (msg->status.compare("Transporting")==0&&pickerRobot.getStatus().compare("Full")==0){
-		//TODO reset status
-		if (distance==1){
-			distance=5;
-		}else if (distance ==5){
-			distance=1;
-		}
-		pickerRobot.movement();
-		pickerRobot.setDesireLocation(false);
-		pickerRobot.setStatus("Moving");
+	if ((msg->status.compare("Arrived")==0)&&pickerRobot.getStatus().compare("Full")==0){
+		pickerRobot.setStatus("Picking");
+		pickerRobot.setBinCapacity(0);
+		pickerRobot.setState(Robot::GO_TO_NEXT_BEACON);
 	}
 }
 
 /**
- * Method for the carrier robot's states transition and implementation
+ * Method for the picker robot's states transition and implementation
  */
 void PickerRobot::stateLogic(ros::NodeHandle n){
 //	if(pickerRobot.getBinCapacity()>=BIN_CAPACITY){
@@ -163,7 +238,6 @@ void PickerRobot::stateLogic(ros::NodeHandle n){
                 pickerRobot.setState(PICKING);
                 pickerRobot.setStatus("Moving");
             }
-            //TODO looks like picking state is getting set too early (logically) functional should be fine
         } else if (pickerRobot.getState() == PICKING) {
             //this check is required if this "if block" is accessed twice before the subscribed beacon starts sending messages
             //if the messages do not start arriving in time the currentBeacon would be continuously updated.
@@ -369,7 +443,7 @@ int main(int argc, char **argv)
 	//subscribe to obstacle detection
 	pickerRobot.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000,callBackLaserScan);
 	//subscribe to carrier robot's status message
-	ros::Subscriber mysub_object = n.subscribe<se306project::carrier_status>("/robot_1/status",1000,recieveCarrierRobotStatus);
+	ros::Subscriber mysub_object = n.subscribe<se306project::carrier_status>("/robot_25/status",1000,recieveCarrierRobotStatus);
     
     // assign beacon subscriber to the first beacon for this Picker robot's path.
     pickerRobot.subscribeNextBeacon(n);

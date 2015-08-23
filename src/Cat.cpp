@@ -20,7 +20,7 @@ Cat::~Cat() {
 
 }
 
-Cat Cat(-3.75,17.5);
+Cat Cat(-20.000, 21.500);
 // Default cat behaviour = walking
 std::string status="Walking";
 bool queueFull = false;
@@ -28,6 +28,7 @@ bool queueFull = false;
 // Keeps track of current position that cat is facing
 double radians;
 double angle;
+bool initial = true;
 
 void stage_callback(nav_msgs::Odometry msg) {
     Cat.stageOdom_callback(msg);
@@ -54,8 +55,25 @@ int main(int argc, char **argv)
 	{
 		// Message to stage 
 		Cat.move();
-		Cat.addMovement("forward_x", 10, 1);
-        
+		
+		// Give cat a small initial movement to fill in its GUI status
+		if (initial) {
+			Cat.addMovement("forward_x",-0.1,1);
+		}
+		initial = false;
+
+		// Generate random number of seconds for cat to sleep between 30-50s
+		int num = (rand() % 100) / 5;
+		int time = 30 + num;
+
+		if (Cat.getMovementQueueSize() == 0) {
+			sleep(5);
+			Cat.faceEast(1);
+			Cat.addMovement("forward_x",-5,1);
+			Cat.faceWest(1);
+			Cat.addMovement("forward_x",5,1);
+		}
+	        
     		/*if (Cat.getMovementQueueSize() == 0) {
 			Cat.faceWest(1);
 			Cat.addMovement("forward_x",-5,1);
@@ -84,15 +102,13 @@ int main(int argc, char **argv)
 		angle = roundf(radians * 57.2957795 * 100) / 100;
 
 		// Check if cat is moving (and therefore 'walking')
-		if (Cat.getLin() > 0.01) {
+		if (Cat.getLin() < -0.01) {
 			status = "Walking";
 		}
-
-		// Check if cat is facing North/East/South/West AND not moving (and therefore 'Sleeping')
+		// Check if cat is facing North/East/South/West AND not moving (and therefore 'sleeping')
 		else if ((angle == -360) || (angle == -270) || (angle == -180) || (angle == -90) || (angle == 0) || (angle == 90) || (angle == 180) || (angle == 270) || (angle == 360) && (Cat.getLin() == 0)) {
-			status = "Idle";
+			status = "Sleeping";
 		}
-
 		else {
 			status = "Turning";
 		}*/
