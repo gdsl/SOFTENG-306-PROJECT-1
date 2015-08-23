@@ -116,7 +116,7 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 				//if the carrier robot is infront and carrier is queue then halt
 				if(carrierRobot.getState()==carrierRobot.QUEUE&& carrierRobot.getCriticalIntensity()==3){//if its carrier
 					carrierRobot.addMovementFront("forward_x",0,0,1);//this is at front of front
-				}else{
+				}else if(carrierRobot.getCriticalIntensity()!=2|| carrierRobot.getMinDistance()<0.4){//if not picker robot or if its too close
 					if(carrierRobot.getDirectionFacing()== carrierRobot.NORTH){
 						carrierRobot.addMovementFront("rotation",M_PI/2,1,1);
 						carrierRobot.addMovementFront("forward_x",3,1,1);
