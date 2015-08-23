@@ -81,6 +81,7 @@ int main(int argc, char **argv)
 		// Convert radians to degrees
 		radians = alphaDog.getTheta();
 		angle = roundf(radians * 57.2957795 * 100) / 100;
+
 		// Check if dog is moving (and therefore 'walking')
 		if (alphaDog.getLin() > 0.01) {
 			status = "Moonwalking";
