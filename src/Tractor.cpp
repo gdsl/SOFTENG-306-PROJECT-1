@@ -63,7 +63,8 @@ int main(int argc, char **argv)
 
 	//You must call ros::init() first of all. ros::init() function needs to see argc and argv. The third argument is the name of the node
 	ros::init(argc, argv, "Tractor");
-    
+	std::string xString = argv[1];
+    ROS_WARN(xString.c_str());
     // convert input parameters for Robot initialization from String to respective types
     //std::string xString = argv[1];
     //std::string yString = argv[2];
@@ -80,7 +81,7 @@ int main(int argc, char **argv)
 
 
 	ros::Rate loop_rate(10);
-    tractor.robotNode_stage_pub = n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
+    tractor.robotNode_stage_pub = n.advertise<geometry_msgs::Twist>("robot_25/cmd_vel",1000);
 	//Broadcast the node's status information for other to subscribe to.
 	//ros::Publisher pub=n.advertise<se306project::carrier_status>("status",1000);
 
@@ -89,12 +90,37 @@ int main(int argc, char **argv)
 	tractor.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000, callBackStageOdm);
 	
 	//subscribe to topic for manual control
-	ros::Subscriber mysub_object = n.subscribe("/tractor",100,receiveTractorControl);
+	//ros::Subscriber mysub_object = n.subscribe("/tractor",100,receiveTractorControl);
 
 	//a count of how many messages we have sent
 	//int count = 0;
 	//carrier status message initialisation
 	//se306project::carrier_status status_msg;
+	
+    std::string buffer;
+    while(std::cin) {
+        std::getline(std::cin, buffer);
+        
+        if (strcmp(buffer.c_str(), "left") == 0) {
+         //   ROS_WARN(buffer.c_str());
+	        tractor.setLin(0);
+	        tractor.setAng(0.55);
+	    } else if (strcmp(buffer.c_str(), "right") == 0) {
+	        tractor.setLin(0);
+	        tractor.setAng(-0.5);
+	    } else if (strcmp(buffer.c_str(), "up") == 0) {
+	        tractor.setLin(1);
+	        tractor.setAng(0);
+	    } else if (strcmp(buffer.c_str(), "down") == 0) {
+	        tractor.setLin(-1);
+	        tractor.setAng(0);
+	    } else {
+	        tractor.setLin(0);
+	        tractor.setAng(0);
+	    }
+		tractor.updateOdometry();
+		ros::spinOnce();
+    }
 
 	//ROS loop
 	while (ros::ok())

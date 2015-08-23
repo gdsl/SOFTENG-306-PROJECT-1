@@ -3,6 +3,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <fstream>
+#include <QDebug>
+#include <fstream>
+#include <unistd.h>
+#include <signal.h>
+#include <sstream>
 
 using namespace std;
 
@@ -51,6 +56,40 @@ void Worker::exec(string cmd) {
 		}
 		pclose(stream);
 	}
+}
+
+void Worker::setMainWindow(MainWindow *m) {
+    mw = m;
+}
+
+//for sending to Tractor
+void Worker::sendToTractor() {
+    FILE *in;
+    if (!(in = popen("../../devel/lib/se306project/Tractor lol", "w"))) {
+        qDebug("failed to run tractor node");
+        return;
+    }
+    while (1){
+        int last = mw->getLastKeyPressed();
+        if (last == 0) {
+            fputs("none",in);
+        } else if (last == 1) {
+            fputs("left",in);
+        } else if (last == 2) {
+            fputs("right",in);
+        } else if (last == 3) {
+            fputs("up",in);
+        } else if (last == 4) {
+            fputs("down",in);
+        } 
+        fputs("\n",in);
+        
+        int j =fflush(in);
+        //qDebug() << j;
+        //qDebug("wrote");
+        usleep(1000000);
+    }
+    pclose(in);
 }
 
 

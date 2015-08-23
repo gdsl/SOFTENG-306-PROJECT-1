@@ -349,7 +349,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton">
+       <widget class="QPushButton" name="testDriveButton">
         <property name="toolTip">
          <string>Click this to take the tractor for a test drive! Drive over weeds to remove</string>
         </property>
