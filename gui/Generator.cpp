@@ -219,11 +219,11 @@ void Generator::loadPeople()
             float yPos = 20.4 - (yMult * yOffset);
             workerPositions.push_back(xPos);
             workerPositions.push_back(yPos);
-            outfile << "human( pose [ " << xPos << " " << yPos << " 0.000 -90.000 ] name \"Worker" << i+1 << "\" color \"blue\")" << endl;
+            outfile << "human( pose [ " << 1 << " " << 1 << " 0.000 -90.000 ] name \"Worker" << i+1 << "\" color \"blue\")" << endl;
         } else {
             workerPositions.push_back(x);
             workerPositions.push_back(y);
-            outfile << "human( pose [ " << x << " " << y << " 0.000 -90.000 ] name \"Worker" << i+1 << "\" color \"blue\")" << endl;
+            outfile << "human( pose [ " << 1 << " " << 1 << " 0.000 -90.000 ] name \"Worker" << i+1 << "\" color \"blue\")" << endl;
         }
     }
     
