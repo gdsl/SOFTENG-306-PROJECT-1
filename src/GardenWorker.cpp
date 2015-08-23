@@ -1,6 +1,7 @@
 #include "GardenWorker.h"
 #include "ros/ros.h"
 #include "geometry_msgs/Twist.h"
+#include "se306project/robot_status.h"
 #include <math.h>
 
 /**
@@ -94,7 +95,7 @@ int GardenWorker::getTargetY()
 
 void GardenWorker::stageOdom_callback(const nav_msgs::Odometry msg)
 {
-	//Person::stageOdom_callback(msg);
+	Person::stageOdom_callback(msg);
 }
 
 int main(int argc, char **argv)
@@ -112,7 +113,10 @@ int main(int argc, char **argv)
 	gardenWorker.robotNode_stage_pub = n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
 	gardenWorker.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth", 1000, &GardenWorker::stageOdom_callback, &gardenWorker);
 	gardenWorker.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000, &GardenWorker::stageLaser_callback, &gardenWorker);
-	gardenWorker.gardenworker_status_pub = n.advertise<se306project::gardenworker_status>(argv[1],1000);
+	gardenWorker.gardenworker_status_pub = n.advertise<se306project::gardenworker_status>("gardenworker",1000);
+
+	// Publish to GUI
+	ros::Publisher gui_status_pub = n.advertise<se306project::robot_status>("status",1000);
 
 	// subscribe to every tallweed
 	std::string start(argv[2]);
@@ -142,16 +146,26 @@ int main(int argc, char **argv)
 	ros::Rate loop_rate(10);
 
 	se306project::gardenworker_status status_msg;
+	se306project::robot_status gui_msg;
 	//ROS loop
 	while (ros::ok())
 	{
 		ros::spinOnce();
+		// publish gardenworker status
 		status_msg.pos_x = gardenWorker.getX();
 		status_msg.pos_y = gardenWorker.getY();
 		status_msg.pos_theta = gardenWorker.getTheta();
 		status_msg.weed_counter = gardenWorker.getWeedCounter();
 		status_msg.status = gardenWorker.getStatus();
 		gardenWorker.gardenworker_status_pub.publish(status_msg);	//publish message
+
+		// publish gui message
+		gui_msg.pos_x = gardenWorker.getX();
+		gui_msg.pos_y = gardenWorker.getY();
+		gui_msg.pos_theta = gardenWorker.getTheta();
+		gui_msg.status = gardenWorker.getStatus();
+		gui_status_pub.publish(gui_msg);
+
 		loop_rate.sleep();
 	}
 }
