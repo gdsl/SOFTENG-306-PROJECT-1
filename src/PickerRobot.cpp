@@ -94,7 +94,7 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 		ROS_INFO("Laser %d",pickerRobot.getBinCapacity());
 		ROS_INFO("pick range %f",pickerRobot.getPickRange());
 		if(msg.ranges[0]<=pickerRobot.getPickRange()&&msg.intensities[0]==1&&msg.ranges[5]>=pickerRobot.getPickRange()){
-			pickerRobot.setBinCapacity(pickerRobot.getBinCapacity()+2);
+			pickerRobot.setBinCapacity(pickerRobot.getBinCapacity()+1);
 			if(pickerRobot.getBinCapacity()>=BIN_CAPACITY){
 				pickerRobot.setState(Robot::FULL_BIN);
 			}
@@ -113,6 +113,7 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 void recieveCarrierRobotStatus(const se306project::carrier_status::ConstPtr& msg){
 	if ((msg->status.compare("Arrived")==0)&&pickerRobot.getStatus().compare("Full")==0){
 		pickerRobot.setStatus("Picking");
+		pickerRobot.setBinCapacity(0);
 		pickerRobot.setState(Robot::GO_TO_NEXT_BEACON);
 	}
 }
