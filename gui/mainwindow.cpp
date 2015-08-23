@@ -80,11 +80,11 @@ void MainWindow::onUpdateGUI( QString id, QString str, int i )
 	if (idNum < model.carrierRobots+model.pickerRobots) {
 	    QListWidget *qlw = ((QListWidget*)ui->robotScroll->widget()->layout()->itemAt(idNum)->widget());
     	qlw->item(i)->setText(str);
-    } else if (idNum < model.carrierRobots+model.pickerRobots+model.workers){
+    } else if (idNum < model.carrierRobots+model.pickerRobots+model.workers+model.gardeners){
     	QListWidget *qlw = ((QListWidget*)ui->peopleScroll->widget()->layout()->itemAt(idNum-(model.carrierRobots + model.pickerRobots))->widget());
     	qlw->item(i)->setText(str);
     } else {
-    	QListWidget *qlw = ((QListWidget*)ui->animalScroll->widget()->layout()->itemAt(idNum-(model.carrierRobots + model.pickerRobots + model.workers))->widget());
+    	QListWidget *qlw = ((QListWidget*)ui->animalScroll->widget()->layout()->itemAt(idNum-(model.carrierRobots + model.pickerRobots + model.workers + model.gardeners))->widget());
     	qlw->item(i)->setText(str);
     }
 
@@ -162,6 +162,9 @@ void MainWindow::generate() {
     }
     for (int i = 0; i < model.workers; i++) {
         uiListPeoples.push_back(createNewItem("Human_Worker"));
+    }
+    for (int i = 0; i < model.workers; i++) {
+        uiListPeoples.push_back(createNewItem("Gardener"));
     }
     for (int i = 0; i < model.dogs; i++) {
         uiListAnimals.push_back(createNewItem("Animal_Dog"));
