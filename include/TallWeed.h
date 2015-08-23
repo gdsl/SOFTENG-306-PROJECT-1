@@ -18,7 +18,7 @@ public:
 	ros::Subscriber *workerSubscribers;
 
 	// callback
-	void workerCallback(nav_msgs::Odometry);
+	void workerCallback(se306project::robot_status msg);
 	void stageOdom_callback(nav_msgs::Odometry msg);
 };
 

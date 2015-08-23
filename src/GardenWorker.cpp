@@ -17,16 +17,7 @@ GardenWorker::GardenWorker(double x, double y, double theta, double linearVeloci
 {
 	targetX = 0;
 	targetY = 0;
-	weedCounter = 0;
 	setStatus("Idle");
-}
-
-/**
- * Update the number of weed pulled by garden worker
- */
-void GardenWorker::increment()
-{
-	weedCounter++;
 }
 
 /**
@@ -78,11 +69,6 @@ void GardenWorker::stageLaser_callback(const sensor_msgs::LaserScan msg)
 	//ROS_ERROR("TESTING");
 }
 
-uint GardenWorker::getWeedCounter()
-{
-	return weedCounter;
-}
-
 int GardenWorker::getTargetX()
 {
 	return targetX;
@@ -113,10 +99,7 @@ int main(int argc, char **argv)
 	gardenWorker.robotNode_stage_pub = n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
 	gardenWorker.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth", 1000, &GardenWorker::stageOdom_callback, &gardenWorker);
 	gardenWorker.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000, &GardenWorker::stageLaser_callback, &gardenWorker);
-	gardenWorker.gardenworker_status_pub = n.advertise<se306project::gardenworker_status>("gardenworker",1000);
-
-	// Publish to GUI
-	ros::Publisher gui_status_pub = n.advertise<se306project::robot_status>("status",1000);
+	gardenWorker.gardenworker_status_pub = n.advertise<se306project::robot_status>("status",1000);
 
 	// subscribe to every tallweed
 	std::string start(argv[2]);
@@ -145,8 +128,7 @@ int main(int argc, char **argv)
 
 	ros::Rate loop_rate(10);
 
-	se306project::gardenworker_status status_msg;
-	se306project::robot_status gui_msg;
+	se306project::robot_status status_msg;
 	//ROS loop
 	while (ros::ok())
 	{
@@ -155,16 +137,8 @@ int main(int argc, char **argv)
 		status_msg.pos_x = gardenWorker.getX();
 		status_msg.pos_y = gardenWorker.getY();
 		status_msg.pos_theta = gardenWorker.getTheta();
-		status_msg.weed_counter = gardenWorker.getWeedCounter();
 		status_msg.status = gardenWorker.getStatus();
 		gardenWorker.gardenworker_status_pub.publish(status_msg);	//publish message
-
-		// publish gui message
-		gui_msg.pos_x = gardenWorker.getX();
-		gui_msg.pos_y = gardenWorker.getY();
-		gui_msg.pos_theta = gardenWorker.getTheta();
-		gui_msg.status = gardenWorker.getStatus();
-		gui_status_pub.publish(gui_msg);
 
 		loop_rate.sleep();
 	}

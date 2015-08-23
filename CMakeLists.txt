@@ -51,7 +51,6 @@ add_message_files(
 	carrier_status.msg
 	animal_status.msg
 	human_status.msg
-	gardenworker_status.msg
 )
 
 ## Generate services in the 'srv' folder
