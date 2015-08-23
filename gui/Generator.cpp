@@ -227,6 +227,18 @@ void Generator::loadPeople()
 	outfile << endl;
 }
 
+void Generator::loadBlindPeople()
+{
+    outfile << "# Generate blind people" << endl;
+    
+    for(int i = 0; i < model.blindPerson; i++) {
+        int x = rand() % 82 - 36;
+        int y = rand() % 52 - 26;
+        
+        outfile << "blindPerson( pose [ " << x << " " << y << " 0.000 0.000 ] name \"BlindPerson" << i+1 << "\" color \"blue\")" << endl;
+    }
+}
+
 /**
  * Load animals to world file
  */
@@ -353,7 +365,7 @@ void Generator::writeLaunchFile(){
     calculatePickerPaths(); // calculate the picking paths each Picker will take
     int numBeacons = model.rowCount * 2;
 
-    int totalObjects = model.weed + numBeacons + model.pickerRobots + model.carrierRobots + model.dogs + model.cats + model.workers + model.tractors; // 1 tractor
+    int totalObjects = model.weed + numBeacons + model.pickerRobots + model.carrierRobots + model.dogs + model.cats + model.workers + model.tractors + model.blindPerson; // 1 tractor
 
     for (int i = 0; i < totalObjects; i++) {
         xml.AddElem("group");
@@ -408,6 +420,9 @@ void Generator::writeLaunchFile(){
         } else if (i < model.weed + numBeacons + model.pickerRobots + model.carrierRobots + model.workers + model.dogs + model.cats + model.tractors) { //tractor
             xml.SetAttrib( "name", "Tractornode" );
             xml.SetAttrib( "type", "Tractor" );
+        } else if(i < model.weed + numBeacons + model.pickerRobots + model.carrierRobots + model.workers + model.dogs + model.cats + model.tractors + model.blindPerson) {
+            xml.SetAttrib( "name", "BlindPersonnode");
+            xml.SetAttrib( "type", "BlindPerson");
         }
         xml.SetAttrib( "args", oss.str() );
         xml.OutOfElem();

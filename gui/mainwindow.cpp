@@ -183,6 +183,7 @@ void MainWindow::generate() {
 	generator.loadCarrierRobots();
 	generator.loadPeople();
 	generator.loadAnimals();
+    generator.loadBlindPeople();
 	
 	generator.write();
     generator.writeLaunchFile();

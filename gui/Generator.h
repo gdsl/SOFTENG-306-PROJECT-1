@@ -19,6 +19,7 @@ class Generator
 		void loadPickerRobots();
 		void loadCarrierRobots();
 		void loadPeople();
+        void loadBlindPeople();
 		void loadAnimals();
         void loadTallWeeds();
         void loadTractor();

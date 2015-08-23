@@ -17,7 +17,7 @@ GeneratorModel::GeneratorModel()
 	dogs = 0;
 	cats = 0;
 	workers = 0;
-	blindPerson = 0;
+	blindPerson = 1;
 	neighbors = 0;
 	tractors = 1;
 	beacons = 0;
