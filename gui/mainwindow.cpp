@@ -163,7 +163,7 @@ void MainWindow::generate() {
     for (int i = 0; i < model.workers; i++) {
         uiListPeoples.push_back(createNewItem("Human_Worker"));
     }
-    for (int i = 0; i < model.workers; i++) {
+    for (int i = 0; i < model.gardeners; i++) {
         uiListPeoples.push_back(createNewItem("Gardener"));
     }
     for (int i = 0; i < model.dogs; i++) {
