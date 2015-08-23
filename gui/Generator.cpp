@@ -208,8 +208,8 @@ void Generator::loadPeople()
     int rowEnd = 20 - totalRowWidth;
     
     for(int i = 0; i < model.workers; i++) {
-        int x = rand() % 82 - 36;
-        int y = rand() % 52 - 26;
+        int x = -30 + (rand() % (40 - -30 +1));
+        int y = rowEnd + (rand() % (20 - rowEnd + 1));
     
         if( (x > -30) && (x < 40) && (y < 20) && (y > rowEnd)) {
             int xMult = (((rand() % columnCount + 1) * 2) - 1);
@@ -219,11 +219,11 @@ void Generator::loadPeople()
             float yPos = 20.4 - (yMult * yOffset);
             workerPositions.push_back(xPos);
             workerPositions.push_back(yPos);
-            outfile << "human( pose [ " << 1 << " " << 1 << " 0.000 -90.000 ] name \"Worker" << i+1 << "\" color \"blue\")" << endl;
+            outfile << "human( pose [ " << xPos << " " << yPos << " 0.000 -90.000 ] name \"Worker" << i+1 << "\" color \"blue\")" << endl;
         } else {
             workerPositions.push_back(x);
             workerPositions.push_back(y);
-            outfile << "human( pose [ " << 1 << " " << 1 << " 0.000 -90.000 ] name \"Worker" << i+1 << "\" color \"blue\")" << endl;
+            outfile << "human( pose [ " << x << " " << y << " 0.000 -90.000 ] name \"Worker" << i+1 << "\" color \"blue\")" << endl;
         }
     }
     

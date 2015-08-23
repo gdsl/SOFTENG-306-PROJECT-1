@@ -73,7 +73,7 @@ void stage_laserCallback(sensor_msgs::LaserScan msg) {
                     v.push_back(msg.ranges[i]);
                     Xmap[msg.ranges[i]] = obsX;
                     Ymap[msg.ranges[i]] = obsY;
-                ROS_INFO("ALPHA PERSON OBS dist:%f angle:%d abs:%f obsX:%f obsY:%f robotAngle:%f", msg.ranges[i], i,absAngle, obsX,obsY,toDegree);
+               // ROS_INFO("ALPHA PERSON OBS dist:%f angle:%d abs:%f obsX:%f obsY:%f robotAngle:%f", msg.ranges[i], i,absAngle, obsX,obsY,toDegree);
                     
                 }
             }
@@ -106,7 +106,7 @@ void stage_laserCallback(sensor_msgs::LaserScan msg) {
                 xDistance = avgX - alphaPerson.getX();
                 yDistance = avgY - alphaPerson.getY() + 0.75;
             }            
-            ROS_INFO("ALPHA PERSON x:%f y:%f xDist:%f yDist:%f",avgX,avgY,xDistance,yDistance);
+            //ROS_INFO("ALPHA PERSON x:%f y:%f xDist:%f yDist:%f",avgX,avgY,xDistance,yDistance);
         }
     }
 }
