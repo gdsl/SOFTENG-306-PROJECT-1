@@ -13,7 +13,9 @@ class AlphaPerson : public Person {
 public:
     AlphaPerson();
     AlphaPerson(double x, double y);
+    enum State { TRIMMING, MOVING_TO_SEARCH_SPOT, SEARCHING, GO_TO_NEXT_TREE};
     virtual ~AlphaPerson();
+    void stageLogic();
 };
 
 #endif

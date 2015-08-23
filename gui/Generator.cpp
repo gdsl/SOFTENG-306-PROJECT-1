@@ -217,10 +217,13 @@ void Generator::loadPeople()
         
             int yMult = (((rand() % 8 + 1) * 2) - 1);
             float yPos = 20.4 - (yMult * yOffset);
-        
-            outfile << "human( pose [ " << xPos << " " << yPos << " 0.000 0.000 ] name \"Worker" << i+1 << "\" color \"blue\")" << endl;
+            workerPositions.push_back(xPos);
+            workerPositions.push_back(yPos);
+            outfile << "human( pose [ " << xPos << " " << yPos << " 0.000 -90.000 ] name \"Worker" << i+1 << "\" color \"blue\")" << endl;
         } else {
-            outfile << "human( pose [ " << x << " " << y << " 0.000 0.000 ] name \"Worker" << i+1 << "\" color \"blue\")" << endl;
+            workerPositions.push_back(x);
+            workerPositions.push_back(y);
+            outfile << "human( pose [ " << x << " " << y << " 0.000 -90.000 ] name \"Worker" << i+1 << "\" color \"blue\")" << endl;
         }
     }
     
@@ -399,6 +402,8 @@ void Generator::writeLaunchFile(){
         } else if (i < model.weed + numBeacons + model.pickerRobots + model.carrierRobots + model.workers) { //AlphaPersons (workers)
             xml.SetAttrib( "name", "AlphaPersonnode" );
             xml.SetAttrib( "type", "AlphaPerson" );
+            int workerPos = (i - model.weed - numBeacons - model.pickerRobots - model.carrierRobots)*2;
+            oss << workerPositions[workerPos] << " " << workerPositions[workerPos+1];
         } else if (i < model.weed + numBeacons + model.pickerRobots + model.carrierRobots + model.workers + model.dogs) { //dogs
             xml.SetAttrib( "name", "AlphaDognode" );
             xml.SetAttrib( "type", "AlphaDog" );

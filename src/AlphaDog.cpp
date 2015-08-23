@@ -77,7 +77,7 @@ int main(int argc, char **argv)
 		ros::spinOnce();
         	loop_rate.sleep();
 
-		// Logic to determine current status of Dog - Walking/Idle/Turning
+		/*// Logic to determine current status of Dog - Walking/Idle/Turning
 		// Convert radians to degrees
 		radians = alphaDog.getTheta();
 		angle = roundf(radians * 57.2957795 * 100) / 100;
@@ -91,7 +91,8 @@ int main(int argc, char **argv)
 		}
 		else {
 			status = "Turning";
-		}
+		}*/
+                alphaDog.determineStatus();
 	}
 	return 0;
 }
