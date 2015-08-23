@@ -111,16 +111,9 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
  * This method is called when message is received.
  */
 void recieveCarrierRobotStatus(const se306project::carrier_status::ConstPtr& msg){
-	if (msg->status.compare("Transporting")==0&&pickerRobot.getStatus().compare("Full")==0){
-		//TODO reset status
-		if (distance==1){
-			distance=5;
-		}else if (distance ==5){
-			distance=1;
-		}
-		pickerRobot.movement();
-		pickerRobot.setDesireLocation(false);
-		pickerRobot.setStatus("Moving");
+	if ((msg->status.compare("Arrived")==0)&&pickerRobot.getStatus().compare("Full")==0){
+		pickerRobot.setStatus("Picking");
+		pickerRobot.setState(Robot::GO_TO_NEXT_BEACON);
 	}
 }
 
@@ -369,7 +362,7 @@ int main(int argc, char **argv)
 	//subscribe to obstacle detection
 	pickerRobot.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000,callBackLaserScan);
 	//subscribe to carrier robot's status message
-	ros::Subscriber mysub_object = n.subscribe<se306project::carrier_status>("/robot_1/status",1000,recieveCarrierRobotStatus);
+	ros::Subscriber mysub_object = n.subscribe<se306project::carrier_status>("/robot_25/status",1000,recieveCarrierRobotStatus);
     
     // assign beacon subscriber to the first beacon for this Picker robot's path.
     pickerRobot.subscribeNextBeacon(n);
