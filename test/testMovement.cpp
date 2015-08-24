@@ -5,7 +5,7 @@
 #include <gtest/gtest.h>
 
 /**
- * Unit tests for Movement class - checks basic methods e.g. constructor
+ * Unit test for Movement class. Checks constructor and setter methods.
  */
 
 /**

@@ -13,11 +13,15 @@ TallWeed::~TallWeed() {
 
 }
 
+/**
+ * Move the weed underground
+ */
 void TallWeed::update_position() {
-	// Generate new random position
-	int x = rand() % 82 - 36;
-	int y = rand() % 52 - 26;
-	ROS_ERROR("MADE IT");
+//	robotNode_cmdvel.linear.x = 0;
+//	robotNode_cmdvel.angular.z = 0;
+//	robotNode_cmdvel.linear.y = -5;
+//	// Publish message
+//	robotNode_stage_pub.publish(robotNode_cmdvel);
 }
 
 void TallWeed::workerCallback(const se306project::robot_status msg) {
@@ -31,6 +35,7 @@ void TallWeed::workerCallback(const se306project::robot_status msg) {
 		if (distance <= NEARBYDISTANCE) {
 			update_position();
 		}
+
 	}
 }
 
@@ -68,7 +73,8 @@ int main(int argc, char **argv) {
     }
 
     ros::Rate loop_rate(10); 
-    while (ros::ok()) {
+    while (ros::ok())
+    {
 	    ros::spinOnce();
         loop_rate.sleep();
     }

@@ -1,3 +1,5 @@
+#ifndef SE306PROJECT_SRC_BLINDPERSON_H_
+#define SE306PROJECT_SRC_BLINDPERSON_H_
 #include "Person.h"
 #include "ros/ros.h"
 #include "std_msgs/String.h"
@@ -7,10 +9,14 @@
 class BlindPerson: public Person
 {
 public:
-    BlindPerson();
+	BlindPerson();
+	BlindPerson(double x, double y);
 	BlindPerson(double x, double y, double theta, double linearVelocity, double angularVelocity);
-    void followDog();
-    
+	virtual ~BlindPerson();
+	void followDog();
+
 private:
-    
+
 };
+
+#endif /* SE306PROJECT_SRC_BLINDPERSON_H_ */

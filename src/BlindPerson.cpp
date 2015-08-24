@@ -7,7 +7,8 @@
 
 BlindPerson blindPerson;
 
-BlindPerson::BlindPerson():Person(0,0,0,0,0){}
+BlindPerson::BlindPerson(){
+}
 
 BlindPerson::BlindPerson(double x, double y): Person(x,y) {
 }
