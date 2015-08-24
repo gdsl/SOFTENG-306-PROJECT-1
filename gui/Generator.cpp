@@ -290,7 +290,8 @@ void Generator::loadAnimals()
         
         int yMult = (((rand() % 8 + 1) * 2) - 1);
         float yPos = 20.4 - (yMult * yOffset);
-        
+        dogPositions.push_back(xPos);
+        dogPositions.push_back(yPos);
         outfile << "dog( pose [ " << xPos << " " << yPos << " 0.000 0.000 ] name \"Dog" << i+1 << "\" color \"random\")" << endl;
    /*     } else {
             outfile << "dog( pose [ " << x << " " << y << " 0.000 0.000 ] name \"Dog" << i+1 << "\" color \"random\")" << endl;
@@ -445,6 +446,8 @@ void Generator::writeLaunchFile(){
         } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.gardeners + model.dogs) { //dogs
             xml.SetAttrib( "name", "AlphaDognode" );
             xml.SetAttrib( "type", "AlphaDog" );
+            int dogPos = (i - model.weed - model.beacons - model.pickerRobots - model.carrierRobots - model.workers - model.gardeners)*2;
+            oss << dogPositions[dogPos] << " " << dogPositions[dogPos+1] << " " << model.rowWidth << " " << model.poleTrunkSpacing;
         } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.gardeners + model.dogs + model.cats) { //cats
             xml.SetAttrib( "name", "Catnode" );
             xml.SetAttrib( "type", "Cat" );
