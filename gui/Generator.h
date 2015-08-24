@@ -30,7 +30,7 @@ public:
 
 	GeneratorModel model;
 
-	vector<float> catPositions;
+	queue<float> catPositions;
 
 	queue<float> pickerRobotsPositions;
 	queue<float> carrierRobotsPositions;
@@ -41,7 +41,8 @@ public:
 	queue<float> dogPositions;
 	queue<float> weedPositions;
 	queue<float> neighbourPositions;
-
+	queue<float> blindPersonPositions;
+	
 private:
 	string inputName;
 	string outputName;
