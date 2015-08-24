@@ -8,6 +8,7 @@ class BlindPerson: public Person
 {
 public:
     BlindPerson();
+    BlindPerson(double x, double y);
 	BlindPerson(double x, double y, double theta, double linearVelocity, double angularVelocity);
     void followDog();
     
