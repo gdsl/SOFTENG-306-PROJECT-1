@@ -4,6 +4,7 @@
 #include "Robot.h"
 #include "se306project/robot_status.h"
 #include "se306project/carrier_status.h"
+#include "se306project/weed_status.h"
 #include "PickerRobot.h"
 #include "Constants.h"
 #include <boost/algorithm/string.hpp>
@@ -416,6 +417,9 @@ int main(int argc, char **argv)
 	//subscribe to obstacle detection
 	pickerRobot.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000,callBackLaserScan);
 	ros::Subscriber c=n.subscribe<se306project::carrier_status>("/robot_25/status",1000,receiveCarrierRobotStatus);
+
+	// publish weedobstacle
+	pickerRobot.weed_obstacle_pub = n.advertise<se306project::weed_status>("weed",1000);
 
 	//TODO need to subscribe to all carriers
 	//subscribe to other carrier

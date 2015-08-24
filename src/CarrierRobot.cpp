@@ -2,6 +2,7 @@
 #include <ros/console.h>
 #include "se306project/carrier_status.h"
 #include "se306project/robot_status.h"
+#include "se306project/weed_status.h"
 #include <utility>
 #include <vector>
 #include <iostream>
@@ -391,6 +392,10 @@ int main(int argc, char **argv)
 	carrierRobot.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000, callBackStageOdm);
 	//relative to the obstacle information
 	carrierRobot.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000, callBackLaserScan);
+
+	// publish weed obstacle
+	carrierRobot.weed_obstacle_pub = n.advertise<se306project::weed_status>("weed", 1000);
+
 	//subscribe to the status of picker
 	//getting picker robot starting number and ending number;
 	std::string start(argv[3]);
