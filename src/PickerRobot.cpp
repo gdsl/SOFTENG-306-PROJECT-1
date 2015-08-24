@@ -156,7 +156,7 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
  * This method is called when message is received.
  */
 void recieveCarrierRobotStatus(const se306project::carrier_status::ConstPtr& msg){
-	if ((msg->status.compare("Arrived")==0)&&pickerRobot.getStatus().compare("Full")==0){
+	if ((msg->status.compare("Arrived")==0)&&pickerRobot.getStatus().compare("Carrier servicing")==0){
 		pickerRobot.setStatus("Picking");
 		pickerRobot.setBinCapacity(0);
 		pickerRobot.setState(Robot::PICKING);
@@ -185,6 +185,9 @@ void PickerRobot::stateLogic(ros::NodeHandle n){
 	if(pickerRobot.getState() == FULL_BIN) {
 		pickerRobot.setStatus("Full");
 		pickerRobot.addMovementFront("forward_x",0,0,1);//halt when full
+	}else if(pickerRobot.getState() == SERVICED) {
+		pickerRobot.setStatus("Carrier servicing");
+		pickerRobot.addMovementFront("forward_x",0,0,1);//halt when full waiting for carrier
 	}else if (pickerRobot.getMovementQueueSize()==0){
 
 		//reset this boolean to indicate that the Picker has not yet received directions from its next target beacon
@@ -411,9 +414,27 @@ int main(int argc, char **argv)
 	pickerRobot.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000, callBackStageOdm);
 	//subscribe to obstacle detection
 	pickerRobot.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000,callBackLaserScan);
-	//subscribe to carrier robot's status message
-	ros::Subscriber mysub_object = n.subscribe<se306project::carrier_status>("/robot_25/status",1000,recieveCarrierRobotStatus);
 
+	/*TODO need to subscribe to all carriers
+	//subscribe to other carrier
+	std::string carrierStart(argv[5]);
+	std::string carrierEnd(argv[6]);
+	int a = atoi(carrierStart.c_str());
+	int b = atoi(carrierEnd.c_str());
+	int size = b-a+1;
+	std::string topicName="";
+
+	//subscribing all the picker robot
+	ros::Subscriber *carrierArray = new ros::Subscriber[size];
+	int index = 0;
+	for (int i = a; i<=b; i++) {
+		std::stringstream convert;
+		convert << i;
+		topicName = "/robot_" + convert.str() + "/status";
+		//subscribe to carrier robot's status message
+		carrierArray[index] = n.subscribe<se306project::carrier_status>(topicName,1000,receiveCarrierRobotStatus);
+		index++;
+	}*/
 	// assign beacon subscriber to the first beacon for this Picker robot's path.
 	pickerRobot.subscribeNextBeacon(n);
 	//beacon_sub.shutdown();
