@@ -340,11 +340,7 @@ void Generator::loadPeople()
         peopleCC += 1;
         
         outfile << "gardenWorker( pose [ " << xPos << " " << yPos << " 0.000 -90.000 ] name \"GardenWorker" << i+1 << "\" color \"" + colour + "\")" << endl;
-        /*} else {
-            gardenerPositions.push_back(x);
-            gardenerPositions.push_back(y);
-            outfile << "gardenWorker( pose [ " << x << " " << y << " 0.000 -90.000 ] name \"GardenWorker" << i+1 << "\" color \"blue\")" << endl;
-        }*/
+        
     }
         // Generate neighbours
         outfile << "# Generate neighbours" << endl;
@@ -358,21 +354,31 @@ for (int i = 0; i < model.neighbours; i++) {
         //if( (x > -30) && (x < 40) && (y < 20) && (y > rowEnd)) {
         int xMult = (((rand() % columnCount + 1) * 2) - 1);
         float xPos = -30 + (xMult * xOffset);
-        
         int yMult = (((rand() % 8 + 1) * 2) - 1);
         float yPos = 20.4 - (yMult * yOffset);
+        string colour = colourArray[peopleCC];
+        peopleCC += 1;
         neighbourPositions.push(xPos);
         neighbourPositions.push(yPos);
-        outfile << "neighbour( pose [ " << xPos << " " << yPos << " 0.000 -90.000 ] name \"neighbour" << i+1 << "\" color \"blue\")" << endl;
-        /*} else {
-            gardenerPositions.push_back(x);
-            gardenerPositions.push_back(y);
-            outfile << "gardenWorker( pose [ " << x << " " << y << " 0.000 -90.000 ] name \"GardenWorker" << i+1 << "\" color \"blue\")" << endl;
-        }*/
+        outfile << "neighbour( pose [ " << xPos << " " << yPos << " 0.000 -90.000 ] name \"neighbour" << i+1 << "\" color \"" + colour + "\")" << endl;
+    }
+    
+    //blind persons
+    outfile << "# Generate blind people" << endl;
+    
+    for(int i = 0; i < model.blindPerson; i++) {
+        int x = 0;
+        int y = 0;
+        string colour = colourArray[peopleCC];
+        peopleCC += 1;
+        blindPersonPositions.push(x);
+        blindPersonPositions.push(y);
+        outfile << "blindPerson( pose [ " << x << " " << y << " 0.000 0.000 ] name \"BlindPerson" << i+1 << "\" color \"" + colour + "\")" << endl;
     }
 
 	outfile << endl;
 }
+
 
 /**
  * Load animals to world file
@@ -416,7 +422,7 @@ void Generator::loadAnimals()
 	// Generate cats
 	for(int i = 0; i < model.cats; i++) {
 		x += model.poleTrunkSpacing * 4;
-		catPositions.push_back(x);
+		catPositions.push(x);
 		//outfile << "cat( pose [ -20.000 21.500 0.000 0.000 ] name \"Cat" << i+1 << "\" color \"random\")" << endl;
         	outfile << "cat( pose [ " << x << " 21.500 0.000 0.000 ] name \"Cat" << i+1 << "\" color \"random\")" << endl;
 	}
@@ -493,6 +499,7 @@ void Generator::writeLaunchFile(){
     xml.SetAttrib( "args", "$(find se306project)/world/test.world" );
     calculatePickerPaths(); // calculate the picking paths each Picker will take
 
+
     int totalObjects = model.getTotalNodes(); // total objects in world
 
     for (int i = 0; i < totalObjects; i++) {
@@ -515,9 +522,9 @@ void Generator::writeLaunchFile(){
             xml.SetAttrib( "type", "TallWeed" );
             int alphaPersonNumber = model.rowCount*2 + model.weed + model.pickerRobots + model.carrierRobots;
             int subscribeIndex = model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers;
-            int xPos = weedPositions.front();
+            float xPos = weedPositions.front();
             weedPositions.pop();
-            int yPos = weedPositions.front();
+            float yPos = weedPositions.front();
             weedPositions.pop();
             
             if (model.gardeners > 0) {
@@ -535,38 +542,38 @@ void Generator::writeLaunchFile(){
             } else {
                 num = (num - 7) * 2;
             }
-            int xPos = beaconPositions.front();
+            float xPos = beaconPositions.front();
             beaconPositions.pop();
-            int yPos = beaconPositions.front();
+            float yPos = beaconPositions.front();
             beaconPositions.pop();
             oss << xPos << " " << yPos << " /beacon" << num << "/ ";
         } else if (i < model.weed + model.beacons + model.pickerRobots) { //picker robots
             xml.SetAttrib( "name", "PickerRobotnode" );
             xml.SetAttrib( "type", "PickerRobot" );
-            int xPos = pickerRobotsPositions.front();
+            float xPos = pickerRobotsPositions.front();
             pickerRobotsPositions.pop();
-            int yPos = pickerRobotsPositions.front();
+            float yPos = pickerRobotsPositions.front();
             pickerRobotsPositions.pop();
-            int nextStart = pickerPathPositions.front();
+            float nextStart = pickerPathPositions.front();
             pickerPathPositions.pop();
-            int nextFinish = pickerPathPositions.front();
+            float nextFinish = pickerPathPositions.front();
             pickerPathPositions.pop();            
-            int theta = 0;
+            float theta = 0;
             oss << xPos << " " << yPos << " " << theta << " " << nextStart << " " << nextFinish << " " << model.rowWidth << " " << firstCarrier << " " << lastCarrier;
         } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots) { //carriers
             xml.SetAttrib( "name", "CarrierRobotnode" );
             xml.SetAttrib( "type", "CarrierRobot" );
-            int xPos = carrierRobotsPositions.front();
+            float xPos = carrierRobotsPositions.front();
             carrierRobotsPositions.pop();
-            int yPos = carrierRobotsPositions.front();
+            float yPos = carrierRobotsPositions.front();
             carrierRobotsPositions.pop();
             oss << xPos << " " << yPos << " " << firstPicker << " " << lastPicker << " " << firstCarrier << " " << lastCarrier;
         } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers) { //AlphaPersons (workers)
             xml.SetAttrib( "name", "AlphaPersonnode" );
             xml.SetAttrib( "type", "AlphaPerson" );
-            int xPos = workerPositions.front();
+            float xPos = workerPositions.front();
             workerPositions.pop();
-            int yPos = workerPositions.front();
+            float yPos = workerPositions.front();
             workerPositions.pop();
             oss << xPos << " " << yPos << " " << firstPicker << " " << lastCarrier;
         } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.gardeners) {
@@ -580,29 +587,42 @@ void Generator::writeLaunchFile(){
         } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers+ model.gardeners+model.neighbours) { //neighbours
             xml.SetAttrib( "name", "Neighbournode" );
             xml.SetAttrib( "type", "Neighbour" );
-            int x = neighbourPositions.front();
+            float x = neighbourPositions.front();
             neighbourPositions.pop();
-            int y = neighbourPositions.front();
+            float y = neighbourPositions.front();
             neighbourPositions.pop();
-            oss << x << " " << y;
-} else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.gardeners +model.neighbours+ model.dogs) { //dogs
+            float theta = 0;
+            oss << x << " " << y << " " << theta;
+        } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.gardeners +model.neighbours + model.blindPerson) {
+            xml.SetAttrib( "name", "BlindPersonnode");
+            xml.SetAttrib( "type", "BlindPerson");
+            float xPos = blindPersonPositions.front();
+            blindPersonPositions.pop();
+            float yPos = blindPersonPositions.front();
+            blindPersonPositions.pop();
+            float theta = 0;
+            oss << xPos << " " << yPos << " " << theta;
+        } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.blindPerson + model.gardeners +model.neighbours + model.dogs) { //dogs
             xml.SetAttrib( "name", "AlphaDognode" );
             xml.SetAttrib( "type", "AlphaDog" );
-            int xPos = dogPositions.front();
+            float xPos = dogPositions.front();
             dogPositions.pop();
-            int yPos = dogPositions.front();
+            float yPos = dogPositions.front();
             dogPositions.pop();
-            int theta = 0;
+            float theta = 0;
     		oss << xPos << " " << yPos << " " << theta << " " << model.rowWidth << " " << model.poleTrunkSpacing;
-        } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.gardeners + model.dogs + model.cats) { //cats
+        } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.gardeners + model.blindPerson + model.neighbours + model.dogs + model.cats) { //cats
             xml.SetAttrib( "name", "Catnode" );
             xml.SetAttrib( "type", "Cat" );
-		oss << catPositions[i-(model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.gardeners + model.neighbours + model.dogs)] << " " << model.poleTrunkSpacing;
-        } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.gardeners +model.neighbours+ model.dogs + model.cats + model.tractors) { //tractor
-
+            float xPos = catPositions.front();
+            catPositions.pop();
+            float yPos = 21.5;
+            float theta = 0;
+		    oss << xPos << " " << yPos << " " << theta << " " << model.poleTrunkSpacing;
+        } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.gardeners + model.blindPerson +model.neighbours+ model.dogs + model.cats + model.tractors) { //tractor
             xml.SetAttrib( "name", "Tractornode" );
             xml.SetAttrib( "type", "Tractor" );
-        }
+        } 
         xml.SetAttrib( "args", oss.str() );
         xml.OutOfElem();
     }   
