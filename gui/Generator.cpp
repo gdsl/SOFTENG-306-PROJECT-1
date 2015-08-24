@@ -111,9 +111,9 @@ void Generator::loadOrchard()
 		     * Add trunk at even column, pole on odd column
 		     */
 		    if (i % 2 == 0) {
-			    outfile << "trunk( pose [ " << x << " " << y << " 0.000 0.000 ] color \"green\")" << endl;
+			    outfile << "trunk( pose [ " << x << " " << y << " 0.000 0.000 ] color \"brown\")" << endl;
 		    } else {
-			    outfile << "pole( pose [ " << x << " " << y << " 0.000 0.000 ] color \"brown\")" << endl;
+			    outfile << "pole( pose [ " << x << " " << y << " 0.000 0.000 ] color \"black\")" << endl;
 		    }
 
 		    /*
