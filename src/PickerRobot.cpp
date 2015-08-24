@@ -416,15 +416,14 @@ int main(int argc, char **argv)
 	pickerRobot.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000, callBackStageOdm);
 	//subscribe to obstacle detection
 	pickerRobot.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000,callBackLaserScan);
-	ros::Subscriber c=n.subscribe<se306project::carrier_status>("/robot_25/status",1000,receiveCarrierRobotStatus);
 
 	// publish weedobstacle
 	pickerRobot.weed_obstacle_pub = n.advertise<se306project::weed_status>("weed",1000);
 
 	//TODO need to subscribe to all carriers
 	//subscribe to other carrier
-	std::string carrierStart(argv[6]);
-	std::string carrierEnd(argv[7]);
+	std::string carrierStart(argv[7]);
+	std::string carrierEnd(argv[8]);
 	int a = atoi(carrierStart.c_str());
 	int b = atoi(carrierEnd.c_str());
 	int size = b-a+1;
@@ -473,5 +472,7 @@ int main(int argc, char **argv)
 		loop_rate.sleep();
 		++count;
 	}
+
+	delete[] carrierArray;
 	return 0;
 }
