@@ -76,17 +76,19 @@ void MainWindow::onUpdateGUI( QString id, QString str, int i )
 {
 	//update the gui for robots
 	int idNum = id.toInt()-model.beacons-model.weed;
-
-	if (idNum < model.carrierRobots+model.pickerRobots) {
-		QListWidget *qlw = ((QListWidget*)ui->robotScroll->widget()->layout()->itemAt(idNum)->widget());
-		qlw->item(i)->setText(truncate(str));
-	} else if (idNum < model.carrierRobots+model.pickerRobots+model.workers+model.gardeners+model.neighbours){
-		QListWidget *qlw = ((QListWidget*)ui->peopleScroll->widget()->layout()->itemAt(idNum-(model.carrierRobots + model.pickerRobots))->widget());
-		qlw->item(i)->setText(truncate(str));
-	} else {
-		QListWidget *qlw = ((QListWidget*)ui->animalScroll->widget()->layout()->itemAt(idNum-(model.carrierRobots + model.pickerRobots + model.workers + model.gardeners+model.neighbours))->widget());
-		qlw->item(i)->setText(truncate(str));
-	}
+    int numRobots = model.carrierRobots + model.pickerRobots;
+    int numRobotsPlusPeople = model.carrierRobots+model.pickerRobots+model.workers+model.gardeners+model.neighbours+model.blindPerson;
+    
+	if (idNum < numRobots) {
+	    QListWidget *qlw = ((QListWidget*)ui->robotScroll->widget()->layout()->itemAt(idNum)->widget());
+    	qlw->item(i)->setText(truncate(str));
+    } else if (idNum < numRobotsPlusPeople){
+    	QListWidget *qlw = ((QListWidget*)ui->peopleScroll->widget()->layout()->itemAt(idNum-numRobots)->widget());
+    	qlw->item(i)->setText(truncate(str));
+    } else {
+    	QListWidget *qlw = ((QListWidget*)ui->animalScroll->widget()->layout()->itemAt(idNum-numRobotsPlusPeople)->widget());
+    	qlw->item(i)->setText(truncate(str));
+    }
 }
 
 QString MainWindow::truncate(QString str) {
@@ -179,6 +181,9 @@ void MainWindow::generate() {
 	for (int i = 0; i < model.gardeners; i++) {
 		uiListPeoples.push_back(createNewItem("Gardener"));
 	}
+	for (int i = 0; i < model.blindPerson; i++) {
+        uiListPeoples.push_back(createNewItem("Blind_Person"));
+    }
 	for (int i = 0; i < model.neighbours; i++) {
 		uiListPeoples.push_back(createNewItem("Neighbour"));
 	}
