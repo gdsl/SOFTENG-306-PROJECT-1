@@ -5,6 +5,10 @@
 #include <gtest/gtest.h>
 
 /**
+ * Unit tests for Dog Robot - tests basic methods e.g. constructor
+ */
+
+/**
  * Test default alphaDog constructor
  */
 TEST(AlphaDog, constructAlphaDog) {
