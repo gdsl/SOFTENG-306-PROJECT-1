@@ -6,6 +6,7 @@
 #include "se306project/carrier_status.h"
 #include "PickerRobot.h"
 #include "Constants.h"
+#include <boost/algorithm/string.hpp>
 #include <vector>
 #include <string>
 
@@ -89,39 +90,35 @@ void callBackStageOdm(const nav_msgs::Odometry msg) {
  * Call back method for laser work out the avoidance logic for picker robot
  */
 void callBackLaserScan(const sensor_msgs::LaserScan msg) {
-	// Call supercalss laser call back for detection case work out
-	pickerRobot.stageLaser_callback(msg);
-    
-	// Check if there is need to avoid obstacle
-	if (pickerRobot.getAvoidanceCase()!=Entity::NONE) {
-		// Check if robot is idle or not
-		if (pickerRobot.getState()!=Robot::IDLE) {
+	pickerRobot.stageLaser_callback(msg);//call supercalss laser call back for detection case work out
+
+	if (pickerRobot.getAvoidanceCase()!=Entity::NONE) {//check if there is need to avoid obstacle
+
+		if(pickerRobot.getState()!=Robot::IDLE){//check if robot is idle or not
 			pickerRobot.setObstacleStatus("Obstacle nearby");
-            		// If it's a weed, stop
-			if (pickerRobot.getAvoidanceCase()==Entity::WEED) {
-				// Add empty movement to front of avoidance to stop
-				pickerRobot.addMovementFront("forward_x",0,0,1);
+
+			if(pickerRobot.getAvoidanceCase()==Entity::WEED ){// if its weed stop
+				pickerRobot.addMovementFront("forward_x",0,0,1);//add empty movement to front of avoidance to stop
 				pickerRobot.setObstacleStatus("Weed! Help!");
-                	// If it's a human or animal, stop
-			} else if (pickerRobot.getAvoidanceCase()==Entity::LIVING_OBJ) {
-				// Add empty movement to front of avoidance to stop
-				pickerRobot.addMovementFront("forward_x",0,0,1);
-                	// If it's a halt, stop
-			} else if (pickerRobot.getAvoidanceCase()==Entity::HALT) {
-				// Add empty movement to front of avoidance to stop
-				pickerRobot.addMovementFront("forward_x",0,0,1);
-                	// If it's a stationary robot
-			} else if (pickerRobot.getAvoidanceCase()==Entity::STATIONARY&& pickerRobot.getCriticalIntensity()>1) {
+
+			}else if(pickerRobot.getAvoidanceCase()==Entity::LIVING_OBJ) {//if its human or animal stop
+				pickerRobot.addMovementFront("forward_x",0,0,1);//add empty movement to front of avoidance to stop
+
+			}else if(pickerRobot.getAvoidanceCase()==Entity::HALT) {//if its halt stop
+				pickerRobot.addMovementFront("forward_x",0,0,1);//add empty movement to front of avoidance to stop
+
+			}else if(pickerRobot.getAvoidanceCase()==Entity::STATIONARY&& pickerRobot.getCriticalIntensity()>1) {//if its stationary robot
 				pickerRobot.avoidObstacle(pickerRobot,3,3);
-                
-			} else if (pickerRobot.getAvoidanceCase()==Entity::PERPENDICULAR) {
-				// If robot is moving in the y direction, give way
-				if (pickerRobot.getDirectionFacing()== pickerRobot.NORTH||pickerRobot.getDirectionFacing()== pickerRobot.SOUTH) {
+
+			}else if(pickerRobot.getAvoidanceCase()==Entity::PERPENDICULAR){
+				if(pickerRobot.getDirectionFacing()== pickerRobot.NORTH||pickerRobot.getDirectionFacing()== pickerRobot.SOUTH) {
+					//if robot moving in the y direction give way
 					pickerRobot.addMovementFront("forward_x",0,0,1);
 				}
-			} else if (pickerRobot.getAvoidanceCase()==Entity::FACE_ON) {
-				if (pickerRobot.getAvoidanceQueueSize()<=0) {
-					if (pickerRobot.getDirectionFacing()== pickerRobot.NORTH&&pickerRobot.getObstacleStatus().compare("Obstacle nearby")!=0) {
+
+			}else if(pickerRobot.getAvoidanceCase()==Entity::FACE_ON) {
+				if(pickerRobot.getAvoidanceQueueSize()<=0){
+					if(pickerRobot.getDirectionFacing()== pickerRobot.NORTH&&pickerRobot.getObstacleStatus().compare("Obstacle nearby")!=0) {
 						pickerRobot.addMovementFront("rotation",M_PI/2,1,1);
 						pickerRobot.addMovementFront("forward_x",3,1,1);
 						pickerRobot.addMovementFront("rotation",0, 1,1);
@@ -129,10 +126,8 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 						pickerRobot.addMovementFront("rotation",M_PI/2,1,1);
 						pickerRobot.addMovementFront("forward_x",-3,1,1);
 						pickerRobot.addMovementFront("rotation",M_PI,1,1);
-						// This is at the front of the queue
-						pickerRobot.addMovementFront("forward_x",0,0,1);
-                        
-					} else if (pickerRobot.getDirectionFacing()== pickerRobot.EAST&&pickerRobot.getObstacleStatus().compare("Obstacle nearby")!=0) {
+						pickerRobot.addMovementFront("forward_x",0,0,1);//this is at front of front
+					}else if(pickerRobot.getDirectionFacing()== pickerRobot.EAST&&pickerRobot.getObstacleStatus().compare("Obstacle nearby")!=0) {
 						pickerRobot.addMovementFront("rotation",0, 1,1);
 						pickerRobot.addMovementFront("forward_y",3,1,1);
 						pickerRobot.addMovementFront("rotation",M_PI/2, 1,1);
@@ -143,7 +138,7 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 						// This is at the front of the queue
 						pickerRobot.addMovementFront("forward_x",0,0,1);
 					}
-                    
+
 				} else {
 					// Halt movement if already have avoidance logic
 					pickerRobot.addMovementFront("forward_x",0,0,1);
@@ -174,25 +169,26 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
  * Method that process the carrier robot message received.
  * This method is called when message is received.
  */
-void recieveCarrierRobotStatus(const se306project::carrier_status::ConstPtr& msg) {
-	if ((msg->status.compare("Arrived")==0)&&pickerRobot.getStatus().compare("Carrier servicing")==0) {
+void receiveCarrierRobotStatus(const se306project::carrier_status::ConstPtr& msg) {
+	if ((msg->status.compare("Arrived")==0)&&pickerRobot.getState()==pickerRobot.SERVICED) {
 		pickerRobot.setStatus("Picking");
 		pickerRobot.setBinCapacity(0);
 		pickerRobot.setState(Robot::PICKING);
-	}else if(msg->status.substr(0,6).compare("Moving")==0){
+	}else if(msg->status.substr(0,6).compare("Moving")==0){// if carrier is send moving message check
+		//split string to get the target of carrier
+		std::vector<std::string> statusParts;
+		boost::split(statusParts, msg->status, boost::is_any_of("\t "));
+		double x=atof(statusParts.at(1).c_str());//get target x value of carrier
+		double y=atof(statusParts.at(2).c_str());//get target y value of carrier
+		if(std::abs(x-pickerRobot.getX())+std::abs(y-pickerRobot.getY())<0.2){
+			//if the target values and picker values are simialr within 0.2
+			//set the picker state to being serviced
+			pickerRobot.setState(pickerRobot.SERVICED);
+		}
 
 	}
 }
 
-/*
- * Method that process the carrier robot serviceing mesaage received.
- * This method is called when message is received.
- */
-void recieveCarrierRobotServiceMsg(const se306project::carrier_status::ConstPtr& msg){
-	if (msg->status.compare("Serviceing")==0) {
-	// TODO: make sure carrier is coming to this picker
-	}
-}
 /**
  * Method for the picker robot's states transition and implementation
  */
@@ -201,12 +197,11 @@ void PickerRobot::stateLogic(ros::NodeHandle n) {
 	// Only if the next beacon has been reached, should a state update occur
 	if (pickerRobot.getState() == FULL_BIN) {
 		pickerRobot.setStatus("Full");
-		// Halt when full
-		pickerRobot.addMovementFront("forward_x",0,0,1);
+		pickerRobot.addMovementFront("forward_x",0,0,1);//halt when full
+
 	} else if(pickerRobot.getState() == SERVICED) {
 		pickerRobot.setStatus("Carrier servicing");
-		// Halt when full waiting for carrier
-		pickerRobot.addMovementFront("forward_x",0,0,1);
+		pickerRobot.addMovementFront("forward_x",0,0,1);//halt when full waiting for carrier
 	} else if (pickerRobot.getMovementQueueSize()==0) {
 		// If the current state is dispatch then the Picker Robot should move to the starting position of its picking path.
 		// This is the first beacon along its path.
@@ -268,7 +263,7 @@ void PickerRobot::stateLogic(ros::NodeHandle n) {
 
 		} else if (pickerRobot.getState() == FINISHED) {
 
-      		  }
+		}
 	}
 	pickerRobot.move();
 }
@@ -422,11 +417,12 @@ int main(int argc, char **argv) {
 	pickerRobot.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000, callBackStageOdm);
 	// Subscribe to obstacle detection
 	pickerRobot.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000,callBackLaserScan);
+	ros::Subscriber c=n.subscribe<se306project::carrier_status>("/robot_25/status",1000,receiveCarrierRobotStatus);
 
-	/*TODO need to subscribe to all carriers
+	//TODO need to subscribe to all carriers
 	//subscribe to other carrier
-	std::string carrierStart(argv[5]);
-	std::string carrierEnd(argv[6]);
+	std::string carrierStart(argv[6]);
+	std::string carrierEnd(argv[7]);
 	int a = atoi(carrierStart.c_str());
 	int b = atoi(carrierEnd.c_str());
 	int size = b-a+1;
@@ -441,9 +437,9 @@ int main(int argc, char **argv) {
 		//subscribe to carrier robot's status message
 		carrierArray[index] = n.subscribe<se306project::carrier_status>(topicName,1000,receiveCarrierRobotStatus);
 		index++;
-	}*/
-    
-	// Assign beacon subscriber to the first beacon for this Picker robot's path
+	}
+
+	// assign beacon subscriber to the first beacon for this Picker robot's path.
 	pickerRobot.subscribeNextBeacon(n);
 	unsigned int num_readings = 100;
 	double laser_frequency = 40;

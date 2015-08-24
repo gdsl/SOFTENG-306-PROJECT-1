@@ -90,7 +90,8 @@ std::vector<std::string> split(const std::string &s, char delim) {
 /*
  * Wrapper method for the callBackStageOdm method
  */
-void callBackStageOdm(const nav_msgs::Odometry msg) {
+
+void callBackStageOdm(const nav_msgs::Odometry msg){
 	carrierRobot.stageOdom_callback(msg);
 }
 
@@ -98,34 +99,26 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 	// Call super class callback which is where the laser scanning logic is designed
 	carrierRobot.stageLaser_callback(msg);
 
-	// Check if there is need to avoid obstacle
-	if (carrierRobot.getAvoidanceCase()!=Entity::NONE) {
-		// Check if robot is idle or not
-		if (carrierRobot.getState()!=Robot::IDLE) {
+	if (carrierRobot.getAvoidanceCase()!=Entity::NONE&&carrierRobot.getAvoidanceCase()!=Entity::TREE) {//check if there is need to avoid obstacle
+		if(carrierRobot.getState()!=Robot::IDLE){//check if robot is idle or not
 			carrierRobot.setObstacleStatus("Obstacle nearby");
 			// If it's a weed, stop
 			if (carrierRobot.getAvoidanceCase()==Entity::WEED) {
 				// Add empty movement to front of avoidance to stop
 				carrierRobot.addMovementFront("forward_x",0,0,1);
 				carrierRobot.setObstacleStatus("Weed! Help!");
-			// If it's a human or animal, stop
-			} else if (carrierRobot.getAvoidanceCase()==Entity::LIVING_OBJ) {
-				// Add empty movement to front of avoidance to stop
-				carrierRobot.addMovementFront("forward_x",0,0,1);
-			// If it's a halt, stop
-			} else if (carrierRobot.getAvoidanceCase()==Entity::HALT) {
-				// Add empty movement to front of avoidance to stop
-				carrierRobot.addMovementFront("forward_x",0,0,1);
-			// If it's a stationary robot
-			} else if (carrierRobot.getAvoidanceCase()==Entity::STATIONARY&& carrierRobot.getCriticalIntensity()>1) {
-				// If the carrier robot is in front and carrier is in queue, then halt.
-				// If it's a carrier
-				if (carrierRobot.getState()==carrierRobot.QUEUE&& carrierRobot.getCriticalIntensity()==3) {	
-					// This is at front of queue
-					carrierRobot.addMovementFront("forward_x",0,0,1);
-				// If not picker robot or if it's too close
-				} else if (carrierRobot.getCriticalIntensity()!=2|| carrierRobot.getMinDistance()<0.4) {
-					if (carrierRobot.getDirectionFacing()== carrierRobot.NORTH) {
+			}else if(carrierRobot.getAvoidanceCase()==Entity::LIVING_OBJ){//if its human or animal stop
+				carrierRobot.addMovementFront("forward_x",0,0,1);//add empty movement to front of avoidance to stop
+				carrierRobot.setObstacleStatus("Living Object");
+			}else if(carrierRobot.getAvoidanceCase()==Entity::HALT){//if its halt stop
+				carrierRobot.addMovementFront("forward_x",0,0,1);//add empty movement to front of avoidance to stop
+				carrierRobot.setObstacleStatus("Obstacle nearby. Halt");
+			}else if(carrierRobot.getAvoidanceCase()==Entity::STATIONARY&& carrierRobot.getCriticalIntensity()>1){//if its stationary robot
+				//if the carrier robot is infront and carrier is queue then halt
+				if(carrierRobot.getState()==carrierRobot.QUEUE&& carrierRobot.getCriticalIntensity()==3){//if its carrier
+					carrierRobot.addMovementFront("forward_x",0,0,1);//this is at front of queue
+				}else if(carrierRobot.getCriticalIntensity()!=2|| carrierRobot.getMinDistance()<0.4){//if not picker robot or if its too close
+					if(carrierRobot.getDirectionFacing()== carrierRobot.NORTH){
 						carrierRobot.addMovementFront("rotation",M_PI/2,1,1);
 						carrierRobot.addMovementFront("forward_x",3,1,1);
 						carrierRobot.addMovementFront("rotation",0, 1,1);
@@ -323,13 +316,12 @@ void CarrierRobot::stateLogic(){
 	} else if (carrierRobot.getState() == MOVING) {
 		std::string status="Moving ";
 		std::stringstream convert;
+		std::stringstream convert2;
 		convert << targetX;
-		status=status+convert.str()+" ";
-		convert.clear();
-		convert << targetY;
-		status=status+convert.str();
+		convert2 << targetY;
+		status=status+convert.str()+" "+convert2.str();
 		carrierRobot.setStatus(status);
-
+		ROS_INFO("x start: %s", status.c_str());
 		if (carrierRobot.getMovementQueueSize() == 0 ) {
 			carrierRobot.setState(Robot::ARRIVED);
 		}

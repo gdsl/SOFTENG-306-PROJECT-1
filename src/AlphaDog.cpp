@@ -13,7 +13,7 @@ AlphaDog::AlphaDog() : Animal() {
 }
 
 AlphaDog::AlphaDog(double x, double y) : Animal(x,y) {
-    this->antiClockwise = false;
+	this->antiClockwise = false;
 }
 
 AlphaDog::~AlphaDog() {
@@ -21,11 +21,11 @@ AlphaDog::~AlphaDog() {
 }
 
 void AlphaDog::switchDirection() {
-    this->antiClockwise = !(this->antiClockwise);
+	this->antiClockwise = !(this->antiClockwise);
 }
 
 bool AlphaDog::isAntiClockwise() {
-    return this-> antiClockwise;
+	return this-> antiClockwise;
 }
 
 AlphaDog alphaDog(0,0);
@@ -61,21 +61,21 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 int main(int argc, char **argv) {
 	// Initialise ros    
 	ros::init(argc,argv,"Animal");
-    
-    // convert input parameters for person initialization from String to respective types
-    std::string xString = argv[1];
-    std::string yString = argv[2];
-    std::string rowString = argv[4];
-    std::string spacingString = argv[5];
-    double rowWidth = atof(rowString.c_str());
-    double trunkSpacing = atof(spacingString.c_str());
-    double xPos = atof(xString.c_str());
-    double yPos = atof(yString.c_str());
-    double left = xPos - trunkSpacing;
-    double right = xPos;
-    double top = yPos;
-    double bottom = yPos - rowWidth;
-    alphaDog = AlphaDog(xPos,yPos);
+
+	// convert input parameters for person initialization from String to respective types
+	std::string xString = argv[1];
+	std::string yString = argv[2];
+	std::string rowString = argv[4];
+	std::string spacingString = argv[5];
+	double rowWidth = atof(rowString.c_str());
+	double trunkSpacing = atof(spacingString.c_str());
+	double xPos = atof(xString.c_str());
+	double yPos = atof(yString.c_str());
+	double left = xPos - trunkSpacing;
+	double right = xPos;
+	double top = yPos;
+	double bottom = yPos - rowWidth;
+	alphaDog = AlphaDog(xPos,yPos);
 
 	// Create ros handler for this node
 	ros::NodeHandle n;
@@ -90,54 +90,54 @@ int main(int argc, char **argv) {
 	ros::Publisher pub=n.advertise<se306project::animal_status>("status",1000);
 	se306project::animal_status status_msg;
 	// 0 down section, 1 up section, 2 left section, 3 right section
-    AlphaDog::State state = AlphaDog::TOP;
+	AlphaDog::State state = AlphaDog::TOP;
 	while (ros::ok()) {
 		// Message to stage 
 		alphaDog.move();
-        
-        if (alphaDog.getMovementQueueSize() == 0) {
-           if (state == AlphaDog::TOP) {
-                if (alphaDog.isAntiClockwise()) {
-                    alphaDog.faceWest(1);
-                    alphaDog.addMovement("forward_x", left-alphaDog.getX(), 1);
-                    state = AlphaDog::LEFT;
-                } else {
-                    alphaDog.faceEast(1);           
-                    alphaDog.addMovement("forward_x", right-alphaDog.getX(), 1);
-                    state = AlphaDog::RIGHT;
-                }
-            } else if (state == AlphaDog::LEFT)  {
-                if (alphaDog.isAntiClockwise()) {
-                    alphaDog.faceSouth(1);
-                    alphaDog.addMovement("forward_y", bottom-alphaDog.getY(),1);
-                    state = AlphaDog::BOTTOM;
-                } else {
-                    alphaDog.faceNorth(1);           
-                    alphaDog.addMovement("forward_y", top-alphaDog.getY(), 1);
-                    state = AlphaDog::TOP;
-                }
-            } else if (state == AlphaDog::BOTTOM) {
-                if (alphaDog.isAntiClockwise()) {
-                    alphaDog.faceEast(1);           
-                    alphaDog.addMovement("forward_x", right-alphaDog.getX(), 1);
-                    state = AlphaDog::RIGHT;
-                } else {
-                    alphaDog.faceWest(1);
-                    alphaDog.addMovement("forward_x", left-alphaDog.getX(), 1);
-                    state = AlphaDog::LEFT;
-                }
-            } else if (state == AlphaDog::RIGHT) {
-                if (alphaDog.isAntiClockwise()) {
-                    alphaDog.faceNorth(1);           
-                    alphaDog.addMovement("forward_y", top-alphaDog.getY(), 1);
-                    state = AlphaDog::TOP;
-                } else {
-                    alphaDog.faceSouth(1);
-                    alphaDog.addMovement("forward_y", bottom-alphaDog.getY(),1);
-                    state = AlphaDog::BOTTOM;
-                }
-            }
-	}
+
+		if (alphaDog.getMovementQueueSize() == 0) {
+			if (state == AlphaDog::TOP) {
+				if (alphaDog.isAntiClockwise()) {
+					alphaDog.faceWest(1);
+					alphaDog.addMovement("forward_x", left-alphaDog.getX(), 1);
+					state = AlphaDog::LEFT;
+				} else {
+					alphaDog.faceEast(1);
+					alphaDog.addMovement("forward_x", right-alphaDog.getX(), 1);
+					state = AlphaDog::RIGHT;
+				}
+			} else if (state == AlphaDog::LEFT)  {
+				if (alphaDog.isAntiClockwise()) {
+					alphaDog.faceSouth(1);
+					alphaDog.addMovement("forward_y", bottom-alphaDog.getY(),1);
+					state = AlphaDog::BOTTOM;
+				} else {
+					alphaDog.faceNorth(1);
+					alphaDog.addMovement("forward_y", top-alphaDog.getY(), 1);
+					state = AlphaDog::TOP;
+				}
+			} else if (state == AlphaDog::BOTTOM) {
+				if (alphaDog.isAntiClockwise()) {
+					alphaDog.faceEast(1);
+					alphaDog.addMovement("forward_x", right-alphaDog.getX(), 1);
+					state = AlphaDog::RIGHT;
+				} else {
+					alphaDog.faceWest(1);
+					alphaDog.addMovement("forward_x", left-alphaDog.getX(), 1);
+					state = AlphaDog::LEFT;
+				}
+			} else if (state == AlphaDog::RIGHT) {
+				if (alphaDog.isAntiClockwise()) {
+					alphaDog.faceNorth(1);
+					alphaDog.addMovement("forward_y", top-alphaDog.getY(), 1);
+					state = AlphaDog::TOP;
+				} else {
+					alphaDog.faceSouth(1);
+					alphaDog.addMovement("forward_y", bottom-alphaDog.getY(),1);
+					state = AlphaDog::BOTTOM;
+				}
+			}
+		}
 
 		// Add Dog variables to status message to be broadcast
 		status_msg.status=status;
@@ -147,8 +147,8 @@ int main(int argc, char **argv) {
 		// Publish status message
 		pub.publish(status_msg);
 		ros::spinOnce();
-        	loop_rate.sleep();
-                alphaDog.determineStatus();
+		loop_rate.sleep();
+		alphaDog.determineStatus();
 	}
 	return 0;
 }
