@@ -500,5 +500,6 @@ dog( pose [-3.75 17.5 0 0] name "AlphaDog" color "random")
 cat( pose [-3.75 17.5 0 0] name "Cat" color "random")
 
 human( pose [ -30.00 21.15 0.000 -90.000 ] name "AlphaPerson" color "blue")
+human( pose [ -30.00 21.15 0.000 -90.000 ] name "Neighbour" color "orange")
 beacon( pose [ 42.000 11.500 0.000 0.000] name "beacon1" color "yellow")
 beacon( pose [ -32.000 8.000 0.000 0.000] name "beacon2" color "yellow")

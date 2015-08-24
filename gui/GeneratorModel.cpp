@@ -18,12 +18,12 @@ GeneratorModel::GeneratorModel()
 	cats = 0;
 	workers = 0;
 	blindPerson = 0;
-	neighbors = 0;
+	neighbours = 0;
 	tractors = 1;
 	beacons = 0;
 	weed = 10;
 }
 
 int GeneratorModel::getTotalNodes() {
-    return weed + beacons + pickerRobots + carrierRobots + workers + dogs + cats + blindPerson + neighbors + gardeners;
+    return weed + beacons + pickerRobots + carrierRobots + workers + dogs + cats + blindPerson + neighbours + gardeners;
 }
