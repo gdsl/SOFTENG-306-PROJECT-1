@@ -11,6 +11,7 @@
 #include <QDebug>
 #include <vector>
 #include <sstream>
+#include <math.h>
 
 using namespace std;
 
@@ -71,7 +72,6 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-
 void MainWindow::onUpdateGUI( QString id, QString str, int i )
 {
 	//update the gui for robots
@@ -79,13 +79,27 @@ void MainWindow::onUpdateGUI( QString id, QString str, int i )
 
 	if (idNum < model.carrierRobots+model.pickerRobots) {
 	    QListWidget *qlw = ((QListWidget*)ui->robotScroll->widget()->layout()->itemAt(idNum)->widget());
-    	qlw->item(i)->setText(str);
+    	qlw->item(i)->setText(truncate(str));
     } else if (idNum < model.carrierRobots+model.pickerRobots+model.workers+model.gardeners){
     	QListWidget *qlw = ((QListWidget*)ui->peopleScroll->widget()->layout()->itemAt(idNum-(model.carrierRobots + model.pickerRobots))->widget());
-    	qlw->item(i)->setText(str);
+    	qlw->item(i)->setText(truncate(str));
     } else {
     	QListWidget *qlw = ((QListWidget*)ui->animalScroll->widget()->layout()->itemAt(idNum-(model.carrierRobots + model.pickerRobots + model.workers + model.gardeners))->widget());
-    	qlw->item(i)->setText(str);
+    	qlw->item(i)->setText(truncate(str));
+    }
+}
+
+QString MainWindow::truncate(QString str) {
+    bool ok;
+    QStringList pieces = str.split( " " );
+    QString numString = pieces.value( pieces.length() -1 );
+    double d = numString.toDouble(&ok);
+    if (ok) {
+        double scale = 0.01;  // i.e. round to nearest one-hundreth
+        d = floor(d / scale + 0.5) * scale;
+        return pieces.value(0) + " " + QString::number(d);
+    } else {
+        return str;
     }
 }
 
