@@ -222,7 +222,11 @@ void Generator::loadPeople()
         float yPos = 20.4 - (yMult * yOffset);
         workerPositions.push_back(xPos);
         workerPositions.push_back(yPos);
-        outfile << "human( pose [ " << xPos << " " << yPos << " 0.000 -90.000 ] name \"Worker" << i+1 << "\" color \"blue\")" << endl;
+        
+        string colour = colourArray[peopleCC];
+        peopleCC += 1;
+        
+        outfile << "human( pose [ " << xPos << " " << yPos << " 0.000 -90.000 ] name \"Worker" << i+1 << "\" color \"" + colour + "\")" << endl;
         /*} else {
             workerPositions.push_back(x);
             workerPositions.push_back(y);
@@ -247,7 +251,11 @@ void Generator::loadPeople()
         float yPos = 20.4 - (yMult * yOffset);
         gardenerPositions.push_back(xPos);
         gardenerPositions.push_back(yPos);
-        outfile << "gardenWorker( pose [ " << xPos << " " << yPos << " 0.000 -90.000 ] name \"GardenWorker" << i+1 << "\" color \"blue\")" << endl;
+        
+        string colour = colourArray[peopleCC];
+        peopleCC += 1;
+        
+        outfile << "gardenWorker( pose [ " << xPos << " " << yPos << " 0.000 -90.000 ] name \"GardenWorker" << i+1 << "\" color \"" + colour + "\")" << endl;
         /*} else {
             gardenerPositions.push_back(x);
             gardenerPositions.push_back(y);
@@ -289,7 +297,10 @@ void Generator::loadAnimals()
         dogPositions.push_back(xPos);
         dogPositions.push_back(yPos);
 
-        outfile << "dog( pose [ " << xPos << " " << yPos << " 0.000 0.000 ] name \"Dog" << i+1 << "\" color \"random\")" << endl;
+        string colour = colourArray[dogCC];
+        dogCC += 1;
+        
+        outfile << "dog( pose [ " << xPos << " " << yPos << " 0.000 0.000 ] name \"Dog" << i+1 << "\" color \"" + colour + "\")" << endl;
     }
 	
 	outfile << "# Generate cats" << endl;
@@ -437,11 +448,12 @@ void Generator::writeLaunchFile(){
         	}
         	
         } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.gardeners + model.dogs) { //dogs
+            int dogPos = (i - model.weed - model.beacons - model.pickerRobots -  model.carrierRobots - model.workers - model.gardeners)*2;
             xml.SetAttrib( "name", "AlphaDognode" );
             xml.SetAttrib( "type", "AlphaDog" );
-            int dogPos = (i - model.weed - model.beacons - model.pickerRobots - model.carrierRobots - model.workers - model.gardeners)*2;
             //args x y theta
     		oss << dogPositions[dogPos] << " " << dogPositions[dogPos+1] << " " << 0; //assume theta = 0
+            oss << dogPositions[dogPos] << " " << dogPositions[dogPos + 1];
         } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.gardeners + model.dogs + model.cats) { //cats
             xml.SetAttrib( "name", "Catnode" );
             xml.SetAttrib( "type", "Cat" );
