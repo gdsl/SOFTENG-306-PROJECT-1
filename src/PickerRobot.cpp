@@ -195,7 +195,7 @@ void recieveCarrierRobotStatus(const se306project::carrier_status::ConstPtr& msg
 	if ((msg->status.compare("Arrived")==0)&&pickerRobot.getStatus().compare("Full")==0){
 		pickerRobot.setStatus("Picking");
 		pickerRobot.setBinCapacity(0);
-		pickerRobot.setState(Robot::GO_TO_NEXT_BEACON);
+		pickerRobot.setState(Robot::PICKING);
 	}
 }
 
@@ -221,7 +221,7 @@ void PickerRobot::stateLogic(ros::NodeHandle n){
     if(pickerRobot.getState() == FULL_BIN) {
     	pickerRobot.setStatus("Full");
     	pickerRobot.addMovementFront("forward_x",0,0,1);//halt when full
-    }else if (pickerRobot.getMovementQueueSize() == 0) {
+    }else if (pickerRobot.getMovementQueueSize()==0){
         
         //reset this boolean to indicate that the Picker has not yet received directions from its next target beacon
         //hasNewBeacon = false;
@@ -231,14 +231,17 @@ void PickerRobot::stateLogic(ros::NodeHandle n){
         if (pickerRobot.getState() == DISPATCH) {
             ROS_INFO("IM HERE");
             //set the current beacon to be the starting beacon
-            currentBeacon = startBeacon;            
+            currentBeacon = startBeacon;
             //if the Picker has received directions from next beacon, proceed to next state as it involves the next beacon
             if (hasNewBeacon) {
                 pickerRobot.movement();
-                pickerRobot.setState(PICKING);
-                pickerRobot.setStatus("Moving");
+                //pickerRobot.setState(PICKING);
+                //pickerRobot.setStatus("Moving");
+                pickerRobot.setState(GO_TO_NEXT_BEACON);
+                pickerRobot.setStatus("To next beacon");
             }
-        } else if (pickerRobot.getState() == PICKING) {
+
+        } else if (pickerRobot.getState() == GO_TO_NEXT_BEACON) {
             //this check is required if this "if block" is accessed twice before the subscribed beacon starts sending messages
             //if the messages do not start arriving in time the currentBeacon would be continuously updated.
             if (!targetBeaconSet) {
@@ -254,13 +257,14 @@ void PickerRobot::stateLogic(ros::NodeHandle n){
             //move down to the next row
             if (hasNewBeacon) {
                 pickerRobot.movement();
-                pickerRobot.setState(GO_TO_NEXT_BEACON);
-                pickerRobot.setStatus("Picking");
                 //as messages have arrived and movements have been added to queue, this can be set to false for the next time this State is set
+                pickerRobot.setState(PICKING);
+                pickerRobot.setStatus("Picking");
                 targetBeaconSet = false;
             }
 
-        } else if (pickerRobot.getState() == GO_TO_NEXT_BEACON) {
+
+        } else if (pickerRobot.getState() == PICKING) {
             //check if the Picker has reached the final beacon in its fruit picking path
             if (currentBeacon == finishBeacon) {
                 //if it has then change the state to finished
@@ -278,9 +282,9 @@ void PickerRobot::stateLogic(ros::NodeHandle n){
                 //picking the row it is at
                 if (hasNewBeacon) {
                     pickerRobot.movement();
-                    pickerRobot.setState(PICKING);
-                    pickerRobot.setStatus("Moving");
                     //as messages have arrived and movements have been added to queue, this can be set to false for the next time this State is set
+                    pickerRobot.setState(GO_TO_NEXT_BEACON);
+					pickerRobot.setStatus("To next beacon");
                     targetBeaconSet = false;
                 }
             }
@@ -429,7 +433,7 @@ int main(int argc, char **argv)
     currentBeacon = startBeacon;
     
     //initialize the Picker robot with the correct position, velocity and state parameters.
-	pickerRobot=PickerRobot(xPos,yPos,M_PI/2,0,0,"Moving",pickRange);
+	pickerRobot=PickerRobot(xPos,yPos,M_PI/2,0,0,"To next beacon",pickRange);
 
 	//NodeHandle is the main access point to communicate with ros.
 	ros::NodeHandle n;
