@@ -12,6 +12,7 @@
 using namespace std;
 
 void Worker::setId(string id_string) {
+    //Set fields defined in the worker.h header files.
     stringId = id_string;
 	id = QString::fromStdString(id_string);
 }

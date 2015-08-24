@@ -87,7 +87,6 @@ void MainWindow::onUpdateGUI( QString id, QString str, int i )
     	QListWidget *qlw = ((QListWidget*)ui->animalScroll->widget()->layout()->itemAt(idNum-(model.carrierRobots + model.pickerRobots + model.workers + model.gardeners))->widget());
     	qlw->item(i)->setText(truncate(str));
     }
-
 }
 
 QString MainWindow::truncate(QString str) {
@@ -145,7 +144,7 @@ void MainWindow::on_closeButton_clicked() {
 	system("pkill roscore");
 }
 
-
+    
 void MainWindow::generate() {
     //writeXml();
 

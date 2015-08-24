@@ -206,48 +206,53 @@ void Generator::loadPeople()
     float xOffset = model.poleTrunkSpacing / 2;
     
     int rowEnd = 20 - totalRowWidth;
+    int randNumY = rowEnd + 20;
     
     for(int i = 0; i < model.workers; i++) {
-        int x = -30 + (rand() % (40 - -30 +1));
-        int y = rowEnd + (rand() % (20 - rowEnd + 1));
+        int x = rand() % 76 - 36;
+        int y = rand() % randNumY - rowEnd;
+        //int x = -30 + (rand() % (40 - -30 +1));
+        //int y = rowEnd + (rand() % (20 - rowEnd + 1));
     
-        if( (x > -30) && (x < 40) && (y < 20) && (y > rowEnd)) {
-            int xMult = (((rand() % columnCount + 1) * 2) - 1);
-            float xPos = -30 + (xMult * xOffset);
+       // if( (x > -30) && (x < 40) && (y < 20) && (y > rowEnd)) {
+        int xMult = (((rand() % columnCount + 1) * 2) - 1);
+        float xPos = -30 + (xMult * xOffset);
         
-            int yMult = (((rand() % 8 + 1) * 2) - 1);
-            float yPos = 20.4 - (yMult * yOffset);
-            workerPositions.push_back(xPos);
-            workerPositions.push_back(yPos);
-            outfile << "human( pose [ " << xPos << " " << yPos << " 0.000 -90.000 ] name \"Worker" << i+1 << "\" color \"blue\")" << endl;
-        } else {
+        int yMult = (((rand() % 8 + 1) * 2) - 1);
+        float yPos = 20.4 - (yMult * yOffset);
+        workerPositions.push_back(xPos);
+        workerPositions.push_back(yPos);
+        outfile << "human( pose [ " << xPos << " " << yPos << " 0.000 -90.000 ] name \"Worker" << i+1 << "\" color \"blue\")" << endl;
+        /*} else {
             workerPositions.push_back(x);
             workerPositions.push_back(y);
             outfile << "human( pose [ " << x << " " << y << " 0.000 -90.000 ] name \"Worker" << i+1 << "\" color \"blue\")" << endl;
-        }
+        } */
     }
     
     // Generate gardenworkers
     outfile << "# Generate gardenworkers" << endl;
     for (int i = 0; i < model.gardeners; i++) {
     	// Generate gardenworkers same position as workers
-    	int x = rand() % 82 - 36;
-        int y = rand() % 52 - 26;
+    	//int x = rand() % 82 - 36;
+        //int y = rand() % 52 - 26;
+        int x = rand() % 76 - 36;
+        int y = rand() % randNumY - rowEnd;
 
-        if( (x > -30) && (x < 40) && (y < 20) && (y > rowEnd)) {
-            int xMult = (((rand() % columnCount + 1) * 2) - 1);
-            float xPos = -30 + (xMult * xOffset);
+        //if( (x > -30) && (x < 40) && (y < 20) && (y > rowEnd)) {
+        int xMult = (((rand() % columnCount + 1) * 2) - 1);
+        float xPos = -30 + (xMult * xOffset);
         
-            int yMult = (((rand() % 8 + 1) * 2) - 1);
-            float yPos = 20.4 - (yMult * yOffset);
-            gardenerPositions.push_back(xPos);
-            gardenerPositions.push_back(yPos);
-            outfile << "gardenWorker( pose [ " << xPos << " " << yPos << " 0.000 -90.000 ] name \"GardenWorker" << i+1 << "\" color \"blue\")" << endl;
-        } else {
+        int yMult = (((rand() % 8 + 1) * 2) - 1);
+        float yPos = 20.4 - (yMult * yOffset);
+        gardenerPositions.push_back(xPos);
+        gardenerPositions.push_back(yPos);
+        outfile << "gardenWorker( pose [ " << xPos << " " << yPos << " 0.000 -90.000 ] name \"GardenWorker" << i+1 << "\" color \"blue\")" << endl;
+        /*} else {
             gardenerPositions.push_back(x);
             gardenerPositions.push_back(y);
             outfile << "gardenWorker( pose [ " << x << " " << y << " 0.000 -90.000 ] name \"GardenWorker" << i+1 << "\" color \"blue\")" << endl;
-        }
+        }*/
 
     }
 
@@ -270,23 +275,26 @@ void Generator::loadAnimals()
     float xOffset = model.poleTrunkSpacing / 2;
     
     int rowEnd = 20 - totalRowWidth;
+    int randNumY = rowEnd + 20;
     
 	// Generate dogs
     for(int i = 0; i < model.dogs; i++) {
-        int x = rand() % 82 - 36;
-        int y = rand() % 52 - 26;
+        int x = rand() % 76 - 36;
+        int y = rand() % randNumY - rowEnd;
+        //int x = rand() % 82 - 36;
+        //int y = rand() % 52 - 26;
     
-        if( (x > -30) && (x < 40) && (y < 20) && (y > rowEnd)) {
-            int xMult = (((rand() % columnCount + 1) * 2) - 1);
-            float xPos = -30 + (xMult * xOffset);
+    //    if( (x > -30) && (x < 40) && (y < 20) && (y > rowEnd)) {
+        int xMult = (((rand() % columnCount + 1) * 2) - 1);
+        float xPos = -30 + (xMult * xOffset);
         
-            int yMult = (((rand() % 8 + 1) * 2) - 1);
-            float yPos = 20.4 - (yMult * yOffset);
+        int yMult = (((rand() % 8 + 1) * 2) - 1);
+        float yPos = 20.4 - (yMult * yOffset);
         
-            outfile << "dog( pose [ " << xPos << " " << yPos << " 0.000 0.000 ] name \"Dog" << i+1 << "\" color \"random\")" << endl;
-        } else {
+        outfile << "dog( pose [ " << xPos << " " << yPos << " 0.000 0.000 ] name \"Dog" << i+1 << "\" color \"random\")" << endl;
+   /*     } else {
             outfile << "dog( pose [ " << x << " " << y << " 0.000 0.000 ] name \"Dog" << i+1 << "\" color \"random\")" << endl;
-        }
+        }*/
     }
 	
 	outfile << "# Generate cats" << endl;
