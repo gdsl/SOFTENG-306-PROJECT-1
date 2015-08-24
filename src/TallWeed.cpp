@@ -5,24 +5,23 @@
 #include <sstream>
 #include "TallWeed.h"
  
-TallWeed::TallWeed() : Entity() {}
+TallWeed::TallWeed() : Entity() {
+
+}
 
 TallWeed::~TallWeed() {
 
 }
 
-void TallWeed::update_position()
-{
+void TallWeed::update_position() {
 	// Generate new random position
 	int x = rand() % 82 - 36;
 	int y = rand() % 52 - 26;
-
 	ROS_ERROR("MADE IT");
-
 }
 
 void TallWeed::workerCallback(const se306project::robot_status msg) {
-	std::string status = msg.status;
+    std::string status = msg.status;
     double destX = msg.pos_x;
     double destY = msg.pos_y;
 
@@ -40,22 +39,16 @@ void TallWeed::stageOdom_callback(nav_msgs::Odometry msg) {
     Entity::stageOdom_callback(msg);
 }
 
-int main(int argc, char **argv) 
-{
-    //initialise ros    
+int main(int argc, char **argv) {
+    // Initialise ros    
     ros::init(argc,argv,"tallWeed");
-
-    //create ros handler for this node
+    // Create ros handler for this node
     ros::NodeHandle n;
-    
     TallWeed tallWeed;
-
     tallWeed.robotNode_stage_pub = n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
     tallWeed.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000,&TallWeed::stageOdom_callback,&tallWeed);
 
-    //ARGV 1 & 2 ARE NOW X AND Y
-
-    //subscribe to worker
+    // Subscribe to worker
     std::string start(argv[4]);
     std::string end(argv[5]);
     int s = atoi(start.c_str());
@@ -75,11 +68,7 @@ int main(int argc, char **argv)
         }
     }
 
-    //test if argv[2] is really the status of the person
-	//ROS_INFO("argv[2] is: %s", argv[2]);
-
     ros::Rate loop_rate(10); 
-	//nav_msgs::Odometry tempMessage;
     while (ros::ok())
     {
 	    ros::spinOnce();
