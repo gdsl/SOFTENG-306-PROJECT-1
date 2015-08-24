@@ -209,12 +209,6 @@ void PickerRobot::stateLogic(ros::NodeHandle n){
 //		pickerRobot.move();
 //
 //	}
-//	if (pickerRobot.getStatus().compare("Moving")==0){
-//		pickerRobot.move();
-//		if(pickerRobot.getMovementQueueSize()<1){
-//			pickerRobot.setStatus("Full");
-//		}
-//	}
     
     //if the Picker robot is currently executing movements, it means that it has not yet reached its next target beacon
     //only if the next beacon has been reached, should a state update occur.
@@ -222,9 +216,6 @@ void PickerRobot::stateLogic(ros::NodeHandle n){
     	pickerRobot.setStatus("Full");
     	pickerRobot.addMovementFront("forward_x",0,0,1);//halt when full
     }else if (pickerRobot.getMovementQueueSize()==0){
-        
-        //reset this boolean to indicate that the Picker has not yet received directions from its next target beacon
-        //hasNewBeacon = false;
         
         //if the current state is dispatch then the Picker Robot should move to the starting position of its picking path.
         //this is the first beacon along its path.
@@ -236,7 +227,6 @@ void PickerRobot::stateLogic(ros::NodeHandle n){
             if (hasNewBeacon) {
                 pickerRobot.movement();
                 //pickerRobot.setState(PICKING);
-                //pickerRobot.setStatus("Moving");
                 pickerRobot.setState(GO_TO_NEXT_BEACON);
                 pickerRobot.setStatus("To next beacon");
             }
