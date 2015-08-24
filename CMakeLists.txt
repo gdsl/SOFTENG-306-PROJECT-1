@@ -51,7 +51,6 @@ add_message_files(
 	carrier_status.msg
 	animal_status.msg
 	human_status.msg
-	blindperson_status.msg
 )
 
 ## Generate services in the 'srv' folder
@@ -244,10 +243,6 @@ add_dependencies(Tractor se306project_generate_messages_cpp)
 add_executable(GardenWorker src/GardenWorker.cpp)
 target_link_libraries(GardenWorker Person Entity ${catkin_LIBRARIES})
 add_dependencies(GardenWorker se306project_generate_message_cpp)
-
-add_executable(BlindPerson src/BlindPerson.cpp)
-target_link_libraries(BlindPerson Entity ${catkin_LIBRARIES})
-add_dependencies(BlindPerson se306project_generate_messages_cpp)
 
 if (CATKIN_ENABLE_TESTING)
 	#integration test(everything include testing multiple nodes with stage running)
