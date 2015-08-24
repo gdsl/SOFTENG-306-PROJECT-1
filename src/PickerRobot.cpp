@@ -91,7 +91,7 @@ void callBackStageOdm(const nav_msgs::Odometry msg) {
 void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 	pickerRobot.stageLaser_callback(msg);//call supercalss laser call back for detection case work out
 
-	if (pickerRobot.getAvoidanceCase()!=Entity::NONE) {//check if there is need to avoid obstacle
+	if (pickerRobot.getAvoidanceCase()!=Entity::NONE&&pickerRobot.getAvoidanceCase()!=Entity::TREE) {//check if there is need to avoid obstacle
 
 		if(pickerRobot.getState()!=Robot::IDLE){//check if robot is idle or not
 			pickerRobot.setObstacleStatus("Obstacle nearby");

@@ -110,9 +110,11 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg) {
 	for (int i=41; i<l-41; i++){ 
 		// Work out the minimum distance object
 		if (msg.ranges[i]< minDistance) {
-			minDistance = msg.ranges[i];
-			currentIntensity=msg.intensities[i];
-			obstacleAngle= (i/l) * msg.angle_increment + msg.angle_min;
+			if(msg.intensities[i]>0){//ignore intensity that is 0 or less
+				minDistance = msg.ranges[i];
+				currentIntensity=msg.intensities[i];
+				obstacleAngle= (i/l) * msg.angle_increment + msg.angle_min;
+			}
 		}
 		// Work most fatal intensity
 		if (msg.ranges[i]<1) {
@@ -128,7 +130,7 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg) {
 		}
 	}
 	if (minDistance<1&&currentIntensity>=1) {
-		if (previousScanIntensity==1) {
+		if (currentIntensity==1.0) {
 			// The object in way is a weed
 			avoidanceCase=TREE;
 		}else if (previousScanIntensity==WEED_INTENSITY) {
