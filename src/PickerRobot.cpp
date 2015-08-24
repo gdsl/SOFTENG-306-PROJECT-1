@@ -16,8 +16,8 @@ PickerRobot::PickerRobot():Robot() {
 
 PickerRobot::PickerRobot(std::string status) {
 	this->setStatus(status);
-    this->bin_capacity=0;
-    this->pick_range=pick_range;
+	this->bin_capacity=0;
+	this->pick_range=pick_range;
 }
 
 PickerRobot::PickerRobot(double x,double y,double theta,double linearVel, double angularVel,std::string status,double pick_range) : Robot( x, y, theta, linearVel,  angularVel) {
@@ -34,6 +34,7 @@ PickerRobot::~PickerRobot() {
 PickerRobot pickerRobot;
 std::string previousStatus = "Moving";
 std::string obstacleStatus = "No obstacles";
+
 double distance=1;
 // Destination of next beacon
 double destX = 0;
@@ -86,6 +87,9 @@ void callBackStageOdm(const nav_msgs::Odometry msg) {
 	pickerRobot.stageOdom_callback(msg);
 }
 
+/**
+ * Call back method for laser work out the avoidance logic for picker robot
+ */
 void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 	pickerRobot.stageLaser_callback(msg);
 	// Check if there is need to avoid obstacle
@@ -296,19 +300,15 @@ void PickerRobot::stateLogic(ros::NodeHandle n) {
                     // s messages have arrived and movements have been added to queue, this can be set to false for the next time this State is set
                     pickerRobot.setState(GO_TO_NEXT_BEACON);
 					pickerRobot.setStatus("To next beacon");
-                    targetBeaconSet = false;
-                }
-            }
+					targetBeaconSet = false;
+				}
+			}
 
-        } /*else if (pickerRobot.getState() == FULL_BIN) {
-        	pickerRobot.setStatus("Full");
-        	pickerRobot.addMovementFront("forward_x",0,0,1);//halt when full
-        }*/ else if (pickerRobot.getState() == FINISHED) {
+		} else if (pickerRobot.getState() == FINISHED) {
 
         }
-        //ROS_INFO("current beacon = %d", currentBeacon);
-    }
-    pickerRobot.move();
+	}
+	pickerRobot.move();
 }
 
 /*
@@ -367,7 +367,6 @@ void PickerRobot::movement() {
         oldDestX = destX;
         oldDestY = destY;
     }
-    
 }
 
 /*
@@ -410,16 +409,14 @@ void beaconCallback(const nav_msgs::Odometry msg) {
  * Assumes the beacon number has already been updated to contain the next destination beacon.
  */
 void PickerRobot::subscribeNextBeacon(ros::NodeHandle n) {
-    ROS_INFO("I MADE IT HERE TOO");
-    std::string currentBeaconS;
-    std::stringstream out;
-    out << currentBeacon;
-    currentBeaconS = out.str();
-    beacon_sub = n.subscribe<nav_msgs::Odometry>("/beacon" + currentBeaconS + "/", 1000, beaconCallback);
-    //beacon_sub.shutdown();
-    //beacon_sub = n.subscribe<nav_msgs::Odometry>("/beacon1/", 1000, beaconCallback);
-    atDestX = false;
-    atDestY = false;
+	std::string currentBeaconS;
+	std::stringstream out;
+	out << currentBeacon;
+	currentBeaconS = out.str();
+	beacon_sub = n.subscribe<nav_msgs::Odometry>("/beacon" + currentBeaconS + "/", 1000, beaconCallback);
+
+	atDestX = false;
+	atDestY = false;
 }
 
 int main(int argc, char **argv) {
@@ -469,10 +466,10 @@ int main(int argc, char **argv) {
 
 	// Initalise robot status message
 	se306project::robot_status status_msg;
-        unsigned int num_readings = 100;
-        double laser_frequency = 40;
-        double ranges[num_readings];
-        double intensities[num_readings];
+	unsigned int num_readings = 100;
+	double laser_frequency = 40;
+	double ranges[num_readings];
+	double intensities[num_readings];
 
 	ros::Rate loop_rate(10);
 

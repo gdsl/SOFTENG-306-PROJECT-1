@@ -7,9 +7,9 @@
 #include "se306project/animal_status.h"
 #include <stdlib.h>
 #include <time.h>
- 
+
 Cat::Cat() : Animal() {
-    
+
 }
 
 Cat::Cat(double x, double y) : Animal(x,y) {
@@ -37,15 +37,14 @@ void stage_callback(nav_msgs::Odometry msg) {
 
 int main(int argc, char **argv) 
 {
-	std::string xPosArg = argv[1];
-    	std::string spacingArg = argv[2];    
-	double spacing = atof(spacingArg.c_str());
-	double xPos = atof(xPosArg.c_str());
-
 	// Initialize the cat robot with the correct position position
-	cat = Cat(xPos, 21.500);   
 
 	ros::init(argc,argv,"Animal");
+	std::string xPosArg = argv[1];
+    std::string spacingArg = argv[2];
+	double spacing = atof(spacingArg.c_str());
+	double xPos = atof(xPosArg.c_str());
+	cat = Cat(xPos, 21.500);
 
 	// Create ros handler for this node
 	ros::NodeHandle n;
@@ -54,7 +53,7 @@ int main(int argc, char **argv)
 
 	cat.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000,stage_callback);
 	ros::Rate loop_rate(10); 
-	
+
 	// Broadcast the node's status information for other to subscribe to.
 	ros::Publisher pub=n.advertise<se306project::animal_status>("status",1000);
 	se306project::animal_status status_msg;

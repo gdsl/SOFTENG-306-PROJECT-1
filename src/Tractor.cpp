@@ -36,23 +36,22 @@ void callBackStageOdm(const nav_msgs::Odometry msg) {
 void receiveTractorControl(const std_msgs::String::ConstPtr& msg) {
 	ROS_INFO("tractor echoing tractor control: %s",msg->data.c_str());
 	if (strcmp(msg->data.c_str(), "left") == 0) {
-	    tractor.setLin(0);
-	    tractor.setAng(0.2);
+		tractor.setLin(0);
+		tractor.setAng(0.2);
 	} else if (strcmp(msg->data.c_str(), "right") == 0) {
-	    tractor.setLin(0);
-	    tractor.setAng(-0.2);
+		tractor.setLin(0);
+		tractor.setAng(-0.2);
 	} else if (strcmp(msg->data.c_str(), "up") == 0) {
-	    tractor.setLin(1);
-	    tractor.setAng(0);
+		tractor.setLin(1);
+		tractor.setAng(0);
 	} else if (strcmp(msg->data.c_str(), "down") == 0) {
-	    tractor.setLin(-1);
-	    tractor.setAng(0);
+		tractor.setLin(-1);
+		tractor.setAng(0);
 	} else {
-	    tractor.setLin(0);
-	    tractor.setAng(0);
+		tractor.setLin(0);
+		tractor.setAng(0);
 	}
 }
-
 
 int main(int argc, char **argv) {
    // for (std::string line; std::getline(std::cin, line);) {
@@ -119,7 +118,7 @@ int main(int argc, char **argv) {
 	    }
 		tractor.updateOdometry();
 		ros::spinOnce();
-    }
+	}
 
 	// ROS infinite loop
 	while (ros::ok())

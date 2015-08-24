@@ -4,12 +4,13 @@
 #include <sstream>
 #include <stdlib.h>
 #include "Beacon.h"
- 
+
 Beacon::Beacon() : Entity() {
-    
+
 }
 
 Beacon::Beacon(double x,double y,double theta,double linearVel, double angularVel) : Entity(x, y, theta, linearVel, angularVel) {
+
 }
 
 Beacon::~Beacon() {
@@ -19,7 +20,7 @@ Beacon::~Beacon() {
 Beacon beacon;
 
 void stage_callback(nav_msgs::Odometry msg) {
-    beacon.stageOdom_callback(msg);
+	beacon.stageOdom_callback(msg);
 }
 
 int main(int argc, char **argv) {    
@@ -43,8 +44,7 @@ int main(int argc, char **argv) {
     ros::Rate loop_rate(10); 
     nav_msgs::Odometry tempMessage; 
 
-    while (ros::ok())
-    {
+    while (ros::ok()) {
         tempMessage.pose.pose.position.x = beacon.getX();
         tempMessage.pose.pose.position.y = beacon.getY();  
         robotNode_location_pub.publish(tempMessage);

@@ -21,22 +21,22 @@ void TallWeed::update_position() {
 }
 
 void TallWeed::workerCallback(const se306project::robot_status msg) {
-    std::string status = msg.status;
-    double destX = msg.pos_x;
-    double destY = msg.pos_y;
+	std::string status = msg.status;
+	double destX = msg.pos_x;
+	double destY = msg.pos_y;
 
-    if (status.compare("Done") == 0) {
-    	double distance = sqrt(pow(destX-getX(),2.0)+pow(destY-getY(),2.0));
+	if (status.compare("Done") == 0) {
+		double distance = sqrt(pow(destX-getX(),2.0)+pow(destY-getY(),2.0));
 
-    	if (distance <= NEARBYDISTANCE) {
-    		update_position();
-    	}
+		if (distance <= NEARBYDISTANCE) {
+			update_position();
+		}
 
-    }
+	}
 }
 
 void TallWeed::stageOdom_callback(nav_msgs::Odometry msg) {
-    Entity::stageOdom_callback(msg);
+	Entity::stageOdom_callback(msg);
 }
 
 int main(int argc, char **argv) {

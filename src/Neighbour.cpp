@@ -20,7 +20,7 @@ Neighbour::Neighbour(double x, double y, double theta, double linearVelocity, do
 
 /*
  * Update nearest robot
- 
+
 void Neighbour::updateNearestRobot(const nav_msgs::Odometry msg)
 {
 	// Find nearest robot_status
@@ -38,14 +38,14 @@ void Neighbour::updateNearestRobot(const nav_msgs::Odometry msg)
  */
 void Neighbour::next(std::string action) {
 	std::string currentStatus = getStatus();
-        
-        //if (currentStatus =="WALKING"){
-               //if (
-//}
+
+	//if (currentStatus =="WALKING"){
+	//if (
+	//}
 }
 
 /*void stage_laserCallback(sensor_msgs::LaserScan msg) {
-  
+
     neighbour.stageLaser_callback(msg);
         int l=msg.intensities.size();
         double minDist = 1000;
