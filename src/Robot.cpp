@@ -18,5 +18,5 @@ Robot::State Robot::getState() {
 }
 
 void Robot::setState(Robot::State state) {
-    this->state = state;   
+	this->state = state;
 }

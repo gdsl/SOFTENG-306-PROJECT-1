@@ -130,7 +130,7 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg) {
 	if (minDistance<1&&currentIntensity>=1) {
 		if (previousScanIntensity==1) {
 			// The object in way is a weed
-			avoidanceCase=NONE;
+			avoidanceCase=TREE;
 		}else if (previousScanIntensity==WEED_INTENSITY) {
 			// The object in way is a weed
 			avoidanceCase=WEED;

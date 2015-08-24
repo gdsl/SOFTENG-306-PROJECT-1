@@ -90,10 +90,10 @@ std::vector<std::string> split(const std::string &s, char delim) {
 	split(s, delim, elems);
 	return elems;
 }
-//=====
-		/*
-		 * Wrapper method for the callBackStageOdm method
-		 */
+
+/*
+ * Wrapper method for the callBackStageOdm method
+ */
 void callBackStageOdm(const nav_msgs::Odometry msg){
 	carrierRobot.stageOdom_callback(msg);
 }
@@ -101,7 +101,7 @@ void callBackStageOdm(const nav_msgs::Odometry msg){
 void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 	carrierRobot.stageLaser_callback(msg);//call super class callback which is where the laser scanning logic is designed
 
-	if (carrierRobot.getAvoidanceCase()!=Entity::NONE) {//check if there is need to avoid obstacle
+	if (carrierRobot.getAvoidanceCase()!=Entity::NONE&&carrierRobot.getAvoidanceCase()!=Entity::TREE) {//check if there is need to avoid obstacle
 		if(carrierRobot.getState()!=Robot::IDLE){//check if robot is idle or not
 			carrierRobot.setObstacleStatus("Obstacle nearby");
 			if(carrierRobot.getAvoidanceCase()==Entity::WEED){// if its weed stop
@@ -109,8 +109,10 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 				carrierRobot.setObstacleStatus("Weed! Help!");
 			}else if(carrierRobot.getAvoidanceCase()==Entity::LIVING_OBJ){//if its human or animal stop
 				carrierRobot.addMovementFront("forward_x",0,0,1);//add empty movement to front of avoidance to stop
+				carrierRobot.setObstacleStatus("Living Object");
 			}else if(carrierRobot.getAvoidanceCase()==Entity::HALT){//if its halt stop
 				carrierRobot.addMovementFront("forward_x",0,0,1);//add empty movement to front of avoidance to stop
+				carrierRobot.setObstacleStatus("Obstacle nearby. Halt");
 			}else if(carrierRobot.getAvoidanceCase()==Entity::STATIONARY&& carrierRobot.getCriticalIntensity()>1){//if its stationary robot
 				//if the carrier robot is infront and carrier is queue then halt
 				if(carrierRobot.getState()==carrierRobot.QUEUE&& carrierRobot.getCriticalIntensity()==3){//if its carrier
@@ -323,13 +325,12 @@ void CarrierRobot::stateLogic(){
 	} else if (carrierRobot.getState() == MOVING) {
 		std::string status="Moving ";
 		std::stringstream convert;
+		std::stringstream convert2;
 		convert << targetX;
-		status=status+convert.str()+" ";
-		convert.clear();
-		convert << targetY;
-		status=status+convert.str();
+		convert2 << targetY;
+		status=status+convert.str()+" "+convert2.str();
 		carrierRobot.setStatus(status);
-
+		ROS_INFO("x start: %s", status.c_str());
 		if (carrierRobot.getMovementQueueSize() == 0 ) {
 			carrierRobot.setState(Robot::ARRIVED);
 		}

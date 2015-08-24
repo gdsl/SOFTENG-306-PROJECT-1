@@ -32,7 +32,7 @@ double angle;
 bool initial = true;
 
 void stage_callback(nav_msgs::Odometry msg) {
-    cat.stageOdom_callback(msg);
+	cat.stageOdom_callback(msg);
 }
 
 int main(int argc, char **argv) 
@@ -41,14 +41,14 @@ int main(int argc, char **argv)
 
 	ros::init(argc,argv,"Animal");
 	std::string xPosArg = argv[1];
-    std::string spacingArg = argv[2];
+	std::string spacingArg = argv[2];
 	double spacing = atof(spacingArg.c_str());
 	double xPos = atof(xPosArg.c_str());
 	cat = Cat(xPos, 21.500);
 
 	// Create ros handler for this node
 	ros::NodeHandle n;
-    
+
 	cat.robotNode_stage_pub = n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
 
 	cat.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000,stage_callback);
@@ -62,7 +62,7 @@ int main(int argc, char **argv)
 	{
 		// Message to stage 
 		cat.move();
-		
+
 		// Give cat a small initial movement to fill in its GUI status
 		if (initial) {
 			cat.addMovement("forward_x",-0.1,1);
@@ -95,7 +95,7 @@ int main(int argc, char **argv)
 		ros::spinOnce();
 		loop_rate.sleep();
 		// Determine status of cat
-                cat.determineStatus();
+		cat.determineStatus();
 	}
 	return 0;
 }

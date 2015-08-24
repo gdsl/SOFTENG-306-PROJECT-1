@@ -59,34 +59,34 @@ void GardenWorker::next(std::string action) {
 }
 
 void GardenWorker::stageLaser_callback(const sensor_msgs::LaserScan msg) {
-// 	invoke parent stagelaser
-//	Person::stageLaser_callback(msg);
-//	std::string currentStatus = getStatus();
-//	if (currentStatus.compare("Idle")==0) {
-//		if (getAvoidanceCase()!=Entity::NONE) {//check if there is need to avoid obstacle
-//			ROS_ERROR("LOL");
-//		} else {
-//			// check which orientation
-//			if (getDirectionFacing()== Entity::NORTH) {
-//				if (targetY > getY()) {
-//					// do nothing
-//				} else {
-//
-//				}
-//			} else if (getDirectionFacing() == Entity::EAST) {
-//
-//			} else if (getDirectionFacing() == Entity::SOUTH) {
-//
-//			} else {
-//
-//			}
-//			ROS_ERROR("Current x %f", getX());
-//			ROS_ERROR("Current y %f", getY());
-//			ROS_ERROR("Target x %d", targetX);
-//			ROS_ERROR("Target y %d", targetY);
-//		}
-//		next("Move");
-//	}
+	// 	invoke parent stagelaser
+	//	Person::stageLaser_callback(msg);
+	//	std::string currentStatus = getStatus();
+	//	if (currentStatus.compare("Idle")==0) {
+	//		if (getAvoidanceCase()!=Entity::NONE) {//check if there is need to avoid obstacle
+	//			ROS_ERROR("LOL");
+	//		} else {
+	//			// check which orientation
+	//			if (getDirectionFacing()== Entity::NORTH) {
+	//				if (targetY > getY()) {
+	//					// do nothing
+	//				} else {
+	//
+	//				}
+	//			} else if (getDirectionFacing() == Entity::EAST) {
+	//
+	//			} else if (getDirectionFacing() == Entity::SOUTH) {
+	//
+	//			} else {
+	//
+	//			}
+	//			ROS_ERROR("Current x %f", getX());
+	//			ROS_ERROR("Current y %f", getY());
+	//			ROS_ERROR("Target x %d", targetX);
+	//			ROS_ERROR("Target y %d", targetY);
+	//		}
+	//		next("Move");
+	//	}
 }
 
 int GardenWorker::getTargetX() {

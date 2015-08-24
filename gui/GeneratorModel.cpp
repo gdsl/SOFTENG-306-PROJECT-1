@@ -25,5 +25,5 @@ GeneratorModel::GeneratorModel()
 }
 
 int GeneratorModel::getTotalNodes() {
-    return weed + beacons + pickerRobots + carrierRobots + workers + dogs + cats + blindPerson + neighbours + gardeners;
+	return weed + beacons + pickerRobots + carrierRobots + workers + dogs + cats + blindPerson + neighbours + gardeners;
 }

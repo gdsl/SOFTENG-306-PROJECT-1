@@ -48,22 +48,22 @@ void stage_positionCallback(nav_msgs::Odometry msg) {
 void stage_laserCallback(sensor_msgs::LaserScan msg) {
 	alphaPerson.stageLaser_callback(msg);
 
-    // If searching for a new tree
+	// If searching for a new tree
 	if (isSearch) {
 		int l=msg.intensities.size();
 		double minDist = 1000;
 		std::vector<double> v;
 		std::map<double,double> Xmap;
 		std::map<double,double> Ymap;
-        // Check the information from sensor
+		// Check the information from sensor
 		for (int i = 0; i<l; i++) {
 			if (msg.intensities[i] == 1) {
 				double toDegree =  alphaPerson.getTheta()*180/M_PI;
 				double absAngle = i + toDegree - 90;
 				double obsX = alphaPerson.getX() + msg.ranges[i]*cos(absAngle*M_PI/180);
 				double obsY = alphaPerson.getY() + msg.ranges[i]*sin(absAngle*M_PI/180);
-                
-                // If the worker looking top or looking bottom
+
+				// If the worker looking top or looking bottom
 				bool whereToLook;
 				if (lookAtBottom) {
 					whereToLook = -105 < absAngle && absAngle < -90;
@@ -71,7 +71,7 @@ void stage_laserCallback(sensor_msgs::LaserScan msg) {
 					whereToLook = 90 < absAngle && absAngle < 105;
 				}
 
-                // Only accept point of interest that are greater than 1.5m from the worker and store the point in a map and vector
+				// Only accept point of interest that are greater than 1.5m from the worker and store the point in a map and vector
 				if (msg.ranges[i] > 1.5 && whereToLook) {
 					foundTree = true;
 					if (msg.ranges[i] < minDist) minDist = msg.ranges[i];
@@ -82,13 +82,13 @@ void stage_laserCallback(sensor_msgs::LaserScan msg) {
 			}
 		}
 
-        // Process point of interest corresponding to a tree
+		// Process point of interest corresponding to a tree
 		if (foundTree) {
 			int count = 0;
 			double sumX = 0;
 			double sumY = 0;
 
-            // Only group the points that have similiar distance and add it to the sum. 
+			// Only group the points that have similiar distance and add it to the sum.
 			for (std::vector<double>::iterator it = v.begin(); it != v.end(); ++it) {
 				if (minDist <= *it && *it <= minDist+0.2) {
 					count++;
@@ -100,7 +100,7 @@ void stage_laserCallback(sensor_msgs::LaserScan msg) {
 			double avgX = 0;
 			double avgY = 0;
 
-            // If there is more than 1 valid point then work out the position of the tree and the distance between the robot
+			// If there is more than 1 valid point then work out the position of the tree and the distance between the robot
 			if (count > 0) {
 				avgX = sumX / count;
 				avgY = (sumY /count) ;
