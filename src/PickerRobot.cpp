@@ -147,7 +147,7 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 						pickerRobot.addMovementFront("forward_y",-3,1,1);
 						pickerRobot.addMovementFront("rotation",-M_PI/2, 1,1);
 						// This is the front of the queue
-						pickerRobot.addMovementFront("forward_x",0,0,1);/
+						pickerRobot.addMovementFront("forward_x",0,0,1);
 					}
 			} else if (pickerRobot.getAvoidanceCase()==Entity::PERPENDICULAR) {
 				if (pickerRobot.getDirectionFacing()== pickerRobot.NORTH||pickerRobot.getDirectionFacing()== pickerRobot.SOUTH) {
