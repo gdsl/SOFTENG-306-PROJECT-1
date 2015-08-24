@@ -96,4 +96,7 @@ gui/*.o
 gui/ui*
 
 gui/.__*
-gui/rostopicScripts/.__*
+gui/rostopicScripts/*
+launch/test.launch
+world/generatedOrchard.xml
+world/test.world

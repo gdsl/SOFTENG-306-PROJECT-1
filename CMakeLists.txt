@@ -185,6 +185,13 @@ add_dependencies(AlphaDog  se306project_generate_messages_cpp)
 add_library(AlphaDogLib src/AlphaDog.cpp)
 target_link_libraries(AlphaDogLib Animal Entity ${catkin_LIBRARIES})
 
+add_executable(Cat src/Cat.cpp)
+target_link_libraries(Cat Animal Entity ${catkin_LIBRARIES})
+add_dependencies(Cat  se306project_generate_messages_cpp)
+
+add_library(CatLib src/Cat.cpp)
+target_link_libraries(Cat Animal Entity ${catkin_LIBRARIES})
+
 add_executable(AlphaPerson src/AlphaPerson.cpp)
 target_link_libraries(AlphaPerson Person Entity ${catkin_LIBRARIES})
 add_dependencies(AlphaPerson se306project_generate_messages_cpp)
@@ -210,11 +217,17 @@ add_executable(Beacon src/Beacon.cpp)
 target_link_libraries(Beacon Entity ${catkin_LIBRARIES})
 add_dependencies(Beacon se306project_generate_messages_cpp)
 
+add_executable(TallWeed src/TallWeed.cpp)
+target_link_libraries(TallWeed Entity ${catkin_LIBRARIES})
+add_dependencies(TallWeed se306project_generate_messages_cpp)
 
-#catkin_add_(${PROJECT_NAME}-test test/testRobot.cpp src/PickerRobot.cpp)
- #if(TARGET ${PROJECT_NAME}-test)
-  # target_link_libraries(Entity Robot ${catkin_LIBRARIES})
-# endif()
+add_executable(Tractor src/Tractor.cpp)
+target_link_libraries(Tractor Entity ${catkin_LIBRARIES})
+add_dependencies(Tractor se306project_generate_messages_cpp)
+
+add_executable(GardenWorker src/GardenWorker.cpp)
+target_link_libraries(GardenWorker Person Entity ${catkin_LIBRARIES})
+add_dependencies(GardenWorker se306project_generate_message_cpp)
 
 if (CATKIN_ENABLE_TESTING)
 	#integration test(everything include testing multiple nodes with stage running)

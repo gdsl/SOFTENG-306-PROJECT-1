@@ -26,6 +26,11 @@ class Entity
 		// update the velocity of the robot
 		void setVelocity(double linearVelocity, double angularVelocity);
 
+        //direction robot facing
+		enum Direction {WEST, SOUTH, EAST, NORTH};
+		//enumeration for avoidance cases
+		enum AvoidanceCase{NONE,HALT, LIVING_OBJ,WEED, FACE_ON, PERPENDICULAR,STATIONARY};
+
 		// Publisher and Subscriber. Public available to update.
 		ros::Publisher robotNode_stage_pub;
 		ros::Subscriber stageOdo_Sub;
@@ -33,16 +38,14 @@ class Entity
 
 		// Callback methods
 		void stageOdom_callback(nav_msgs::Odometry msg);
-
-                void stageLaser_callback(sensor_msgs::LaserScan msg);
+        void stageLaser_callback(sensor_msgs::LaserScan msg);
 		void atLocation();
 		// Movement methods
 		void move();
 		void movementComplete();
+		void avoidanceComplete();
 		void addMovement(std::string type,double amount,double velocity);
-		void addMovementFront(std::string type,double amount,double velocity);
-		void moveForward(double distance,double vel, std::string direction);
-		void rotate(double angleToRotateTo,double angleSpeed);
+		void addMovementFront(std::string type,double amount,double velocity, int queueType);
 		void faceNorth(double angleSpeed);
 		void faceSouth(double angleSpeed);
 		void faceEast(double angleSpeed);
@@ -50,7 +53,10 @@ class Entity
 		void updateOdometry();
 		void setDesireLocation(bool desireLocation);
 		void setStatus(std::string status);
-
+                void determineStatus();
+		void setLin(double lv);
+		void setAng(double av);
+		
 		//get method
 		double getX();
 		double getY();
@@ -59,15 +65,13 @@ class Entity
 		double getAng();
 		double getMinDistance();
 		double getObstacleAngle();
+		AvoidanceCase getAvoidanceCase();
 		bool getDesireLocation();
 		std::string getStatus();
 		int getMovementQueueSize();
-        //direction robot facing
-		enum Direction {WEST, SOUTH, EAST, NORTH};
+		int getAvoidanceQueueSize();
+		int getCriticalIntensity();
         Direction getDirectionFacing();
-		//movement queue
-        std::vector<Movement> movementQueue;
-        
 
 	private:
 		//positions
@@ -79,11 +83,25 @@ class Entity
 		double linearVelocity;
 		double angularVelocity;
 
+		//obstacle avoidance/detection variables
+		int criticalIntensity;
+		int previousScanIntensity;
+		int previousScanNumber;
+		int previousScanNumberMin;
+		int previousScanNumberMax;
 		double minDistance;
 		double obstacleAngle;
+		int numOfScan;
+		double previousScanDistance;
+		AvoidanceCase avoidanceCase;
 		std::string status;
-		
-		Direction directionFacing=WEST;//initialse to west originally
+		//movement queue
+        std::vector<Movement> movementQueue;
+        std::vector<Movement> avoidanceQueue; //vector for lsit of avoidance movements
+		Direction directionFacing=NORTH;//initialse to north originally
+
+		void moveForward(double distance,double vel, std::string direction, int queueNum);
+		void rotate(double angleToRotateTo,double angleSpeed,int queueNum);
 		//boolean for if the robot is at desire location
 		bool desireLocation;
 		// Expresses velocity in free space broken into its linear and angular parts
@@ -91,3 +109,4 @@ class Entity
 		geometry_msgs::Twist robotNode_cmdvel;
 };
 #endif
+

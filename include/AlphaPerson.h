@@ -13,7 +13,15 @@ class AlphaPerson : public Person {
 public:
     AlphaPerson();
     AlphaPerson(double x, double y);
+    enum State { TRIMMING, MOVING_TO_SEARCH_SPOT, SEARCHING, GO_TO_NEXT_TREE};
     virtual ~AlphaPerson();
+    State getState();
+    void setState(State s);
+    void stateLogic();
+
+private:
+    State state;
+    int tickCount;
 };
 
 #endif
