@@ -7,14 +7,14 @@
 /**
  * Default constructor for Neighbour
  */
-Neighbour::Neighbour():Neighbour(0,0,0,0,0){}
+Neighbour::Neighbour():Neighbour(0,0,0,0,0){
+
+}
 
 /**
  * Call super class constructor
  */
-Neighbour::Neighbour(double x, double y, double theta, double linearVelocity, double angularVelocity)
-: Person(x, y)
-{
+Neighbour::Neighbour(double x, double y, double theta, double linearVelocity, double angularVelocity) : Person(x, y) {
 	setStatus("WALKING");
 }
 
@@ -36,8 +36,7 @@ void Neighbour::updateNearestRobot(const nav_msgs::Odometry msg)
 /**
  * Represents FSM for Neighbour. Given an action, update the current status
  */
-void Neighbour::next(std::string action)
-{
+void Neighbour::next(std::string action) {
 	std::string currentStatus = getStatus();
 
 	//if (currentStatus =="WALKING"){
@@ -72,16 +71,14 @@ int Neighbour::getTargetY()
 	return targetY;
 }*/
 
-void Neighbour::stageOdom_callback(const nav_msgs::Odometry msg)
-{
+void Neighbour::stageOdom_callback(const nav_msgs::Odometry msg) {
 	Person::stageOdom_callback(msg);
 }
 
-int main(int argc, char **argv)
-{
-	//initialise ros
+int main(int argc, char **argv) {
+	// Initialise ros
 	ros::init(argc,argv,"Neighbour");
-	//create ros handler for this node
+	// Create ros handler for this node
 	ros::NodeHandle n;
 
 	Neighbour Neighbour;
@@ -115,17 +112,16 @@ int main(int argc, char **argv)
 	ros::Rate loop_rate(10);
 
 	se306project::robot_status status_msg;
-	//ROS loop
-	while (ros::ok())
-	{
+	// ROS infinite loop
+	while (ros::ok()) {
 		ros::spinOnce();
-		// publish Neighbour status
+		// Publish neighbour status
 		status_msg.pos_x = Neighbour.getX();
 		status_msg.pos_y = Neighbour.getY();
 		status_msg.pos_theta = Neighbour.getTheta();
 		status_msg.status = Neighbour.getStatus();
-		Neighbour.Neighbour_status_pub.publish(status_msg);	//publish message
-
+		//publish message
+		Neighbour.Neighbour_status_pub.publish(status_msg);
 		loop_rate.sleep();
 	}
 }

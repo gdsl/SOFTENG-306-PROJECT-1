@@ -411,7 +411,6 @@ int main(int argc, char **argv)
 	int b = atoi(carrierEnd.c_str());
 	int size = b-a+1;
 	std::string topicName="";
-
 	//subscribing all the picker robot
 	ros::Subscriber *carrierArray = new ros::Subscriber[size];
 	int index = 0;
