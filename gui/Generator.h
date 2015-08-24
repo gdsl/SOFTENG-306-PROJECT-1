@@ -23,6 +23,7 @@ class Generator
 		void loadAnimals();
         void loadTallWeeds();
         void loadTractor();
+        void loadBackdrop();
         void writeLaunchFile();
 		void write();
         void calculatePickerPaths();
