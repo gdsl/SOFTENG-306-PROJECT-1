@@ -30,8 +30,7 @@ class Generator
 
         GeneratorModel model;
 
-        vector<float> catPositions;
-
+        queue<float> catPositions;
         queue<float> pickerRobotsPositions;
         queue<float> carrierRobotsPositions;
         queue<float> beaconPositions; 
@@ -41,6 +40,7 @@ class Generator
         queue<float> dogPositions;
         queue<float> weedPositions;
 	    queue<float> neighbourPositions;
+        queue<float> blindPersonPositions;
         
 	private:
 		string inputName;

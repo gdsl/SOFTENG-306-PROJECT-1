@@ -76,15 +76,17 @@ void MainWindow::onUpdateGUI( QString id, QString str, int i )
 {
 	//update the gui for robots
 	int idNum = id.toInt()-model.beacons-model.weed;
-
-	if (idNum < model.carrierRobots+model.pickerRobots) {
+    int numRobots = model.carrierRobots + model.pickerRobots;
+    int numRobotsPlusPeople = model.carrierRobots+model.pickerRobots+model.workers+model.gardeners+model.neighbours+model.blindPerson;
+    
+	if (idNum < numRobots) {
 	    QListWidget *qlw = ((QListWidget*)ui->robotScroll->widget()->layout()->itemAt(idNum)->widget());
     	qlw->item(i)->setText(truncate(str));
-    } else if (idNum < model.carrierRobots+model.pickerRobots+model.workers+model.gardeners+model.neighbours){
-    	QListWidget *qlw = ((QListWidget*)ui->peopleScroll->widget()->layout()->itemAt(idNum-(model.carrierRobots + model.pickerRobots))->widget());
+    } else if (idNum < numRobotsPlusPeople){
+    	QListWidget *qlw = ((QListWidget*)ui->peopleScroll->widget()->layout()->itemAt(idNum-numRobots)->widget());
     	qlw->item(i)->setText(truncate(str));
     } else {
-    	QListWidget *qlw = ((QListWidget*)ui->animalScroll->widget()->layout()->itemAt(idNum-(model.carrierRobots + model.pickerRobots + model.workers + model.gardeners+model.neighbours))->widget());
+    	QListWidget *qlw = ((QListWidget*)ui->animalScroll->widget()->layout()->itemAt(idNum-numRobotsPlusPeople)->widget());
     	qlw->item(i)->setText(truncate(str));
     }
 }
@@ -182,6 +184,9 @@ void MainWindow::generate() {
     for (int i = 0; i < model.neighbours; i++) {
         uiListPeoples.push_back(createNewItem("Neighbour"));
     }
+    for (int i = 0; i < model.blindPerson; i++) {
+        uiListPeoples.push_back(createNewItem("Blind Person"));
+    }
     for (int i = 0; i < model.dogs; i++) {
         uiListAnimals.push_back(createNewItem("Animal_Dog"));
     }
@@ -231,6 +236,8 @@ void MainWindow::generate() {
 	generator.loadCarrierRobots();
 	generator.loadPeople();
 	generator.loadAnimals();
+	generator.write();
+    generator.writeLaunchFile();
 	generator.loadTractor();
     generator.loadBackdrop();
 	generator.write();
@@ -241,48 +248,6 @@ void MainWindow::generate() {
 int MainWindow::getTotalNodesFromModel() {
     return model.getTotalNodes();
 }
-
-/*
-void MainWindow::writeXml() {
-    CMarkup xml;
-    bool ok;
-    xml.ResetPos();
-    xml.InsertNode( xml.MNT_PROCESSING_INSTRUCTION, "xml" );
-    xml.SetAttrib( "version", "1.1" );
-    xml.SetAttrib( "encoding", "UTF-8" );
-    xml.AddElem("world");
-    xml.IntoElem();
-        xml.AddElem( "resolution", "0.02" );
-        xml.AddElem( "interval_sim", 100 );
-        xml.AddElem( "interval_real", 100 );
-        xml.AddElem( "paused", 0 );
-        xml.AddElem("models");
-        xml.IntoElem();
-            xml.AddElem("orchard");
-            xml.IntoElem();
-                xml.AddElem( "row_count", ui->rowNumberSpinner->value());
-                xml.AddElem( "row_length", ui->rowLengthSpinner->value());
-                xml.AddElem( "row_width", ui->rowWidthSpinner->value() );
-                xml.AddElem( "trunk_pole_spacing", ui->poleTrunkSpacingSpinner->value() );
-            xml.OutOfElem();
-            xml.AddElem("robots");
-            xml.IntoElem();
-                xml.AddElem( "picker_number", ui->pickerSpinner->value() );
-                xml.AddElem( "carrier_number", ui->carrierSpinner->value() );
-            xml.OutOfElem();
-            xml.AddElem("people");
-            xml.IntoElem();
-                xml.AddElem( "worker_number", ui->workerSpinner->value() );
-            xml.OutOfElem();
-            xml.AddElem("animals");
-            xml.IntoElem();
-                xml.AddElem( "dog_number", ui->dogSpinner->value() );
-            xml.OutOfElem();
-        xml.OutOfElem();
-    xml.OutOfElem();
-    xml.Save( "world/generatedOrchard.xml" );
-}
-*/
 
 QListWidget* MainWindow::createNewItem(string type) {
     QListWidget *list = new QListWidget;
