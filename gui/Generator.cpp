@@ -299,6 +299,10 @@ void Generator::loadAnimals()
         int yMult = (((rand() % 8 + 1) * 2) - 1);
         float yPos = 20.4 - (yMult * yOffset);
         
+        dogPositions.push_back(xPos);
+        dogPositions.push_back(yPos);
+        
+        
         string colour = colourArray[dogCC];
         dogCC += 1;
         
@@ -454,8 +458,10 @@ void Generator::writeLaunchFile(){
         	}
         	
         } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.gardeners + model.dogs) { //dogs
+            int dogPos = (i - model.weed - model.beacons - model.pickerRobots -  model.carrierRobots - model.workers - model.gardeners)*2;
             xml.SetAttrib( "name", "AlphaDognode" );
             xml.SetAttrib( "type", "AlphaDog" );
+            oss << dogPositions[dogPos] << " " << dogPositions[dogPos + 1];
         } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.gardeners + model.dogs + model.cats) { //cats
             xml.SetAttrib( "name", "Catnode" );
             xml.SetAttrib( "type", "Cat" );
