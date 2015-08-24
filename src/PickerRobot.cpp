@@ -170,9 +170,20 @@ void recieveCarrierRobotStatus(const se306project::carrier_status::ConstPtr& msg
 		pickerRobot.setStatus("Picking");
 		pickerRobot.setBinCapacity(0);
 		pickerRobot.setState(Robot::PICKING);
+	}else if(msg->status.substr(0,6).compare("Moving")==0){
+
 	}
 }
 
+/*
+ * Method that process the carrier robot serviceing mesaage received.
+ * This method is called when message is received.
+ */
+void recieveCarrierRobotServiceMsg(const se306project::carrier_status::ConstPtr& msg){
+	if (msg->status.compare("Serviceing")==0){//todo make sure carrier is coming to this picker
+
+	}
+}
 /**
  * Method for the picker robot's states transition and implementation
  */
@@ -426,20 +437,19 @@ int main(int argc, char **argv)
 	// assign beacon subscriber to the first beacon for this Picker robot's path.
 	pickerRobot.subscribeNextBeacon(n);
 
-	// initalise robot status message
-	se306project::robot_status status_msg;
 	unsigned int num_readings = 100;
 	double laser_frequency = 40;
 	double ranges[num_readings];
 	double intensities[num_readings];
-
+	se306project::robot_status status_msg;
 	ros::Rate loop_rate(10);
 
 	//a count of howmany messages we have sent
-	int count = 0;
+
 
 	while (ros::ok())
 	{
+		int count = 0;
 		//assign to status message
 		status_msg.my_counter = count++;//add counter to message to broadcast
 		status_msg.status=pickerRobot.getStatus();//add status to message to broadcast
