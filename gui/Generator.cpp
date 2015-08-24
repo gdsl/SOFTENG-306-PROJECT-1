@@ -510,7 +510,7 @@ void Generator::writeLaunchFile(){
             beaconPositions.pop();
             int yPos = beaconPositions.front();
             beaconPositions.pop();
-            oss << xPos << " " << yPos << " /beacon" << num << "/ " << xPos << " " << yPos;
+            oss << xPos << " " << yPos << " /beacon" << num << "/ ";
         } else if (i < model.weed + model.beacons + model.pickerRobots) { //picker robots
             xml.SetAttrib( "name", "PickerRobotnode" );
             xml.SetAttrib( "type", "PickerRobot" );

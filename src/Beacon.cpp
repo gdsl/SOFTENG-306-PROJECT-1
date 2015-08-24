@@ -28,11 +28,9 @@ int main(int argc, char **argv)
     //initialise ros    
     ros::init(argc,argv,"beacon");
     
-    //ARGV 1 & 2 ARE NOW X AND Y
-
     // convert input parameters for Beacon initialization from String to respective types
-    std::string xString = argv[4];
-    std::string yString = argv[5];
+    std::string xString = argv[1];
+    std::string yString = argv[2];
     double xPos = atof(xString.c_str());
     double yPos = atof(yString.c_str());
     
