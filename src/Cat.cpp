@@ -20,7 +20,8 @@ Cat::~Cat() {
 
 }
 
-Cat Cat(-20.000, 21.500);
+Cat Cat;
+
 // Default cat behaviour = walking
 std::string status="Walking";
 bool queueFull = false;
@@ -36,7 +37,13 @@ void stage_callback(nav_msgs::Odometry msg) {
 
 int main(int argc, char **argv) 
 {
-    
+	std::string xPosArg = argv[1];
+    	std::string spacing = argv[2];    
+	double xPos = atof(xPosArg.c_str());
+
+	// Initialize the cat robot with the correct position position
+	Cat = Cat(xPos, 21.500);   
+
 	ros::init(argc,argv,"Animal");
 
 	// Create ros handler for this node

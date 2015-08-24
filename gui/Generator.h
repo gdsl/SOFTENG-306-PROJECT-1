@@ -34,6 +34,7 @@ class Generator
         vector<int> pickerPathPositions;
         vector<float> workerPositions;
         vector<float> gardenerPositions;
+        vector<float> catPositions;
         
 	private:
 		string inputName;
