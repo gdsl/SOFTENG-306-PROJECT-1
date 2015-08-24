@@ -7,9 +7,9 @@
 #include "se306project/animal_status.h"
 #include <stdlib.h>
 #include <time.h>
- 
+
 Cat::Cat() : Animal() {
-    
+
 }
 
 Cat::Cat(double x, double y) : Animal(x,y) {
@@ -31,22 +31,22 @@ double angle;
 bool initial = true;
 
 void stage_callback(nav_msgs::Odometry msg) {
-    Cat.stageOdom_callback(msg);
+	Cat.stageOdom_callback(msg);
 }
 
 int main(int argc, char **argv) 
 {
-    
+
 	ros::init(argc,argv,"Animal");
 
 	// Create ros handler for this node
 	ros::NodeHandle n;
-    
+
 	Cat.robotNode_stage_pub = n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
 
 	Cat.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000,stage_callback);
 	ros::Rate loop_rate(10); 
-	
+
 	// Broadcast the node's status information for other to subscribe to.
 	ros::Publisher pub=n.advertise<se306project::animal_status>("status",1000);
 	se306project::animal_status status_msg;
@@ -55,7 +55,7 @@ int main(int argc, char **argv)
 	{
 		// Message to stage 
 		Cat.move();
-		
+
 		// Give cat a small initial movement to fill in its GUI status
 		if (initial) {
 			Cat.addMovement("forward_x",-0.1,1);
@@ -73,8 +73,8 @@ int main(int argc, char **argv)
 			Cat.faceWest(1);
 			Cat.addMovement("forward_x",5,1);
 		}
-	        
-    		/*if (Cat.getMovementQueueSize() == 0) {
+
+		/*if (Cat.getMovementQueueSize() == 0) {
 			Cat.faceWest(1);
 			Cat.addMovement("forward_x",-5,1);
 			Cat.faceSouth(1);
@@ -93,7 +93,7 @@ int main(int argc, char **argv)
 		// Publish status message
 		pub.publish(status_msg);
 		ros::spinOnce();
-	    
+
 		loop_rate.sleep();
 
 		/*// Logic to determine current status of Cat - Walking/Sleeping/Turning
@@ -112,7 +112,7 @@ int main(int argc, char **argv)
 		else {
 			status = "Turning";
 		}*/
-                Cat.determineStatus();
+		Cat.determineStatus();
 	}
 	return 0;
 }

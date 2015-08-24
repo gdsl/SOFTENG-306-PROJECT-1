@@ -7,9 +7,9 @@
 #include "se306project/animal_status.h"
 #include <stdlib.h>
 #include <time.h>
- 
+
 AlphaDog::AlphaDog() : Animal() {
-    
+
 }
 
 AlphaDog::AlphaDog(double x, double y) : Animal(x,y) {
@@ -30,7 +30,24 @@ double radians;
 double angle;
 
 void stage_callback(nav_msgs::Odometry msg) {
-    alphaDog.stageOdom_callback(msg);
+	alphaDog.stageOdom_callback(msg);
+}
+
+/**
+ * Call back method for laser work out the avoidance logic for dog robot
+ */
+void callBackLaserScan(const sensor_msgs::LaserScan msg) {
+	alphaDog.stageLaser_callback(msg);//call supercalss laser call back
+	if (alphaDog.getAvoidanceCase()!=Entity::NONE) {//check if there is need to avoid obstacle
+		alphaDog.setObstacleStatus("Obstacles nearby");
+		//flush its movement
+		alphaDog.flushMovementQueue();
+		alphaDog.addMovementFront("forward_x",0,0,1);//this is at front of front
+		alphaDog.move();
+
+	} else {
+		alphaDog.setObstacleStatus("No obstacles");
+	}
 }
 
 int main(int argc, char **argv) {
@@ -39,11 +56,13 @@ int main(int argc, char **argv) {
 
 	// Create ros handler for this node
 	ros::NodeHandle n;
-    
+
 	alphaDog.robotNode_stage_pub = n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
 	alphaDog.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000,stage_callback);
+	alphaDog.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000, callBackLaserScan);
+
 	ros::Rate loop_rate(10); 
-	
+
 	// Broadcast the node's status information for other to subscribe to.
 	ros::Publisher pub=n.advertise<se306project::animal_status>("status",1000);
 	se306project::animal_status status_msg;
@@ -51,17 +70,17 @@ int main(int argc, char **argv) {
 	while (ros::ok()) {
 		// Message to stage 
 		alphaDog.move();
-        
-    		if (alphaDog.getMovementQueueSize() == 0) {
+
+		if (alphaDog.getMovementQueueSize() == 0) {
 			alphaDog.faceWest(1);
 			alphaDog.addMovement("forward_x",-5,1);
 			alphaDog.faceSouth(1);
-            		alphaDog.addMovement("forward_y", -1.25 , 1);  
-		    	alphaDog.faceEast(1);
-		    	alphaDog.addMovement("forward_x",5,1);
-		    	alphaDog.faceNorth(1);
-		   	alphaDog.addMovement("forward_y",1.25,1);
-	    	}
+			alphaDog.addMovement("forward_y", -1.25 , 1);
+			alphaDog.faceEast(1);
+			alphaDog.addMovement("forward_x",5,1);
+			alphaDog.faceNorth(1);
+			alphaDog.addMovement("forward_y",1.25,1);
+		}
 
 		// Add Dog variables to status message to be broadcast
 		status_msg.status=status;
@@ -71,7 +90,7 @@ int main(int argc, char **argv) {
 		// Publish status message
 		pub.publish(status_msg);
 		ros::spinOnce();
-        	loop_rate.sleep();
+		loop_rate.sleep();
 
 		/*// Logic to determine current status of Dog - Walking/Idle/Turning
 		// Convert radians to degrees
@@ -89,7 +108,7 @@ int main(int argc, char **argv) {
 		else {
 			status = "Turning";
 		}*/
-                alphaDog.determineStatus();
+		alphaDog.determineStatus();
 	}
 	return 0;
 }
