@@ -253,13 +253,18 @@ int main(int argc, char **argv)
         }*/
     
 	// Assign values to status message
-	status_msg.my_counter = count++;		// Add counter to message to broadcast
-	status_msg.status=alphaPerson.getStatus();	// Add status to message to broadcast
-	status_msg.pos_x=alphaPerson.getX(); 		// Add x to message to broadcast
-	status_msg.pos_y=alphaPerson.getY();		// Add y to message to broadcast
-	status_msg.pos_theta=alphaPerson.getTheta();	// Add angle to message to broadcast
-	pub.publish(status_msg);			// Publish the message for other node
-        
+	// Add counter to message to broadcast
+	status_msg.my_counter = count++;
+	// Add status to message to broadcast		
+	status_msg.status=alphaPerson.getStatus();
+	// Add x to message to broadcast	
+	status_msg.pos_x=alphaPerson.getX(); 	
+	// Add y to message to broadcast	
+	status_msg.pos_y=alphaPerson.getY();	
+	// Add angle to message to broadcast
+	status_msg.pos_theta=alphaPerson.getTheta();
+	// Publish the message for other node
+	pub.publish(status_msg);			
         ros::spinOnce();
         loop_rate.sleep();
         alphaPerson.determineStatus();
