@@ -74,6 +74,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::onUpdateGUI( QString id, QString str, int i )
 {
+//    qDebug() << str << " " << id << " " << i;  
+
 	//update the gui for robots
 	int idNum = id.toInt()-model.beacons-model.weed;
     int numRobots = model.carrierRobots + model.pickerRobots;

@@ -367,13 +367,20 @@ for (int i = 0; i < model.neighbours; i++) {
     outfile << "# Generate blind people" << endl;
     
     for(int i = 0; i < model.blindPerson; i++) {
-        int x = 0;
-        int y = 0;
+        int x = rand() % 76 - 36;
+        int y = rand() % randNumY - rowEnd;
+        int xMult = (((rand() % columnCount + 1) * 2) - 1);
+        float xPos = -30 + (xMult * xOffset) + 0.5;
+        int yMult = (((rand() % 8 + 1) * 2) - 1);
+        float yPos = 20.4 - (yMult * yOffset) + 0.5;
+        
+        blindPersonPositions.push_back(xPos);
+        blindPersonPositions.push_back(yPos);
+
         string colour = colourArray[peopleCC];
         peopleCC += 1;
-        blindPersonPositions.push(x);
-        blindPersonPositions.push(y);
-        outfile << "blindPerson( pose [ " << x << " " << y << " 0.000 0.000 ] name \"BlindPerson" << i+1 << "\" color \"" + colour + "\")" << endl;
+        
+        outfile << "blindPerson( pose [ " << xPos << " " << yPos << " 0.000 0.000 ] name \"BlindPerson" << i+1 << "\" color \"" + colour + "\")" << endl;
     }
 
 	outfile << endl;
@@ -400,13 +407,20 @@ void Generator::loadAnimals()
     
 	// Generate dogs
     for(int i = 0; i < model.dogs; i++) {
-        int x = rand() % 76 - 36;
-        int y = rand() % randNumY - rowEnd;
-        int xMult = (((rand() % columnCount + 1) * 2) - 1);
-        float xPos = -30 + (xMult * xOffset);
-        int yMult = (((rand() % 8 + 1) * 2) - 1);
-        float yPos = 20.4 - (yMult * yOffset);
+        float xPos, yPos;
         
+        if (i*2 < blindPersonPositions.size()) {
+            xPos = blindPersonPositions[2*i] - 0.5;
+            yPos = blindPersonPositions[2*i+1] - 0.5;            
+        } else {
+            int x = rand() % 76 - 36;
+            int y = rand() % randNumY - rowEnd;
+            int xMult = (((rand() % columnCount + 1) * 2) - 1);
+            xPos = -30 + (xMult * xOffset);
+            int yMult = (((rand() % 8 + 1) * 2) - 1);
+            yPos = 20.4 - (yMult * yOffset);
+        }
+
         dogPositions.push(xPos);
         dogPositions.push(yPos);
 
@@ -604,9 +618,9 @@ void Generator::writeLaunchFile(){
             xml.SetAttrib( "name", "BlindPersonnode");
             xml.SetAttrib( "type", "BlindPerson");
             float xPos = blindPersonPositions.front();
-            blindPersonPositions.pop();
+            blindPersonPositions.pop_front();
             float yPos = blindPersonPositions.front();
-            blindPersonPositions.pop();
+            blindPersonPositions.pop_front();
             float theta = 0;
             oss << xPos << " " << yPos << " " << theta;
         } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.blindPerson + model.gardeners +model.neighbours + model.dogs) { //dogs

@@ -7,6 +7,7 @@
 #include <fstream>
 #include <vector>
 #include <queue>
+#include <deque>
 #include "GeneratorModel.h"
 
 using namespace std;
@@ -41,7 +42,8 @@ public:
 	queue<float> dogPositions;
 	queue<float> weedPositions;
 	queue<float> neighbourPositions;
-	queue<float> blindPersonPositions;
+	deque<float> blindPersonPositions;
+
 	
 private:
 	string inputName;
