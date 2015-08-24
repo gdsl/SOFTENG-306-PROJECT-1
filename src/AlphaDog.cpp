@@ -13,17 +13,25 @@ AlphaDog::AlphaDog() : Animal() {
 }
 
 AlphaDog::AlphaDog(double x, double y) : Animal(x,y) {
-
+    this->antiClockwise = false;
 }
 
 AlphaDog::~AlphaDog() {
 
 }
 
-AlphaDog alphaDog(-3.75,17.5);
+void AlphaDog::switchDirection() {
+    this->antiClockwise = !(this->antiClockwise);
+}
+
+bool AlphaDog::isAntiClockwise() {
+    return this-> antiClockwise;
+}
+
+AlphaDog alphaDog(0,0);
 // Default dog behaviour = walking
-std::string status="Moonwalking";
-bool queueFull = false;
+std::string status="Walking";
+bool antiClockwise = false;
 
 // Keeps track of current position that dog is facing
 double radians;
@@ -36,6 +44,21 @@ void stage_callback(nav_msgs::Odometry msg) {
 int main(int argc, char **argv) {
 	// Initialise ros    
 	ros::init(argc,argv,"Animal");
+    
+    // convert input parameters for person initialization from String to respective types
+    std::string xString = argv[1];
+    std::string yString = argv[2];
+    std::string rowString = argv[4];
+    std::string spacingString = argv[5];
+    double rowWidth = atof(rowString.c_str());
+    double trunkSpacing = atof(spacingString.c_str());
+    double xPos = atof(xString.c_str());
+    double yPos = atof(yString.c_str());
+    double left = xPos - trunkSpacing;
+    double right = xPos;
+    double top = yPos;
+    double bottom = yPos - rowWidth;
+    alphaDog = AlphaDog(xPos,yPos);
 
 	// Create ros handler for this node
 	ros::NodeHandle n;
@@ -47,21 +70,55 @@ int main(int argc, char **argv) {
 	// Broadcast the node's status information for other to subscribe to.
 	ros::Publisher pub=n.advertise<se306project::animal_status>("status",1000);
 	se306project::animal_status status_msg;
-	// 0 rotatiing to the side, 1, moving horizontally, 2 rotating to bnorth/south, 3 moving vertical, 4 stop
+	// 0 down section, 1 up section, 2 left section, 3 right section
+    AlphaDog::State state = AlphaDog::TOP;
 	while (ros::ok()) {
 		// Message to stage 
 		alphaDog.move();
         
-    		if (alphaDog.getMovementQueueSize() == 0) {
-			alphaDog.faceWest(1);
-			alphaDog.addMovement("forward_x",-5,1);
-			alphaDog.faceSouth(1);
-            		alphaDog.addMovement("forward_y", -1.25 , 1);  
-		    	alphaDog.faceEast(1);
-		    	alphaDog.addMovement("forward_x",5,1);
-		    	alphaDog.faceNorth(1);
-		   	alphaDog.addMovement("forward_y",1.25,1);
-	    	}
+        if (alphaDog.getMovementQueueSize() == 0) {
+            if (state == AlphaDog::TOP) {
+                if (alphaDog.isAntiClockwise()) {
+                    alphaDog.faceWest(1);
+                    alphaDog.addMovement("forward_x", left-alphaDog.getX(), 1);
+                    state = AlphaDog::LEFT;
+                } else {
+                    alphaDog.faceEast(1);           
+                    alphaDog.addMovement("forward_x", right-alphaDog.getX(), 1);
+                    state = AlphaDog::RIGHT;
+                }
+            } else if (state == AlphaDog::LEFT)  {
+                if (alphaDog.isAntiClockwise()) {
+                    alphaDog.faceSouth(1);
+                    alphaDog.addMovement("forward_y", bottom-alphaDog.getY(),1);
+                    state = AlphaDog::BOTTOM;
+                } else {
+                    alphaDog.faceNorth(1);           
+                    alphaDog.addMovement("forward_y", top-alphaDog.getY(), 1);
+                    state = AlphaDog::TOP;
+                }
+            } else if (state == AlphaDog::BOTTOM) {
+                if (alphaDog.isAntiClockwise()) {
+                    alphaDog.faceEast(1);           
+                    alphaDog.addMovement("forward_x", right-alphaDog.getX(), 1);
+                    state = AlphaDog::RIGHT;
+                } else {
+                    alphaDog.faceWest(1);
+                    alphaDog.addMovement("forward_x", left-alphaDog.getX(), 1);
+                    state = AlphaDog::LEFT;
+                }
+            } else if (state == AlphaDog::RIGHT) {
+                if (alphaDog.isAntiClockwise()) {
+                    alphaDog.faceNorth(1);           
+                    alphaDog.addMovement("forward_y", top-alphaDog.getY(), 1);
+                    state = AlphaDog::TOP;
+                } else {
+                    alphaDog.faceSouth(1);
+                    alphaDog.addMovement("forward_y", bottom-alphaDog.getY(),1);
+                    state = AlphaDog::BOTTOM;
+                }
+            }
+	    }
 
 		// Add Dog variables to status message to be broadcast
 		status_msg.status=status;

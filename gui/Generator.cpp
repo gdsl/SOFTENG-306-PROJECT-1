@@ -361,8 +361,8 @@ for (int i = 0; i < model.neighbours; i++) {
         
         int yMult = (((rand() % 8 + 1) * 2) - 1);
         float yPos = 20.4 - (yMult * yOffset);
-        neighbourPositions.push_back(xPos);
-        neighbourPositions.push_back(yPos);
+        neighbourPositions.push(xPos);
+        neighbourPositions.push(yPos);
         outfile << "neighbour( pose [ " << xPos << " " << yPos << " 0.000 -90.000 ] name \"neighbour" << i+1 << "\" color \"blue\")" << endl;
         /*} else {
             gardenerPositions.push_back(x);
@@ -550,6 +550,7 @@ void Generator::writeLaunchFile(){
             int nextStart = pickerPathPositions.front();
             pickerPathPositions.pop();
             int nextFinish = pickerPathPositions.front();
+            pickerPathPositions.pop();            
             int theta = 0;
             oss << xPos << " " << yPos << " " << theta << " " << nextStart << " " << nextFinish << " " << model.rowWidth << " " << firstCarrier << " " << lastCarrier;
         } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots) { //carriers
@@ -579,8 +580,11 @@ void Generator::writeLaunchFile(){
         } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers+ model.gardeners+model.neighbours) { //neighbours
             xml.SetAttrib( "name", "Neighbournode" );
             xml.SetAttrib( "type", "Neighbour" );
-            int NeighbourPos = (i - model.weed - model.beacons - model.pickerRobots - model.carrierRobots-model.workers- model.gardeners)*2;
-            oss << neighbourPositions[NeighbourPos] << " " << neighbourPositions[NeighbourPos+1];
+            int x = neighbourPositions.front();
+            neighbourPositions.pop();
+            int y = neighbourPositions.front();
+            neighbourPositions.pop();
+            oss << x << " " << y;
 } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.gardeners +model.neighbours+ model.dogs) { //dogs
             xml.SetAttrib( "name", "AlphaDognode" );
             xml.SetAttrib( "type", "AlphaDog" );
@@ -589,8 +593,8 @@ void Generator::writeLaunchFile(){
             int yPos = dogPositions.front();
             dogPositions.pop();
             int theta = 0;
-    		oss << xPos << " " << yPos << " " << theta;
-        } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.gardeners + model.neighbours+model.dogs + model.cats) { //cats
+    		oss << xPos << " " << yPos << " " << theta << " " << model.rowWidth << " " << model.poleTrunkSpacing;
+        } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.gardeners + model.dogs + model.cats) { //cats
             xml.SetAttrib( "name", "Catnode" );
             xml.SetAttrib( "type", "Cat" );
 		oss << catPositions[i-(model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.gardeners + model.neighbours + model.dogs)] << " " << model.poleTrunkSpacing;
