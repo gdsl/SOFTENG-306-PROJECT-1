@@ -2,7 +2,7 @@
 #include "CarrierRobot.h"
 
 /**
- * Unit test for Carrier Robot. Tests basic methods like constructor
+ * Unit tests for Carrier Robot - tests basic methods e.g. constructor
  */
 
 /*

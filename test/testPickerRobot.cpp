@@ -2,7 +2,7 @@
 #include "PickerRobot.h"
 
 /**
- * Unit test for Picker Robot. Tests basic methods like constructor
+ * Unit test for Picker Robot - tests basic methods e.g. constructor
  */
 
 /*

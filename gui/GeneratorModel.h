@@ -2,8 +2,7 @@
  * Model which represents the object that is passed into the Generator to create world file
  */
 
-class GeneratorModel
-{
+class GeneratorModel {
 public:
 	GeneratorModel();
 

@@ -15,6 +15,7 @@ KeyReceiver::KeyReceiver() {
 	//timer->start(3000); //time specified in ms
 }
 
+<<<<<<< HEAD
 bool KeyReceiver::eventFilter(QObject* obj, QEvent* event)
 {
 	if (event->type()==QEvent::KeyPress) {
@@ -36,7 +37,27 @@ bool KeyReceiver::eventFilter(QObject* obj, QEvent* event)
 		return QObject::eventFilter(obj, event);
 	}
 	return false;
+=======
+bool KeyReceiver::eventFilter(QObject* obj, QEvent* event) {
+    if (event->type()==QEvent::KeyPress) {
+        QKeyEvent* key = static_cast<QKeyEvent*>(event);
+        if ( (key->key()==Qt::Key_Left) ) {
+            lastKeyPressed = 1;
+            //qDebug("left KEY");            
+        } else if ( (key->key()==Qt::Key_Right) ) {
+            lastKeyPressed = 2;
+           // qDebug("Right KEY");
+        } else if ( (key->key()==Qt::Key_Up) ) {
+            lastKeyPressed = 3;
+           // qDebug("Up KEY");
+        } else if ( (key->key()==Qt::Key_Down) ) {
+            lastKeyPressed = 4;
+           // qDebug("Down KEY");
+        }
+    } else {
+        return QObject::eventFilter(obj, event);
+    }
+    return false;
+>>>>>>> 002c2a1f3dc841f56b998f90719b2f96dade691f
 }
-
-
 

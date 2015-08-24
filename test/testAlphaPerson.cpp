@@ -5,6 +5,10 @@
 #include <gtest/gtest.h>
 
 /**
+ * Unit tests for Person Robot - tests basic methods e.g. constructor
+ */
+
+/**
  * Test default alphaPerson constructor
  */
 TEST(AlphaPerson, constructAlphaPerson) {
