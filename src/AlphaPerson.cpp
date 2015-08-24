@@ -47,19 +47,23 @@ void stage_positionCallback(nav_msgs::Odometry msg) {
 
 void stage_laserCallback(sensor_msgs::LaserScan msg) {
 	alphaPerson.stageLaser_callback(msg);
+
+    //if searching for a new tree
 	if (isSearch) {
 		int l=msg.intensities.size();
 		double minDist = 1000;
 		std::vector<double> v;
 		std::map<double,double> Xmap;
 		std::map<double,double> Ymap;
+        //check the information from sensor
 		for (int i = 0; i<l; i++) {
 			if (msg.intensities[i] == 1) {
 				double toDegree =  alphaPerson.getTheta()*180/M_PI;
 				double absAngle = i + toDegree - 90;
 				double obsX = alphaPerson.getX() + msg.ranges[i]*cos(absAngle*M_PI/180);
 				double obsY = alphaPerson.getY() + msg.ranges[i]*sin(absAngle*M_PI/180);
-
+                
+                //if the worker looking top or looking bottom
 				bool whereToLook;
 				if (lookAtBottom) {
 					whereToLook = -105 < absAngle && absAngle < -90;
@@ -67,23 +71,24 @@ void stage_laserCallback(sensor_msgs::LaserScan msg) {
 					whereToLook = 90 < absAngle && absAngle < 105;
 				}
 
+                //only accept point of interest that are greater than 1.5m from the worker and store the point in a map and vector
 				if (msg.ranges[i] > 1.5 && whereToLook) {
 					foundTree = true;
 					if (msg.ranges[i] < minDist) minDist = msg.ranges[i];
 					v.push_back(msg.ranges[i]);
 					Xmap[msg.ranges[i]] = obsX;
 					Ymap[msg.ranges[i]] = obsY;
-					// ROS_INFO("ALPHA PERSON OBS dist:%f angle:%d abs:%f obsX:%f obsY:%f robotAngle:%f", msg.ranges[i], i,absAngle, obsX,obsY,toDegree);
-
 				}
 			}
 		}
 
+        //process point of interest corresponding to a tree
 		if (foundTree) {
 			int count = 0;
 			double sumX = 0;
 			double sumY = 0;
 
+            //only group the points that have similiar distance and add it to the sum. 
 			for (std::vector<double>::iterator it = v.begin(); it != v.end(); ++it) {
 				if (minDist <= *it && *it <= minDist+0.2) {
 					count++;
@@ -95,6 +100,7 @@ void stage_laserCallback(sensor_msgs::LaserScan msg) {
 			double avgX = 0;
 			double avgY = 0;
 
+            //if there is more than 1 valid point then work out the position of the tree and the distance between the robot
 			if (count > 0) {
 				avgX = sumX / count;
 				avgY = (sumY /count) ;
@@ -106,7 +112,6 @@ void stage_laserCallback(sensor_msgs::LaserScan msg) {
 				xDistance = avgX - alphaPerson.getX();
 				yDistance = avgY - alphaPerson.getY() + 0.75;
 			}
-			//ROS_INFO("ALPHA PERSON x:%f y:%f xDist:%f yDist:%f",avgX,avgY,xDistance,yDistance);
 		}
 	}
 }
@@ -212,51 +217,6 @@ int main(int argc, char **argv)
 	{
 		alphaPerson.move();
 		alphaPerson.stateLogic();
-
-		/*
-        if (alphaPerson.getMovementQueueSize() == 0) {
-            if (state == trimming_tree) {
-                alphaPerson.faceSouth(1);
-                state = moving_to_search_spot;
-
-            } else if (state == moving_to_search_spot) {
-                alphaPerson.faceEast(1);
-                alphaPerson.addMovement("forward_x",0.75,1);
-                if (lookAtBottom) {
-                    alphaPerson.faceSouth(1);
-                } else {
-                    alphaPerson.faceNorth(1);
-                }
-                state = searching;
-
-            } else if (state == searching) {
-                isSearch = true;
-                if (foundTree) {
-                    state = go_to_next_tree;
-                } else {
-                    if (tickCount > 10)  {
-                        tickCount = 0;
-                        lookAtBottom = !lookAtBottom;
-                        if (lookAtBottom) {
-                            alphaPerson.faceSouth(1);
-                        } else {
-                            alphaPerson.faceNorth(1);
-                        }
-                    }
-                    tickCount++;
-                }
-
-            } else if (state == go_to_next_tree) {
-                isSearch = false;
-                foundTree = false;
-                alphaPerson.addMovement("forward_y",yDistance,1); //move down or up
-                alphaPerson.faceWest(1);
-                alphaPerson.addMovement("forward_x",xDistance,1);
-                alphaPerson.faceSouth(1);
-
-                state = trimming_tree;
-            }
-        }*/
 
 		//assign to status message
 		status_msg.my_counter = count++;//add counter to message to broadcast
