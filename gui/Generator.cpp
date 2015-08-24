@@ -281,20 +281,15 @@ void Generator::loadAnimals()
     for(int i = 0; i < model.dogs; i++) {
         int x = rand() % 76 - 36;
         int y = rand() % randNumY - rowEnd;
-        //int x = rand() % 82 - 36;
-        //int y = rand() % 52 - 26;
-    
-    //    if( (x > -30) && (x < 40) && (y < 20) && (y > rowEnd)) {
         int xMult = (((rand() % columnCount + 1) * 2) - 1);
         float xPos = -30 + (xMult * xOffset);
-        
         int yMult = (((rand() % 8 + 1) * 2) - 1);
         float yPos = 20.4 - (yMult * yOffset);
         
+        dogPositions.push_back(xPos);
+        dogPositions.push_back(yPos);
+
         outfile << "dog( pose [ " << xPos << " " << yPos << " 0.000 0.000 ] name \"Dog" << i+1 << "\" color \"random\")" << endl;
-   /*     } else {
-            outfile << "dog( pose [ " << x << " " << y << " 0.000 0.000 ] name \"Dog" << i+1 << "\" color \"random\")" << endl;
-        }*/
     }
 	
 	outfile << "# Generate cats" << endl;
@@ -393,7 +388,6 @@ void Generator::writeLaunchFile(){
             xml.SetAttrib( "name", "TallWeednode" );
             xml.SetAttrib( "type", "TallWeed" );
             int alphaPersonNumber = model.rowCount*2 + model.weed + model.pickerRobots + model.carrierRobots;
-
             int subscribeIndex = model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers;
 
             if (model.gardeners > 0) {
@@ -445,6 +439,9 @@ void Generator::writeLaunchFile(){
         } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.gardeners + model.dogs) { //dogs
             xml.SetAttrib( "name", "AlphaDognode" );
             xml.SetAttrib( "type", "AlphaDog" );
+            int dogPos = (i - model.weed - model.beacons - model.pickerRobots - model.carrierRobots - model.workers - model.gardeners)*2;
+            //args x y theta
+    		oss << dogPositions[dogPos] << " " << dogPositions[dogPos+1] << " " << 0; //assume theta = 0
         } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.gardeners + model.dogs + model.cats) { //cats
             xml.SetAttrib( "name", "Catnode" );
             xml.SetAttrib( "type", "Cat" );
