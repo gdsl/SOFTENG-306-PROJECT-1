@@ -6,6 +6,7 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include <queue>
 #include "GeneratorModel.h"
 
 using namespace std;
@@ -29,13 +30,15 @@ class Generator
 
         GeneratorModel model;
 
-        vector<int> pickerRobotsPositions;
-        vector<int> carrierRobotsPositions;
-        vector<float> beaconPositions; 
-        vector<int> pickerPathPositions;
-        vector<float> workerPositions;
-        vector<float> gardenerPositions;
-        vector<int> dogPositions;
+
+        queue<int> pickerRobotsPositions;
+        queue<int> carrierRobotsPositions;
+        queue<float> beaconPositions; 
+        queue<int> pickerPathPositions;
+        queue<float> workerPositions;
+        queue<float> gardenerPositions;
+        queue<float> dogPositions;
+        queue<float> weedPositions;
         
 	private:
 		string inputName;

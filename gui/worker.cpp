@@ -18,15 +18,15 @@ void Worker::setId(string id_string) {
 }
 
 void Worker::executeScript() {
-    qDebug("executeScript prerun");
-    string filePath = "gui/rostopicScripts/robot_" + stringId + ".sh";
-    ofstream myfile;
-    myfile.open (filePath.c_str());
-    myfile << "cd ../../../..\nsource devel/setup.bash\nrostopic echo /robot_" << stringId.c_str() << "/status";
-    myfile.close();
-    string cmd = "chmod +x " + filePath;
-    system(cmd.c_str());
-	exec(filePath);
+   // qDebug("executeScript prerun");
+   // string filePath = "gui/rostopicScripts/robot_" + stringId + ".sh";
+   // ofstream myfile;
+   // myfile.open (filePath.c_str());
+   // myfile << "cd ../../../..\nsource devel/setup.bash\nrostopic echo /robot_" << stringId.c_str() << "/status";
+   // myfile.close();
+   // string cmd = "chmod +x " + filePath;
+   // system(cmd.c_str());
+	exec("rostopic echo /robot_" + stringId + "/status");
 }
 
 //for processing command

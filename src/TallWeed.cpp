@@ -53,9 +53,11 @@ int main(int argc, char **argv)
     tallWeed.robotNode_stage_pub = n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
     tallWeed.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000,&TallWeed::stageOdom_callback,&tallWeed);
 
+    //ARGV 1 & 2 ARE NOW X AND Y
+
     //subscribe to worker
-    std::string start(argv[2]);
-    std::string end(argv[3]);
+    std::string start(argv[4]);
+    std::string end(argv[5]);
     int s = atoi(start.c_str());
     int e = atoi(end.c_str());
 

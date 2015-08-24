@@ -414,8 +414,9 @@ int main(int argc, char **argv)
 	
     // convert input parameters for Robot initialization from String to respective types
     std::string xString = argv[1];
-    std::string yString = argv[2];    
-    std::string pickRangeString = argv[5];
+    std::string yString = argv[2];  
+//theta is arg3  
+    std::string pickRangeString = argv[6];
     double xPos = atof(xString.c_str());
     double yPos = atof(yString.c_str());
     double pickRange = (atof(pickRangeString.c_str()))/2+0.1;
@@ -423,8 +424,8 @@ int main(int argc, char **argv)
     ROS_INFO("y start: %f", yPos);
     ROS_INFO("pick range %f",pickRange);
     //assign start and finish beacons from input parameters of launch file
-    std::string startString = argv[3];
-    std::string finishString = argv[4];
+    std::string startString = argv[4];
+    std::string finishString = argv[5];
     std::stringstream ss(startString);
     ss >> startBeacon;
     std::stringstream ss2(finishString);
