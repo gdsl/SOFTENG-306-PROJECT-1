@@ -140,6 +140,70 @@ void Generator::loadOrchard()
     }
 }
 
+void Generator::loadBackdrop()
+{
+    outfile << "#Generate Backdrop Trees" << endl;
+    
+    string backdropColourArray[7] = {"lawn green", "LimeGreen", "ForestGreen", "YellowGreen", "OliveDrab", "DarkOliveGreen", "DarkGreen"};
+    
+    double x, y;
+    // initial x
+	x = -47;
+	// initial y
+    y = 27;
+    
+    int colourRand = 0;
+    string colour = "";
+    
+    for(int i = 0; i < 27; i++) {
+        colourRand = rand() % 6;
+        colour = backdropColourArray[colourRand];
+        outfile << "backdropTree( pose [ " << x << " " << y << " 0.000 0.000 ] color \"SaddleBrown\")" << endl;
+        outfile << "backdropTreeTop( pose [ " << x << " " << y << " 0.000 0.000 ] color \"" + colour + "\")" << endl;
+        y -= 1.1;
+        colourRand = rand() % 6;
+        colour = backdropColourArray[colourRand];
+        outfile << "backdropShrub( pose [ " << x << " " << y << " 0.000 0.000 ] color \"" + colour + "\")" << endl;
+        y -= 0.9;
+    }
+    
+    for(int i = 0; i < 47; i++) {
+        colourRand = rand() % 6;
+        colour = backdropColourArray[colourRand];
+        outfile << "backdropTree( pose [ " << x << " " << y << " 0.000 0.000 ] color \"SaddleBrown\")" << endl;
+        outfile << "backdropTreeTop( pose [ " << x << " " << y << " 0.000 0.000 ] color \"" + colour + "\")" << endl;
+        x += 1.1;
+        colourRand = rand() % 6;
+        colour = backdropColourArray[colourRand];
+        outfile << "backdropShrub( pose [ " << x << " " << y << " 0.000 0.000 ] color \"" + colour + "\")" << endl;
+        x += 0.9;
+    }
+    
+    for(int i = 0; i < 27; i++) {
+        colourRand = rand() % 6;
+        colour = backdropColourArray[colourRand];
+        outfile << "backdropTree( pose [ " << x << " " << y << " 0.000 0.000 ] color \"SaddleBrown\")" << endl;
+        outfile << "backdropTreeTop( pose [ " << x << " " << y << " 0.000 0.000 ] color \"" + colour + "\")" << endl;
+        y += 1.1;
+        colourRand = rand() % 6;
+        colour = backdropColourArray[colourRand];
+        outfile << "backdropShrub( pose [ " << x << " " << y << " 0.000 0.000 ] color \"" + colour + "\")" << endl;
+        y += 0.9;
+    }
+    
+    for(int i = 0; i < 47; i++) {
+        colourRand = rand() % 6;
+        colour = backdropColourArray[colourRand];
+        outfile << "backdropTree( pose [ " << x << " " << y << " 0.000 0.000 ] color \"SaddleBrown\")" << endl;
+        outfile << "backdropTreeTop( pose [ " << x << " " << y << " 0.000 0.000 ] color \"" + colour + "\")" << endl;
+        x -= 1.1;
+        colourRand = rand() % 6;
+        colour = backdropColourArray[colourRand];
+        outfile << "backdropShrub( pose [ " << x << " " << y << " 0.000 0.000 ] color \"" + colour + "\")" << endl;
+        x -= 0.9;
+    }
+}
+
 
 /**
  * Load robots into world file
