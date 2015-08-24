@@ -111,7 +111,7 @@ void Generator::loadOrchard()
 		     * Add trunk at even column, pole on odd column
 		     */
 		    if (i % 2 == 0) {
-			    outfile << "trunk( pose [ " << x << " " << y << " 0.000 0.000 ] color \"brown\")" << endl;
+			    outfile << "trunk( pose [ " << x << " " << y << " 0.000 0.000 ] color \"SaddleBrown\")" << endl;
 		    } else {
 			    outfile << "pole( pose [ " << x << " " << y << " 0.000 0.000 ] color \"black\")" << endl;
 		    }
@@ -122,12 +122,12 @@ void Generator::loadOrchard()
 		     * Height is hardcoded to trunk height.
              */
 		    if (j < model.rowCount) {
-			    outfile << "verticalFruitVine( pose [ " << x << " " << (y-model.rowWidth/2.0) << " 1.8 0.000 ] size [0.100 " << model.rowWidth << " 0.100] color \"green\")" << endl;
+			    outfile << "verticalFruitVine( pose [ " << x << " " << (y-model.rowWidth/2.0) << " 1.8 0.000 ] size [0.100 " << model.rowWidth << " 0.100] color \"ForestGreen\")" << endl;
                 
                 // place 2 more vertical vines on the right of each tree, just not on the very last tree.
                 if (i < (columnCount - 1)) {
-                    outfile << "verticalFruitVine( pose [ " << (x + model.poleTrunkSpacing/3) << " " << (y-model.rowWidth/2.0) << " 1.8 0.000 ] size [0.100 " << model.rowWidth << " 0.100] color \"green\")" << endl;
-                    outfile << "verticalFruitVine( pose [ " << (x + (model.poleTrunkSpacing/3)*2) << " " << (y-model.rowWidth/2.0) << " 1.8 0.000 ] size [0.100 " << model.rowWidth << " 0.100] color \"green\")" << endl;
+                    outfile << "verticalFruitVine( pose [ " << (x + model.poleTrunkSpacing/3) << " " << (y-model.rowWidth/2.0) << " 1.8 0.000 ] size [0.100 " << model.rowWidth << " 0.100] color \"ForestGreen\")" << endl;
+                    outfile << "verticalFruitVine( pose [ " << (x + (model.poleTrunkSpacing/3)*2) << " " << (y-model.rowWidth/2.0) << " 1.8 0.000 ] size [0.100 " << model.rowWidth << " 0.100] color \"ForestGreen\")" << endl;
                 }               
                 
 		    } 
@@ -138,12 +138,12 @@ void Generator::loadOrchard()
 		     */
             if (i != 0) {
                 outfile << "horizontalFruitVine( pose [ " << (x-model.poleTrunkSpacing/2) << " " << y 
-                    << " 1.8 0.000 ] size ["<< model.poleTrunkSpacing << " 0.100 0.100] color \"green\")" << endl;
+                    << " 1.8 0.000 ] size ["<< model.poleTrunkSpacing << " 0.100 0.100] color \"ForestGreen\")" << endl;
                 if (j < model.rowCount) {
                     outfile << "horizontalFruitVine( pose [ " << (x-model.poleTrunkSpacing/2) << " " << (y-model.rowWidth/3) 
-                        << " 1.8 0.000 ] size ["<< model.poleTrunkSpacing << " 0.100 0.100] color \"green\")" << endl;
+                        << " 1.8 0.000 ] size ["<< model.poleTrunkSpacing << " 0.100 0.100] color \"ForestGreen\")" << endl;
                     outfile << "horizontalFruitVine( pose [ " << (x-model.poleTrunkSpacing/2) << " " << (y-(model.rowWidth/3)*2) 
-                        << " 1.8 0.000 ] size ["<< model.poleTrunkSpacing << " 0.100 0.100] color \"green\")" << endl;
+                        << " 1.8 0.000 ] size ["<< model.poleTrunkSpacing << " 0.100 0.100] color \"ForestGreen\")" << endl;
                 }
             }
 
