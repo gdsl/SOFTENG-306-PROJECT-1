@@ -132,7 +132,20 @@ void Generator::loadOrchard()
                 
 		    } 
             
-            
+            /*
+             * add 3 horizontal fruit vines except first column
+             * centre placement of each vine is halfway between current column and previous column
+		     */
+            if (i != 0) {
+                outfile << "horizontalFruitVine( pose [ " << (x-model.poleTrunkSpacing/2) << " " << y 
+                    << " 1.8 0.000 ] size ["<< model.poleTrunkSpacing << " 0.100 0.100] color \"green\")" << endl;
+                if (j < model.rowCount) {
+                    outfile << "horizontalFruitVine( pose [ " << (x-model.poleTrunkSpacing/2) << " " << (y-model.rowWidth/3) 
+                        << " 1.8 0.000 ] size ["<< model.poleTrunkSpacing << " 0.100 0.100] color \"green\")" << endl;
+                    outfile << "horizontalFruitVine( pose [ " << (x-model.poleTrunkSpacing/2) << " " << (y-(model.rowWidth/3)*2) 
+                        << " 1.8 0.000 ] size ["<< model.poleTrunkSpacing << " 0.100 0.100] color \"green\")" << endl;
+                }
+            }
 
 		    // update y and beaconCount
 		    y -= model.rowWidth;
