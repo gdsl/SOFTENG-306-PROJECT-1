@@ -1,6 +1,7 @@
 /**
- * Generator header file. Converts xml documents to world file
+ * Generator header file - converts xml documents to world file
  */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
@@ -11,8 +12,7 @@
 
 using namespace std;
 
-class Generator
-{
+class Generator {
 	public:
 		Generator(const GeneratorModel& model);
 		void loadWorld();
@@ -50,11 +50,10 @@ class Generator
 		int colourCount = 0;
         int peopleCC = 0;
         int dogCC = 0;
-		// static const variables
-		// distance between trunk/pole and beacon. x coord
+		// Static const variables
+		// Distance between trunk/pole and beacon
 		int const static SEPARATION = 2;
-
-		// height and width of bitmap png
+		// Height and width of bitmap png
 		int const static WIDTH = 950;
 		int const static HEIGHT = 550;
 

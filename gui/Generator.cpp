@@ -12,22 +12,20 @@
  * Input name specifies XML document to load.
  * Output name specifies world file output name.
  */
-Generator::Generator(const GeneratorModel& model)
-{
+Generator::Generator(const GeneratorModel& model) {
 	this->model = model;
-
 	outfile.open("world/test.world");
 
 	// Comments and loading inc files.
 	outfile << "# Authors: Team Test Drive" << endl << endl;
 
-	// include necessary inc files
+	// Include necessary inc files
 	outfile << "# Include 'map' and models for world" << endl;
 	outfile << "include \"map.inc\"" << endl;
 	outfile << "include \"orchard_models.inc\"" << endl << endl;
 
-	// load bitmap
-	// Values currently HARD CODED
+	// Load bitmap
+	// Balues currently HARD CODED
 	outfile << "# load an environment bitmap" << endl;
 	outfile << "floorplan" << endl;
 	outfile << "(" << endl;
@@ -41,8 +39,7 @@ Generator::Generator(const GeneratorModel& model)
 /**
  * Flushes associated buffers and closes file. File is available to be opened by other processes.
  */
-void Generator::write()
-{
+void Generator::write() {
 	outfile.close();
 }
 
@@ -50,17 +47,16 @@ void Generator::write()
  * Load environment settings to world file.
  * Note that all these elements are necessary for any world file
  */
-void Generator::loadWorld()
-{
-	// resolution comment
+void Generator::loadWorld() {
+	// Resolution comment
 	outfile << "# set the resolution of the underlying raytrace model in meters" << endl;
 	outfile << "resolution " << 0.02 << endl;
 
-	// interval sim
+	// Interval sim
 	outfile << "# simulation timestep in milliseconds" << endl;
 	outfile << "interval_sim " << 100 << endl;
 
-	// interval real
+	// Interval real
 	outfile << "# real-time interval between simulation updates in milliseconds" << endl;
 	outfile << "interval_real " << 100 << endl;
     outfile << "paused " << 0 << endl << endl;
@@ -70,17 +66,16 @@ void Generator::loadWorld()
  * Loads orchard environment. Places trunk/pole/fruit vine and puts beacon
  returns position of beacons
  */
-void Generator::loadOrchard()
-{
-	// Assumption: bitmap is big enough for orchard generation.
-	// bitmap image centre is at (0,0,0,0)
+void Generator::loadOrchard() {
+	// Assumption: bitmap is big enough for orchard generation
+	// Bitmap image centre is at (0,0,0,0)
 	// x and y values used in pose
 	double x, y;
 
-	// initial x
+	// Initial x
 	x = -30;
-	// initial y
-    y = 20.4;    
+	// Initial y
+   	y = 20.4;    
     
 	int columnCount = model.rowLength / model.poleTrunkSpacing;
 
@@ -91,12 +86,10 @@ void Generator::loadOrchard()
 		    double initialY = y;
 		    int beaconCount = 1;
 
-		    // row number
+		    // Row number
 		    outfile << "# row " << i+1 << endl;
         for (int j = 0; j < model.rowCount+1; j++) {
-		    /*
-		     * add beacons at start and end of each row
-		     */
+		    //add beacons at start and end of each row
 		    if (i == 0 && j < model.rowCount) {
 		        beaconPositions.push(x - SEPARATION);
 		        beaconPositions.push(y-model.rowWidth/2.0);
@@ -106,36 +99,24 @@ void Generator::loadOrchard()
 		        beaconPositions.push(y-model.rowWidth/2.0);
 			    outfile << "beacon( pose [ " << (x + SEPARATION) << " " << (y-model.rowWidth/2.0) << " 0.000 0.000 ] name \"beacon" << (beaconCount + 1) << "\" color \"random\")" << endl;
 		    }
-
-		    /*
-		     * Add trunk at even column, pole on odd column
-		     */
+		    // Add trunk at even column, pole on odd column
 		    if (i % 2 == 0) {
 			    outfile << "trunk( pose [ " << x << " " << y << " 0.000 0.000 ] color \"SaddleBrown\")" << endl;
 		    } else {
 			    outfile << "pole( pose [ " << x << " " << y << " 0.000 0.000 ] color \"black\")" << endl;
 		    }
-
-		    /*
-		     * add vertical fruit vines except last row
-             * place 3 vertical vines in each column
-		     * Height is hardcoded to trunk height.
-             */
+		    // Add vertical fruit vines except last row, and place 3 vertical vines in each column.
+		    // Height is hardcoded to trunk height.
 		    if (j < model.rowCount) {
 			    outfile << "verticalFruitVine( pose [ " << x << " " << (y-model.rowWidth/2.0) << " 1.8 0.000 ] size [0.100 " << model.rowWidth << " 0.100] color \"ForestGreen\")" << endl;
-                
-                // place 2 more vertical vines on the right of each tree, just not on the very last tree.
+                // Place 2 more vertical vines on the right of each tree, just not on the very last tree
                 if (i < (columnCount - 1)) {
                     outfile << "verticalFruitVine( pose [ " << (x + model.poleTrunkSpacing/3) << " " << (y-model.rowWidth/2.0) << " 1.8 0.000 ] size [0.100 " << model.rowWidth << " 0.100] color \"ForestGreen\")" << endl;
                     outfile << "verticalFruitVine( pose [ " << (x + (model.poleTrunkSpacing/3)*2) << " " << (y-model.rowWidth/2.0) << " 1.8 0.000 ] size [0.100 " << model.rowWidth << " 0.100] color \"ForestGreen\")" << endl;
                 }               
-                
 		    } 
-            
-            /*
-             * add 3 horizontal fruit vines except first column
-             * centre placement of each vine is halfway between current column and previous column
-		     */
+		// Add 3 horizontal fruit vines except first column.
+		// Centre placement of each vine is halfway between current column and previous column.
             if (i != 0) {
                 outfile << "horizontalFruitVine( pose [ " << (x-model.poleTrunkSpacing/2) << " " << y 
                     << " 1.8 0.000 ] size ["<< model.poleTrunkSpacing << " 0.100 0.100] color \"ForestGreen\")" << endl;
@@ -146,39 +127,33 @@ void Generator::loadOrchard()
                         << " 1.8 0.000 ] size ["<< model.poleTrunkSpacing << " 0.100 0.100] color \"ForestGreen\")" << endl;
                 }
             }
-
-		    // update y and beaconCount
+		    // Update y and beaconCount
 		    y -= model.rowWidth;
 		    beaconCount = beaconCount + 2;
 	    }
 
-	    // newline
+	    // Newline
 	    outfile << endl;
-
-	    // reset y
+	    // Reset y
 	    y = initialY;
-
-	    // increase x
+	    // Increase x
 	    x += model.poleTrunkSpacing;
     }
 }
 
-void Generator::loadBackdrop()
-{
+void Generator::loadBackdrop() {
     outfile << "#Generate Backdrop Trees" << endl;
-    
     string backdropColourArray[7] = {"lawn green", "LimeGreen", "ForestGreen", "YellowGreen", "OliveDrab", "DarkOliveGreen", "DarkGreen"};
-    
     double x, y;
-    // initial x
+    // Initial x
 	x = -47;
-	// initial y
+	// Initial y
     y = 27;
     
     int colourRand = 0;
     string colour = "";
     
-    for(int i = 0; i < 27; i++) {
+    for (int i = 0; i < 27; i++) {
         colourRand = rand() % 6;
         colour = backdropColourArray[colourRand];
         outfile << "backdropTree( pose [ " << x << " " << y << " 0.000 0.000 ] color \"SaddleBrown\")" << endl;
@@ -190,7 +165,7 @@ void Generator::loadBackdrop()
         y -= 0.9;
     }
     
-    for(int i = 0; i < 47; i++) {
+    for (int i = 0; i < 47; i++) {
         colourRand = rand() % 6;
         colour = backdropColourArray[colourRand];
         outfile << "backdropTree( pose [ " << x << " " << y << " 0.000 0.000 ] color \"SaddleBrown\")" << endl;
@@ -202,7 +177,7 @@ void Generator::loadBackdrop()
         x += 0.9;
     }
     
-    for(int i = 0; i < 27; i++) {
+    for (int i = 0; i < 27; i++) {
         colourRand = rand() % 6;
         colour = backdropColourArray[colourRand];
         outfile << "backdropTree( pose [ " << x << " " << y << " 0.000 0.000 ] color \"SaddleBrown\")" << endl;
@@ -214,7 +189,7 @@ void Generator::loadBackdrop()
         y += 0.9;
     }
     
-    for(int i = 0; i < 47; i++) {
+    for (int i = 0; i < 47; i++) {
         colourRand = rand() % 6;
         colour = backdropColourArray[colourRand];
         outfile << "backdropTree( pose [ " << x << " " << y << " 0.000 0.000 ] color \"SaddleBrown\")" << endl;
@@ -231,8 +206,7 @@ void Generator::loadBackdrop()
 /**
  * Load robots into world file
  */
-void Generator::loadPickerRobots()
-{
+void Generator::loadPickerRobots() {
 	// Generate robot comment
 	outfile << "# Generate robots" << endl;
 
@@ -240,13 +214,9 @@ void Generator::loadPickerRobots()
 	outfile << "# Picker robot" << endl;
 	int y = 24;
 	for (int i = 0; i < model.pickerRobots; i++) {
-		// generate random x and y coord. Robot regions
-		// range -25 to 24
-		//int x = rand() % 50 - 25;
+		// Generate random x and y coordinates
 		int x = -42;
-		// range 10 to 20
-		//int y = rand() % 10 + 11;
-		float theta = 90; //0
+		float theta = 90;
         
         string colour = colourArray[colourCount];
         colourCount += 1;
@@ -257,14 +227,13 @@ void Generator::loadPickerRobots()
 	}
 }
 
-void Generator::loadCarrierRobots()
-{
+void Generator::loadCarrierRobots() {
     int y = 24;
 	// Generate carrier robot comment
 	outfile << "# Carrier robot" << endl;
 	for (int i = 0; i < model.carrierRobots; i++) {
 		int x = -45;
-		float theta = 90; //0
+		float theta = 90;
         
         string colour = colourArray[colourCount];
         colourCount += 1;
@@ -280,8 +249,7 @@ void Generator::loadCarrierRobots()
 /**
  * Load people to world file
  */
-void Generator::loadPeople()
-{
+void Generator::loadPeople() {
 	outfile << "# Generate people" << endl;
 	outfile << "# Generate workers" << endl;
         
@@ -298,10 +266,7 @@ void Generator::loadPeople()
     for(int i = 0; i < model.workers; i++) {
         int x = rand() % 76 - 36;
         int y = rand() % randNumY - rowEnd;
-        //int x = -30 + (rand() % (40 - -30 +1));
-        //int y = rowEnd + (rand() % (20 - rowEnd + 1));
-    
-       // if( (x > -30) && (x < 40) && (y < 20) && (y > rowEnd)) {
+
         int xMult = (((rand() % columnCount + 1) * 2) - 1);
         float xPos = -30 + (xMult * xOffset);
         
@@ -317,16 +282,13 @@ void Generator::loadPeople()
         outfile << "human( pose [ " << xPos << " " << yPos << " 0.000 -90.000 ] name \"Worker" << i+1 << "\" color \"" + colour + "\")" << endl;
     }
     
-    // Generate gardenworkers
+    // Generate garden workers
     outfile << "# Generate gardenworkers" << endl;
     for (int i = 0; i < model.gardeners; i++) {
     	// Generate gardenworkers same position as workers
-    	//int x = rand() % 82 - 36;
-        //int y = rand() % 52 - 26;
         int x = rand() % 76 - 36;
         int y = rand() % randNumY - rowEnd;
 
-        //if( (x > -30) && (x < 40) && (y < 20) && (y > rowEnd)) {
         int xMult = (((rand() % columnCount + 1) * 2) - 1);
         float xPos = -30 + (xMult * xOffset);
         
@@ -346,12 +308,9 @@ void Generator::loadPeople()
         outfile << "# Generate neighbours" << endl;
 for (int i = 0; i < model.neighbours; i++) {
     	// Generate the position of the neigbours
-    	//int x = rand() % 82 - 36;
-        //int y = rand() % 52 - 26;
         int x = rand() % 76 - 36;
         int y = rand() % randNumY - rowEnd;
 
-        //if( (x > -30) && (x < 40) && (y < 20) && (y > rowEnd)) {
         int xMult = (((rand() % columnCount + 1) * 2) - 1);
         float xPos = -30 + (xMult * xOffset);
         int yMult = (((rand() % 8 + 1) * 2) - 1);
@@ -363,7 +322,7 @@ for (int i = 0; i < model.neighbours; i++) {
         outfile << "neighbour( pose [ " << xPos << " " << yPos << " 0.000 -90.000 ] name \"neighbour" << i+1 << "\" color \"" + colour + "\")" << endl;
     }
     
-    //blind persons
+    // Generate blind people
     outfile << "# Generate blind people" << endl;
     
     for(int i = 0; i < model.blindPerson; i++) {
@@ -375,7 +334,6 @@ for (int i = 0; i < model.neighbours; i++) {
         blindPersonPositions.push(y);
         outfile << "blindPerson( pose [ " << x << " " << y << " 0.000 0.000 ] name \"BlindPerson" << i+1 << "\" color \"" + colour + "\")" << endl;
     }
-
 	outfile << endl;
 }
 
@@ -383,8 +341,7 @@ for (int i = 0; i < model.neighbours; i++) {
 /**
  * Load animals to world file
  */
-void Generator::loadAnimals()
-{
+void Generator::loadAnimals() {
 	outfile << "# Generate animals" << endl;
 	outfile << "# Generate dogs" << endl;
     
@@ -423,17 +380,15 @@ void Generator::loadAnimals()
 	for(int i = 0; i < model.cats; i++) {
 		x += model.poleTrunkSpacing * 4;
 		catPositions.push(x);
-		//outfile << "cat( pose [ -20.000 21.500 0.000 0.000 ] name \"Cat" << i+1 << "\" color \"random\")" << endl;
         	outfile << "cat( pose [ " << x << " 21.500 0.000 0.000 ] name \"Cat" << i+1 << "\" color \"random\")" << endl;
 	}
 
 	outfile << endl;
 }
 
-void Generator::loadTallWeeds()
-{
-//hardcoded to 10 for now - also is 10 in mainwindow.h file
-    model.weed = 10;//rand() % 8 + 2; //between 2 and 10
+void Generator::loadTallWeeds() {
+// Hardcoded to 10 for now - also is 10 in mainwindow.h file
+    model.weed = 10;
     
     outfile << "#Generate tall weeds" << endl;
     for(int i = 0; i < model.weed; i++){
@@ -441,11 +396,9 @@ void Generator::loadTallWeeds()
         int y = rand() % 52 - 26;
         weedPositions.push(x);
         weedPositions.push(y);
-        
         outfile << "tallWeed( pose [ " << x << " " << y << " 0.000 0.000 ] name \"TallWeed" << i+1 << "\" color \"ForestGreen\")" << endl;
     }
 }
-
 
 void Generator::loadTractor() {
     outfile << "#Generate tractor" << endl;
@@ -453,41 +406,41 @@ void Generator::loadTractor() {
 }
 
 void Generator::calculatePickerPaths() {
-    //variables to hold start and end beacons for each pickers path
+    // Variables to hold start and end beacons for each pickers path
     int nextStartBeacon = 0, nextFinishBeacon = 0;
     float pickersRemaining = float(model.pickerRobots);
     float rowsRemaining = 7.0;
     int numOfRows;
-    //for each Picker robot calculate its path to pick kiwifruit
+    // For each Picker robot, calculate its path to pick kiwifruit
     for (int i = 0; i < model.pickerRobots; i++) {
-        //calculate number of rows this Picker should be allocated
+        // Calculate number of rows this Picker should be allocated
         numOfRows = int(ceil(rowsRemaining/pickersRemaining));
-        //convert this into Beacon numbers
-        //check if the Robot before (if there is one before this one) finishes at an even numbered or odd numbered beacon
+        // Convert this into Beacon numbers
+        // Check if the Robot before (if there is one before this one) finishes at an even numbered or odd numbered beacon
         if ((nextFinishBeacon % 2) == 1) {
             nextStartBeacon = nextFinishBeacon + 2;
         } else {
             nextStartBeacon = nextFinishBeacon + 1;
         }
-        //if an odd number of rows is to be picked
+        // If an odd number of rows is to be picked
         if ((numOfRows % 2) == 1) {
             nextFinishBeacon = nextStartBeacon + (numOfRows * 2) - 1;
         }
-        //or if an even number of rows is to be picked
+        // Or if an even number of rows is to be picked
         else {
             nextFinishBeacon = nextStartBeacon + (numOfRows * 2) - 2;
         }
         pickerPathPositions.push(nextStartBeacon);
         pickerPathPositions.push(nextFinishBeacon);
 
-        //update rows and pickers remaining to be allocated
+        // Update rows and pickers remaining to be allocated
         pickersRemaining = pickersRemaining - 1.0;
         rowsRemaining = rowsRemaining - float(numOfRows);            
     }
 }
 
-void Generator::writeLaunchFile(){
-    //writes to the launch file
+void Generator::writeLaunchFile() {
+    // Writes to the launch file
     CMarkup xml;
     bool ok;
     xml.AddElem("launch");
@@ -497,10 +450,11 @@ void Generator::writeLaunchFile(){
     xml.SetAttrib( "pkg", "stage_ros" );
     xml.SetAttrib( "type", "stageros" );
     xml.SetAttrib( "args", "$(find se306project)/world/test.world" );
-    calculatePickerPaths(); // calculate the picking paths each Picker will take
+    // Calculate the picking paths each Picker will take
+    calculatePickerPaths(); 
 
-
-    int totalObjects = model.getTotalNodes(); // total objects in world
+    // Total objects in the world
+    int totalObjects = model.getTotalNodes(); 
 
     for (int i = 0; i < totalObjects; i++) {
         xml.AddElem("group");
@@ -517,7 +471,8 @@ void Generator::writeLaunchFile(){
         int firstCarrier = lastPicker + 1;
         int lastCarrier = firstCarrier + model.carrierRobots - 1;
 
-        if (i < model.weed) { //weeds
+	// Weeds
+        if (i < model.weed) {
             xml.SetAttrib( "name", "TallWeednode" );
             xml.SetAttrib( "type", "TallWeed" );
             int alphaPersonNumber = model.rowCount*2 + model.weed + model.pickerRobots + model.carrierRobots;
@@ -526,14 +481,13 @@ void Generator::writeLaunchFile(){
             weedPositions.pop();
             float yPos = weedPositions.front();
             weedPositions.pop();
-            
             if (model.gardeners > 0) {
             	oss << xPos << " " << yPos << " /tallweed" << i+1 << "/ " << subscribeIndex << " " << subscribeIndex+model.gardeners-1;
             } else {
             	oss << xPos << " " << yPos << " /tallweed" << i+1 << "/ -1 -1";
             }
-
-        } else if (i < model.weed + model.beacons) { //beacons
+	// Beacons
+        } else if (i < model.weed + model.beacons) { 
             xml.SetAttrib( "name", "Beaconnode" );
             xml.SetAttrib( "type", "Beacon" );
             int num = i+1-model.weed;
@@ -547,7 +501,8 @@ void Generator::writeLaunchFile(){
             float yPos = beaconPositions.front();
             beaconPositions.pop();
             oss << xPos << " " << yPos << " /beacon" << num << "/ ";
-        } else if (i < model.weed + model.beacons + model.pickerRobots) { //picker robots
+	// Picker robots
+        } else if (i < model.weed + model.beacons + model.pickerRobots) { 
             xml.SetAttrib( "name", "PickerRobotnode" );
             xml.SetAttrib( "type", "PickerRobot" );
             float xPos = pickerRobotsPositions.front();
@@ -560,7 +515,8 @@ void Generator::writeLaunchFile(){
             pickerPathPositions.pop();            
             float theta = 0;
             oss << xPos << " " << yPos << " " << theta << " " << nextStart << " " << nextFinish << " " << model.rowWidth << " " << firstCarrier << " " << lastCarrier;
-        } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots) { //carriers
+	// Carrier robots
+        } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots) { 
             xml.SetAttrib( "name", "CarrierRobotnode" );
             xml.SetAttrib( "type", "CarrierRobot" );
             float xPos = carrierRobotsPositions.front();
@@ -568,7 +524,8 @@ void Generator::writeLaunchFile(){
             float yPos = carrierRobotsPositions.front();
             carrierRobotsPositions.pop();
             oss << xPos << " " << yPos << " " << firstPicker << " " << lastPicker << " " << firstCarrier << " " << lastCarrier;
-        } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers) { //AlphaPersons (workers)
+	// Workers
+        } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers) { 
             xml.SetAttrib( "name", "AlphaPersonnode" );
             xml.SetAttrib( "type", "AlphaPerson" );
             float xPos = workerPositions.front();
@@ -576,6 +533,7 @@ void Generator::writeLaunchFile(){
             float yPos = workerPositions.front();
             workerPositions.pop();
             oss << xPos << " " << yPos << " " << firstPicker << " " << lastCarrier;
+	// Gardeners
         } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.gardeners) {
         	xml.SetAttrib("name", "GardenWorkernode");
         	xml.SetAttrib("type", "GardenWorker");
@@ -584,7 +542,8 @@ void Generator::writeLaunchFile(){
         	} else {
         		oss << "/robot_" << i << "/ -1 -1";
         	}
-        } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers+ model.gardeners+model.neighbours) { //neighbours
+	// Neighbours
+        } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers+ model.gardeners+model.neighbours) { 
             xml.SetAttrib( "name", "Neighbournode" );
             xml.SetAttrib( "type", "Neighbour" );
             float x = neighbourPositions.front();
@@ -593,6 +552,7 @@ void Generator::writeLaunchFile(){
             neighbourPositions.pop();
             float theta = 0;
             oss << x << " " << y << " " << theta;
+	// Blind people
         } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.gardeners +model.neighbours + model.blindPerson) {
             xml.SetAttrib( "name", "BlindPersonnode");
             xml.SetAttrib( "type", "BlindPerson");
@@ -602,7 +562,8 @@ void Generator::writeLaunchFile(){
             blindPersonPositions.pop();
             float theta = 0;
             oss << xPos << " " << yPos << " " << theta;
-        } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.blindPerson + model.gardeners +model.neighbours + model.dogs) { //dogs
+	// Dogs
+        } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.blindPerson + model.gardeners +model.neighbours + model.dogs) { 
             xml.SetAttrib( "name", "AlphaDognode" );
             xml.SetAttrib( "type", "AlphaDog" );
             float xPos = dogPositions.front();
@@ -611,7 +572,8 @@ void Generator::writeLaunchFile(){
             dogPositions.pop();
             float theta = 0;
     		oss << xPos << " " << yPos << " " << theta << " " << model.rowWidth << " " << model.poleTrunkSpacing;
-        } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.gardeners + model.blindPerson + model.neighbours + model.dogs + model.cats) { //cats
+	// Cats
+        } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.gardeners + model.blindPerson + model.neighbours + model.dogs + model.cats) {
             xml.SetAttrib( "name", "Catnode" );
             xml.SetAttrib( "type", "Cat" );
             float xPos = catPositions.front();
@@ -619,7 +581,8 @@ void Generator::writeLaunchFile(){
             float yPos = 21.5;
             float theta = 0;
 		    oss << xPos << " " << yPos << " " << theta << " " << model.poleTrunkSpacing;
-        } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.gardeners + model.blindPerson +model.neighbours+ model.dogs + model.cats + model.tractors) { //tractor
+	// Tractor
+        } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.gardeners + model.blindPerson +model.neighbours+ model.dogs + model.cats + model.tractors) {
             xml.SetAttrib( "name", "Tractornode" );
             xml.SetAttrib( "type", "Tractor" );
         } 
