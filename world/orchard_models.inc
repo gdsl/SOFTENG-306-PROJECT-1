@@ -29,6 +29,11 @@ define verticalFruitVine modelBase
     gui_noise 0
 )
 
+define horizontalFruitVine modelBase
+(
+    size [2.500 0.100 0.100]
+    gui_noise 0
+)
 
 define laserBase ranger
 (
