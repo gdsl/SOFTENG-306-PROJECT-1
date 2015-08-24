@@ -1,8 +1,7 @@
 #include <QObject>
 #include <QTimer>
 
-class KeyReceiver : public QObject
-{
+class KeyReceiver : public QObject {
     Q_OBJECT
     
 public:

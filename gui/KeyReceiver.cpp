@@ -15,8 +15,7 @@ KeyReceiver::KeyReceiver() {
     //timer->start(3000); //time specified in ms
 }
 
-bool KeyReceiver::eventFilter(QObject* obj, QEvent* event)
-{
+bool KeyReceiver::eventFilter(QObject* obj, QEvent* event) {
     if (event->type()==QEvent::KeyPress) {
         QKeyEvent* key = static_cast<QKeyEvent*>(event);
         if ( (key->key()==Qt::Key_Left) ) {
@@ -37,6 +36,4 @@ bool KeyReceiver::eventFilter(QObject* obj, QEvent* event)
     }
     return false;
 }
-
-
 
