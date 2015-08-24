@@ -197,7 +197,7 @@ target_link_libraries(EntityMock Entity ${catkin_LIBRARIES})
 add_dependencies(EntityMock se306project_generate_messages_cpp)
 
 add_library(EntityMockLib src/EntityMock.cpp)
-target_link_libraries(EntityMock Entity ${catkin_LIBRARIES})
+target_link_libraries(EntityMockLib Entity ${catkin_LIBRARIES})
 
 add_executable(Neighbour src/Neighbour.cpp)
 target_link_libraries(Neighbour Person Entity ${catkin_LIBRARIES})
