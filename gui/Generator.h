@@ -30,15 +30,15 @@ class Generator
 
         GeneratorModel model;
 
-        queue<int> pickerRobotsPositions;
-        queue<int> carrierRobotsPositions;
+        queue<float> pickerRobotsPositions;
+        queue<float> carrierRobotsPositions;
         queue<float> beaconPositions; 
-        queue<int> pickerPathPositions;
+        queue<float> pickerPathPositions;
         queue<float> workerPositions;
         queue<float> gardenerPositions;
         queue<float> dogPositions;
         queue<float> weedPositions;
-	vector<int> neighbourPositions;
+	    queue<float> neighbourPositions;
         
 	private:
 		string inputName;
