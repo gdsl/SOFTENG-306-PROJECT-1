@@ -117,12 +117,35 @@ void Generator::loadOrchard()
 		    }
 
 		    /*
-		     * add fruit vines except last row
+		     * add vertical fruit vines except last row
+             * place 3 vertical vines in each column
 		     * Height is hardcoded to trunk height.
-		     */
+             */
 		    if (j < model.rowCount) {
-			    outfile << "fruitVine( pose [ " << x << " " << (y-model.rowWidth/2.0) << " 1.8 0.000 ] color \"green\")" << endl;
-		    }
+			    outfile << "verticalFruitVine( pose [ " << x << " " << (y-model.rowWidth/2.0) << " 1.8 0.000 ] size [0.100 " << model.rowWidth << " 0.100] color \"green\")" << endl;
+                
+                // place 2 more vertical vines on the right of each tree, just not on the very last tree.
+                if (i < (columnCount - 1)) {
+                    outfile << "verticalFruitVine( pose [ " << (x + model.poleTrunkSpacing/3) << " " << (y-model.rowWidth/2.0) << " 1.8 0.000 ] size [0.100 " << model.rowWidth << " 0.100] color \"green\")" << endl;
+                    outfile << "verticalFruitVine( pose [ " << (x + (model.poleTrunkSpacing/3)*2) << " " << (y-model.rowWidth/2.0) << " 1.8 0.000 ] size [0.100 " << model.rowWidth << " 0.100] color \"green\")" << endl;
+                }               
+                
+		    } 
+            
+            /*
+             * add 3 horizontal fruit vines except first column
+             * centre placement of each vine is halfway between current column and previous column
+		     */
+            if (i != 0) {
+                outfile << "horizontalFruitVine( pose [ " << (x-model.poleTrunkSpacing/2) << " " << y 
+                    << " 1.8 0.000 ] size ["<< model.poleTrunkSpacing << " 0.100 0.100] color \"green\")" << endl;
+                if (j < model.rowCount) {
+                    outfile << "horizontalFruitVine( pose [ " << (x-model.poleTrunkSpacing/2) << " " << (y-model.rowWidth/3) 
+                        << " 1.8 0.000 ] size ["<< model.poleTrunkSpacing << " 0.100 0.100] color \"green\")" << endl;
+                    outfile << "horizontalFruitVine( pose [ " << (x-model.poleTrunkSpacing/2) << " " << (y-(model.rowWidth/3)*2) 
+                        << " 1.8 0.000 ] size ["<< model.poleTrunkSpacing << " 0.100 0.100] color \"green\")" << endl;
+                }
+            }
 
 		    // update y and beaconCount
 		    y -= model.rowWidth;
@@ -222,7 +245,11 @@ void Generator::loadPeople()
         float yPos = 20.4 - (yMult * yOffset);
         workerPositions.push_back(xPos);
         workerPositions.push_back(yPos);
-        outfile << "human( pose [ " << xPos << " " << yPos << " 0.000 -90.000 ] name \"Worker" << i+1 << "\" color \"blue\")" << endl;
+        
+        string colour = colourArray[peopleCC];
+        peopleCC += 1;
+        
+        outfile << "human( pose [ " << xPos << " " << yPos << " 0.000 -90.000 ] name \"Worker" << i+1 << "\" color \"" + colour + "\")" << endl;
         /*} else {
             workerPositions.push_back(x);
             workerPositions.push_back(y);
@@ -247,7 +274,11 @@ void Generator::loadPeople()
         float yPos = 20.4 - (yMult * yOffset);
         gardenerPositions.push_back(xPos);
         gardenerPositions.push_back(yPos);
-        outfile << "gardenWorker( pose [ " << xPos << " " << yPos << " 0.000 -90.000 ] name \"GardenWorker" << i+1 << "\" color \"blue\")" << endl;
+        
+        string colour = colourArray[peopleCC];
+        peopleCC += 1;
+        
+        outfile << "gardenWorker( pose [ " << xPos << " " << yPos << " 0.000 -90.000 ] name \"GardenWorker" << i+1 << "\" color \"" + colour + "\")" << endl;
         /*} else {
             gardenerPositions.push_back(x);
             gardenerPositions.push_back(y);
@@ -314,7 +345,14 @@ void Generator::loadAnimals()
         int yMult = (((rand() % 8 + 1) * 2) - 1);
         float yPos = 20.4 - (yMult * yOffset);
         
-        outfile << "dog( pose [ " << xPos << " " << yPos << " 0.000 0.000 ] name \"Dog" << i+1 << "\" color \"random\")" << endl;
+        dogPositions.push_back(xPos);
+        dogPositions.push_back(yPos);
+        
+        
+        string colour = colourArray[dogCC];
+        dogCC += 1;
+        
+        outfile << "dog( pose [ " << xPos << " " << yPos << " 0.000 0.000 ] name \"Dog" << i+1 << "\" color \"" + colour + "\")" << endl;
    /*     } else {
             outfile << "dog( pose [ " << x << " " << y << " 0.000 0.000 ] name \"Dog" << i+1 << "\" color \"random\")" << endl;
         }*/
@@ -464,18 +502,19 @@ void Generator::writeLaunchFile(){
         	} else {
         		oss << "/robot_" << i << "/ -1 -1";
         	}
-        	
-        } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.gardeners + model.neighbours) { //neighbour
+        } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers+ model.gardeners+model.neighbours) { //neighbours
             xml.SetAttrib( "name", "Neighbournode" );
             xml.SetAttrib( "type", "Neighbour" );
-	int neighbourPos = (i - model.weed - model.beacons - model.pickerRobots - model.carrierRobots - model.workers - model.gardeners)*2; 
-	oss << neighbourPositions[neighbourPos] << " " << neighbourPositions[neighbourPos+1];
+            int NeighbourPos = (i - model.weed - model.beacons - model.pickerRobots - model.carrierRobots-model.workers- model.gardeners)*2;
+            oss << neighbourPositions[NeighbourPos] << " " << neighbourPositions[NeighbourPos+1];
 }
-        
- else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.gardeners +model.neighbours+ model.dogs) { //dogs
+    else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.gardeners +model.neighbours+model.dogs) { //dogs
+            int dogPos = (i - model.weed - model.beacons - model.pickerRobots -  model.carrierRobots - model.workers - model.gardeners)*2;
             xml.SetAttrib( "name", "AlphaDognode" );
             xml.SetAttrib( "type", "AlphaDog" );
+            oss << dogPositions[dogPos] << " " << dogPositions[dogPos + 1];
         } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.gardeners +model.neighbours+ model.dogs + model.cats) { //cats
+
             xml.SetAttrib( "name", "Catnode" );
             xml.SetAttrib( "type", "Cat" );
         } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.gardeners +model.neighbours+ model.dogs + model.cats + model.tractors) { //tractor

@@ -23,9 +23,15 @@ define pole modelBase
   gui_noise 0
 )
 
-define fruitVine modelBase
+define verticalFruitVine modelBase
 (
     size [0.100 3.500 0.100]
+    gui_noise 0
+)
+
+define horizontalFruitVine modelBase
+(
+    size [2.500 0.100 0.100]
     gui_noise 0
 )
 
