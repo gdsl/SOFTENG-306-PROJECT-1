@@ -23,7 +23,7 @@ define pole modelBase
   gui_noise 0
 )
 
-define fruitVine modelBase
+define verticalFruitVine modelBase
 (
     size [0.100 3.500 0.100]
     gui_noise 0
@@ -73,6 +73,11 @@ define backdropShrub modelBase
 (
   size [0.650 0.650 1.000]
   gui_noise 0
+)
+define horizontalFruitVine modelBase
+(
+    size [2.500 0.100 0.100]
+    gui_noise 0
 )
 
 define laserBase ranger
