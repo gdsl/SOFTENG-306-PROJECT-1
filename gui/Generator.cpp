@@ -197,7 +197,7 @@ void Generator::loadPeople()
 {
 	outfile << "# Generate people" << endl;
 	outfile << "# Generate workers" << endl;
-    
+        
     float totalRowWidth = model.rowWidth * 8;
     float yOffset = model.rowWidth / 2;
     
@@ -253,7 +253,30 @@ void Generator::loadPeople()
             gardenerPositions.push_back(y);
             outfile << "gardenWorker( pose [ " << x << " " << y << " 0.000 -90.000 ] name \"GardenWorker" << i+1 << "\" color \"blue\")" << endl;
         }*/
+    }
+        // Generate neighbours
+        outfile << "# Generate neighbours" << endl;
+for (int i = 0; i < model.neighbours; i++) {
+    	// Generate the position of the neigbours
+    	//int x = rand() % 82 - 36;
+        //int y = rand() % 52 - 26;
+        int x = rand() % 76 - 36;
+        int y = rand() % randNumY - rowEnd;
 
+        //if( (x > -30) && (x < 40) && (y < 20) && (y > rowEnd)) {
+        int xMult = (((rand() % columnCount + 1) * 2) - 1);
+        float xPos = -30 + (xMult * xOffset);
+        
+        int yMult = (((rand() % 8 + 1) * 2) - 1);
+        float yPos = 20.4 - (yMult * yOffset);
+        neighbourPositions.push_back(xPos);
+        neighbourPositions.push_back(yPos);
+        outfile << "neighbour( pose [ " << xPos << " " << yPos << " 0.000 -90.000 ] name \"neighbour" << i+1 << "\" color \"blue\")" << endl;
+        /*} else {
+            gardenerPositions.push_back(x);
+            gardenerPositions.push_back(y);
+            outfile << "gardenWorker( pose [ " << x << " " << y << " 0.000 -90.000 ] name \"GardenWorker" << i+1 << "\" color \"blue\")" << endl;
+        }*/
     }
 
 	outfile << endl;
@@ -451,6 +474,10 @@ void Generator::writeLaunchFile(){
         } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.gardeners + model.dogs + model.cats + model.tractors) { //tractor
             xml.SetAttrib( "name", "Tractornode" );
             xml.SetAttrib( "type", "Tractor" );
+        }
+          else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.gardeners + model.dogs + model.cats + model.tractors+model.neighbours) { //neighbour
+            xml.SetAttrib( "name", "Neighbournode" );
+            xml.SetAttrib( "type", "Neighbour" );
         }
         xml.SetAttrib( "args", oss.str() );
         xml.OutOfElem();
