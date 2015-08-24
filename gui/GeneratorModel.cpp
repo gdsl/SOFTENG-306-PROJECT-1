@@ -2,10 +2,9 @@
 
 /**
  * Default constructor for GeneratorModel.
- * Initializes all variables and sets it to zero. Some have fixed value
+ * Initializes all variables and sets it to zero. Some have fixed value.
  */
-GeneratorModel::GeneratorModel()
-{
+GeneratorModel::GeneratorModel() {
 	pickerRobots = 0;
 	carrierRobots = 0;
 	// fixed for now

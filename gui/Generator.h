@@ -1,6 +1,7 @@
 /**
- * Generator header file. Converts xml documents to world file
+ * Generator header file - converts xml documents to world file
  */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
