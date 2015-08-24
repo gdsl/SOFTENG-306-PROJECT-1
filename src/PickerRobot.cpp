@@ -167,18 +167,6 @@ void recieveCarrierRobotStatus(const se306project::carrier_status::ConstPtr& msg
  * Method for the picker robot's states transition and implementation
  */
 void PickerRobot::stateLogic(ros::NodeHandle n){
-	//	if(pickerRobot.getBinCapacity()>=BIN_CAPACITY){
-	//		pickerRobot.setStatus("Full");
-	//		pickerRobot.addMovementFront("forward_x",0,0,1);
-	//		pickerRobot.move();
-	//
-	//	}
-	//	if (pickerRobot.getStatus().compare("Moving")==0){
-	//		pickerRobot.move();
-	//		if(pickerRobot.getMovementQueueSize()<1){
-	//			pickerRobot.setStatus("Full");
-	//		}
-	//	}
 
 	//if the Picker robot is currently executing movements, it means that it has not yet reached its next target beacon
 	//only if the next beacon has been reached, should a state update occur.
@@ -256,13 +244,9 @@ void PickerRobot::stateLogic(ros::NodeHandle n){
 				}
 			}
 
-		} /*else if (pickerRobot.getState() == FULL_BIN) {
-        	pickerRobot.setStatus("Full");
-        	pickerRobot.addMovementFront("forward_x",0,0,1);//halt when full
-        }*/ else if (pickerRobot.getState() == FINISHED) {
+		} else if (pickerRobot.getState() == FINISHED) {
 
         }
-		//ROS_INFO("current beacon = %d", currentBeacon);
 	}
 	pickerRobot.move();
 }
@@ -340,13 +324,11 @@ void beaconCallback(const nav_msgs::Odometry msg) {
 	//check if the destination has been reached
 	if (std::abs(destX - pickerRobot.getX()) < 0.01) {
 		atDestX = true;
-		//ROS_INFO("AT BEACON X POSITION");
 	}
 	else {atDestX = false;}
 
 	if (std::abs(destY - pickerRobot.getY())<0.01) {
 		atDestY = true;
-		//ROS_INFO("AT BEACON Y POSITION");
 	}
 	else {atDestY = false;}
 
@@ -361,14 +343,11 @@ void beaconCallback(const nav_msgs::Odometry msg) {
  * Assumes the beacon number has already been updated to contain the next destination beacon.
  */
 void PickerRobot::subscribeNextBeacon(ros::NodeHandle n) {
-	ROS_INFO("I MADE IT HERE TOO");
 	std::string currentBeaconS;
 	std::stringstream out;
 	out << currentBeacon;
 	currentBeaconS = out.str();
 	beacon_sub = n.subscribe<nav_msgs::Odometry>("/beacon" + currentBeaconS + "/", 1000, beaconCallback);
-	//beacon_sub.shutdown();
-	//beacon_sub = n.subscribe<nav_msgs::Odometry>("/beacon1/", 1000, beaconCallback);
 
 	atDestX = false;
 	atDestY = false;
