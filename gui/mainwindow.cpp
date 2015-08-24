@@ -232,6 +232,7 @@ void MainWindow::generate() {
 	generator.loadPeople();
 	generator.loadAnimals();
 	generator.loadTractor();
+    generator.loadBackdrop();
 	generator.write();
 	generator.writeLaunchFile();
 
