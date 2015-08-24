@@ -81,6 +81,10 @@ int main(int argc, char **argv)
 			cat.faceWest(1);
 			cat.addMovement("forward_x",5,1);
 		}
+
+		if (cat.getMovementQueueSize() == 1) {
+			status = "Sleeping";
+		}
 	        
     		/*if (cat.getMovementQueueSize() == 0) {
 			cat.faceWest(1);

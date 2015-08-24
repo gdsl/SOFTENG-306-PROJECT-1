@@ -15,14 +15,12 @@ Neighbour::Neighbour():Neighbour(0,0,0,0,0){}
 Neighbour::Neighbour(double x, double y, double theta, double linearVelocity, double angularVelocity)
 : Person(x, y)
 {
-	targetX = 0;
-	targetY = 0;
-	setStatus("Idle");
+	setStatus("WALKING");
 }
 
-/**
- * Update nearest
- */
+/*
+ * Update nearest robot
+ 
 void Neighbour::updateNearestRobot(const nav_msgs::Odometry msg)
 {
 	// Find nearest robot_status
@@ -33,7 +31,7 @@ void Neighbour::updateNearestRobot(const nav_msgs::Odometry msg)
 		targetX = msg.pose.pose.position.x;
 		targetY = msg.pose.pose.position.y;
 	}
-}
+}*/
 
 /**
  * Represents FSM for Neighbour. Given an action, update the current status
@@ -41,9 +39,13 @@ void Neighbour::updateNearestRobot(const nav_msgs::Odometry msg)
 void Neighbour::next(std::string action)
 {
 	std::string currentStatus = getStatus();
+        
+        //if (currentStatus =="WALKING"){
+               //if (
+//}
 }
 
-void stage_laserCallback(sensor_msgs::LaserScan msg) {
+/*void stage_laserCallback(sensor_msgs::LaserScan msg) {
   
     neighbour.stageLaser_callback(msg);
         int l=msg.intensities.size();
@@ -58,9 +60,9 @@ void stage_laserCallback(sensor_msgs::LaserScan msg) {
 			robotAngle= (i/l) * msg.angle_increment + msg.angle_min;
             }
         }
-}
+}*/
 
-int Neighbour::getTargetX()
+/*int Neighbour::getTargetX()
 {
 	return targetX;
 }
@@ -68,7 +70,7 @@ int Neighbour::getTargetX()
 int Neighbour::getTargetY()
 {
 	return targetY;
-}
+}*/
 
 void Neighbour::stageOdom_callback(const nav_msgs::Odometry msg)
 {
@@ -85,10 +87,10 @@ int main(int argc, char **argv)
 	Neighbour Neighbour;
 	Neighbour.robotNode_stage_pub = n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
 	Neighbour.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth", 1000, &Neighbour::stageOdom_callback, &Neighbour);
-	Neighbour.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000, &Neighbour::stageLaser_callback, &Neighbour);
+	//Neighbour.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000, &Neighbour::stageLaser_callback, &Neighbour);
 	Neighbour.Neighbour_status_pub = n.advertise<se306project::robot_status>("status",1000);
 
-	//subscribing all the picker robot
+	/*//subscribing all the picker robot
         ros::Subscriber *array = new ros::Subscriber[size];
         int index = 0;
         for (int i = s; i<=e; i++) {
@@ -108,7 +110,7 @@ int main(int argc, char **argv)
               topicName = "/robot_" + convert.str() + "/status";
               carrierArray[index] = n.subscribe<se306project::robot_status>(topicName,1000,receiveCarrierRobotStatus);
               index++;
-         }  
+         } */ 
 
 	ros::Rate loop_rate(10);
 

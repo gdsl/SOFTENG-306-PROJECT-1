@@ -184,6 +184,73 @@ define human position
   ranger_return 4
 )
 
+define neighbour position
+(
+
+  # These corresponds to the maximum x y and z of the human in meters.
+  size [0.2 0.500 1.700]
+  drive "diff"
+
+  # right leg
+  block (
+  points 4
+  point[3] [ -0.1 -0.05 ] 
+  point[2] [  0.1  -0.05] 
+  point[1] [  0.1  -0.15] 
+  point[0] [  -0.1 -0.15]  
+  z [ 0.0 0.700 ]
+			)
+  # left leg
+  block (
+  points 4
+  point[3] [  -0.1 0.15 ] 
+  point[2] [  0.1 0.15 ] 
+  point[1] [  0.1 0.05 ] 
+  point[0] [  -0.1 0.05] 
+  z [ 0.0 0.700 ]
+			)
+  # main body
+  block (
+  points 4
+  point[3] [  -0.1 0.15 ] 
+  point[2] [  0.1  0.15 ] 
+  point[1] [  0.1 -0.15 ] 
+  point[0] [  -0.1 -0.15 ] 
+  z [ 0.700 1.500 ]
+			)
+  # left arm
+  block (
+  points 4
+  point[3] [  -0.1   0.25 ] 
+  point[2] [  0.1   0.25 ] 
+  point[1] [  0.1   0.15 ] 
+  point[0] [  -0.1   0.15 ] 
+  z [ 0.7 1.500 ]
+			)
+  # right arm
+  block (
+  points 4
+  point[3] [  -0.1   -0.25 ] 
+  point[2] [  0.1   -0.25 ] 
+  point[1] [  0.1   -0.15 ] 
+  point[0] [  -0.1   -0.15 ] 
+  z [ 0.7 1.500 ]
+			)
+  # head
+  #z [lowestDepth highestDepth
+  block (
+  points 4
+  point[3] [  -0.05   0.05 ] 
+  point[2] [  0.05   0.05 ] 
+  point[1] [  0.05  -0.05 ] 
+  point[0] [  -0.05  -0.05 ] 
+  z [ 1.5 1.700 ]
+			)
+  humanLaser(pose [ 0.00 0.000 -1.7 0.000 ])
+  obstacle_return 1
+  ranger_return 4
+)
+
 define dog position
 (
 
