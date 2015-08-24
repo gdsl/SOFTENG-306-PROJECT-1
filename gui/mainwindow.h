@@ -35,6 +35,7 @@ public:
 	void setKey(KeyReceiver *k);
 	int getLastKeyPressed();
 	int getTotalNodesFromModel();
+    QString truncate(QString str);
     ~MainWindow();
 
     // GeneratorModel

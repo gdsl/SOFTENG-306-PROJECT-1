@@ -1,3 +1,12 @@
+<<<<<<< HEAD
+<picker_number>4</picker_number>
+<carrier_number>1</carrier_number>
+<worker_number>1</worker_number>
+<dog_number>1</dog_number>
+<resolution>2</resolution>
+<row_width>0</row_width>
+<trunk_pole_spacing>0</trunk_pole_spacing>
+=======
 <?xml version="1.1" encoding="UTF-8"?>
 <world>
 	<resolution>0.02</resolution>
@@ -24,3 +33,4 @@
 		</animals>
 	</models>
 </world>
+>>>>>>> ad40633091916c5f6fdac4897ba3992981a754de

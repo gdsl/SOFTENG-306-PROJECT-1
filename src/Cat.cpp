@@ -20,7 +20,7 @@ Cat::~Cat() {
 
 }
 
-Cat Cat;
+Cat cat;
 
 // Default cat behaviour = walking
 std::string status="Walking";
@@ -32,26 +32,27 @@ double angle;
 bool initial = true;
 
 void stage_callback(nav_msgs::Odometry msg) {
-    Cat.stageOdom_callback(msg);
+    cat.stageOdom_callback(msg);
 }
 
 int main(int argc, char **argv) 
 {
 	std::string xPosArg = argv[1];
-    	std::string spacing = argv[2];    
+    	std::string spacingArg = argv[2];    
+	double spacing = atof(spacingArg.c_str());
 	double xPos = atof(xPosArg.c_str());
 
 	// Initialize the cat robot with the correct position position
-	Cat = Cat(xPos, 21.500);   
+	cat = Cat(xPos, 21.500);   
 
 	ros::init(argc,argv,"Animal");
 
 	// Create ros handler for this node
 	ros::NodeHandle n;
     
-	Cat.robotNode_stage_pub = n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
+	cat.robotNode_stage_pub = n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
 
-	Cat.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000,stage_callback);
+	cat.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000,stage_callback);
 	ros::Rate loop_rate(10); 
 	
 	// Broadcast the node's status information for other to subscribe to.
@@ -61,42 +62,42 @@ int main(int argc, char **argv)
 	while (ros::ok())
 	{
 		// Message to stage 
-		Cat.move();
+		cat.move();
 		
 		// Give cat a small initial movement to fill in its GUI status
 		if (initial) {
-			Cat.addMovement("forward_x",-0.1,1);
+			cat.addMovement("forward_x",-0.1,1);
 		}
 		initial = false;
 
-		// Generate random number of seconds for cat to sleep between 30-50s
-		int num = (rand() % 100) / 5;
-		int time = 30 + num;
+		// Generate random number of seconds for cat to sleep between 20-70s
+		int num = (rand() % 100) / 2;
+		int time = 20 + num;
 
-		if (Cat.getMovementQueueSize() == 0) {
-			sleep(5);
-			Cat.faceEast(1);
-			Cat.addMovement("forward_x",-5,1);
-			Cat.faceWest(1);
-			Cat.addMovement("forward_x",5,1);
+		if (cat.getMovementQueueSize() == 0) {
+			sleep(time);
+			cat.faceEast(1);
+			cat.addMovement("forward_x",-5,1);
+			cat.faceWest(1);
+			cat.addMovement("forward_x",5,1);
 		}
 	        
-    		/*if (Cat.getMovementQueueSize() == 0) {
-			Cat.faceWest(1);
-			Cat.addMovement("forward_x",-5,1);
-			Cat.faceSouth(1);
-            		Cat.addMovement("forward_y", -1.25 , 1);  
-		    	Cat.faceEast(1);
-			Cat.addMovement("forward_x",5,1);
-			Cat.faceNorth(1);
-			Cat.addMovement("forward_y",1.25,1);
+    		/*if (cat.getMovementQueueSize() == 0) {
+			cat.faceWest(1);
+			cat.addMovement("forward_x",-5,1);
+			cat.faceSouth(1);
+            		cat.addMovement("forward_y", -1.25 , 1);  
+		    	cat.faceEast(1);
+			cat.addMovement("forward_x",5,1);
+			cat.faceNorth(1);
+			cat.addMovement("forward_y",1.25,1);
 		}*/
 
 		// Add Cat variables to status message to be broadcast
 		status_msg.status=status;
-		status_msg.pos_x=Cat.getX();
-		status_msg.pos_y=Cat.getY();
-		status_msg.pos_theta=Cat.getAng();
+		status_msg.pos_x=cat.getX();
+		status_msg.pos_y=cat.getY();
+		status_msg.pos_theta=cat.getAng();
 		// Publish status message
 		pub.publish(status_msg);
 		ros::spinOnce();
@@ -119,7 +120,7 @@ int main(int argc, char **argv)
 		else {
 			status = "Turning";
 		}*/
-                Cat.determineStatus();
+                cat.determineStatus();
 	}
 	return 0;
 }

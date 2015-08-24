@@ -11,6 +11,7 @@
 #include <QDebug>
 #include <vector>
 #include <sstream>
+#include <math.h>
 
 using namespace std;
 
@@ -71,7 +72,6 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-
 void MainWindow::onUpdateGUI( QString id, QString str, int i )
 {
 	//update the gui for robots
@@ -79,15 +79,28 @@ void MainWindow::onUpdateGUI( QString id, QString str, int i )
 
 	if (idNum < model.carrierRobots+model.pickerRobots) {
 	    QListWidget *qlw = ((QListWidget*)ui->robotScroll->widget()->layout()->itemAt(idNum)->widget());
-    	qlw->item(i)->setText(str);
+    	qlw->item(i)->setText(truncate(str));
     } else if (idNum < model.carrierRobots+model.pickerRobots+model.workers+model.gardeners){
     	QListWidget *qlw = ((QListWidget*)ui->peopleScroll->widget()->layout()->itemAt(idNum-(model.carrierRobots + model.pickerRobots))->widget());
-    	qlw->item(i)->setText(str);
+    	qlw->item(i)->setText(truncate(str));
     } else {
     	QListWidget *qlw = ((QListWidget*)ui->animalScroll->widget()->layout()->itemAt(idNum-(model.carrierRobots + model.pickerRobots + model.workers + model.gardeners))->widget());
-    	qlw->item(i)->setText(str);
+    	qlw->item(i)->setText(truncate(str));
     }
+}
 
+QString MainWindow::truncate(QString str) {
+    bool ok;
+    QStringList pieces = str.split( " " );
+    QString numString = pieces.value( pieces.length() -1 );
+    double d = numString.toDouble(&ok);
+    if (ok) {
+        double scale = 0.01;  // i.e. round to nearest one-hundreth
+        d = floor(d / scale + 0.5) * scale;
+        return pieces.value(0) + " " + QString::number(d);
+    } else {
+        return str;
+    }
 }
 
 void MainWindow::on_launchButton_clicked()
@@ -131,7 +144,7 @@ void MainWindow::on_closeButton_clicked() {
 	system("pkill roscore");
 }
 
-
+    
 void MainWindow::generate() {
     //writeXml();
 
@@ -196,9 +209,15 @@ void MainWindow::generate() {
     }
     for (int i = 0; i < uiListAnimals.size(); i++) {
         ui->animalScroll->widget()->layout()->addWidget(uiListAnimals[i]);
+        QListWidget *animalQL = ((QListWidget*)ui->animalScroll->widget()->layout()->itemAt(i)->widget());
+        QString backgroundColour = "QListWidget {background: " + QString::fromStdString(colourArray[i]) + ";}";
+        animalQL->setStyleSheet(backgroundColour);
     }
     for (int i = 0; i < uiListPeoples.size(); i++) {
     	ui->peopleScroll->widget()->layout()->addWidget(uiListPeoples[i]);
+        QListWidget *peopleQL = ((QListWidget*)ui->peopleScroll->widget()->layout()->itemAt(i)->widget());
+        QString backgroundColour = "QListWidget {background: " + QString::fromStdString(colourArray[i]) + ";}";
+        peopleQL->setStyleSheet(backgroundColour);
     }
     Generator generator(model);
     
@@ -210,6 +229,7 @@ void MainWindow::generate() {
 	generator.loadPeople();
 	generator.loadAnimals();
 	generator.loadTractor();
+    generator.loadBackdrop();
 	generator.write();
 	generator.writeLaunchFile();
 
