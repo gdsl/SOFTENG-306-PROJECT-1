@@ -208,7 +208,7 @@ void MainWindow::generate() {
 		delete item;
 	}
 	//add all widgets back
-	string colourArray[14] = { "PeachPuff", "NavajoWhite", "LemonChiffon", "AliceBlue", "Lavender", "thistle", "LightSalmon", "PaleTurquoise", "PaleGreen", "beige", "plum", "LightGrey", "LightSkyBlue", "SpringGreen" };
+	string colourArray[14] = { "LightSkyBlue", "SpringGreen", "Coral", "Yellow", "SteelBlue", "HotPink", "Khaki", "YellowGreen", "SeaGreen", "SandyBrown", "Orchid", "SlateGrey", "OliveDrab", "Peru" };
 	for (int i = 0; i < uiListRobots.size(); i++) {
 		ui->robotScroll->widget()->layout()->addWidget(uiListRobots[i]);
 		QListWidget *robotQL = ((QListWidget*)ui->robotScroll->widget()->layout()->itemAt(i)->widget());

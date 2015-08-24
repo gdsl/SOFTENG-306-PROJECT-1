@@ -47,7 +47,7 @@ private:
 	string inputName;
 	string outputName;
 	ofstream outfile;
-	string colourArray[14] = { "PeachPuff", "NavajoWhite", "LemonChiffon", "AliceBlue", "Lavender", "thistle", "LightSalmon", "PaleTurquoise", "PaleGreen", "beige", "plum", "LightGrey", "LightSkyBlue", "SpringGreen" };
+	string colourArray[14] = { "LightSkyBlue", "SpringGreen", "coral", "yellow", "SteelBlue", "HotPink", "khaki", "YellowGreen", "SeaGreen", "SandyBrown", "orchid", "SlateGrey", "OliveDrab", "peru" };
 	int colourCount = 0;
 	int peopleCC = 0;
 	int dogCC = 0;
