@@ -27,18 +27,24 @@ int main(int argc, char **argv) {
     ros::init(argc,argv,"BlindPerson");
 	ros::NodeHandle n;
     
-    //blindPerson.robotNode_stage_pub = n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
+    blindPerson.robotNode_stage_pub = n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
 	//ros::Publisher pub = n.advertise<se306project::human_status>("status",1000);
     
+    blindPerson.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000,stage_positionCallback);
     //blindPerson.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000,stage_positionCallback);
-    
+   
     //se306project::blindperson_status status_msg;
     
     ros::Rate loop_rate(10);
     
     while(ros::ok) {        
-        blindPerson.addMovement("forward_x",0.75,1);
-        blindPerson.move();
+       // blindPerson.addMovement("forward_x",0.75,1);
+       // blindPerson.move();
+		blindPerson.setLin(1);
+		blindPerson.setAng(0.5);
+        blindPerson.updateOdometry();
+		ros::spinOnce();
+		loop_rate.sleep();
     }
     
     return 0;

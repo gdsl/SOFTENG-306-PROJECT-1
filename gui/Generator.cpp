@@ -513,8 +513,14 @@ void Generator::writeLaunchFile(){
     xml.SetAttrib( "args", "$(find se306project)/world/test.world" );
     calculatePickerPaths(); // calculate the picking paths each Picker will take
 
-
     int totalObjects = model.getTotalNodes(); // total objects in world
+    int firstPicker = model.weed + model.beacons;
+    int lastPicker = firstPicker + model.pickerRobots - 1;
+    int firstCarrier = lastPicker + 1;
+    int lastCarrier = firstCarrier + model.carrierRobots - 1;
+    int firstDog = lastCarrier + 1 +  model.workers + model.blindPerson + model.gardeners + model.neighbours;
+    int lastDog = firstDog + model.dogs - 1;
+    int dogCounter = firstDog;
 
     for (int i = 0; i < totalObjects; i++) {
         xml.AddElem("group");
@@ -526,10 +532,6 @@ void Generator::writeLaunchFile(){
         xml.IntoElem();
         xml.AddElem("node");
         xml.SetAttrib( "pkg", "se306project" );
-        int firstPicker = model.weed + model.beacons;
-        int lastPicker = firstPicker + model.pickerRobots - 1;
-        int firstCarrier = lastPicker + 1;
-        int lastCarrier = firstCarrier + model.carrierRobots - 1;
 
         if (i < model.weed) { //weeds
             xml.SetAttrib( "name", "TallWeednode" );
@@ -621,8 +623,13 @@ void Generator::writeLaunchFile(){
             blindPersonPositions.pop_front();
             float yPos = blindPersonPositions.front();
             blindPersonPositions.pop_front();
-            float theta = 0;
-            oss << xPos << " " << yPos << " " << theta;
+            float theta = 0;                          
+            int dogNum = dogCounter;
+            if (dogCounter > lastDog) {
+                dogNum = -1;
+            }
+            oss << xPos << " " << yPos << " " << theta << " " << dogNum;
+            dogCounter++;
         } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.blindPerson + model.gardeners +model.neighbours + model.dogs) { //dogs
             xml.SetAttrib( "name", "AlphaDognode" );
             xml.SetAttrib( "type", "AlphaDog" );
