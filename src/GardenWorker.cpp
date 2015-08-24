@@ -1,7 +1,6 @@
 #include "GardenWorker.h"
 #include "ros/ros.h"
 #include "geometry_msgs/Twist.h"
-#include "se306project/robot_status.h"
 #include <math.h>
 
 /**
@@ -13,23 +12,48 @@ GardenWorker::GardenWorker():GardenWorker(0,0,0,0,0){}
  * Call super class constructor
  */
 GardenWorker::GardenWorker(double x, double y, double theta, double linearVelocity, double angularVelocity) : Person(x, y) {
+	initialX = x;
+	initialY = y;
 	targetX = 0;
 	targetY = 0;
+	closestToWeed = true;
+	messagesReceived = 0;
+	communicationPartners = 0;
 	setStatus("Idle");
 }
 
-/**
- * Update nearest
- */
-void GardenWorker::updateNearestWeed(const nav_msgs::Odometry msg) {
-	// Find nearest weed_status
-	double weedDistance = sqrt(pow(targetX-getX(),2.0)+pow(targetY-getY(),2.0));
-	double msgDistance = sqrt(pow(msg.pose.pose.position.x-getX(),2.0)+pow(msg.pose.pose.position.y-getY(),2.0));
-
-	if (msgDistance<weedDistance) {
-		targetX = msg.pose.pose.position.x;
-		targetY = msg.pose.pose.position.y;
+void GardenWorker::weedRemovalRequest(const se306project::weed_status msg) {
+	std::string currentStatus = getStatus();
+	if (currentStatus.compare("Idle")==0) {
+		targetX = msg.pos_x;
+		targetY = msg.pos_y;
+		closestToWeed = true;
+		next("Communicate");
 	}
+}
+
+void GardenWorker::weedRemovalDelegation(const se306project::robot_status msg) {
+	std::string currentStatus = getStatus();
+
+	if (currentStatus.compare("Communicating")==0 && msg.status.compare("Communicating")==0) {
+		int distance = sqrt(pow(targetX-getX(),2.0)+pow(targetY-getY(),2.0));
+		int otherDistance = sqrt(pow(targetX-msg.pos_x,2.0)+pow(targetY-msg.pos_y,2.0));
+
+		if (otherDistance < distance) {
+			closestToWeed = false;
+		}
+
+		messagesReceived++;
+	}
+
+	if (messagesReceived % communicationPartners == 0) {
+		if (closestToWeed) {
+			next("Move");
+		} else {
+			next("Stop");
+		}
+	}
+
 }
 
 /**
@@ -38,8 +62,14 @@ void GardenWorker::updateNearestWeed(const nav_msgs::Odometry msg) {
 void GardenWorker::next(std::string action) {
 	std::string currentStatus = getStatus();
 	if (currentStatus.compare("Idle")==0) {
+		if (action.compare("Communicate")==0) {
+			setStatus("Communicating");
+		}
+	} else if (currentStatus.compare("Communicating")) {
 		if (action.compare("Move")==0) {
 			setStatus("Moving");
+		} else if (action.compare("Stop")==0) {
+			setStatus("Idle");
 		} else if (action.compare("Pull")==0) {
 			setStatus("Pull Weed");
 		}
@@ -97,6 +127,10 @@ int GardenWorker::getTargetY() {
 	return targetY;
 }
 
+void GardenWorker::setCommunicationPartners(int communicationPartners) {
+	this->communicationPartners = communicationPartners;
+}
+
 void GardenWorker::stageOdom_callback(const nav_msgs::Odometry msg) {
 	Person::stageOdom_callback(msg);
 }
@@ -107,9 +141,11 @@ int main(int argc, char **argv) {
 	// Create ros handler for this node
 	ros::NodeHandle n;
 
-	// argv[1] = topic name
-	// argv[2] = tallweed node start index
-	// argv[3] = tallweed node end index
+	// argv[1] = robot node start index
+	// argv[2] = robot node end index
+	// argv[3] = gardenworker node start index
+	// argv[4] = gardenworker node end index
+	// argv[5] = my node index
 
 	GardenWorker gardenWorker;
 	gardenWorker.robotNode_stage_pub = n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
@@ -117,25 +153,55 @@ int main(int argc, char **argv) {
 	gardenWorker.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000, &GardenWorker::stageLaser_callback, &gardenWorker);
 	gardenWorker.gardenworker_status_pub = n.advertise<se306project::robot_status>("status",1000);
 
-	// Subscribe to every tallweed
-	std::string start(argv[2]);
-	std::string end(argv[3]);
+	// Subscribe to every robot
+	std::string start(argv[1]);
+	std::string end(argv[2]);
 	int s = atoi(start.c_str());
 	int e = atoi(end.c_str());
+
+	std::stringstream topicName;
+	int index = 0;
 
 	// -1 means no beacons, do not subscribe to weed else subscribe
 	if (!(s == -1 && e == -1)) {
 		int size = e-s+1;
-		std::stringstream topicName;
+
 		gardenWorker.tallweed_pose_sub = new ros::Subscriber[size];
-		int index = 0;
 
 		for (int i = s; i < e+1; i++) {
 			//reset stringstream
 			topicName.str(std::string());
 			// give in topicname
-			topicName << "/robot_" << i << "/base_pose_ground_truth";
-			gardenWorker.tallweed_pose_sub[index] = n.subscribe<nav_msgs::Odometry>(topicName.str(),1000,&GardenWorker::updateNearestWeed, &gardenWorker);
+			topicName << "/robot_" << i << "/weed";
+			gardenWorker.tallweed_pose_sub[index] = n.subscribe<se306project::weed_status>(topicName.str(),1000,&GardenWorker::weedRemovalRequest, &gardenWorker);
+			index++;
+		}
+	}
+
+	// subscribe to every other gardenworker except yourself
+	std::string gw_start(argv[3]);
+	std::string gw_end(argv[4]);
+	std::string gw_index(argv[5]);
+	int gw_s = atoi(gw_start.c_str());
+	int gw_e = atoi(gw_end.c_str());
+	int gw_i = atoi(gw_index.c_str());
+
+	int gw_size = gw_e - gw_s + 1;
+	gardenWorker.gardenworker_status_sub = new ros::Subscriber[gw_size];
+
+	// set number of communication partners
+	gardenWorker.setCommunicationPartners(gw_e - gw_s);
+
+	// reset topicName and index
+	topicName.str(std::string());
+	index = 0;
+
+	// subscribe to every gardenworker except yourself
+	for (int i = gw_s; i < gw_e+1; i++) {
+		if (i != gw_i) {
+			topicName.str(std::string());
+			topicName << "/robot_" << i << "/status";
+			gardenWorker.gardenworker_status_sub[index] = n.subscribe<se306project::robot_status>(topicName.str(),1000,&GardenWorker::weedRemovalDelegation, &gardenWorker);
 			index++;
 		}
 	}

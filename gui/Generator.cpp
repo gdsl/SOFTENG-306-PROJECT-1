@@ -579,10 +579,17 @@ void Generator::writeLaunchFile(){
         } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.gardeners) {
         	xml.SetAttrib("name", "GardenWorkernode");
         	xml.SetAttrib("type", "GardenWorker");
-        	if (model.weed > 0) {
-        		oss << "/robot_" << i << "/ 0 " << model.weed-1;
+
+        	int robotStartPos = model.weed + model.beacons;
+        	int robotEndPos = model.weed + model.beacons + model.pickerRobots + model.carrierRobots - 1;
+
+        	int gardenWorkerStartPos = model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers;
+        	int gardenWorkerEndPos = model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.gardeners - 1;
+
+        	if (model.pickerRobots + model.carrierRobots > 0) {
+        		oss << robotStartPos << " " << robotEndPos << " " << gardenWorkerStartPos << " " << gardenWorkerEndPos << " " << i;
         	} else {
-        		oss << "/robot_" << i << "/ -1 -1";
+        		oss << "-1 -1" << gardenWorkerStartPos << " " << gardenWorkerEndPos << " " << i;
         	}
         } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers+ model.gardeners+model.neighbours) { //neighbours
             xml.SetAttrib( "name", "Neighbournode" );
