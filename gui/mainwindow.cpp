@@ -16,14 +16,9 @@
 using namespace std;
 
 MainWindow::MainWindow(QWidget *parent) :
-<<<<<<< HEAD
     		QMainWindow(parent),
 			ui(new Ui::MainWindow)
 {
-=======
-    QMainWindow(parent),
-    ui(new Ui::MainWindow) {
->>>>>>> 002c2a1f3dc841f56b998f90719b2f96dade691f
 	system("pkill roslaunch");
 	ui->setupUi(this);
 
@@ -66,15 +61,10 @@ void MainWindow::startReadingTopics() {
 	}
 }
 
-<<<<<<< HEAD
-
 MainWindow::~MainWindow()
 {
 	//close roslaunch and close all rostopics
-=======
-MainWindow::~MainWindow() {
-    // Close roslaunch and close all rostopics
->>>>>>> 002c2a1f3dc841f56b998f90719b2f96dade691f
+
 	system("pkill Tractor");
 	system("pkill roslaunch");
 	system("pkill stage");
@@ -86,8 +76,6 @@ MainWindow::~MainWindow() {
 void MainWindow::onUpdateGUI( QString id, QString str, int i ) {
 	// Update the gui for robots
 	int idNum = id.toInt()-model.beacons-model.weed;
-<<<<<<< HEAD
-
 	if (idNum < model.carrierRobots+model.pickerRobots) {
 		QListWidget *qlw = ((QListWidget*)ui->robotScroll->widget()->layout()->itemAt(idNum)->widget());
 		qlw->item(i)->setText(truncate(str));
@@ -97,25 +85,10 @@ void MainWindow::onUpdateGUI( QString id, QString str, int i ) {
 	} else {
 		QListWidget *qlw = ((QListWidget*)ui->animalScroll->widget()->layout()->itemAt(idNum-(model.carrierRobots + model.pickerRobots + model.workers + model.gardeners+model.neighbours))->widget());
 		qlw->item(i)->setText(truncate(str));
-=======
-	int numRobots = model.carrierRobots + model.pickerRobots;
-	int numRobotsPlusPeople = model.carrierRobots+model.pickerRobots+model.workers+model.gardeners+model.neighbours+model.blindPerson;
-    
-	if (idNum < numRobots) {
-	    QListWidget *qlw = ((QListWidget*)ui->robotScroll->widget()->layout()->itemAt(idNum)->widget());
-    	qlw->item(i)->setText(truncate(str));
-	} else if (idNum < numRobotsPlusPeople) {
-    	QListWidget *qlw = ((QListWidget*)ui->peopleScroll->widget()->layout()->itemAt(idNum-numRobots)->widget());
-    	qlw->item(i)->setText(truncate(str));
-	} else {
-    	QListWidget *qlw = ((QListWidget*)ui->animalScroll->widget()->layout()->itemAt(idNum-numRobotsPlusPeople)->widget());
-    	qlw->item(i)->setText(truncate(str));
->>>>>>> 002c2a1f3dc841f56b998f90719b2f96dade691f
 	}
 }
 
 QString MainWindow::truncate(QString str) {
-<<<<<<< HEAD
 	bool ok;
 	QStringList pieces = str.split( " " );
 	QString numString = pieces.value( pieces.length() -1 );
@@ -136,32 +109,11 @@ void MainWindow::on_launchButton_clicked()
 	system("roslaunch se306project test.launch &");
 	usleep(1000000); //1 second
 	//emit MainWindow::requestProcess();
-=======
-    bool ok;
-    QStringList pieces = str.split( " " );
-    QString numString = pieces.value( pieces.length() -1 );
-    double d = numString.toDouble(&ok);
-    if (ok) {
-        double scale = 0.01;  
-        d = floor(d / scale + 0.5) * scale;
-        return pieces.value(0) + " " + QString::number(d);
-    } else {
-        return str;
-    }
-}
-
-void MainWindow::on_launchButton_clicked() {
-    // Generate world file and launch stage on user clicking launch button
-    MainWindow::generate();
-	system("roslaunch se306project test.launch &");
-    usleep(1000000);
->>>>>>> 002c2a1f3dc841f56b998f90719b2f96dade691f
 	startReadingTopics();
 }
 
 void MainWindow::on_displayStatusButton_clicked() {
 	startReadingTopics();
-<<<<<<< HEAD
 	//MainWindow::generate();
 }
 
@@ -178,22 +130,6 @@ void MainWindow::on_testDriveButton_clicked()
 		startedTestDrive = true;
 		ui->robotScroll->setFocus();
 	}
-=======
-}
-
-void MainWindow::on_testDriveButton_clicked() {
-    if (!startedTestDrive) {
-        // Start the sender to tractor in new thread             
-        Worker *worker = new Worker();
-        worker->setMainWindow(this);
-        QThread *thread = new QThread(this);
-        worker->moveToThread(thread);
-        connect(thread, SIGNAL(started()), worker, SLOT(sendToTractor()));
-        thread->start();
-        startedTestDrive = true;
-        ui->robotScroll->setFocus();
-    }
->>>>>>> 002c2a1f3dc841f56b998f90719b2f96dade691f
 }
 
 void MainWindow::on_closeButton_clicked() {
@@ -208,7 +144,6 @@ void MainWindow::on_closeButton_clicked() {
 
 
 void MainWindow::generate() {
-<<<<<<< HEAD
 	//writeXml();
 
 	// initialise variables
@@ -286,86 +221,6 @@ void MainWindow::generate() {
 		peopleQL->setStyleSheet(backgroundColour);
 	}
 	Generator generator(model);
-
-=======
-    // Initialise variables
-    model.pickerRobots = ui->pickerSpinner->value();
-    model.carrierRobots = ui->carrierSpinner->value();
-    model.workers = ui->workerSpinner->value();
-    model.dogs = ui->dogSpinner->value();
-    model.cats = ui->catSpinner->value();
-    model.rowWidth = ui->rowWidthSpinner->value();
-    model.poleTrunkSpacing = ui->spacingSpinner->value();
-    model.rowCount = ui->rowNumberSpinner->value();
-    model.blindPerson = ui->blindPersonSpinner->value();
-    model.neighbours = ui->neighborSpinner->value();
-    model.gardeners = ui->gardenerSpinner->value();
-    model.beacons = model.rowCount*2;
-    
-    uiListPeoples.clear();
-    uiListRobots.clear();
-    uiListAnimals.clear();
-
-    for (int i = 0; i < model.pickerRobots; i++) {
-        uiListRobots.push_back(createNewItem("Picker"));
-    }
-    for (int i = 0; i < model.carrierRobots; i++) {
-        uiListRobots.push_back(createNewItem("Carrier"));
-    }
-    for (int i = 0; i < model.workers; i++) {
-        uiListPeoples.push_back(createNewItem("Human_Worker"));
-    }
-    for (int i = 0; i < model.gardeners; i++) {
-        uiListPeoples.push_back(createNewItem("Gardener"));
-    }
-    for (int i = 0; i < model.neighbours; i++) {
-        uiListPeoples.push_back(createNewItem("Neighbour"));
-    }
-    for (int i = 0; i < model.blindPerson; i++) {
-        uiListPeoples.push_back(createNewItem("Blind Person"));
-    }
-    for (int i = 0; i < model.dogs; i++) {
-        uiListAnimals.push_back(createNewItem("Animal_Dog"));
-    }
-    for (int i = 0; i < model.cats; i++) {
-        uiListAnimals.push_back(createNewItem("Animal_Cat")); 
-    }
-    // Clear the layout
-    QLayoutItem *item;
-    while (( item = ui->robotScroll->widget()->layout()->takeAt(0)) != 0 ){
-        delete item->widget();
-        delete item;
-    }
-    while (( item = ui->animalScroll->widget()->layout()->takeAt(0)) != 0 ){
-        delete item->widget();
-        delete item;
-    }
-    while (( item = ui->peopleScroll->widget()->layout()->takeAt(0)) != 0 ){
-        delete item->widget();
-        delete item;
-    }
-    // Add all widgets back
-    string colourArray[14] = { "PeachPuff", "NavajoWhite", "LemonChiffon", "AliceBlue", "Lavender", "thistle", "LightSalmon", "PaleTurquoise", "PaleGreen", "beige", "plum", "LightGrey", "LightSkyBlue", "SpringGreen" };
-    for (int i = 0; i < uiListRobots.size(); i++) {
-        ui->robotScroll->widget()->layout()->addWidget(uiListRobots[i]);
-        QListWidget *robotQL = ((QListWidget*)ui->robotScroll->widget()->layout()->itemAt(i)->widget());
-        QString backgroundColour = "QListWidget {background: " + QString::fromStdString(colourArray[i]) + ";}";
-        robotQL->setStyleSheet(backgroundColour);
-    }
-    for (int i = 0; i < uiListAnimals.size(); i++) {
-        ui->animalScroll->widget()->layout()->addWidget(uiListAnimals[i]);
-        QListWidget *animalQL = ((QListWidget*)ui->animalScroll->widget()->layout()->itemAt(i)->widget());
-        QString backgroundColour = "QListWidget {background: " + QString::fromStdString(colourArray[i]) + ";}";
-        animalQL->setStyleSheet(backgroundColour);
-    }
-    for (int i = 0; i < uiListPeoples.size(); i++) {
-    	ui->peopleScroll->widget()->layout()->addWidget(uiListPeoples[i]);
-        QListWidget *peopleQL = ((QListWidget*)ui->peopleScroll->widget()->layout()->itemAt(i)->widget());
-        QString backgroundColour = "QListWidget {background: " + QString::fromStdString(colourArray[i]) + ";}";
-        peopleQL->setStyleSheet(backgroundColour);
-    }
-	Generator generator(model);
->>>>>>> 002c2a1f3dc841f56b998f90719b2f96dade691f
 	generator.loadWorld();
 	generator.loadTallWeeds();
 	generator.loadOrchard();
@@ -386,7 +241,6 @@ int MainWindow::getTotalNodesFromModel() {
 	return model.getTotalNodes();
 }
 
-<<<<<<< HEAD
 /*
 void MainWindow::writeXml() {
     CMarkup xml;
@@ -429,8 +283,6 @@ void MainWindow::writeXml() {
 }
  */
 
-=======
->>>>>>> 002c2a1f3dc841f56b998f90719b2f96dade691f
 QListWidget* MainWindow::createNewItem(string type) {
 	QListWidget *list = new QListWidget;
 	QListWidgetItem *item = new QListWidgetItem;
