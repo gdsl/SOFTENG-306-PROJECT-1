@@ -248,8 +248,8 @@ void recievePickerRobotStatus(const se306project::robot_status::ConstPtr& msg)
 			if (!seen) {
 				carrierRobot.setState(Robot::MOVING);
 				if (carrierRobot.getMovementQueueSize() <= 1) {
-					targetX = currentPoint.first;
-					targetY = currentPoint.second;
+					targetX = msg->pos_x;
+					targetY = msg->pos_y;
 					carrierRobot.faceEast(1);
 					carrierRobot.addMovement("forward_x",10,1);
 					double pickerY = msg->pos_y;
@@ -321,13 +321,14 @@ void CarrierRobot::stateLogic(){
 	if (carrierRobot.getState() == IDLE) {
 		carrierRobot.setStatus("Idle");
 	} else if (carrierRobot.getState() == MOVING) {
+		std::string status="Moving ";
 		std::stringstream convert;
-		convert << "Moving";
-		convert << " ";
 		convert << targetX;
-		convert << " ";
+		status=status+convert.str()+" ";
+		convert.clear();
 		convert << targetY;
-		carrierRobot.setStatus(convert.str());
+		status=status+convert.str();
+		carrierRobot.setStatus(status);
 
 		if (carrierRobot.getMovementQueueSize() == 0 ) {
 			carrierRobot.setState(Robot::ARRIVED);

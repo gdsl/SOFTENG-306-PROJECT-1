@@ -159,6 +159,8 @@ void recieveCarrierRobotStatus(const se306project::carrier_status::ConstPtr& msg
 		pickerRobot.setStatus("Picking");
 		pickerRobot.setBinCapacity(0);
 		pickerRobot.setState(Robot::PICKING);
+	}else if(msg->status.substr(0,6).compare("Moving")==0){
+
 	}
 }
 
