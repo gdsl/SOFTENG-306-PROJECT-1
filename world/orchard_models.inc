@@ -23,9 +23,60 @@ define pole modelBase
   gui_noise 0
 )
 
-define fruitVine modelBase
+define verticalFruitVine modelBase
 (
     size [0.100 3.500 0.100]
+    gui_noise 0
+)
+
+define backdropTree modelBase
+(
+  size [0.850 0.850 1.800]
+
+  gui_noise 0
+)
+
+define backdropTreeTop modelBase
+(
+  size [1.5 1.5 1.7]
+  
+  block (
+  points 4
+  point[3] [ 1 1 ] 
+  point[2] [  1 -1 ] 
+  point[1] [  -1  -1 ] 
+  point[0] [  -1 1 ]  
+  z [ 2.5 1.7 ]
+  )
+  
+  block (
+  points 4
+  point[3] [ 0.5 0.5 ] 
+  point[2] [ 0.5 -0.5 ] 
+  point[1] [ -0.5 -0.5 ] 
+  point[0] [ -0.5 0.5 ]  
+  z [ 3 1.7 ]
+  )
+  
+  block (
+  points 4
+  point[3] [ 0.25 0.25 ] 
+  point[2] [ 0.25 -0.25 ] 
+  point[1] [ -0.25 -0.25 ] 
+  point[0] [ -0.25 0.25 ]  
+  z [ 3.25 0.25 ]
+  )
+            
+)
+
+define backdropShrub modelBase
+(
+  size [0.650 0.650 1.000]
+  gui_noise 0
+)
+define horizontalFruitVine modelBase
+(
+    size [2.500 0.100 0.100]
     gui_noise 0
 )
 
