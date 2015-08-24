@@ -7,9 +7,7 @@
 /**
  * Default constructor for GardenWorker
  */
-GardenWorker::GardenWorker():GardenWorker(0,0,0,0,0){
-
-}
+GardenWorker::GardenWorker():GardenWorker(0,0,0,0,0){}
 
 /**
  * Call super class constructor
@@ -133,9 +131,9 @@ int main(int argc, char **argv) {
 		int index = 0;
 
 		for (int i = s; i < e+1; i++) {
-			// Reset string stream
+			//reset stringstream
 			topicName.str(std::string());
-			// Give in topic name
+			// give in topicname
 			topicName << "/robot_" << i << "/base_pose_ground_truth";
 			gardenWorker.tallweed_pose_sub[index] = n.subscribe<nav_msgs::Odometry>(topicName.str(),1000,&GardenWorker::updateNearestWeed, &gardenWorker);
 			index++;
@@ -145,7 +143,8 @@ int main(int argc, char **argv) {
 	ros::Rate loop_rate(10);
 	se306project::robot_status status_msg;
 	// ROS infinite loop
-	while (ros::ok()) {
+	while (ros::ok())
+	{
 		ros::spinOnce();
 		// Publish garden worker status
 		status_msg.pos_x = gardenWorker.getX();
