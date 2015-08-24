@@ -1,6 +1,7 @@
 #include "GardenWorker.h"
 #include "ros/ros.h"
 #include "geometry_msgs/Twist.h"
+#include "se306project/robot_status.h"
 #include <math.h>
 
 /**
@@ -11,28 +12,16 @@ GardenWorker::GardenWorker():GardenWorker(0,0,0,0,0){}
 /**
  * Call super class constructor
  */
-GardenWorker::GardenWorker(double x, double y, double theta, double linearVelocity, double angularVelocity)
-: Person(x, y)
-{
+GardenWorker::GardenWorker(double x, double y, double theta, double linearVelocity, double angularVelocity) : Person(x, y) {
 	targetX = 0;
 	targetY = 0;
-	weedCounter = 0;
 	setStatus("Idle");
-}
-
-/**
- * Update the number of weed pulled by garden worker
- */
-void GardenWorker::increment()
-{
-	weedCounter++;
 }
 
 /**
  * Update nearest
  */
-void GardenWorker::updateNearestWeed(const nav_msgs::Odometry msg)
-{
+void GardenWorker::updateNearestWeed(const nav_msgs::Odometry msg) {
 	// Find nearest weed_status
 	double weedDistance = sqrt(pow(targetX-getX(),2.0)+pow(targetY-getY(),2.0));
 	double msgDistance = sqrt(pow(msg.pose.pose.position.x-getX(),2.0)+pow(msg.pose.pose.position.y-getY(),2.0));
@@ -44,10 +33,9 @@ void GardenWorker::updateNearestWeed(const nav_msgs::Odometry msg)
 }
 
 /**
- * Represents FSM for GardenWorker. Given an action, update the current status
+ * Represents FSM for GardenWorker - given an action, update the current status
  */
-void GardenWorker::next(std::string action)
-{
+void GardenWorker::next(std::string action) {
 	std::string currentStatus = getStatus();
 	if (currentStatus.compare("Idle")==0) {
 		if (action.compare("Move")==0) {
@@ -70,38 +58,53 @@ void GardenWorker::next(std::string action)
 	}
 }
 
-void GardenWorker::stageLaser_callback(const sensor_msgs::LaserScan msg)
-{
-	// invoke parent stagelaser
-	//Person::stageLaser_callback(msg);
-	ROS_ERROR("TESTING");
+void GardenWorker::stageLaser_callback(const sensor_msgs::LaserScan msg) {
+// 	invoke parent stagelaser
+//	Person::stageLaser_callback(msg);
+//	std::string currentStatus = getStatus();
+//	if (currentStatus.compare("Idle")==0) {
+//		if (getAvoidanceCase()!=Entity::NONE) {//check if there is need to avoid obstacle
+//			ROS_ERROR("LOL");
+//		} else {
+//			// check which orientation
+//			if (getDirectionFacing()== Entity::NORTH) {
+//				if (targetY > getY()) {
+//					// do nothing
+//				} else {
+//
+//				}
+//			} else if (getDirectionFacing() == Entity::EAST) {
+//
+//			} else if (getDirectionFacing() == Entity::SOUTH) {
+//
+//			} else {
+//
+//			}
+//			ROS_ERROR("Current x %f", getX());
+//			ROS_ERROR("Current y %f", getY());
+//			ROS_ERROR("Target x %d", targetX);
+//			ROS_ERROR("Target y %d", targetY);
+//		}
+//		next("Move");
+//	}
 }
 
-uint GardenWorker::getWeedCounter()
-{
-	return weedCounter;
-}
-
-int GardenWorker::getTargetX()
-{
+int GardenWorker::getTargetX() {
 	return targetX;
 }
 
-int GardenWorker::getTargetY()
-{
+int GardenWorker::getTargetY() {
 	return targetY;
 }
 
-void GardenWorker::stageOdom_callback(const nav_msgs::Odometry msg)
-{
+void GardenWorker::stageOdom_callback(const nav_msgs::Odometry msg) {
 	Person::stageOdom_callback(msg);
 }
 
-int main(int argc, char **argv)
-{
-	//initialise ros
+int main(int argc, char **argv) {
+	// Initialise ros
 	ros::init(argc,argv,"GardenWorker");
-	//create ros handler for this node
+	// Create ros handler for this node
 	ros::NodeHandle n;
 
 	// argv[1] = topic name
@@ -112,41 +115,44 @@ int main(int argc, char **argv)
 	gardenWorker.robotNode_stage_pub = n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
 	gardenWorker.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth", 1000, &GardenWorker::stageOdom_callback, &gardenWorker);
 	gardenWorker.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000, &GardenWorker::stageLaser_callback, &gardenWorker);
-	gardenWorker.gardenworker_status_pub = n.advertise<se306project::gardenworker_status>(argv[1],1000);
+	gardenWorker.gardenworker_status_pub = n.advertise<se306project::robot_status>("status",1000);
 
-	// subscribe to every tallweed
+	// Subscribe to every tallweed
 	std::string start(argv[2]);
 	std::string end(argv[3]);
 	int s = atoi(start.c_str());
 	int e = atoi(end.c_str());
-	int size = e-s+1;
-	std::stringstream topicName;
 
-	gardenWorker.tallweed_pose_sub = new ros::Subscriber[size];
+	// -1 means no beacons, do not subscribe to weed else subscribe
+	if (!(s == -1 && e == -1)) {
+		int size = e-s+1;
+		std::stringstream topicName;
+		gardenWorker.tallweed_pose_sub = new ros::Subscriber[size];
+		int index = 0;
 
-	int index = 0;
-	for (int i = s; i < e+1; i++) {
-		//reset stringstream
-		topicName.str(std::string());
-		// give in topicname
-		topicName << "/robot_" << i << "/base_pose_ground_truth";
-		gardenWorker.tallweed_pose_sub[index] = n.subscribe<nav_msgs::Odometry>(topicName.str(),1000,&GardenWorker::updateNearestWeed, &gardenWorker);
-		index++;
+		for (int i = s; i < e+1; i++) {
+			//reset stringstream
+			topicName.str(std::string());
+			// give in topicname
+			topicName << "/robot_" << i << "/base_pose_ground_truth";
+			gardenWorker.tallweed_pose_sub[index] = n.subscribe<nav_msgs::Odometry>(topicName.str(),1000,&GardenWorker::updateNearestWeed, &gardenWorker);
+			index++;
+		}
 	}
 
 	ros::Rate loop_rate(10);
-
-	se306project::gardenworker_status status_msg;
-	//ROS loop
+	se306project::robot_status status_msg;
+	// ROS infinite loop
 	while (ros::ok())
 	{
 		ros::spinOnce();
+		// Publish garden worker status
 		status_msg.pos_x = gardenWorker.getX();
 		status_msg.pos_y = gardenWorker.getY();
 		status_msg.pos_theta = gardenWorker.getTheta();
-		status_msg.weed_counter = gardenWorker.getWeedCounter();
 		status_msg.status = gardenWorker.getStatus();
-		gardenWorker.gardenworker_status_pub.publish(status_msg);	//publish message
+		// Publish message
+		gardenWorker.gardenworker_status_pub.publish(status_msg);
 		loop_rate.sleep();
 	}
 }

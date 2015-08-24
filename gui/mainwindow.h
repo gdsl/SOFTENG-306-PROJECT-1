@@ -32,6 +32,10 @@ public:
 	void generate();
 	void writeXml();
 	void writeLaunchFile();
+	void setKey(KeyReceiver *k);
+	int getLastKeyPressed();
+	int getTotalNodesFromModel();
+    QString truncate(QString str);
     ~MainWindow();
 
     // GeneratorModel
@@ -41,6 +45,7 @@ private slots:
 	void on_launchButton_clicked();
     void on_displayStatusButton_clicked();
     void on_closeButton_clicked();
+    void on_testDriveButton_clicked();
 
 private:
     Ui::MainWindow *ui;
@@ -51,7 +56,7 @@ private:
     vector<string> launchFileEntityList;
   
     KeyReceiver* key;
-    
+    bool startedTestDrive = false;
 //	void updateGUI(const QString buffer);
 //	void *print_message_function( void *ptr );
 //	void exec(string cmd);

@@ -1,5 +1,4 @@
 #include "Person.h"
-#include "se306project/gardenworker_status.h"
 
 /**
  * Header file for GardenWorker. GardenWorker role is to remove weeds placed around the orchard.
@@ -15,7 +14,6 @@ public:
 
 	// Finds nearest weed and updates variable
 	void updateNearestWeed(nav_msgs::Odometry msg);
-	void increment();
 	// Update status
 	void next(std::string action);
 	// override stagelaser callback
@@ -26,9 +24,7 @@ public:
 	// getter methods
 	int getTargetX();
 	int getTargetY();
-	uint getWeedCounter();
 private:
 	int targetX;
 	int targetY;
-	uint weedCounter;
 };

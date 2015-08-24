@@ -18,8 +18,10 @@ public:
 	int cats;
 	int workers;
 	int blindPerson;
-	int neighbors;
+	int neighbours;
 	int tractors;
 	int beacons;
 	int weed;
+	
+	int getTotalNodes();
 };

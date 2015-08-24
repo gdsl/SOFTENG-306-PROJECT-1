@@ -7,65 +7,137 @@
 #include "se306project/animal_status.h"
 #include <stdlib.h>
 #include <time.h>
- 
+
 AlphaDog::AlphaDog() : Animal() {
-    
+
 }
 
 AlphaDog::AlphaDog(double x, double y) : Animal(x,y) {
-
+    this->antiClockwise = false;
 }
 
 AlphaDog::~AlphaDog() {
 
 }
 
-AlphaDog alphaDog(-3.75,17.5);
+void AlphaDog::switchDirection() {
+    this->antiClockwise = !(this->antiClockwise);
+}
+
+bool AlphaDog::isAntiClockwise() {
+    return this-> antiClockwise;
+}
+
+AlphaDog alphaDog(0,0);
 // Default dog behaviour = walking
-std::string status="Moonwalking";
-bool queueFull = false;
+std::string status="Walking";
+bool antiClockwise = false;
 
 // Keeps track of current position that dog is facing
 double radians;
 double angle;
 
 void stage_callback(nav_msgs::Odometry msg) {
-    alphaDog.stageOdom_callback(msg);
-    //alphaDog.setPose(x,y,0);
-
+	alphaDog.stageOdom_callback(msg);
 }
 
-int main(int argc, char **argv) 
-{
-    
-	//initialise ros    
-	ros::init(argc,argv,"Animal");
+/**
+ * Call back method for laser work out the avoidance logic for dog robot
+ */
+void callBackLaserScan(const sensor_msgs::LaserScan msg) {
+	alphaDog.stageLaser_callback(msg);//call supercalss laser call back
+	if (alphaDog.getAvoidanceCase()!=Entity::NONE) {//check if there is need to avoid obstacle
+		alphaDog.setObstacleStatus("Obstacles nearby");
+		//flush its movement
+		alphaDog.flushMovementQueue();
+		alphaDog.addMovementFront("forward_x",0,0,1);//this is at front of front
+		alphaDog.move();
 
-	//create ros handler for this node
-	ros::NodeHandle n;
+	} else {
+		alphaDog.setObstacleStatus("No obstacles");
+	}
+}
+
+int main(int argc, char **argv) {
+	// Initialise ros    
+	ros::init(argc,argv,"Animal");
     
+    // convert input parameters for person initialization from String to respective types
+    std::string xString = argv[1];
+    std::string yString = argv[2];
+    std::string rowString = argv[4];
+    std::string spacingString = argv[5];
+    double rowWidth = atof(rowString.c_str());
+    double trunkSpacing = atof(spacingString.c_str());
+    double xPos = atof(xString.c_str());
+    double yPos = atof(yString.c_str());
+    double left = xPos - trunkSpacing;
+    double right = xPos;
+    double top = yPos;
+    double bottom = yPos - rowWidth;
+    alphaDog = AlphaDog(xPos,yPos);
+
+	// Create ros handler for this node
+	ros::NodeHandle n;
+
 	alphaDog.robotNode_stage_pub = n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
 	alphaDog.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000,stage_callback);
+	alphaDog.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000, callBackLaserScan);
+
 	ros::Rate loop_rate(10); 
-	
-	//Broadcast the node's status information for other to subscribe to.
+
+	// Broadcast the node's status information for other to subscribe to.
 	ros::Publisher pub=n.advertise<se306project::animal_status>("status",1000);
 	se306project::animal_status status_msg;
-	//0 rotatiing to the side, 1, moving horizontally, 2 rotating to bnorth/south, 3 moving vertical, 4 stop
+	// 0 down section, 1 up section, 2 left section, 3 right section
+    AlphaDog::State state = AlphaDog::TOP;
 	while (ros::ok()) {
-		//message to stage 
+		// Message to stage 
 		alphaDog.move();
         
-    		if (alphaDog.getMovementQueueSize() == 0) {
-			alphaDog.faceWest(1);
-			alphaDog.addMovement("forward_x",-5,1);
-			alphaDog.faceSouth(1);
-            		alphaDog.addMovement("forward_y", -1.25 , 1);  
-		    	alphaDog.faceEast(1);
-		    	alphaDog.addMovement("forward_x",5,1);
-		    	alphaDog.faceNorth(1);
-		   	alphaDog.addMovement("forward_y",1.25,1);
-	    	}
+        if (alphaDog.getMovementQueueSize() == 0) {
+           if (state == AlphaDog::TOP) {
+                if (alphaDog.isAntiClockwise()) {
+                    alphaDog.faceWest(1);
+                    alphaDog.addMovement("forward_x", left-alphaDog.getX(), 1);
+                    state = AlphaDog::LEFT;
+                } else {
+                    alphaDog.faceEast(1);           
+                    alphaDog.addMovement("forward_x", right-alphaDog.getX(), 1);
+                    state = AlphaDog::RIGHT;
+                }
+            } else if (state == AlphaDog::LEFT)  {
+                if (alphaDog.isAntiClockwise()) {
+                    alphaDog.faceSouth(1);
+                    alphaDog.addMovement("forward_y", bottom-alphaDog.getY(),1);
+                    state = AlphaDog::BOTTOM;
+                } else {
+                    alphaDog.faceNorth(1);           
+                    alphaDog.addMovement("forward_y", top-alphaDog.getY(), 1);
+                    state = AlphaDog::TOP;
+                }
+            } else if (state == AlphaDog::BOTTOM) {
+                if (alphaDog.isAntiClockwise()) {
+                    alphaDog.faceEast(1);           
+                    alphaDog.addMovement("forward_x", right-alphaDog.getX(), 1);
+                    state = AlphaDog::RIGHT;
+                } else {
+                    alphaDog.faceWest(1);
+                    alphaDog.addMovement("forward_x", left-alphaDog.getX(), 1);
+                    state = AlphaDog::LEFT;
+                }
+            } else if (state == AlphaDog::RIGHT) {
+                if (alphaDog.isAntiClockwise()) {
+                    alphaDog.faceNorth(1);           
+                    alphaDog.addMovement("forward_y", top-alphaDog.getY(), 1);
+                    state = AlphaDog::TOP;
+                } else {
+                    alphaDog.faceSouth(1);
+                    alphaDog.addMovement("forward_y", bottom-alphaDog.getY(),1);
+                    state = AlphaDog::BOTTOM;
+                }
+            }
+	}
 
 		// Add Dog variables to status message to be broadcast
 		status_msg.status=status;
@@ -76,22 +148,6 @@ int main(int argc, char **argv)
 		pub.publish(status_msg);
 		ros::spinOnce();
         	loop_rate.sleep();
-
-		/*// Logic to determine current status of Dog - Walking/Idle/Turning
-		// Convert radians to degrees
-		radians = alphaDog.getTheta();
-		angle = roundf(radians * 57.2957795 * 100) / 100;
-		// Check if dog is moving (and therefore 'walking')
-		if (alphaDog.getLin() > 0.01) {
-			status = "Moonwalking";
-		}
-		// Check if dog is facing North/East/South/West AND not moving (and therefore 'idle')
-		else if ((angle == -360) || (angle == -270) || (angle == -180) || (angle == -90) || (angle == 0) || (angle == 90) || (angle == 180) || (angle == 270) || (angle == 360) && (alphaDog.getLin() == 0)) {
-			status = "Idle";
-		}
-		else {
-			status = "Turning";
-		}*/
                 alphaDog.determineStatus();
 	}
 	return 0;
