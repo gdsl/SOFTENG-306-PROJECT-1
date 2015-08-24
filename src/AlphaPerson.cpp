@@ -48,14 +48,14 @@ void stage_positionCallback(nav_msgs::Odometry msg) {
 void stage_laserCallback(sensor_msgs::LaserScan msg) {
 	alphaPerson.stageLaser_callback(msg);
 
-    //if searching for a new tree
+    // If searching for a new tree
 	if (isSearch) {
 		int l=msg.intensities.size();
 		double minDist = 1000;
 		std::vector<double> v;
 		std::map<double,double> Xmap;
 		std::map<double,double> Ymap;
-        //check the information from sensor
+        // Check the information from sensor
 		for (int i = 0; i<l; i++) {
 			if (msg.intensities[i] == 1) {
 				double toDegree =  alphaPerson.getTheta()*180/M_PI;
@@ -63,7 +63,7 @@ void stage_laserCallback(sensor_msgs::LaserScan msg) {
 				double obsX = alphaPerson.getX() + msg.ranges[i]*cos(absAngle*M_PI/180);
 				double obsY = alphaPerson.getY() + msg.ranges[i]*sin(absAngle*M_PI/180);
                 
-                //if the worker looking top or looking bottom
+                // If the worker looking top or looking bottom
 				bool whereToLook;
 				if (lookAtBottom) {
 					whereToLook = -105 < absAngle && absAngle < -90;
@@ -71,7 +71,7 @@ void stage_laserCallback(sensor_msgs::LaserScan msg) {
 					whereToLook = 90 < absAngle && absAngle < 105;
 				}
 
-                //only accept point of interest that are greater than 1.5m from the worker and store the point in a map and vector
+                // Only accept point of interest that are greater than 1.5m from the worker and store the point in a map and vector
 				if (msg.ranges[i] > 1.5 && whereToLook) {
 					foundTree = true;
 					if (msg.ranges[i] < minDist) minDist = msg.ranges[i];
@@ -82,13 +82,13 @@ void stage_laserCallback(sensor_msgs::LaserScan msg) {
 			}
 		}
 
-        //process point of interest corresponding to a tree
+        // Process point of interest corresponding to a tree
 		if (foundTree) {
 			int count = 0;
 			double sumX = 0;
 			double sumY = 0;
 
-            //only group the points that have similiar distance and add it to the sum. 
+            // Only group the points that have similiar distance and add it to the sum. 
 			for (std::vector<double>::iterator it = v.begin(); it != v.end(); ++it) {
 				if (minDist <= *it && *it <= minDist+0.2) {
 					count++;
@@ -100,7 +100,7 @@ void stage_laserCallback(sensor_msgs::LaserScan msg) {
 			double avgX = 0;
 			double avgY = 0;
 
-            //if there is more than 1 valid point then work out the position of the tree and the distance between the robot
+            // If there is more than 1 valid point then work out the position of the tree and the distance between the robot
 			if (count > 0) {
 				avgX = sumX / count;
 				avgY = (sumY /count) ;
@@ -147,7 +147,8 @@ void AlphaPerson::stateLogic() {
 				} else {
 					alphaPerson.faceSouth(1);
 				}
-				alphaPerson.addMovement("forward_y",yDistance,1); //move down or up
+				// Move down or up
+				alphaPerson.addMovement("forward_y",yDistance,1); 
 				alphaPerson.faceWest(1);
 				alphaPerson.addMovement("forward_x",xDistance,1);
 				alphaPerson.faceSouth(1);
@@ -177,29 +178,25 @@ void AlphaPerson::stateLogic() {
 
 
 
-int main(int argc, char **argv) 
-{
+int main(int argc, char **argv) {
 
 
-	//initialise ros
+	// Initialise ros
 	ros::init(argc,argv,"AlphaPerson");
 
-	// convert input parameters for person initialization from String to respective types
+	// Convert input parameters for person initialization from String to respective types
 	std::string xString = argv[1];
 	std::string yString = argv[2];
 	double xPos = atof(xString.c_str());
 	double yPos = atof(yString.c_str());
-
 	alphaPerson = AlphaPerson(xPos,yPos);
-
 	alphaPerson.setState(AlphaPerson::MOVING_TO_SEARCH_SPOT);
 	alphaPerson.setStatus("Initial");
-	//create ros handler for this node
-	ros::NodeHandle n;
 
+	// Create ros handler for this node
+	ros::NodeHandle n;
 	alphaPerson.robotNode_stage_pub = n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
 	ros::Publisher pub = n.advertise<se306project::human_status>("status",1000);
-
 	alphaPerson.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000,stage_positionCallback);
 	alphaPerson.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000,stage_laserCallback);
 	ros::Rate loop_rate(10);
@@ -213,19 +210,22 @@ int main(int argc, char **argv)
 	int go_to_next_tree = 3;
 	int tickCount = 0;
 
-	while (ros::ok())
-	{
+	while (ros::ok()) {
 		alphaPerson.move();
 		alphaPerson.stateLogic();
-
-		//assign to status message
-		status_msg.my_counter = count++;//add counter to message to broadcast
-		status_msg.status=alphaPerson.getStatus();//add status to message to broadcast
-		status_msg.pos_x=alphaPerson.getX(); //add x to message to broadcast
-		status_msg.pos_y=alphaPerson.getY();//add y to message to broadcast
-		status_msg.pos_theta=alphaPerson.getTheta(); //add angle to message to broadcast
-		pub.publish(status_msg);//publish the message for other node
-
+		// Assign to status message
+		// Add counter to message to broadcast
+		status_msg.my_counter = count++;
+		// Add status to message to broadcast
+		status_msg.status=alphaPerson.getStatus();
+		// Add x to message to broadcast
+		status_msg.pos_x=alphaPerson.getX(); 
+		// Add y to message to broadcast
+		status_msg.pos_y=alphaPerson.getY();
+		// Add angle to message to broadcast
+		status_msg.pos_theta=alphaPerson.getTheta(); 
+		// Publish the message for other node
+		pub.publish(status_msg);
 		ros::spinOnce();
 		loop_rate.sleep();
 		alphaPerson.determineStatus();

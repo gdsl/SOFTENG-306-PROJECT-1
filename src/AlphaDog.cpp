@@ -96,7 +96,7 @@ int main(int argc, char **argv) {
 		alphaDog.move();
         
         if (alphaDog.getMovementQueueSize() == 0) {
-            if (state == AlphaDog::TOP) {
+           if (state == AlphaDog::TOP) {
                 if (alphaDog.isAntiClockwise()) {
                     alphaDog.faceWest(1);
                     alphaDog.addMovement("forward_x", left-alphaDog.getX(), 1);
@@ -137,7 +137,7 @@ int main(int argc, char **argv) {
                     state = AlphaDog::BOTTOM;
                 }
             }
-	    }
+	}
 
 		// Add Dog variables to status message to be broadcast
 		status_msg.status=status;
@@ -147,8 +147,8 @@ int main(int argc, char **argv) {
 		// Publish status message
 		pub.publish(status_msg);
 		ros::spinOnce();
-		loop_rate.sleep();
-		alphaDog.determineStatus();
+        	loop_rate.sleep();
+                alphaDog.determineStatus();
 	}
 	return 0;
 }

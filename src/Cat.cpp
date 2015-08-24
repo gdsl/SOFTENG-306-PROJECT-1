@@ -81,21 +81,9 @@ int main(int argc, char **argv)
 			cat.addMovement("forward_x",5,1);
 		}
 
-		if (cat.getMovementQueueSize() == 1) {
+		/* if (cat.getMovementQueueSize() == 1) {
 			status = "Sleeping";
-		}
-
-	        
-    		/*if (cat.getMovementQueueSize() == 0) {
-			cat.faceWest(1);
-			cat.addMovement("forward_x",-5,1);
-			cat.faceSouth(1);
-            		cat.addMovement("forward_y", -1.25 , 1);  
-		    	cat.faceEast(1);
-			cat.addMovement("forward_x",5,1);
-			cat.faceNorth(1);
-			cat.addMovement("forward_y",1.25,1);
-		}*/
+		} */
 
 		// Add Cat variables to status message to be broadcast
 		status_msg.status=status;
@@ -105,26 +93,9 @@ int main(int argc, char **argv)
 		// Publish status message
 		pub.publish(status_msg);
 		ros::spinOnce();
-
 		loop_rate.sleep();
-
-		/*// Logic to determine current status of Cat - Walking/Sleeping/Turning
-		// Convert radians to degrees
-		radians = Cat.getTheta();
-		angle = roundf(radians * 57.2957795 * 100) / 100;
-
-		// Check if cat is moving (and therefore 'walking')
-		if (Cat.getLin() < -0.01) {
-			status = "Walking";
-		}
-		// Check if cat is facing North/East/South/West AND not moving (and therefore 'sleeping')
-		else if ((angle == -360) || (angle == -270) || (angle == -180) || (angle == -90) || (angle == 0) || (angle == 90) || (angle == 180) || (angle == 270) || (angle == 360) && (Cat.getLin() == 0)) {
-			status = "Sleeping";
-		}
-		else {
-			status = "Turning";
-		}*/
-		cat.determineStatus();
+		// Determine status of cat
+                cat.determineStatus();
 	}
 	return 0;
 }
