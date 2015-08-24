@@ -72,9 +72,7 @@ void stage_laserCallback(sensor_msgs::LaserScan msg) {
                     if (msg.ranges[i] < minDist) minDist = msg.ranges[i];
                     v.push_back(msg.ranges[i]);
                     Xmap[msg.ranges[i]] = obsX;
-                    Ymap[msg.ranges[i]] = obsY;
-               // ROS_INFO("ALPHA PERSON OBS dist:%f angle:%d abs:%f obsX:%f obsY:%f robotAngle:%f", msg.ranges[i], i,absAngle, obsX,obsY,toDegree);
-                    
+                    Ymap[msg.ranges[i]] = obsY;             
                 }
             }
         }
@@ -106,7 +104,6 @@ void stage_laserCallback(sensor_msgs::LaserScan msg) {
                 xDistance = avgX - alphaPerson.getX();
                 yDistance = avgY - alphaPerson.getY() + 0.75;
             }            
-            //ROS_INFO("ALPHA PERSON x:%f y:%f xDist:%f yDist:%f",avgX,avgY,xDistance,yDistance);
         }
     }
 }
@@ -142,7 +139,8 @@ void AlphaPerson::stateLogic() {
                 } else {
                     alphaPerson.faceSouth(1);
                 }
-                alphaPerson.addMovement("forward_y",yDistance,1); //move down or up
+		// Move up or down
+                alphaPerson.addMovement("forward_y",yDistance,1);
                 alphaPerson.faceWest(1);
                 alphaPerson.addMovement("forward_x",xDistance,1);
                 alphaPerson.faceSouth(1);
@@ -170,37 +168,33 @@ void AlphaPerson::stateLogic() {
     }
 }
 
-
-
 int main(int argc, char **argv) 
 {
-    
-    
-    //initialise ros    
+    // Initialise ros    
     ros::init(argc,argv,"AlphaPerson");
 
-    // convert input parameters for person initialization from String to respective types
+    // Convert input parameters for person initialization from String to respective types
     std::string xString = argv[1];
     std::string yString = argv[2];
     double xPos = atof(xString.c_str());
     double yPos = atof(yString.c_str());
     
     alphaPerson = AlphaPerson(xPos,yPos);
-    
+   
     alphaPerson.setState(AlphaPerson::MOVING_TO_SEARCH_SPOT);
     alphaPerson.setStatus("Initial");
-    //create ros handler for this node
+    // Create ros handler for this node
     ros::NodeHandle n;
     
     alphaPerson.robotNode_stage_pub = n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
-	ros::Publisher pub = n.advertise<se306project::human_status>("status",1000);
+    ros::Publisher pub = n.advertise<se306project::human_status>("status",1000);
 
     alphaPerson.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000,stage_positionCallback);
     alphaPerson.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000,stage_laserCallback);
     ros::Rate loop_rate(10); 
     int state = 2;
-	int count = 0;
-	se306project::human_status status_msg;
+    int count = 0;
+    se306project::human_status status_msg;
     int none = -1;
     int trimming_tree = 0;
     int moving_to_search_spot = 1;
@@ -258,13 +252,13 @@ int main(int argc, char **argv)
             }
         }*/
     
-	    //assign to status message
-	    status_msg.my_counter = count++;//add counter to message to broadcast
-	    status_msg.status=alphaPerson.getStatus();//add status to message to broadcast
-	    status_msg.pos_x=alphaPerson.getX(); //add x to message to broadcast
-	    status_msg.pos_y=alphaPerson.getY();//add y to message to broadcast
-	    status_msg.pos_theta=alphaPerson.getTheta(); //add angle to message to broadcast
-	    pub.publish(status_msg);//publish the message for other node
+	// Assign values to status message
+	status_msg.my_counter = count++;		// Add counter to message to broadcast
+	status_msg.status=alphaPerson.getStatus();	// Add status to message to broadcast
+	status_msg.pos_x=alphaPerson.getX(); 		// Add x to message to broadcast
+	status_msg.pos_y=alphaPerson.getY();		// Add y to message to broadcast
+	status_msg.pos_theta=alphaPerson.getTheta();	// Add angle to message to broadcast
+	pub.publish(status_msg);			// Publish the message for other node
         
         ros::spinOnce();
         loop_rate.sleep();
