@@ -465,19 +465,22 @@ void Generator::writeLaunchFile(){
         		oss << "/robot_" << i << "/ -1 -1";
         	}
         	
-        } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.gardeners + model.dogs) { //dogs
-            xml.SetAttrib( "name", "AlphaDognode" );
-            xml.SetAttrib( "type", "AlphaDog" );
-        } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.gardeners + model.dogs + model.cats) { //cats
-            xml.SetAttrib( "name", "Catnode" );
-            xml.SetAttrib( "type", "Cat" );
-        } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.gardeners + model.dogs + model.cats + model.tractors) { //tractor
-            xml.SetAttrib( "name", "Tractornode" );
-            xml.SetAttrib( "type", "Tractor" );
-        }
-          else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.gardeners + model.dogs + model.cats + model.tractors+model.neighbours) { //neighbour
+        } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.gardeners + model.neighbours) { //neighbour
             xml.SetAttrib( "name", "Neighbournode" );
             xml.SetAttrib( "type", "Neighbour" );
+	int neighbourPos = (i - model.weed - model.beacons - model.pickerRobots - model.carrierRobots - model.workers - model.gardeners)*2; 
+	oss << neighbourPositions[neighbourPos] << " " << neighbourPositions[neighbourPos+1];
+}
+        
+ else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.gardeners +model.neighbours+ model.dogs) { //dogs
+            xml.SetAttrib( "name", "AlphaDognode" );
+            xml.SetAttrib( "type", "AlphaDog" );
+        } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.gardeners +model.neighbours+ model.dogs + model.cats) { //cats
+            xml.SetAttrib( "name", "Catnode" );
+            xml.SetAttrib( "type", "Cat" );
+        } else if (i < model.weed + model.beacons + model.pickerRobots + model.carrierRobots + model.workers + model.gardeners +model.neighbours+ model.dogs + model.cats + model.tractors) { //tractor
+            xml.SetAttrib( "name", "Tractornode" );
+            xml.SetAttrib( "type", "Tractor" );
         }
         xml.SetAttrib( "args", oss.str() );
         xml.OutOfElem();

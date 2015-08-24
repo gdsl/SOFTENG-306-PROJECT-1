@@ -38,11 +38,11 @@ void Neighbour::updateNearestRobot(const nav_msgs::Odometry msg)
  */
 void Neighbour::next(std::string action)
 {
-	std::string currentStatus = neighbour.getStatus();
+	std::string currentStatus = getStatus();
         
-        if (currentStatus =="WALKING"){
-               if (
-}
+        //if (currentStatus =="WALKING"){
+               //if (
+//}
 }
 
 /*void stage_laserCallback(sensor_msgs::LaserScan msg) {
@@ -87,7 +87,7 @@ int main(int argc, char **argv)
 	Neighbour Neighbour;
 	Neighbour.robotNode_stage_pub = n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
 	Neighbour.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth", 1000, &Neighbour::stageOdom_callback, &Neighbour);
-	Neighbour.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000, &Neighbour::stageLaser_callback, &Neighbour);
+	//Neighbour.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000, &Neighbour::stageLaser_callback, &Neighbour);
 	Neighbour.Neighbour_status_pub = n.advertise<se306project::robot_status>("status",1000);
 
 	/*//subscribing all the picker robot

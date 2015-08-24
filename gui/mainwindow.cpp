@@ -80,11 +80,11 @@ void MainWindow::onUpdateGUI( QString id, QString str, int i )
 	if (idNum < model.carrierRobots+model.pickerRobots) {
 	    QListWidget *qlw = ((QListWidget*)ui->robotScroll->widget()->layout()->itemAt(idNum)->widget());
     	qlw->item(i)->setText(truncate(str));
-    } else if (idNum < model.carrierRobots+model.pickerRobots+model.workers+model.gardeners){
+    } else if (idNum < model.carrierRobots+model.pickerRobots+model.workers+model.gardeners+model.neighbours){
     	QListWidget *qlw = ((QListWidget*)ui->peopleScroll->widget()->layout()->itemAt(idNum-(model.carrierRobots + model.pickerRobots))->widget());
     	qlw->item(i)->setText(truncate(str));
     } else {
-    	QListWidget *qlw = ((QListWidget*)ui->animalScroll->widget()->layout()->itemAt(idNum-(model.carrierRobots + model.pickerRobots + model.workers + model.gardeners))->widget());
+    	QListWidget *qlw = ((QListWidget*)ui->animalScroll->widget()->layout()->itemAt(idNum-(model.carrierRobots + model.pickerRobots + model.workers + model.gardeners+model.neighbours))->widget());
     	qlw->item(i)->setText(truncate(str));
     }
 }
@@ -158,7 +158,7 @@ void MainWindow::generate() {
     model.poleTrunkSpacing = ui->spacingSpinner->value();
     model.rowCount = ui->rowNumberSpinner->value();
     model.blindPerson = ui->blindPersonSpinner->value();
-    model.neighbors = ui->neighborSpinner->value();
+    model.neighbours = ui->neighborSpinner->value();
     model.gardeners = ui->gardenerSpinner->value();
     //model.tractors = ui->tractorSpinner->value();
     model.beacons = model.rowCount*2;
@@ -178,6 +178,9 @@ void MainWindow::generate() {
     }
     for (int i = 0; i < model.gardeners; i++) {
         uiListPeoples.push_back(createNewItem("Gardener"));
+    }
+    for (int i = 0; i < model.neighbours; i++) {
+        uiListPeoples.push_back(createNewItem("Neighbour"));
     }
     for (int i = 0; i < model.dogs; i++) {
         uiListAnimals.push_back(createNewItem("Animal_Dog"));

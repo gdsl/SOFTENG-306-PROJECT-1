@@ -192,6 +192,15 @@ add_dependencies(Cat  se306project_generate_messages_cpp)
 add_library(CatLib src/Cat.cpp)
 target_link_libraries(Cat Animal Entity ${catkin_LIBRARIES})
 
+
+add_executable(Neighbour src/Neighbour.cpp)
+target_link_libraries(Neighbour Person Entity ${catkin_LIBRARIES})
+add_dependencies(Neighbour se306project_generate_messages_cpp)
+
+
+add_library(NeighbourLib src/Neighbour.cpp)
+target_link_libraries(Neighbour Person Entity ${catkin_LIBRARIES})
+
 add_executable(AlphaPerson src/AlphaPerson.cpp)
 target_link_libraries(AlphaPerson Person Entity ${catkin_LIBRARIES})
 add_dependencies(AlphaPerson se306project_generate_messages_cpp)
