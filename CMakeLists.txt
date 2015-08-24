@@ -192,6 +192,12 @@ add_dependencies(Cat  se306project_generate_messages_cpp)
 add_library(CatLib src/Cat.cpp)
 target_link_libraries(Cat Animal Entity ${catkin_LIBRARIES})
 
+add_executable(EntityMock src/EntityMock.cpp)
+target_link_libraries(EntityMock Entity ${catkin_LIBRARIES})
+add_dependencies(EntityMock se306project_generate_messages_cpp)
+
+add_library(EntityMockLib src/EntityMock.cpp)
+target_link_libraries(EntityMock Entity ${catkin_LIBRARIES})
 
 add_executable(Neighbour src/Neighbour.cpp)
 target_link_libraries(Neighbour Person Entity ${catkin_LIBRARIES})
@@ -253,6 +259,9 @@ if (CATKIN_ENABLE_TESTING)
 
     add_rostest_gtest(testAlphaDog test/rostest/testAlphaDog.test test/testAlphaDog.cpp)
     target_link_libraries(testAlphaDog AlphaDogLib ${catkin_LIBRARIES})
+    
+    add_rostest_gtest(testEntityMock test/rostest/testEntityMock.test test/testEntityMock.cpp)
+    target_link_libraries(testEntityMock EntityMockLib ${catkin_LIBRARIES})
     
     # unit tests
 	catkin_add_gtest(testMovement test/testMovement.cpp)
