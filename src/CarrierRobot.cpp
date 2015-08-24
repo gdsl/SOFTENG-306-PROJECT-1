@@ -270,7 +270,7 @@ void recievePickerRobotStatus(const se306project::robot_status::ConstPtr& msg)
 					//double pickerX = -5;
 					carrierRobot.faceEast(1);
 					//xDistanceTravel = pickerX - carrierRobot.getX() -10;
-					double distanceBetween = 3.15;
+					double distanceBetween = 3.65;
 					carrierRobot.setXDistanceTravel(pickerX - carrierRobot.getX() -10 - distanceBetween);
 					carrierRobot.addMovement("forward_x",carrierRobot.getXDistanceTravel(),1);
 				}
