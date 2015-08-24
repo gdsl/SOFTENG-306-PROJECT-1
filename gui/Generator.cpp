@@ -117,12 +117,22 @@ void Generator::loadOrchard()
 		    }
 
 		    /*
-		     * add fruit vines except last row
+		     * add vertical fruit vines except last row
+             * place 3 vertical vines in each column
 		     * Height is hardcoded to trunk height.
-		     */
+             */
 		    if (j < model.rowCount) {
-			    outfile << "fruitVine( pose [ " << x << " " << (y-model.rowWidth/2.0) << " 1.8 0.000 ] color \"green\")" << endl;
-		    }
+			    outfile << "verticalFruitVine( pose [ " << x << " " << (y-model.rowWidth/2.0) << " 1.8 0.000 ] size [0.100 " << model.rowWidth << " 0.100] color \"green\")" << endl;
+                
+                // place 2 more vertical vines on the right of each tree, just not on the very last tree.
+                if (i < (columnCount - 1)) {
+                    outfile << "verticalFruitVine( pose [ " << (x + model.poleTrunkSpacing/3) << " " << (y-model.rowWidth/2.0) << " 1.8 0.000 ] size [0.100 " << model.rowWidth << " 0.100] color \"green\")" << endl;
+                    outfile << "verticalFruitVine( pose [ " << (x + (model.poleTrunkSpacing/3)*2) << " " << (y-model.rowWidth/2.0) << " 1.8 0.000 ] size [0.100 " << model.rowWidth << " 0.100] color \"green\")" << endl;
+                }               
+                
+		    } 
+            
+            
 
 		    // update y and beaconCount
 		    y -= model.rowWidth;
