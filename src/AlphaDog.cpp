@@ -13,11 +13,19 @@ AlphaDog::AlphaDog() : Animal() {
 }
 
 AlphaDog::AlphaDog(double x, double y) : Animal(x,y) {
-
+    this->antiClockwise = false;
 }
 
 AlphaDog::~AlphaDog() {
 
+}
+
+void AlphaDog::switchDirection() {
+    this->antiClockwise = !(this->antiClockwise);
+}
+
+bool AlphaDog::isAntiClockwise() {
+    return this-> antiClockwise;
 }
 
 AlphaDog alphaDog(0,0);
@@ -69,9 +77,8 @@ int main(int argc, char **argv) {
 		alphaDog.move();
         
         if (alphaDog.getMovementQueueSize() == 0) {
-            antiClockwise = !antiClockwise;
             if (state == AlphaDog::TOP) {
-                if (antiClockwise) {
+                if (alphaDog.isAntiClockwise()) {
                     alphaDog.faceWest(1);
                     alphaDog.addMovement("forward_x", left-alphaDog.getX(), 1);
                     state = AlphaDog::LEFT;
@@ -81,7 +88,7 @@ int main(int argc, char **argv) {
                     state = AlphaDog::RIGHT;
                 }
             } else if (state == AlphaDog::LEFT)  {
-                if (antiClockwise) {
+                if (alphaDog.isAntiClockwise()) {
                     alphaDog.faceSouth(1);
                     alphaDog.addMovement("forward_y", bottom-alphaDog.getY(),1);
                     state = AlphaDog::BOTTOM;
@@ -91,7 +98,7 @@ int main(int argc, char **argv) {
                     state = AlphaDog::TOP;
                 }
             } else if (state == AlphaDog::BOTTOM) {
-                if (antiClockwise) {
+                if (alphaDog.isAntiClockwise()) {
                     alphaDog.faceEast(1);           
                     alphaDog.addMovement("forward_x", right-alphaDog.getX(), 1);
                     state = AlphaDog::RIGHT;
@@ -101,7 +108,7 @@ int main(int argc, char **argv) {
                     state = AlphaDog::LEFT;
                 }
             } else if (state == AlphaDog::RIGHT) {
-                if (antiClockwise) {
+                if (alphaDog.isAntiClockwise()) {
                     alphaDog.faceNorth(1);           
                     alphaDog.addMovement("forward_y", top-alphaDog.getY(), 1);
                     state = AlphaDog::TOP;

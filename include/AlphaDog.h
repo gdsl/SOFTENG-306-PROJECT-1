@@ -16,6 +16,12 @@ public:
     AlphaDog(double x, double y);
     enum State {TOP, BOTTOM, RIGHT, LEFT};
 	virtual ~AlphaDog();
+    void switchDirection();
+    bool isAntiClockwise();
+
+
+private:
+    bool antiClockwise;
 	
 };
 
