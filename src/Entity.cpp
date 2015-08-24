@@ -44,16 +44,11 @@ Entity::Entity(double x, double y, double theta, double linearVelocity, double a
 	this->obstacleAngle=270;
 	this->criticalIntensity=0;
 	this->numOfScan=0; 		
-	// Variable for the previous critical scan distance
-	this->previousScanDistance=0; 	
-	// Variable for the preivous critical scan intensity
-	this->previousScanIntensity=0; 
-	// Variable for the number of the previous scan critical objects	
-	this->previousScanNumber=0; 	
-	// Variable for the min number of the previous scan critical objects which can be scanned
-	this->previousScanNumberMin=0; 	
-	// Variable for the max number of the previous scan critical objects which can be scanned
-	this->previousScanNumberMax=0; 	
+	this->previousScanDistance=0; 	// Variable for the critical scan distance previous
+	this->previousScanIntensity=0; 	// Variable for the critical scan intensity previous
+	this->previousScanNumber=0; 	// Variable for the numberth of the previous scan critical objects
+	this->previousScanNumberMin=0; 	// Variable for the min number of the previous scan critical object can be scan
+	this->previousScanNumberMax=0; 	// Variable for the max number of the previous scan critical object can be scan
 	this->avoidanceCase=NONE;
 }
 
@@ -283,8 +278,8 @@ void Entity::avoidObstacle(Entity entity, double x,double y){
 		entity.addMovementFront("rotation",M_PI/2,1,1);
 		entity.addMovementFront("forward_x",-x,1,1);
 		entity.addMovementFront("rotation",M_PI,1,1);
-		// This is at front of the queue
-		entity.addMovementFront("forward_x",0,0,1);
+		entity.addMovementFront("forward_x",0,0,1);//this is at front of front
+		//pickerRobot.move();
 	}else if(entity.getDirectionFacing()== SOUTH){
 		entity.addMovementFront("rotation",-M_PI/2,1,1);
 		entity.addMovementFront("forward_x",x,1,1);
@@ -293,8 +288,7 @@ void Entity::avoidObstacle(Entity entity, double x,double y){
 		entity.addMovementFront("rotation",-M_PI/2,1,1);
 		entity.addMovementFront("forward_x",-x,1,1);
 		entity.addMovementFront("rotation",M_PI,1,1);
-		// This is at front of the queue
-		entity.addMovementFront("forward_x",0,0,1);
+		entity.addMovementFront("forward_x",0,0,1);//this is at front of front
 	}else if(entity.getDirectionFacing()== EAST){
 		entity.addMovementFront("rotation",0, 1,1);
 		entity.addMovementFront("forward_y",y,1,1);
@@ -303,8 +297,7 @@ void Entity::avoidObstacle(Entity entity, double x,double y){
 		entity.addMovementFront("rotation",0, 1,1);
 		entity.addMovementFront("forward_y",-y,1,1);
 		entity.addMovementFront("rotation",-M_PI/2, 1,1);
-		// This is at front of the queue
-		entity.addMovementFront("forward_x",0,0,1);
+		entity.addMovementFront("forward_x",0,0,1);//this is at front of front
 	}else if(entity.getDirectionFacing()== WEST){
 		entity.addMovementFront("rotation",M_PI, 1,1);
 		entity.addMovementFront("forward_y",y,1,1);
@@ -313,8 +306,7 @@ void Entity::avoidObstacle(Entity entity, double x,double y){
 		entity.addMovementFront("rotation",M_PI, 1,1);
 		entity.addMovementFront("forward_y",-y,1,1);
 		entity.addMovementFront("rotation",-M_PI/2, 1,1);
-		// This is at front of the queue
-		entity.addMovementFront("forward_x",0,0,1);
+		entity.addMovementFront("forward_x",0,0,1);//this is at front of front
 	}
 }
 
@@ -429,51 +421,51 @@ void Entity::addMovementFront(std::string type, double distance,double velocity,
  */
 void Entity::moveForward(double pos, double vel, std::string direction,int queueNum) {
 	double position=0;
-	if (direction.compare("x")==0) {
+	if (direction.compare("x")==0){
 		position=x;
-	} else {
+	}else{
 		position=y;
 	}
-	if (!desireLocation){
+	if (!desireLocation){//TODO slow down
 		ROS_INFO("mfpos: %f", pos);
-		if (std::abs(position-pos)>=0.01) {
-			if (std::abs(position-pos)<=0.2) {
+		if (std::abs(position-pos)>=0.01){
+			if(std::abs(position-pos)<=0.2){
 				linearVelocity=0.1;
-			} else if (std::abs(position-pos)<=1) {
+			}else if(std::abs(position-pos)<=1){
 				linearVelocity=1;
-			} else {
+			}else{
 				linearVelocity=vel;
 			}
 			// Make sure the robot can slightly go backwards to adjust to right position
-			if (position>pos) {
+			if (position>pos){
 				// If facing east then velocity should be negative since overshoot
-				if (directionFacing==EAST) { 
+				if(directionFacing==EAST){ 
 					linearVelocity=-linearVelocity;
 					// If facing North then velocity should be negative since overshoot
-				} else if (directionFacing==NORTH) { 
+				}else if(directionFacing==NORTH){ 
 					linearVelocity=-linearVelocity;
 				}
 				// Now in the -ve direction to our frame of reference
-			} else if (pos>position) {
+			}else if (pos>position){
 				// If facing west then velocity should be negative since overshoot
-				if (directionFacing==WEST) { 
+				if(directionFacing==WEST){ 
 					linearVelocity=-linearVelocity;
 					// If facing south then velocity should be negative since overshoot
-				} else if (directionFacing==SOUTH) { 
+				}else if(directionFacing==SOUTH){ 
 					linearVelocity=-linearVelocity;
 				}
 			}
-		} else {
+		}else{
 			if (queueNum==2){
 				// Call method complete to remove complete movement from queue
 				movementComplete();
-			} else {
+			}else{
 				// Call method to remove from avoidance queue
 				avoidanceComplete();
 			}
 			linearVelocity=0;
 		}
-	} else {
+	}else{
 		desireLocation=true;
 		linearVelocity=0;
 	}
@@ -492,27 +484,26 @@ void Entity::rotate(double angleToRotateTo, double angleSpeed, int queueNum) {
 	// Check if angleToRotateTo and the current angle is similar. If not rotate.
 	if (std::abs(angleToRotateTo-theta)>0.0001){
 		// Slow down speed when very near
-		if (std::abs(angleToRotateTo-theta)<(0.002)) {
+		if (std::abs(angleToRotateTo-theta)<(0.002)){
 			// ROS_INFO(""+(angleToRotateTo-theta));
 			angularVelocity=0.001;
 			updateOdometry();
 			// Slow down speed when very near
-		} else if (std::abs(angleToRotateTo-theta)<(0.05)) {
+		} else if (std::abs(angleToRotateTo-theta)<(0.05)){
 			// ROS_INFO(""+(angleToRotateTo-theta));
 			angularVelocity=0.01;
 			updateOdometry();
 			// Slow down speed when near
-		} else if (std::abs(angleToRotateTo-theta)<(0.3)) {
+		} else if (std::abs(angleToRotateTo-theta)<(0.3)){
 			// ROS_INFO(""+(angleToRotateTo-theta));
 			angularVelocity=0.1;
 			updateOdometry();
-		} else {
+		} else{
 			angularVelocity=angleSpeed;
 		}
-		// If angle to rotate to is less than theta, then rotate CW
-		if (angleToRotateTo<theta) {
+		if (angleToRotateTo<theta){//if angle to rotate to is less than theta rotate CW
 			angularVelocity=-angularVelocity;
-		} else if (angleToRotateTo==M_PI) {
+		} else if (angleToRotateTo==M_PI){
 			// If it's 180 degrees (this can be +ve or -ve so need to make sure fastest turn  implemented)
 			// If -ve theta then CW is fastest
 			if (theta<0){
@@ -520,22 +511,22 @@ void Entity::rotate(double angleToRotateTo, double angleSpeed, int queueNum) {
 			}
 		}
 		updateOdometry();
-	} else {
+	} else{
 		// Set the direction the robot is now facing
 		// If facing East then velocity should be negative since overshoot
-		if (theta<0.1 && theta>-0.1) {
+		if(theta<0.1 && theta>-0.1){
 			directionFacing=EAST;
 			// If facing North then velocity should be negative since overshoot
-		} else if (theta<M_PI/2+0.1 && theta>M_PI/2-0.1) {
+		} else if(theta<M_PI/2+0.1 && theta>M_PI/2-0.1){
 			directionFacing=NORTH;
 			// If facing West then velocity should be negative since overshoot
-		} else if (theta<-M_PI+0.1 || theta>M_PI-0.1) { 
+		} else if(theta<-M_PI+0.1 || theta>M_PI-0.1){ 
 			directionFacing=WEST;
 			// If facing South then velocity should be negative since overshoot
-		} else if (theta<-M_PI/2+0.1 && theta>((-M_PI/2)-0.1)) { 
+		} else if(theta<-M_PI/2+0.1 && theta>((-M_PI/2)-0.1)){ 
 			directionFacing=SOUTH;
 		}
-		if (queueNum==2) {
+		if (queueNum==2){
 			// Call method complete to remove complete movement from queue
 			movementComplete();
 		} else{
@@ -711,14 +702,14 @@ void Entity::setStatus(std::string status) {
 /**
  * Getter method for the obstacle detection status
  */
-std::string Entity::getObstacleStatus() {
+std::string Entity::getObstacleStatus(){
 	return obstacleStatus;
 }
 
 /**
  * setter method for the obstacle detection status
  */
-void Entity::setObstacleStatus(std::string obstacleStatus) {
+void Entity::setObstacleStatus(std::string obstacleStatus){
 	this->obstacleStatus=obstacleStatus;
 }
 

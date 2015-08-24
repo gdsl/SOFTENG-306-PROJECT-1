@@ -14,7 +14,6 @@ Tractor::Tractor() {
  * Constructor for carrier Robot with status
  */
 Tractor::Tractor(double x,double y,double theta,double linearVel, double angularVel) : Entity(x, y, theta, linearVel, angularVel) {
-
 }
 
 /*
@@ -122,7 +121,8 @@ int main(int argc, char **argv) {
 	}
 
 	// ROS infinite loop
-	while (ros::ok()) {
+	while (ros::ok())
+	{
 		ros::spinOnce();
 		//status_msg.my_counter=count;		//add counter to message
 		//status_msg.status=carrierRobot.getStatus();		//add status to message

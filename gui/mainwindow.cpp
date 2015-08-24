@@ -52,19 +52,18 @@ void MainWindow::startReadingTopics() {
 		stringstream out;
 		out << i;
 		worker->setId( out.str());
-		// Started() signal is by default called by thread->start
-		connect(thread, SIGNAL(started()), worker, SLOT(executeScript())); 
-		// Custom signal which calls the slot for onUpdateGUI
-		connect(worker, SIGNAL(requestNewLabel(QString, QString, int)), this, SLOT(onUpdateGUI(QString, QString, int))); 
+
+		connect(thread, SIGNAL(started()), worker, SLOT(executeScript())); //started() signal is by default called by thread->start
+		connect(worker, SIGNAL(requestNewLabel(QString, QString, int)), this, SLOT(onUpdateGUI(QString, QString, int))); //custom signal which calls the slot for onUpdateGUI
 		connect(thread, SIGNAL(destroyed()), worker, SLOT(deleteLater()));
 		thread->start();
 	}
 }
 
+
 MainWindow::~MainWindow()
 {
 	//close roslaunch and close all rostopics
-
 	system("pkill Tractor");
 	system("pkill roslaunch");
 	system("pkill stage");
@@ -73,9 +72,11 @@ MainWindow::~MainWindow()
 	delete ui;
 }
 
-void MainWindow::onUpdateGUI( QString id, QString str, int i ) {
-	// Update the gui for robots
+void MainWindow::onUpdateGUI( QString id, QString str, int i )
+{
+	//update the gui for robots
 	int idNum = id.toInt()-model.beacons-model.weed;
+
 	if (idNum < model.carrierRobots+model.pickerRobots) {
 		QListWidget *qlw = ((QListWidget*)ui->robotScroll->widget()->layout()->itemAt(idNum)->widget());
 		qlw->item(i)->setText(truncate(str));
@@ -110,9 +111,11 @@ void MainWindow::on_launchButton_clicked()
 	usleep(1000000); //1 second
 	//emit MainWindow::requestProcess();
 	startReadingTopics();
+
 }
 
-void MainWindow::on_displayStatusButton_clicked() {
+void MainWindow::on_displayStatusButton_clicked()
+{
 	startReadingTopics();
 	//MainWindow::generate();
 }
@@ -133,7 +136,6 @@ void MainWindow::on_testDriveButton_clicked()
 }
 
 void MainWindow::on_closeButton_clicked() {
-	// Close all processes related to running of the project when user clicks the close button
 	system("pkill Tractor");
 	system("pkill roslaunch");
 	startedTestDrive = false;
@@ -221,6 +223,7 @@ void MainWindow::generate() {
 		peopleQL->setStyleSheet(backgroundColour);
 	}
 	Generator generator(model);
+
 	generator.loadWorld();
 	generator.loadTallWeeds();
 	generator.loadOrchard();
@@ -228,8 +231,6 @@ void MainWindow::generate() {
 	generator.loadCarrierRobots();
 	generator.loadPeople();
 	generator.loadAnimals();
-	generator.write();
-	generator.writeLaunchFile();
 	generator.loadTractor();
 	generator.loadBackdrop();
 	generator.write();

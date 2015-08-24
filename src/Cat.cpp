@@ -42,10 +42,6 @@ int main(int argc, char **argv)
 	ros::init(argc,argv,"Animal");
 	std::string xPosArg = argv[1];
 	std::string spacingArg = argv[2];
-
-	//argv[2] is y pos
-	//argv[3] is theta
-    std::string spacingArg = argv[4];
 	double spacing = atof(spacingArg.c_str());
 	double xPos = atof(xPosArg.c_str());
 	cat = Cat(xPos, 21.500);
