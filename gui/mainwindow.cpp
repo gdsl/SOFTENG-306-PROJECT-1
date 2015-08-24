@@ -209,9 +209,15 @@ void MainWindow::generate() {
     }
     for (int i = 0; i < uiListAnimals.size(); i++) {
         ui->animalScroll->widget()->layout()->addWidget(uiListAnimals[i]);
+        QListWidget *animalQL = ((QListWidget*)ui->animalScroll->widget()->layout()->itemAt(i)->widget());
+        QString backgroundColour = "QListWidget {background: " + QString::fromStdString(colourArray[i]) + ";}";
+        animalQL->setStyleSheet(backgroundColour);
     }
     for (int i = 0; i < uiListPeoples.size(); i++) {
     	ui->peopleScroll->widget()->layout()->addWidget(uiListPeoples[i]);
+        QListWidget *peopleQL = ((QListWidget*)ui->peopleScroll->widget()->layout()->itemAt(i)->widget());
+        QString backgroundColour = "QListWidget {background: " + QString::fromStdString(colourArray[i]) + ";}";
+        peopleQL->setStyleSheet(backgroundColour);
     }
     Generator generator(model);
     
@@ -223,6 +229,7 @@ void MainWindow::generate() {
 	generator.loadPeople();
 	generator.loadAnimals();
 	generator.loadTractor();
+    generator.loadBackdrop();
 	generator.write();
 	generator.writeLaunchFile();
 

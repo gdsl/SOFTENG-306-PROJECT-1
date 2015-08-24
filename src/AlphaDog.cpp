@@ -40,8 +40,8 @@ int main(int argc, char **argv) {
     // convert input parameters for person initialization from String to respective types
     std::string xString = argv[1];
     std::string yString = argv[2];
-    std::string rowString = argv[3];
-    std::string spacingString = argv[4];
+    std::string rowString = argv[4];
+    std::string spacingString = argv[5];
     double rowWidth = atof(rowString.c_str());
     double trunkSpacing = atof(spacingString.c_str());
     double xPos = atof(xString.c_str());

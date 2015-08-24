@@ -28,9 +28,11 @@ int main(int argc, char **argv)
     //initialise ros    
     ros::init(argc,argv,"beacon");
     
+    //ARGV 1 & 2 ARE NOW X AND Y
+
     // convert input parameters for Beacon initialization from String to respective types
-    std::string xString = argv[2];
-    std::string yString = argv[3];
+    std::string xString = argv[4];
+    std::string yString = argv[5];
     double xPos = atof(xString.c_str());
     double yPos = atof(yString.c_str());
     
@@ -41,7 +43,7 @@ int main(int argc, char **argv)
     ros::NodeHandle n;
     
     beacon.robotNode_stage_pub = n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
-    ros::Publisher robotNode_location_pub = n.advertise<nav_msgs::Odometry>(argv[1],1000);
+    ros::Publisher robotNode_location_pub = n.advertise<nav_msgs::Odometry>(argv[3],1000);
     beacon.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000,stage_callback);
 
     ros::Rate loop_rate(10); 
