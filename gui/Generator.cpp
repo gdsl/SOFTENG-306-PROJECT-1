@@ -222,7 +222,11 @@ void Generator::loadPeople()
         float yPos = 20.4 - (yMult * yOffset);
         workerPositions.push_back(xPos);
         workerPositions.push_back(yPos);
-        outfile << "human( pose [ " << xPos << " " << yPos << " 0.000 -90.000 ] name \"Worker" << i+1 << "\" color \"blue\")" << endl;
+        
+        string colour = colourArray[peopleCC];
+        peopleCC += 1;
+        
+        outfile << "human( pose [ " << xPos << " " << yPos << " 0.000 -90.000 ] name \"Worker" << i+1 << "\" color \"" + colour + "\")" << endl;
         /*} else {
             workerPositions.push_back(x);
             workerPositions.push_back(y);
@@ -247,7 +251,11 @@ void Generator::loadPeople()
         float yPos = 20.4 - (yMult * yOffset);
         gardenerPositions.push_back(xPos);
         gardenerPositions.push_back(yPos);
-        outfile << "gardenWorker( pose [ " << xPos << " " << yPos << " 0.000 -90.000 ] name \"GardenWorker" << i+1 << "\" color \"blue\")" << endl;
+        
+        string colour = colourArray[peopleCC];
+        peopleCC += 1;
+        
+        outfile << "gardenWorker( pose [ " << xPos << " " << yPos << " 0.000 -90.000 ] name \"GardenWorker" << i+1 << "\" color \"" + colour + "\")" << endl;
         /*} else {
             gardenerPositions.push_back(x);
             gardenerPositions.push_back(y);
@@ -291,7 +299,10 @@ void Generator::loadAnimals()
         int yMult = (((rand() % 8 + 1) * 2) - 1);
         float yPos = 20.4 - (yMult * yOffset);
         
-        outfile << "dog( pose [ " << xPos << " " << yPos << " 0.000 0.000 ] name \"Dog" << i+1 << "\" color \"random\")" << endl;
+        string colour = colourArray[dogCC];
+        dogCC += 1;
+        
+        outfile << "dog( pose [ " << xPos << " " << yPos << " 0.000 0.000 ] name \"Dog" << i+1 << "\" color \"" + colour + "\")" << endl;
    /*     } else {
             outfile << "dog( pose [ " << x << " " << y << " 0.000 0.000 ] name \"Dog" << i+1 << "\" color \"random\")" << endl;
         }*/

@@ -41,6 +41,8 @@ class Generator
 		ofstream outfile;
 		string colourArray[14] = { "PeachPuff", "NavajoWhite", "LemonChiffon", "AliceBlue", "Lavender", "thistle", "LightSalmon", "PaleTurquoise", "PaleGreen", "beige", "plum", "LightGrey", "LightSkyBlue", "SpringGreen" };
 		int colourCount = 0;
+        int peopleCC = 0;
+        int dogCC = 0;
 		// static const variables
 		// distance between trunk/pole and beacon. x coord
 		int const static SEPARATION = 2;
