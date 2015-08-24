@@ -77,7 +77,7 @@ int main(int argc, char **argv) {
 		alphaDog.move();
         
         if (alphaDog.getMovementQueueSize() == 0) {
-            if (state == AlphaDog::TOP) {
+           if (state == AlphaDog::TOP) {
                 if (alphaDog.isAntiClockwise()) {
                     alphaDog.faceWest(1);
                     alphaDog.addMovement("forward_x", left-alphaDog.getX(), 1);
@@ -118,7 +118,7 @@ int main(int argc, char **argv) {
                     state = AlphaDog::BOTTOM;
                 }
             }
-	    }
+	}
 
 		// Add Dog variables to status message to be broadcast
 		status_msg.status=status;
@@ -129,23 +129,6 @@ int main(int argc, char **argv) {
 		pub.publish(status_msg);
 		ros::spinOnce();
         	loop_rate.sleep();
-
-		/*// Logic to determine current status of Dog - Walking/Idle/Turning
-		// Convert radians to degrees
-		radians = alphaDog.getTheta();
-		angle = roundf(radians * 57.2957795 * 100) / 100;
-
-		// Check if dog is moving (and therefore 'walking')
-		if (alphaDog.getLin() > 0.01) {
-			status = "Moonwalking";
-		}
-		// Check if dog is facing North/East/South/West AND not moving (and therefore 'idle')
-		else if ((angle == -360) || (angle == -270) || (angle == -180) || (angle == -90) || (angle == 0) || (angle == 90) || (angle == 180) || (angle == 270) || (angle == 360) && (alphaDog.getLin() == 0)) {
-			status = "Idle";
-		}
-		else {
-			status = "Turning";
-		}*/
                 alphaDog.determineStatus();
 	}
 	return 0;
