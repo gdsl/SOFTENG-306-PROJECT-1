@@ -117,15 +117,17 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg) {
 		previousScanDistance=0;
 		previousScanNumber=0;
 	}
-	for (int i=41; i<l-41; i++){ 
+	for (int i=0; i<l; i++){ 
 		// Work out the minimum distance object
 		if (msg.ranges[i]< minDistance) {
-			minDistance = msg.ranges[i];
-			if(msg.ranges[i]<1.1&&msg.intensities[i]>currentIntensity) {
-				// Record the most critical intensity within 1.1
-				currentIntensity=msg.intensities[i];
+			if(msg.intensities[i]>1||msg.ranges[i]<0.5){//if its not tree or tree very close
+				minDistance = msg.ranges[i];
+				if(msg.ranges[i]<1.1&&msg.intensities[i]>currentIntensity) {
+					// Record the most critical intensity within 1.1
+					currentIntensity=msg.intensities[i];
+				}
+				obstacleAngle= (i/l) * msg.angle_increment + msg.angle_min;
 			}
-			obstacleAngle= (i/l) * msg.angle_increment + msg.angle_min;
 		}
 		if (numOfScan==0) {// Work most fatal intensity
 			if(msg.ranges[i]<1.1&&msg.intensities[i]>previousScanIntensity) {
@@ -159,7 +161,7 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg) {
 				int currentMax=previousScanNumber;
 				int currentMin=previousScanNumber;
 				// Work out max number of scan critical object still can be observed
-				for(int i=previousScanNumber;i<l-41;i++) {
+				for(int i=previousScanNumber;i<l;i++) {
 					if(previousScanIntensity!=msg.intensities[i]&&!found) {
 						currentMax=i-1;
 						found=true;
@@ -167,7 +169,7 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg) {
 				}
 				found=false;
 				// Work out min number of scan critical object still can be observed
-				for(int i=previousScanNumber;i>41;i--) {
+				for(int i=previousScanNumber;i>0;i--) {
 					if(previousScanIntensity!=msg.intensities[i]&&!found) {
 						currentMin=i+1;
 						found=true;
@@ -196,7 +198,7 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg) {
 				avoidanceCase=LIVING_OBJ;
 			}else{
 				// Work out max number of scan critical object still can be observed
-				for(int i=previousScanNumber;i<l-41;i++) {
+				for(int i=previousScanNumber;i<l;i++) {
 					if(previousScanIntensity!=msg.intensities[i]&&!found) {
 						previousScanNumberMax=i-1;
 						found=true;
@@ -204,7 +206,7 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg) {
 				}
 				found=false;
 				// Work out min number of scan critical object still can be observed
-				for(int i=previousScanNumber;i>41;i--) {
+				for(int i=previousScanNumber;i>0;i--) {
 					if(previousScanIntensity!=msg.intensities[i]&&!found) {
 						previousScanNumberMin=i+1;
 						found=true;
