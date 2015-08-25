@@ -84,13 +84,14 @@ void Neighbour::setOriginY(double originYPos) {
 void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 	neighbour.stageLaser_callback(msg);//call supercalss laser call back for detection case work out
 
-	if (neighbour.getAvoidanceCase()!=Entity::NONE&&neighbour.getAvoidanceCase()!=Entity::TREE) {//check if there is need to avoid obstacle
-		if (neighbour.getCriticalIntensity()==2){ //if sense picker robot run away
+	//if (neighbour.getAvoidanceCase()!=Entity::NONE&&neighbour.getAvoidanceCase()!=Entity::TREE) {//check if there is need to avoid obstacle
+		if (neighbour.getMinDistance()<1&&neighbour.getCriticalIntensity()==2&&neighbour.getAvoidanceQueueSize()==0){ //if sense picker robot run away
+			neighbour.addMovementFront("rotation",0, 1,1);//halt current movement
 			neighbour.addMovementFront("forward_x",0,0,1);//halt current movement
 			neighbour.move();
 			neighbour.flushMovementQueue();
 		}
-	}
+	//}
 }
 
 int main(int argc, char **argv) {
@@ -148,6 +149,6 @@ int main(int argc, char **argv) {
 		status_msg.pos_y = neighbour.getY();
 		status_msg.pos_theta = neighbour.getTheta();
 		status_msg.status = neighbour.getStatus();
-	                neighbour.determineStatus();              
+	                //neighbour.determineStatus();              
 	}
 }
