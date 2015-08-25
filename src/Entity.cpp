@@ -51,6 +51,8 @@ Entity::Entity(double x, double y, double theta, double linearVelocity, double a
 	this->previousScanNumberMax=0; 	// Variable for the max number of the previous scan critical object can be scan
 	this->avoidanceCase=NONE;
 	this->previousAvoidanceCase=NONE;
+	this->z=0;
+	this->zVelocity=0;
 }
 
 // Field for current movement of the node
@@ -81,6 +83,8 @@ void Entity::setVelocity(double linearVelocity, double angularVelocity) {
 void Entity::stageOdom_callback(nav_msgs::Odometry msg) {
 	x = msg.pose.pose.position.x;
 	y = msg.pose.pose.position.y;
+	z = msg.pose.pose.position.z;
+
 
 	tf::Pose pose;
 	tf::poseMsgToTF(msg.pose.pose,pose);
@@ -111,11 +115,9 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg) {
 	for (int i=41; i<l-41; i++){ 
 		// Work out the minimum distance object
 		if (msg.ranges[i]< minDistance) {
-			if(msg.intensities[i]>0){//ignore intensity that is 0 or less
-				minDistance = msg.ranges[i];
-				currentIntensity=msg.intensities[i];
-				obstacleAngle= (i/l) * msg.angle_increment + msg.angle_min;
-			}
+			minDistance = msg.ranges[i];
+			currentIntensity=msg.intensities[i];
+			obstacleAngle= (i/l) * msg.angle_increment + msg.angle_min;
 		}
 		if (msg.ranges[i]<1.1&&numOfScan==0) {// Work most fatal intensity
 			if(msg.intensities[i]>previousScanIntensity) {
@@ -132,10 +134,10 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg) {
 		if (currentIntensity==1.0) {
 			// The object in way is a weed
 			avoidanceCase=TREE;
-		}else if (previousScanIntensity==WEED_INTENSITY) {
+		}else if (currentIntensity==WEED_INTENSITY) {
 			// The object in way is a weed
 			avoidanceCase=WEED;
-		} else if (previousScanIntensity>=LIVING_MIN_INTENSITY){
+		} else if (currentIntensity>=LIVING_MIN_INTENSITY){
 			// The object is a living object that is not weed
 			avoidanceCase=LIVING_OBJ;
 		} else {
@@ -192,10 +194,8 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg) {
 						found=true;
 					}
 				}
-				// Halt current movement
-				if(minDistance<0.8){
-					avoidanceCase=previousAvoidanceCase;
-				}
+				// set avoidance case to previous
+				avoidanceCase=previousAvoidanceCase;
 				numOfScan+=1;
 			}
 		}
@@ -208,7 +208,7 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg) {
 void Entity::updateOdometry() {
 	robotNode_cmdvel.linear.x = linearVelocity;
 	robotNode_cmdvel.angular.z = angularVelocity;
-	robotNode_cmdvel.linear.y = 0;
+	robotNode_cmdvel.angular.x = -zVelocity;
 	// Publish message
 	robotNode_stage_pub.publish(robotNode_cmdvel);
 }
@@ -226,7 +226,7 @@ void Entity::move() {
 		} else if (currentMovement.getType().compare("forward_y")==0) {
 			// Call move forward for y direction
 			moveForward(currentMovement.getPos(),currentMovement.getVel(),"y",1);
-		} else {
+		}else {
 			// Call rotate
 			rotate(currentMovement.getPos(),currentMovement.getVel(),1);
 		}
@@ -239,7 +239,9 @@ void Entity::move() {
 		} else if (currentMovement.getType().compare("forward_y")==0) {
 			// Call move forward for y direction
 			moveForward(currentMovement.getPos(),currentMovement.getVel(),"y",2);
-		} else {
+		} else if (currentMovement.getType().compare("forward_z")==0){ 
+			moveZ(currentMovement.getPos(),currentMovement.getVel(),2);
+		}else {
 			// Call rotate
 			rotate(currentMovement.getPos(),currentMovement.getVel(),2);
 		}
@@ -403,6 +405,8 @@ void Entity::addMovementFront(std::string type, double distance,double velocity,
 			pos=x+distance;
 		}else if ((type.compare("forward_y"))==0) {
 			pos=y+distance;
+		}else if((type.compare("forward_z"))==0){
+			pos=distance;
 		}
 	} else {
 		pos=distance;
@@ -427,7 +431,7 @@ void Entity::moveForward(double pos, double vel, std::string direction,int queue
 	double position=0;
 	if (direction.compare("x")==0){
 		position=x;
-	}else{
+	}else if(direction.compare("y")==0){
 		position=y;
 	}
 	if (!desireLocation){//TODO slow down
@@ -441,7 +445,7 @@ void Entity::moveForward(double pos, double vel, std::string direction,int queue
 				linearVelocity=vel;
 			}
 			// Make sure the robot can slightly go backwards to adjust to right position
-			if (position>pos){
+			if (position>pos&&position!=z){
 				// If facing east then velocity should be negative since overshoot
 				if(directionFacing==EAST){ 
 					linearVelocity=-linearVelocity;
@@ -450,7 +454,7 @@ void Entity::moveForward(double pos, double vel, std::string direction,int queue
 					linearVelocity=-linearVelocity;
 				}
 				// Now in the -ve direction to our frame of reference
-			}else if (pos>position){
+			}else if (pos>position&&position!=z){
 				// If facing west then velocity should be negative since overshoot
 				if(directionFacing==WEST){ 
 					linearVelocity=-linearVelocity;
@@ -478,6 +482,48 @@ void Entity::moveForward(double pos, double vel, std::string direction,int queue
 	updateOdometry();
 }
 
+/**
+ * Message to move the entity in the z
+ * Note unit is in meters
+ * input:	double vel: the velocity of the entity moving forward
+ *		double pos: the absolute position to move to
+ *		int queueNum: which queue is dispatch from 1 for avoidance 2 for movement
+ */
+void Entity::moveZ(double pos, double vel,int queueNum) {
+	double position=z;
+	
+	/*if (!desireLocation){//TODO slow down
+		ROS_INFO("mfpos: %f", pos);
+		if (std::abs(position-pos)>=0.01){
+			if(std::abs(position-pos)<=0.2&&vel>0.1){
+				zVelocity=-0.1;
+			}else if(std::abs(position-pos)<=1&&vel>1){
+				zVelocity=-1;
+			}else{
+				zVelocity=vel;
+			}
+		}else{
+			if (queueNum==2){
+				// Call method complete to remove complete movement from queue
+				movementComplete();
+			}else{
+				// Call method to remove from avoidance queue
+				avoidanceComplete();
+			}
+			zVelocity=0;
+		}
+	}else{
+		desireLocation=true;
+		zVelocity=0;
+	}*/
+	zVelocity=3;
+	linearVelocity=0;
+	angularVelocity=0;
+	// Update the information to stage
+	updateOdometry();
+
+
+}
 /**
  * Message to rotate the entity.
  * Input:	double angleToRotate: In radians, the angle entity will rotate to relative to absoulte frame.

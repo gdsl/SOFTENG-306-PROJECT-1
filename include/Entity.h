@@ -59,7 +59,8 @@ class Entity
 		void setObstacleStatus(std::string obstacleStatus);
 		void avoidObstacle(Entity entity,double x,double y);
 		void flushMovementQueue();
-		
+		void moveZ(double pos, double vel, int queueNum);
+
 		//get method
 		double getX();
 		double getY();
@@ -81,11 +82,13 @@ class Entity
 		//positions
 		double x;
 		double y;
+		double z;
 		double theta;
 
 		// velocity
 		double linearVelocity;
 		double angularVelocity;
+		double zVelocity;
 
 		//obstacle avoidance/detection variables
 		int criticalIntensity;
@@ -103,8 +106,8 @@ class Entity
 		std::string status;
 
 		//movement queue
-        std::vector<Movement> movementQueue;
-        std::vector<Movement> avoidanceQueue; //vector for lsit of avoidance movements
+        	std::vector<Movement> movementQueue;
+        	std::vector<Movement> avoidanceQueue; //vector for lsit of avoidance movements
 		Direction directionFacing=NORTH;//initialse to north originally
 
 		void moveForward(double distance,double vel, std::string direction, int queueNum);

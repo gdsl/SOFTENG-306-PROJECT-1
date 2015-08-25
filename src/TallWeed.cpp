@@ -71,12 +71,19 @@ int main(int argc, char **argv) {
             index++;
         }
     }
-
+    int count=0;
     ros::Rate loop_rate(10); 
     while (ros::ok())
     {
 	    ros::spinOnce();
+	if (count==50){
+		tallWeed.addMovementFront("forward_z",-5,-1,2);
+		//tallWeed.move();
+	}
+	tallWeed.move();
+
         loop_rate.sleep();
+	count=count+1;
     }
     return 0;
 }
