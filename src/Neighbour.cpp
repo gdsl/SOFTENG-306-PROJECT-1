@@ -138,6 +138,7 @@ int main(int argc, char **argv) {
                    		neighbour.addMovement("forward_x", neighbour.getOriginX()-neighbour.getX(), 1);
 			}else{
 				neighbour.setStatus("Finding a robot");
+				neighbour.faceWest(1);
 				neighbour.addMovement("forward_x", 35, 1);
 			}
 		}
