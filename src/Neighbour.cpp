@@ -105,9 +105,13 @@ int main(int argc, char **argv) {
                 neighbour.determineStatus();
                 if (( neighbour.getStatus()=="Turning")&&(neighbour.getX()<8)){
                     neighbour.setStatus("Observing");
-}
-
-
-               
+                   } else if ( neighbour.getStatus()=="Walking"){
+                             if(neighbour.getTheta()>0){
+                             neighbour.setStatus("Moving back from a robot");
+                             }
+                             else{
+                             neighbour.setStatus("Finding a robot");
+                              }
+}                     
 }
 }
