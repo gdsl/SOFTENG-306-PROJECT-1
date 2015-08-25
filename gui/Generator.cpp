@@ -353,7 +353,7 @@ for (int i = 0; i < model.neighbours; i++) {
 
         //if( (x > -30) && (x < 40) && (y < 20) && (y > rowEnd)) {
         //int xMult = (((rand() % columnCount + 1) * 2) - 1);
-        float xPos = 40 ;
+        float xPos = 43 ;
         //int yMult = (((rand() % 8 + 1) * 2) - 1);
         float yPos = 19;
         yPos=yPos-(i * model.rowWidth);
