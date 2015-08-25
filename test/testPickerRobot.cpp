@@ -46,20 +46,14 @@ TEST(PickerRobot, setPickRangeOfPicker) {
 }
 
 /*
- * Test for PickerRobot faceNorth() method.
- * Checks to see if the theta (angle robot is facing) is M_PI/2
- * after adding a rotate movement to the PickerRobot's queue and then calling move.
+ * Test for PickerRobot setBinCapacity() method.
+ * Checks to see if the parameters given are assigned to object fields correctly.
  */
-//TEST(PickerRobot, faceNorthCheckThetaPicker) {
-//	PickerRobot pickerRobot = PickerRobot();
-//	ros::NodeHandle n;
-//	pickerRobot.robotNode_stage_pub=n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
-//	pickerRobot.setPose(10, 10, 0);
-//	pickerRobot.faceNorth(1);
-//    //make sure the rotate has finished before checking theta value
-//    while (pickerRobot.getMovementQueueSize() > 1) {pickerRobot.move();}
-//	EXPECT_EQ(pickerRobot.getTheta(), M_PI/2);
-//}
+TEST(PickerRobot, setBinCapacityOfPicker) {
+	PickerRobot pickerRobot = PickerRobot();
+	pickerRobot.setBinCapacity(10);
+	EXPECT_EQ(pickerRobot.getBinCapacity(), 10);
+}
 
 int main(int argc,char **argv) {
 	ros::init(argc, argv, "testPickerRobot");
