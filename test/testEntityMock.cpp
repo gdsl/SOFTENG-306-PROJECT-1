@@ -128,7 +128,7 @@ TEST(EntityMock, flushMovementQueueOfEntityMock) {
 //	entityMock.setPose(10, 10, 0);
 //	entityMock.faceNorth(1);
 //    //make sure the rotate has finished before checking theta value
-//    while (entityMock.getMovementQueueSize() > 1) {entityMock.move();}
+//    while (entityMock.getMovementQueueSize() > 0) {entityMock.move();}
 //	EXPECT_EQ(entityMock.getTheta(), M_PI/2);
 //}
 
