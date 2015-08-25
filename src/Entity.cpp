@@ -145,8 +145,6 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg) {
 			if (numOfScan==1) {
 				// Obstacle got closer
 				if (previousScanDistance<msg.ranges[previousScanNumber]&&previousScanIntensity==msg.intensities[previousScanNumber]) {
-					// Set the critical intensity as object got closer
-					criticalIntensity=previousScanIntensity;
 					// The object is face on
 					avoidanceCase=FACE_ON;
 				} else {
@@ -199,6 +197,8 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg) {
 				numOfScan+=1;
 			}
 		}
+							// Set the critical intensity as object got closer
+					criticalIntensity=previousScanIntensity;
 	}
 }
 
