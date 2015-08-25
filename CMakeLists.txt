@@ -235,6 +235,9 @@ add_executable(Beacon src/Beacon.cpp)
 target_link_libraries(Beacon Entity ${catkin_LIBRARIES})
 add_dependencies(Beacon se306project_generate_messages_cpp)
 
+add_library(BeaconLib src/Beacon.cpp)
+target_link_libraries(BeaconLib Entity ${catkin_LIBRARIES})
+
 add_executable(TallWeed src/TallWeed.cpp)
 target_link_libraries(TallWeed Entity ${catkin_LIBRARIES})
 add_dependencies(TallWeed se306project_generate_messages_cpp)
@@ -269,6 +272,9 @@ if (CATKIN_ENABLE_TESTING)
     
     add_rostest_gtest(testEntityMock test/rostest/testEntityMock.test test/testEntityMock.cpp)
     target_link_libraries(testEntityMock EntityMockLib ${catkin_LIBRARIES})
+
+    add_rostest_gtest(testBeacon test/rostest/testBeacon.test test/testBeacon.cpp)
+    target_link_libraries(testBeacon BeaconLib ${catkin_LIBRARIES})
     
     # unit tests
 	catkin_add_gtest(testMovement test/testMovement.cpp)

@@ -1,0 +1,4 @@
+<launch>
+    <node pkg="se306project" name="Beaconnode" type="Beacon" args="-32 18.65 /beacon1/"/>
+    <test test-name="testBeacon" pkg="se306project" type="testBeacon"/>
+</launch>

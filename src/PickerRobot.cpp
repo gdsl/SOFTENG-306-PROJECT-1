@@ -120,11 +120,20 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 						weedmsg.pos_y = pickerRobot.getY();
 					}
 
+					// gyvers implementation. commented for now. haven't tested
+//					se306project::weed_status weed_msg;
+//					double angle=pickerRobot.getTheta()+(pickerRobot.getObstacleAngle()/180)*M_PI;
+//					weed_msg.pos_theta=angle; //add angle of weed from carrier to message to broadcast
+//					weed_msg.pos_x=pickerRobot.getX()+cos(angle)*(pickerRobot.getMinDistance()+0.9);
+//					weed_msg.pos_y=pickerRobot.getY()+sin(angle)*(pickerRobot.getMinDistance()+0.9);
+//					pickerRobot.weed_obstacle_pub.publish(weed_msg);
+
 					pickerRobot.weed_obstacle_pub.publish(weedmsg);
 				}
 
 				pickerRobot.addMovementFront("forward_x",0,0,1);//add empty movement to front of avoidance to stop
 				pickerRobot.setObstacleStatus("Weed! Help!");
+
 			}else if(pickerRobot.getAvoidanceCase()==Entity::LIVING_OBJ) {//if its human or animal stop
 				pickerRobot.addMovementFront("forward_x",0,0,1);//add empty movement to front of avoidance to stop
 				pickerRobot.setObstacleStatus("Living object");
