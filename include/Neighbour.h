@@ -7,6 +7,7 @@ class Neighbour: public Person
 {
 public:
 	Neighbour();
+	Neighbour(double x,double y);
 	Neighbour(double x, double y, double theta, double linearVelocity, double angularVelocity);
 
 	ros::Publisher Neighbour_status_pub;
