@@ -10,7 +10,7 @@ public:
 	int lastKeyPressed = 0; //nothing is 0, left is 1, right is 2, up is 3, down is 4
 
 	public slots:
-	//void fireKeyData();
+	void resetKeyData();
 	//void sendToTractor();
 
 	protected:

@@ -418,7 +418,7 @@ void Generator::loadAnimals()
             int y = rand() % randNumY - rowEnd;
             int xMult = (((rand() % columnCount + 1) * 2) - 1);
             xPos = -30 + (xMult * xOffset);
-            int yMult = (((rand() % 8 + 1) * 2) - 1);
+            int yMult = (((rand() % 7 + 1) * 2) - 1);
             yPos = 20.4 - (yMult * yOffset);
         }
 
