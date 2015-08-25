@@ -92,7 +92,7 @@ void Worker::sendToTractor() {
         } 
         fputs("\n",in);
         int j =fflush(in);
-        usleep(1000000);
+        usleep(200000);
     }
     pclose(in);
 }

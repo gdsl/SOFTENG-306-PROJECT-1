@@ -34,18 +34,18 @@ void callBackStageOdm(const nav_msgs::Odometry msg) {
 }
 
 void receiveTractorControl(const std_msgs::String::ConstPtr& msg) {
-	ROS_INFO("tractor echoing tractor control: %s",msg->data.c_str());
+//	ROS_INFO("tractor echoing tractor control: %s",msg->data.c_str());
 	if (strcmp(msg->data.c_str(), "left") == 0) {
 		tractor.setLin(0);
-		tractor.setAng(0.2);
+		tractor.setAng(3);
 	} else if (strcmp(msg->data.c_str(), "right") == 0) {
 		tractor.setLin(0);
-		tractor.setAng(-0.2);
+		tractor.setAng(-3);
 	} else if (strcmp(msg->data.c_str(), "up") == 0) {
-		tractor.setLin(1);
+		tractor.setLin(10);
 		tractor.setAng(0);
 	} else if (strcmp(msg->data.c_str(), "down") == 0) {
-		tractor.setLin(-1);
+		tractor.setLin(-10);
 		tractor.setAng(0);
 	} else {
 		tractor.setLin(0);
@@ -61,7 +61,7 @@ int main(int argc, char **argv) {
 	// You must call ros::init() first of all. ros::init() function needs to see argc and argv. The third argument is the name of the node
 	ros::init(argc, argv, "Tractor");
 	std::string xString = argv[1];
-	ROS_WARN(xString.c_str());
+//	ROS_WARN(xString.c_str());
 	// convert input parameters for Robot initialization from String to respective types
 	//std::string xString = argv[1];
 	//std::string yString = argv[2];

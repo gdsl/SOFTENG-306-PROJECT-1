@@ -14,32 +14,37 @@ define modelBase model
 define trunk modelBase
 (
   size [0.300 0.300 1.800]
-  gui_noise 0
+  gui_move 0
+  gui_nose 0
 )
 
 define pole modelBase
 (
   size [0.300 0.300 2.500]
-  gui_noise 0
+  gui_move 0
+  gui_nose 0
 )
 
 define verticalFruitVine modelBase
 (
     size [0.100 3.500 0.100]
-    gui_noise 0
+    gui_move 0
+    gui_nose 0
 )
 
 define backdropTree modelBase
 (
   size [0.850 0.850 1.800]
-
-  gui_noise 0
+  gui_move 0
+  gui_nose 0
 )
 
 define backdropTreeTop modelBase
 (
   size [1.5 1.5 1.7]
-  
+  gui_move 0
+  gui_nose 0
+
   block (
   points 4
   point[3] [ 1 1 ] 
@@ -72,12 +77,14 @@ define backdropTreeTop modelBase
 define backdropShrub modelBase
 (
   size [0.650 0.650 1.000]
-  gui_noise 0
+  gui_move 0
+  gui_nose 0
 )
 define horizontalFruitVine modelBase
 (
     size [2.500 0.100 0.100]
-    gui_noise 0
+    gui_move 0
+    gui_nose 0
 )
 
 define laserBase ranger
@@ -458,6 +465,10 @@ define tractor position
   obstacle_return 1
   ranger_return 7
 
+    velocity [ 5.0 5.0 0.0 0.0 ] #WHY DOESN'T THIS WORK
+ # [ xmin xmax ymin ymax zmin zmax amin amax ]				
+    velocity_bounds [-10 10 -10 10 -1 1 -90 90 ]					
+    acceleration_bounds [-10 10 -10 10 -1 1 -90 90]
 )
 
 define beacon position
@@ -474,7 +485,6 @@ define tallWeed position
   size [0.3 0.3 1.0]
   obstacle_return 1
   ranger_return 6
-  #gui_noise 0
   pretendLaser(pose [ 500.00 0.000 5 0.000 ])
 )
 
