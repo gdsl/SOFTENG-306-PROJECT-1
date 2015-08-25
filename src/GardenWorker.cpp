@@ -13,8 +13,9 @@ GardenWorker::GardenWorker():GardenWorker(0,0,0,0,0){}
  * Call super class constructor
  */
 GardenWorker::GardenWorker(double x, double y, double theta, double linearVelocity, double angularVelocity) : Person(x, y) {
-	initialX = x;
-	initialY = y;
+	// give in nan so that initialX and initialY can be changed in callback
+	initialX = std::numeric_limits<double>::quiet_NaN();
+	initialY = std::numeric_limits<double>::quiet_NaN();
 	targetX = 0;
 	targetY = 0;
 	closestToWeed = true;
@@ -82,7 +83,7 @@ void GardenWorker::next(std::string action) {
 		} else if (action.compare("Move") == 0) {
 			setStatus("Moving");
 		}
-	} else if (currentStatus.compare("Communicating")) {
+	} else if (currentStatus.compare("Communicating")==0) {
 		if (action.compare("Move")==0) {
 			setStatus("Moving");
 		} else if (action.compare("Stop")==0) {
@@ -112,39 +113,59 @@ void GardenWorker::stageLaser_callback(const sensor_msgs::LaserScan msg) {
 	Person::stageLaser_callback(msg);
 	std::string currentStatus = getStatus();
 
-	if (currentStatus.compare("Moving") == 0) {
+	if (currentStatus.compare("Idle") == 0) {
+		flushMovementQueue();
+	} else if (currentStatus.compare("Moving") == 0) {
 
-//		if (getAvoidanceCase()!=Entity::NONE) {//check if there is need to avoid obstacle
-//			ROS_ERROR("LOL");
-//			return;
-//		} else {
-//			setObstacleStatus("No obstacles"); //only pick when obstacle detected
-//		}
+		//		if (getAvoidanceCase()!=Entity::NONE) {//check if there is need to avoid obstacle
+		//			ROS_ERROR("LOL");
+		//			return;
+		//		} else {
+		//			setObstacleStatus("No obstacles"); //only pick when obstacle detected
+		//		}
+
+		//		if (getAvoidanceCase() == Entity::WEED) {
+		//			ROS_ERROR("WEED");
+		//			//addMovementFront("forward_x",0,0,1);
+		//		}
 
 		// check if an obstacle detected. if the obstacle is tallweed, change to pull weed
 
-		int errorMargin = 3;
+		double errorMargin = 3;
 
 		if (abs(getX() - initialX) <= errorMargin && abs(getY() - initialY) <= errorMargin) {
+			if (getDirectionFacing() == Entity::NORTH || getDirectionFacing() == Entity::SOUTH) {
+				addMovementFront("forward_y",0,0,0);
+			} else {
+				addMovementFront("forward_x",0,0,0);
+			}
+
 			next("Stop");
 			return;
 		}
 
 		if (getAvoidanceCase() == Entity::WEED && abs(getX() - targetX) <= errorMargin && abs(getY() - targetY) <= errorMargin) {
+
+			if (getDirectionFacing() == Entity::NORTH || getDirectionFacing() == Entity::SOUTH) {
+				addMovementFront("forward_y",0,0,0);
+			} else {
+				addMovementFront("forward_x",0,0,0);
+			}
+			//ROS_ERROR("LEL");
 			// start timer
-			c_start = std::clock();
+			time(&c_start);
 			next("Pull");
 			return;
 		}
 
+		//ROS_ERROR("queue size %d", getMovementQueueSize());
+
 		if (getMovementQueueSize() == 0) {
-
+//			ROS_ERROR("CALL");
+//			ROS_ERROR("targetX %lf", targetX);
+//			ROS_ERROR("targetY %lf", targetY);
 			double distanceToMove = 0;
-
-			ROS_ERROR("targetx %f", targetX);
-			ROS_ERROR("targety %f", targetY);
-			ROS_ERROR("x pos %f", getX());
-			ROS_ERROR("y pos %f", getY());
+			Entity::Direction direction = getDirectionFacing();
 
 			if (getX() != targetX) {
 				//check if the Robot needs to go West
@@ -152,14 +173,23 @@ void GardenWorker::stageLaser_callback(const sensor_msgs::LaserScan msg) {
 					//calculate the distance to move backwards along X axis
 					distanceToMove = -(getX() - targetX);
 					//make sure the Robot is facing West, if not, turn it West.
-					if (getDirectionFacing() != WEST) {faceWest(1);}
+					if (direction != WEST) {
+						//ROS_ERROR("CAL1L");
+						faceWest(1);
+						direction = WEST;
+					}
 					//otherwise it means the Robot needs to go East
 				} else if (getX() < targetX) {
 					distanceToMove = targetX - getX();
 					//make sure the Robot is facing West, if not, turn it West.
-					if (getDirectionFacing() != EAST) {faceEast(1);}
+					if (direction != EAST) {
+						//ROS_ERROR("EAST");
+						faceEast(1);
+						direction = EAST;
+					}
 				}
-				ROS_ERROR("X: %f", distanceToMove);
+
+				//ROS_ERROR("X %lf", distanceToMove);
 				addMovement("forward_x", distanceToMove, 1);
 			}
 			//now add the vertical movement to the movement queue
@@ -169,26 +199,32 @@ void GardenWorker::stageLaser_callback(const sensor_msgs::LaserScan msg) {
 					//calculate the distance to move backwards along Y axis
 					distanceToMove = -(getY() - targetY);
 					//make sure the Robot is facing South, if not, turn it South.
-					if (getDirectionFacing() != SOUTH) {
+					if (direction != SOUTH) {
 						faceSouth(1);
+						direction = SOUTH;
 					}
 					//otherwise it means the Robot needs to go North
 				} else if (getY() < targetY) {
 					distanceToMove = targetY - getY();
 					//make sure the Robot is facing North, if not, turn it North.
-					if (getDirectionFacing() != NORTH) {faceNorth(1);}
+					if (direction != NORTH) {
+						faceNorth(1);
+						direction = NORTH;
+					}
 				}
-				ROS_ERROR("Y: %f", distanceToMove);
+
+				//ROS_ERROR("Y %lf", distanceToMove);
 				addMovement("forward_y", distanceToMove, 1);
 			}
 		}
 
 	} else if (currentStatus.compare("Pull Weed") == 0) {
 		// change to done after certain time
-		c_end = std::clock();
-		unsigned long elapsedTime = (c_end - c_start) / CLOCKS_PER_SEC;
+		time(&c_end);
 
-		if (elapsedTime > 2) {
+		double diff_t = difftime(c_end, c_start);
+
+		if (diff_t >= 3) {
 			next("Finish");
 		}
 
@@ -198,6 +234,7 @@ void GardenWorker::stageLaser_callback(const sensor_msgs::LaserScan msg) {
 		targetX = initialX;
 		targetY = initialY;
 
+		flushMovementQueue();
 		next("Move");
 	}
 	move();
@@ -217,6 +254,13 @@ void GardenWorker::setCommunicationPartners(int communicationPartners) {
 
 void GardenWorker::stageOdom_callback(const nav_msgs::Odometry msg) {
 	Person::stageOdom_callback(msg);
+
+	// give in initial x, y coordinates
+	if (isnan(initialX) && isnan(initialY)) {
+		initialX = msg.pose.pose.position.x;
+		initialY = msg.pose.pose.position.y;
+	}
+
 }
 
 int main(int argc, char **argv) {

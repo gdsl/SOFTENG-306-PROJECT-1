@@ -43,6 +43,6 @@ private:
 	int communicationPartners;
 	int messagesReceived;
 	bool closestToWeed;
-	unsigned long c_start;
-	unsigned long c_end;
+	time_t c_start;
+	time_t c_end;
 };

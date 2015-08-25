@@ -103,17 +103,20 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 					se306project::weed_status weedmsg;
 					Entity::Direction direction = pickerRobot.getDirectionFacing();
 
+					// this is distance of laser sensor to robot center. got from model file. add distance to tallweed middle
+					double laser_sensor_distance = 1.25 + 0.15;
+
 					if (direction == Entity::NORTH) {
 						weedmsg.pos_x = pickerRobot.getX();
-						weedmsg.pos_y = pickerRobot.getY() + pickerRobot.getMinDistance();
+						weedmsg.pos_y = pickerRobot.getY() + pickerRobot.getMinDistance() + laser_sensor_distance;
 					} else if (direction == Entity::EAST) {
-						weedmsg.pos_x = pickerRobot.getX() + pickerRobot.getMinDistance();
+						weedmsg.pos_x = pickerRobot.getX() + pickerRobot.getMinDistance() + laser_sensor_distance;
 						weedmsg.pos_y = pickerRobot.getY();
 					} else if (direction == Entity::SOUTH) {
 						weedmsg.pos_x = pickerRobot.getX();
-						weedmsg.pos_y = pickerRobot.getY() - pickerRobot.getMinDistance();
+						weedmsg.pos_y = pickerRobot.getY() - pickerRobot.getMinDistance() - laser_sensor_distance;
 					} else {
-						weedmsg.pos_x = pickerRobot.getX() - pickerRobot.getMinDistance();
+						weedmsg.pos_x = pickerRobot.getX() - pickerRobot.getMinDistance() - laser_sensor_distance;
 						weedmsg.pos_y = pickerRobot.getY();
 					}
 

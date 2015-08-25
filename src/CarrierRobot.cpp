@@ -106,6 +106,31 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 		if(carrierRobot.getState()!=Robot::IDLE){//check if robot is idle or not
 			carrierRobot.setObstacleStatus("Obstacle nearby");
 			if(carrierRobot.getAvoidanceCase()==Entity::WEED){// if its weed stop
+
+				if (carrierRobot.getObstacleStatus().compare("Weed! Help!") != 0) {
+					se306project::weed_status weedmsg;
+					Entity::Direction direction = carrierRobot.getDirectionFacing();
+
+					// this is distance of laser sensor to robot center. got from model file. add distance to tallweed middle
+					double laser_sensor_distance = 0.9 + 0.15;
+
+					if (direction == Entity::NORTH) {
+						weedmsg.pos_x = carrierRobot.getX();
+						weedmsg.pos_y = carrierRobot.getY() + carrierRobot.getMinDistance() + laser_sensor_distance;
+					} else if (direction == Entity::EAST) {
+						weedmsg.pos_x = carrierRobot.getX() + carrierRobot.getMinDistance() + laser_sensor_distance;
+						weedmsg.pos_y = carrierRobot.getY();
+					} else if (direction == Entity::SOUTH) {
+						weedmsg.pos_x = carrierRobot.getX();
+						weedmsg.pos_y = carrierRobot.getY() - carrierRobot.getMinDistance() - laser_sensor_distance;
+					} else {
+						weedmsg.pos_x = carrierRobot.getX() - carrierRobot.getMinDistance() - laser_sensor_distance;
+						weedmsg.pos_y = carrierRobot.getY();
+					}
+
+					carrierRobot.weed_obstacle_pub.publish(weedmsg);
+				}
+
 				carrierRobot.addMovementFront("forward_x",0,0,1);//add empty movement to front of avoidance to stop
 				carrierRobot.setObstacleStatus("Weed! Help!");
 			}else if(carrierRobot.getAvoidanceCase()==Entity::LIVING_OBJ){//if its human or animal stop

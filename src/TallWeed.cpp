@@ -17,6 +17,7 @@ TallWeed::~TallWeed() {
  * Move the weed underground
  */
 void TallWeed::update_position() {
+	ROS_ERROR("Called");
 //	robotNode_cmdvel.linear.x = 0;
 //	robotNode_cmdvel.angular.z = 0;
 //	robotNode_cmdvel.linear.y = -5;
