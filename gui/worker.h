@@ -7,23 +7,23 @@
 using namespace std;
 
 class Worker : public QObject {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    explicit Worker(QObject *parent = 0) : QObject(parent){}    
+	explicit Worker(QObject *parent = 0) : QObject(parent){}
 	void exec(string cmd);
 	void setId(string id_string);
 	void setMainWindow(MainWindow *m);
-    
-public slots:
-    void executeScript();
-    void sendToTractor();
 
-private:
+	public slots:
+	void executeScript();
+	void sendToTractor();
+
+	private:
 	QString id;
-    string stringId;
-    MainWindow *mw;
+	string stringId;
+	MainWindow *mw;
 
-signals:    
-    void requestNewLabel(QString, const QString &, int);
+	signals:
+	void requestNewLabel(QString, const QString &, int);
 };

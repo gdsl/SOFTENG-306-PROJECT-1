@@ -12,24 +12,24 @@
 using namespace std;
 
 void Worker::setId(string id_string) {
-    //Set fields defined in the worker.h header files.
-    stringId = id_string;
+	// Set fields defined in the worker.h header files
+	stringId = id_string;
 	id = QString::fromStdString(id_string);
 }
 
 void Worker::executeScript() {
-    qDebug("executeScript prerun");
-    string filePath = "gui/rostopicScripts/robot_" + stringId + ".sh";
-    ofstream myfile;
-    myfile.open (filePath.c_str());
-    myfile << "cd ../../../..\nsource devel/setup.bash\nrostopic echo /robot_" << stringId.c_str() << "/status";
-    myfile.close();
-    string cmd = "chmod +x " + filePath;
-    system(cmd.c_str());
-	exec(filePath);
+	// qDebug("executeScript prerun");
+	// string filePath = "gui/rostopicScripts/robot_" + stringId + ".sh";
+	// ofstream myfile;
+	// myfile.open (filePath.c_str());
+	// myfile << "cd ../../../..\nsource devel/setup.bash\nrostopic echo /robot_" << stringId.c_str() << "/status";
+	// myfile.close();
+	// string cmd = "chmod +x " + filePath;
+	// system(cmd.c_str());
+	exec("rostopic echo /robot_" + stringId + "/status");
 }
 
-//for processing command
+// For processing command
 void Worker::exec(string cmd) {
 	string data;
 	FILE * stream;
@@ -42,13 +42,18 @@ void Worker::exec(string cmd) {
 			if (fgets(buffer, max_buffer, stream) != NULL) {
 				string s = string(buffer);
 				buffer[strlen(buffer) - 1] = '\0';
-				if (s.compare(0, 5, "pos_x") == 0) { //check if line starts with pos_x
-	 				emit requestNewLabel(id, buffer, 1); //emits a signal
-				} else if (s.compare(0, 5, "pos_y") == 0) {//check if line starts with pos_y
+				// Check if line starts with pos_x
+				if (s.compare(0, 5, "pos_x") == 0) { 
+					// Emits a signal
+	 				emit requestNewLabel(id, buffer, 1); 
+				// Check if line starts with pos_y
+				} else if (s.compare(0, 5, "pos_y") == 0) {
 	 				emit requestNewLabel(id, buffer, 2); 
-				} else if (s.compare(0, 9, "pos_theta") == 0) {//check if line starts with pos_theta
+				// Check if line starts with pos_theta
+				} else if (s.compare(0, 9, "pos_theta") == 0) {
 					emit requestNewLabel(id, buffer, 3); 
-				} else if (s.compare(0, 6, "status") == 0) {//check if line starts with status
+				// Check if line starts with status
+				} else if (s.compare(0, 6, "status") == 0) {
 					emit requestNewLabel(id, buffer, 4); 
 				} else if (s.compare(0, 8, "obstacle") == 0) {
 					emit requestNewLabel(id, buffer, 5); 
@@ -60,10 +65,10 @@ void Worker::exec(string cmd) {
 }
 
 void Worker::setMainWindow(MainWindow *m) {
-    mw = m;
+	mw = m;
 }
 
-//for sending to Tractor
+// For sending to Tractor
 void Worker::sendToTractor() {
     FILE *in;
     ostringstream oss;
@@ -86,13 +91,9 @@ void Worker::sendToTractor() {
             fputs("down",in);
         } 
         fputs("\n",in);
-        
         int j =fflush(in);
-        //qDebug() << j;
-        //qDebug("wrote");
         usleep(1000000);
     }
     pclose(in);
 }
-
 

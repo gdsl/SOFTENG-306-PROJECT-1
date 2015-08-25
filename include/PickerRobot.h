@@ -22,12 +22,12 @@ public:
 	void setBinCapacity(int bin_capacity);
 	double getPickRange();
 	void setPickRange(double pick_range);
-    void subscribeNextBeacon(ros::NodeHandle n);
+	void subscribeNextBeacon(ros::NodeHandle n);
 
 private:
 	int bin_capacity;
 	double pick_range;
-    
+
 };
 
 #endif /* SE306PROJECT_SRC_PICKERROBOT_H_ */

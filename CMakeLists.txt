@@ -51,6 +51,8 @@ add_message_files(
 	carrier_status.msg
 	animal_status.msg
 	human_status.msg
+	blindperson_status.msg
+	weed_status.msg
 )
 
 ## Generate services in the 'srv' folder
@@ -192,6 +194,21 @@ add_dependencies(Cat  se306project_generate_messages_cpp)
 add_library(CatLib src/Cat.cpp)
 target_link_libraries(Cat Animal Entity ${catkin_LIBRARIES})
 
+add_executable(EntityMock src/EntityMock.cpp)
+target_link_libraries(EntityMock Entity ${catkin_LIBRARIES})
+add_dependencies(EntityMock se306project_generate_messages_cpp)
+
+add_library(EntityMockLib src/EntityMock.cpp)
+target_link_libraries(EntityMockLib Entity ${catkin_LIBRARIES})
+
+add_executable(Neighbour src/Neighbour.cpp)
+target_link_libraries(Neighbour Person Entity ${catkin_LIBRARIES})
+add_dependencies(Neighbour se306project_generate_messages_cpp)
+
+
+add_library(NeighbourLib src/Neighbour.cpp)
+target_link_libraries(Neighbour Person Entity ${catkin_LIBRARIES})
+
 add_executable(AlphaPerson src/AlphaPerson.cpp)
 target_link_libraries(AlphaPerson Person Entity ${catkin_LIBRARIES})
 add_dependencies(AlphaPerson se306project_generate_messages_cpp)
@@ -229,6 +246,10 @@ add_executable(GardenWorker src/GardenWorker.cpp)
 target_link_libraries(GardenWorker Person Entity ${catkin_LIBRARIES})
 add_dependencies(GardenWorker se306project_generate_message_cpp)
 
+add_executable(BlindPerson src/BlindPerson.cpp)
+target_link_libraries(BlindPerson Person Entity ${catkin_LIBRARIES})
+add_dependencies(BlindPerson se306project_generate_message_cpp)
+
 if (CATKIN_ENABLE_TESTING)
 	#integration test(everything include testing multiple nodes with stage running)
     find_package(catkin REQUIRED COMPONENTS rostest)
@@ -244,6 +265,9 @@ if (CATKIN_ENABLE_TESTING)
 
     add_rostest_gtest(testAlphaDog test/rostest/testAlphaDog.test test/testAlphaDog.cpp)
     target_link_libraries(testAlphaDog AlphaDogLib ${catkin_LIBRARIES})
+    
+    add_rostest_gtest(testEntityMock test/rostest/testEntityMock.test test/testEntityMock.cpp)
+    target_link_libraries(testEntityMock EntityMockLib ${catkin_LIBRARIES})
     
     # unit tests
 	catkin_add_gtest(testMovement test/testMovement.cpp)

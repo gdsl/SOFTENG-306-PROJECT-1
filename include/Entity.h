@@ -29,7 +29,7 @@ class Entity
         //direction robot facing
 		enum Direction {WEST, SOUTH, EAST, NORTH};
 		//enumeration for avoidance cases
-		enum AvoidanceCase{NONE,HALT, LIVING_OBJ,WEED, FACE_ON, PERPENDICULAR,STATIONARY};
+		enum AvoidanceCase{NONE,HALT, LIVING_OBJ,WEED, TREE,FACE_ON, PERPENDICULAR,STATIONARY};
 
 		// Publisher and Subscriber. Public available to update.
 		ros::Publisher robotNode_stage_pub;
@@ -53,9 +53,12 @@ class Entity
 		void updateOdometry();
 		void setDesireLocation(bool desireLocation);
 		void setStatus(std::string status);
-                void determineStatus();
+        void determineStatus();
 		void setLin(double lv);
 		void setAng(double av);
+		void setObstacleStatus(std::string obstacleStatus);
+		void avoidObstacle(Entity entity,double x,double y);
+		void flushMovementQueue();
 		
 		//get method
 		double getX();
@@ -68,6 +71,7 @@ class Entity
 		AvoidanceCase getAvoidanceCase();
 		bool getDesireLocation();
 		std::string getStatus();
+		std::string getObstacleStatus();
 		int getMovementQueueSize();
 		int getAvoidanceQueueSize();
 		int getCriticalIntensity();
@@ -94,7 +98,10 @@ class Entity
 		int numOfScan;
 		double previousScanDistance;
 		AvoidanceCase avoidanceCase;
+		AvoidanceCase previousAvoidanceCase;
+		std::string obstacleStatus;
 		std::string status;
+
 		//movement queue
         std::vector<Movement> movementQueue;
         std::vector<Movement> avoidanceQueue; //vector for lsit of avoidance movements

@@ -5,57 +5,56 @@
 #include <sstream>
 #include "TallWeed.h"
  
-TallWeed::TallWeed() : Entity() {}
+TallWeed::TallWeed() : Entity() {
+
+}
 
 TallWeed::~TallWeed() {
 
 }
 
-void TallWeed::update_position()
-{
-	// Generate new random position
-	int x = rand() % 82 - 36;
-	int y = rand() % 52 - 26;
-
-	ROS_ERROR("MADE IT");
-
+/**
+ * Move the weed underground
+ */
+void TallWeed::update_position() {
+//	robotNode_cmdvel.linear.x = 0;
+//	robotNode_cmdvel.angular.z = 0;
+//	robotNode_cmdvel.linear.y = -5;
+//	// Publish message
+//	robotNode_stage_pub.publish(robotNode_cmdvel);
 }
 
 void TallWeed::workerCallback(const se306project::robot_status msg) {
 	std::string status = msg.status;
-    double destX = msg.pos_x;
-    double destY = msg.pos_y;
+	double destX = msg.pos_x;
+	double destY = msg.pos_y;
 
-    if (status.compare("Done") == 0) {
-    	double distance = sqrt(pow(destX-getX(),2.0)+pow(destY-getY(),2.0));
+	if (status.compare("Done") == 0) {
+		double distance = sqrt(pow(destX-getX(),2.0)+pow(destY-getY(),2.0));
 
-    	if (distance <= NEARBYDISTANCE) {
-    		update_position();
-    	}
+		if (distance <= NEARBYDISTANCE) {
+			update_position();
+		}
 
-    }
+	}
 }
 
 void TallWeed::stageOdom_callback(nav_msgs::Odometry msg) {
-    Entity::stageOdom_callback(msg);
+	Entity::stageOdom_callback(msg);
 }
 
-int main(int argc, char **argv) 
-{
-    //initialise ros    
+int main(int argc, char **argv) {
+    // Initialise ros    
     ros::init(argc,argv,"tallWeed");
-
-    //create ros handler for this node
+    // Create ros handler for this node
     ros::NodeHandle n;
-    
     TallWeed tallWeed;
-
     tallWeed.robotNode_stage_pub = n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
     tallWeed.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000,&TallWeed::stageOdom_callback,&tallWeed);
 
-    //subscribe to worker
-    std::string start(argv[2]);
-    std::string end(argv[3]);
+    // Subscribe to worker
+    std::string start(argv[4]);
+    std::string end(argv[5]);
     int s = atoi(start.c_str());
     int e = atoi(end.c_str());
 
@@ -73,11 +72,7 @@ int main(int argc, char **argv)
         }
     }
 
-    //test if argv[2] is really the status of the person
-	//ROS_INFO("argv[2] is: %s", argv[2]);
-
     ros::Rate loop_rate(10); 
-	//nav_msgs::Odometry tempMessage;
     while (ros::ok())
     {
 	    ros::spinOnce();

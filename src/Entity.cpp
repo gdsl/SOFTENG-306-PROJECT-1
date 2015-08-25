@@ -40,6 +40,7 @@ Entity::Entity(double x, double y, double theta, double linearVelocity, double a
 	// The distance of the nearest obstacle
 	this->minDistance=30.0;
 	// Set the default obstacle angle as a value larger than 180
+	this-> obstacleStatus = "No obstacles";
 	this->obstacleAngle=270;
 	this->criticalIntensity=0;
 	this->numOfScan=0; 		
@@ -49,6 +50,7 @@ Entity::Entity(double x, double y, double theta, double linearVelocity, double a
 	this->previousScanNumberMin=0; 	// Variable for the min number of the previous scan critical object can be scan
 	this->previousScanNumberMax=0; 	// Variable for the max number of the previous scan critical object can be scan
 	this->avoidanceCase=NONE;
+	this->previousAvoidanceCase=NONE;
 }
 
 // Field for current movement of the node
@@ -109,25 +111,28 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg) {
 	for (int i=41; i<l-41; i++){ 
 		// Work out the minimum distance object
 		if (msg.ranges[i]< minDistance) {
-			minDistance = msg.ranges[i];
-			currentIntensity=msg.intensities[i];
-			obstacleAngle= (i/l) * msg.angle_increment + msg.angle_min;
+			if(msg.intensities[i]>0){//ignore intensity that is 0 or less
+				minDistance = msg.ranges[i];
+				currentIntensity=msg.intensities[i];
+				obstacleAngle= (i/l) * msg.angle_increment + msg.angle_min;
+			}
 		}
-		// Work most fatal intensity
-		if (msg.ranges[i]<1) {
-			if (numOfScan==0) {
-				if(msg.intensities[i]>previousScanIntensity) {
-					// Record first scan intensity
-					previousScanIntensity=msg.intensities[i];
-					// Record first scan range
-					previousScanDistance=msg.ranges[i];
-					previousScanNumber=i;
-				}
+		if (msg.ranges[i]<1.1&&numOfScan==0) {// Work most fatal intensity
+			if(msg.intensities[i]>previousScanIntensity) {
+				// Record first scan intensity
+				previousScanIntensity=msg.intensities[i];
+				// Record first scan range
+				previousScanDistance=msg.ranges[i];
+				previousScanNumber=i;
 			}
 		}
 	}
-	if (minDistance<1&&currentIntensity>1) {
-		if (previousScanIntensity==WEED_INTENSITY) {
+	
+	if (minDistance<1.1&&currentIntensity>=1) {
+		if (currentIntensity==1.0) {
+			// The object in way is a weed
+			avoidanceCase=TREE;
+		}else if (previousScanIntensity==WEED_INTENSITY) {
 			// The object in way is a weed
 			avoidanceCase=WEED;
 		} else if (previousScanIntensity>=LIVING_MIN_INTENSITY){
@@ -170,6 +175,7 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg) {
 					}
 				}
 				numOfScan=0;
+				previousAvoidanceCase=avoidanceCase;
 			} else {
 				// Work out max number of scan critical object still can be observed
 				for(int i=previousScanNumber;i<l-41;i++) {
@@ -187,7 +193,9 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg) {
 					}
 				}
 				// Halt current movement
-				avoidanceCase=HALT;
+				if(minDistance<0.8){
+					avoidanceCase=previousAvoidanceCase;
+				}
 				numOfScan+=1;
 			}
 		}
@@ -256,6 +264,61 @@ void Entity::avoidanceComplete() {
 	//convert to position
 	avoidanceQueue.erase(avoidanceQueue.begin());
 	desireLocation=true;
+}
+
+/**
+ * Method that will handle avoidance of obstacle by moving slight around the obstacle
+ * Input:
+ * 		Entity entity: the entity to avoid the obstacle
+ * 		double x: the magnitude of amount x to move
+ * 		double y: the magnitude of amount y to move
+ */
+void Entity::avoidObstacle(Entity entity, double x,double y){
+	if(entity.getDirectionFacing()== NORTH){
+		entity.addMovementFront("rotation",M_PI/2,1,1);
+		entity.addMovementFront("forward_x",x,1,1);
+		entity.addMovementFront("rotation",0, 1,1);
+		entity.addMovementFront("forward_y",y,1,1);
+		entity.addMovementFront("rotation",M_PI/2,1,1);
+		entity.addMovementFront("forward_x",-x,1,1);
+		entity.addMovementFront("rotation",M_PI,1,1);
+		entity.addMovementFront("forward_x",0,0,1);//this is at front of front
+		//pickerRobot.move();
+	}else if(entity.getDirectionFacing()== SOUTH){
+		entity.addMovementFront("rotation",-M_PI/2,1,1);
+		entity.addMovementFront("forward_x",x,1,1);
+		entity.addMovementFront("rotation",0, 1,1);
+		entity.addMovementFront("forward_y",-y,1,1);
+		entity.addMovementFront("rotation",-M_PI/2,1,1);
+		entity.addMovementFront("forward_x",-x,1,1);
+		entity.addMovementFront("rotation",M_PI,1,1);
+		entity.addMovementFront("forward_x",0,0,1);//this is at front of front
+	}else if(entity.getDirectionFacing()== EAST){
+		entity.addMovementFront("rotation",0, 1,1);
+		entity.addMovementFront("forward_y",y,1,1);
+		entity.addMovementFront("rotation",M_PI/2, 1,1);
+		entity.addMovementFront("forward_x",x,0,1);
+		entity.addMovementFront("rotation",0, 1,1);
+		entity.addMovementFront("forward_y",-y,1,1);
+		entity.addMovementFront("rotation",-M_PI/2, 1,1);
+		entity.addMovementFront("forward_x",0,0,1);//this is at front of front
+	}else if(entity.getDirectionFacing()== WEST){
+		entity.addMovementFront("rotation",M_PI, 1,1);
+		entity.addMovementFront("forward_y",y,1,1);
+		entity.addMovementFront("rotation",M_PI/2, 1,1);
+		entity.addMovementFront("forward_x",-x,0,1);
+		entity.addMovementFront("rotation",M_PI, 1,1);
+		entity.addMovementFront("forward_y",-y,1,1);
+		entity.addMovementFront("rotation",-M_PI/2, 1,1);
+		entity.addMovementFront("forward_x",0,0,1);//this is at front of front
+	}
+}
+
+/**
+ * Method to empty movement queue
+ */
+void Entity::flushMovementQueue() {
+	movementQueue.clear();
 }
 
 /**
@@ -370,9 +433,9 @@ void Entity::moveForward(double pos, double vel, std::string direction,int queue
 	if (!desireLocation){//TODO slow down
 		ROS_INFO("mfpos: %f", pos);
 		if (std::abs(position-pos)>=0.01){
-			if(std::abs(position-pos)<=0.2){
+			if(std::abs(position-pos)<=0.2&&vel>0.1){
 				linearVelocity=0.1;
-			}else if(std::abs(position-pos)<=1){
+			}else if(std::abs(position-pos)<=1&&vel>1){
 				linearVelocity=1;
 			}else{
 				linearVelocity=vel;
@@ -382,16 +445,16 @@ void Entity::moveForward(double pos, double vel, std::string direction,int queue
 				// If facing east then velocity should be negative since overshoot
 				if(directionFacing==EAST){ 
 					linearVelocity=-linearVelocity;
-				// If facing North then velocity should be negative since overshoot
+					// If facing North then velocity should be negative since overshoot
 				}else if(directionFacing==NORTH){ 
 					linearVelocity=-linearVelocity;
 				}
-			// Now in the -ve direction to our frame of reference
+				// Now in the -ve direction to our frame of reference
 			}else if (pos>position){
 				// If facing west then velocity should be negative since overshoot
 				if(directionFacing==WEST){ 
 					linearVelocity=-linearVelocity;
-				// If facing south then velocity should be negative since overshoot
+					// If facing south then velocity should be negative since overshoot
 				}else if(directionFacing==SOUTH){ 
 					linearVelocity=-linearVelocity;
 				}
@@ -429,12 +492,12 @@ void Entity::rotate(double angleToRotateTo, double angleSpeed, int queueNum) {
 			// ROS_INFO(""+(angleToRotateTo-theta));
 			angularVelocity=0.001;
 			updateOdometry();
-		// Slow down speed when very near
+			// Slow down speed when very near
 		} else if (std::abs(angleToRotateTo-theta)<(0.05)){
 			// ROS_INFO(""+(angleToRotateTo-theta));
 			angularVelocity=0.01;
 			updateOdometry();
-		// Slow down speed when near
+			// Slow down speed when near
 		} else if (std::abs(angleToRotateTo-theta)<(0.3)){
 			// ROS_INFO(""+(angleToRotateTo-theta));
 			angularVelocity=0.1;
@@ -457,13 +520,13 @@ void Entity::rotate(double angleToRotateTo, double angleSpeed, int queueNum) {
 		// If facing East then velocity should be negative since overshoot
 		if(theta<0.1 && theta>-0.1){
 			directionFacing=EAST;
-		// If facing North then velocity should be negative since overshoot
+			// If facing North then velocity should be negative since overshoot
 		} else if(theta<M_PI/2+0.1 && theta>M_PI/2-0.1){
 			directionFacing=NORTH;
-		// If facing West then velocity should be negative since overshoot
+			// If facing West then velocity should be negative since overshoot
 		} else if(theta<-M_PI+0.1 || theta>M_PI-0.1){ 
 			directionFacing=WEST;
-		// If facing South then velocity should be negative since overshoot
+			// If facing South then velocity should be negative since overshoot
 		} else if(theta<-M_PI/2+0.1 && theta>((-M_PI/2)-0.1)){ 
 			directionFacing=SOUTH;
 		}
@@ -623,7 +686,7 @@ void Entity::setDesireLocation(bool desireLocation) {
  * Getter method for status of the entity
  */
 std::string Entity::getStatus() {
-       return status;
+	return status;
 }
 
 /**
@@ -638,5 +701,19 @@ Entity::Direction Entity::getDirectionFacing() {
  */
 void Entity::setStatus(std::string status) {
 	this->status=status;
+}
+
+/**
+ * Getter method for the obstacle detection status
+ */
+std::string Entity::getObstacleStatus(){
+	return obstacleStatus;
+}
+
+/**
+ * setter method for the obstacle detection status
+ */
+void Entity::setObstacleStatus(std::string obstacleStatus){
+	this->obstacleStatus=obstacleStatus;
 }
 

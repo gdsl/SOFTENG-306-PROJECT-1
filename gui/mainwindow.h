@@ -17,16 +17,16 @@ class MainWindow;
 
 class MainWindow : public QMainWindow
 {
-    Q_OBJECT
+	Q_OBJECT
 
-signals:
+	signals:
 	void requestProcess();
 
-public slots:
+	public slots:
 	void onUpdateGUI( QString id, QString str, int i );
 
-public:
-    explicit MainWindow(QWidget *parent = 0);
+	public:
+	explicit MainWindow(QWidget *parent = 0);
 	void startReadingTopics();
 	QListWidget* createNewItem(string type);
 	void generate();
@@ -35,31 +35,31 @@ public:
 	void setKey(KeyReceiver *k);
 	int getLastKeyPressed();
 	int getTotalNodesFromModel();
-    QString truncate(QString str);
-    ~MainWindow();
+	QString truncate(QString str);
+	~MainWindow();
 
-    // GeneratorModel
-    GeneratorModel model;
+	// GeneratorModel
+	GeneratorModel model;
 
-private slots:
+	private slots:
 	void on_launchButton_clicked();
-    void on_displayStatusButton_clicked();
-    void on_closeButton_clicked();
-    void on_testDriveButton_clicked();
+	void on_displayStatusButton_clicked();
+	void on_closeButton_clicked();
+	void on_testDriveButton_clicked();
 
-private:
-    Ui::MainWindow *ui;
-    QListWidget *uiList[4] = {NULL, NULL, NULL, NULL};
-    vector<QListWidget*> uiListRobots;
-    vector<QListWidget*> uiListAnimals;
-    vector<QListWidget*> uiListPeoples;
-    vector<string> launchFileEntityList;
-  
-    KeyReceiver* key;
-    bool startedTestDrive = false;
-//	void updateGUI(const QString buffer);
-//	void *print_message_function( void *ptr );
-//	void exec(string cmd);
+	private:
+	Ui::MainWindow *ui;
+	QListWidget *uiList[4] = {NULL, NULL, NULL, NULL};
+	vector<QListWidget*> uiListRobots;
+	vector<QListWidget*> uiListAnimals;
+	vector<QListWidget*> uiListPeoples;
+	vector<string> launchFileEntityList;
+
+	KeyReceiver* key;
+	bool startedTestDrive = false;
+	//	void updateGUI(const QString buffer);
+	//	void *print_message_function( void *ptr );
+	//	void exec(string cmd);
 };
 
 #endif // MAINWINDOW_H
