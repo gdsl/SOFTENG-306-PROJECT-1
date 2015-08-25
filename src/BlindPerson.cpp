@@ -52,12 +52,15 @@ int main(int argc, char **argv) {
 	// Create ros handler for this node
 	ros::NodeHandle n;
 	blindPerson.robotNode_stage_pub = n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
+	ros::Publisher pub = n.advertise<se306project::human_status>("status",1000);
 	blindPerson.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000,stage_positionCallback);
 
 	std::string topicName = "/robot_" +dogString + "/status";
 	ros::Subscriber sub = n.subscribe<se306project::animal_status>(topicName,1000, dog_positionCallback);
 	//gardenWorker.tallweed_pose_sub[index] = n.subscribe<se306project::weed_status>(topicName.str(),1000,&GardenWorker::weedRemovalRequest, &gardenWorker);
 	ros::Rate loop_rate(10);
+	se306project::human_status status_msg;
+	blindPerson.setStatus("Following dog");
 
 	while (ros::ok()) {
         //blindPerson.move();
@@ -81,6 +84,13 @@ int main(int argc, char **argv) {
 		blindPerson.setLin(dist);
 		blindPerson.setAng(difference);
         blindPerson.updateOdometry();
+
+        status_msg.pos_x = blindPerson.getX();
+		status_msg.pos_y = blindPerson.getY();
+		status_msg.pos_theta = blindPerson.getTheta();
+		status_msg.status = blindPerson.getStatus();
+		pub.publish(status_msg);
+
 		ros::spinOnce();
 		loop_rate.sleep();
 	}
