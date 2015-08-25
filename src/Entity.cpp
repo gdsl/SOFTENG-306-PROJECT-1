@@ -50,6 +50,7 @@ Entity::Entity(double x, double y, double theta, double linearVelocity, double a
 	this->previousScanNumberMin=0; 	// Variable for the min number of the previous scan critical object can be scan
 	this->previousScanNumberMax=0; 	// Variable for the max number of the previous scan critical object can be scan
 	this->avoidanceCase=NONE;
+	this->previousAvoidanceCase=NONE;
 }
 
 // Field for current movement of the node
@@ -116,20 +117,18 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg) {
 				obstacleAngle= (i/l) * msg.angle_increment + msg.angle_min;
 			}
 		}
-		// Work most fatal intensity
-		if (msg.ranges[i]<1) {
-			if (numOfScan==0) {
-				if(msg.intensities[i]>previousScanIntensity) {
-					// Record first scan intensity
-					previousScanIntensity=msg.intensities[i];
-					// Record first scan range
-					previousScanDistance=msg.ranges[i];
-					previousScanNumber=i;
-				}
+		if (msg.ranges[i]<1.1&&numOfScan==0) {// Work most fatal intensity
+			if(msg.intensities[i]>previousScanIntensity) {
+				// Record first scan intensity
+				previousScanIntensity=msg.intensities[i];
+				// Record first scan range
+				previousScanDistance=msg.ranges[i];
+				previousScanNumber=i;
 			}
 		}
 	}
-	if (minDistance<1&&currentIntensity>=1) {
+	
+	if (minDistance<1.1&&currentIntensity>=1) {
 		if (currentIntensity==1.0) {
 			// The object in way is a weed
 			avoidanceCase=TREE;
@@ -176,6 +175,7 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg) {
 					}
 				}
 				numOfScan=0;
+				previousAvoidanceCase=avoidanceCase;
 			} else {
 				// Work out max number of scan critical object still can be observed
 				for(int i=previousScanNumber;i<l-41;i++) {
@@ -193,7 +193,9 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg) {
 					}
 				}
 				// Halt current movement
-				avoidanceCase=HALT;
+				if(minDistance<0.8){
+					avoidanceCase=previousAvoidanceCase;
+				}
 				numOfScan+=1;
 			}
 		}

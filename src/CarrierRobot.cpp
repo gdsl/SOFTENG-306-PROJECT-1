@@ -290,7 +290,7 @@ void receiveCarrierRobotStatus(const se306project::robot_status::ConstPtr& msg)
 		std::string status = msg->status;
 		//only want the carrier robot that is moving toward the picker robots
 		if (status.find("Moving") !=  std::string::npos) {
-			std::vector<std::string> stringList = split(status,' ');
+			std::vector<std::string> stringList = split(status,'_');
 
 			double x;
 			double y;
@@ -324,12 +324,12 @@ void CarrierRobot::stateLogic(){
 	if (carrierRobot.getState() == IDLE) {
 		carrierRobot.setStatus("Idle");
 	} else if (carrierRobot.getState() == MOVING) {
-		std::string status="Moving ";
+		std::string status="Moving_";
 		std::stringstream convert;
 		std::stringstream convert2;
 		convert << targetX;
 		convert2 << targetY;
-		status=status+convert.str()+" "+convert2.str();
+		status=status+convert.str()+"_"+convert2.str();
 		carrierRobot.setStatus(status);
 		ROS_INFO("x start: %s", status.c_str());
 		if (carrierRobot.getMovementQueueSize() == 0 ) {

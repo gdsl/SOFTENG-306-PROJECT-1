@@ -451,7 +451,7 @@ void Generator::loadTallWeeds()
     
     outfile << "#Generate tall weeds" << endl;
     for(int i = 0; i < model.weed; i++){
-        int x = rand() % 82 - 36;
+        int x = rand() % 76 - 30;
         int y = rand() % 52 - 26;
         weedPositions.push(x);
         weedPositions.push(y);

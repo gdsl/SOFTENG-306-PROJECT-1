@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include "ros/ros.h"
 #include "PickerRobot.h"
 #include "Robot.h"
 
@@ -46,23 +47,44 @@ TEST(PickerRobot, setPickRangeOfPicker) {
 }
 
 /*
- * Test for PickerRobot faceNorth() method.
- * Checks to see if the theta (angle robot is facing) is M_PI/2
- * after adding a rotate movement to the PickerRobot's queue and then calling move.
+ * Test for PickerRobot setBinCapacity() method.
+ * Checks to see if the parameters given are assigned to object fields correctly.
  */
-//TEST(PickerRobot, faceNorthCheckThetaPicker) {
-//	PickerRobot pickerRobot = PickerRobot();
-//	ros::NodeHandle n;
-//	pickerRobot.robotNode_stage_pub=n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
-//	pickerRobot.setPose(10, 10, 0);
-//	pickerRobot.faceNorth(1);
-//    //make sure the rotate has finished before checking theta value
-//    while (pickerRobot.getMovementQueueSize() > 1) {pickerRobot.move();}
-//	EXPECT_EQ(pickerRobot.getTheta(), M_PI/2);
+TEST(PickerRobot, setBinCapacityOfPicker) {
+	PickerRobot pickerRobot = PickerRobot();
+	pickerRobot.setBinCapacity(10);
+	EXPECT_EQ(pickerRobot.getBinCapacity(), 10);
+}
+
+/*
+ * Test for PickerRobot setState() method with State argument specific to Picker.
+ * Checks to see if the parameters given are assigned to object fields correctly.
+ */
+TEST(PickerRobot, setStateOfPicker) {
+	PickerRobot pickerRobot = PickerRobot();
+	pickerRobot.setState(Robot::PICKING);
+	EXPECT_EQ(pickerRobot.getState(), Robot::PICKING);
+}
+
+/*
+ * Test for PickerRobot stateLogic() method when the Picker has a full bin of kiwifruit.
+ * The method should cause the Picker to stop moving while it waits for a Carrier
+ */
+//TEST(PickerRobot, checkStateLogicWhenFullBinPicker) {
+//    ros::NodeHandle n;
+//    //Picker initialized with 2m/s linear velocity
+//	PickerRobot pickerRobot = PickerRobot(10, 10, 5, 2, 0, "Dispatch", 2);
+//	pickerRobot.setState(Robot::FULL_BIN);
+//    pickerRobot.stateLogic(n);
+//    while (pickerRobot.getMovementQueueSize() > 0) {pickerRobot.move();}
+//	EXPECT_EQ(pickerRobot.getLin(), 0);
 //}
 
+
+
 int main(int argc,char **argv) {
-	ros::init(argc, argv, "testPickerRobot");
     testing::InitGoogleTest(&argc, argv);
+	ros::init(argc, argv, "testPickerRobot");    
+    ros::NodeHandle n;
     return RUN_ALL_TESTS();
 }

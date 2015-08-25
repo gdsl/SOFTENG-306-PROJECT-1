@@ -175,7 +175,7 @@ void receiveCarrierRobotStatus(const se306project::carrier_status::ConstPtr& msg
 	}else if(msg->status.substr(0,6).compare("Moving")==0){// if carrier is send moving message check
 		//split string to get the target of carrier
 		std::vector<std::string> statusParts;
-		boost::split(statusParts, msg->status, boost::is_any_of("\t "));
+		boost::split(statusParts, msg->status, boost::is_any_of("_"));
 		double x=atof(statusParts.at(1).c_str());//get target x value of carrier
 		double y=atof(statusParts.at(2).c_str());//get target y value of carrier
 		if(std::abs(x-pickerRobot.getX())+std::abs(y-pickerRobot.getY())<0.2){
@@ -416,15 +416,14 @@ int main(int argc, char **argv)
 	pickerRobot.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000, callBackStageOdm);
 	//subscribe to obstacle detection
 	pickerRobot.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000,callBackLaserScan);
-	ros::Subscriber c=n.subscribe<se306project::carrier_status>("/robot_25/status",1000,receiveCarrierRobotStatus);
 
 	// publish weedobstacle
 	pickerRobot.weed_obstacle_pub = n.advertise<se306project::weed_status>("weed",1000);
 
 	//TODO need to subscribe to all carriers
 	//subscribe to other carrier
-	std::string carrierStart(argv[6]);
-	std::string carrierEnd(argv[7]);
+	std::string carrierStart(argv[7]);
+	std::string carrierEnd(argv[8]);
 	int a = atoi(carrierStart.c_str());
 	int b = atoi(carrierEnd.c_str());
 	int size = b-a+1;
@@ -473,5 +472,7 @@ int main(int argc, char **argv)
 		loop_rate.sleep();
 		++count;
 	}
+
+	delete[] carrierArray;
 	return 0;
 }

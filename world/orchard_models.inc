@@ -13,13 +13,13 @@ define modelBase model
 
 define trunk modelBase
 (
-  size [0.500 0.500 1.800]
+  size [0.300 0.300 1.800]
   gui_noise 0
 )
 
 define pole modelBase
 (
-  size [0.400 0.400 2.500]
+  size [0.300 0.300 2.500]
   gui_noise 0
 )
 
@@ -396,8 +396,18 @@ define PickerRobot position
 	point[1] [1 0]
 	point[2] [1 1]
 	point[3] [0 1]
-	z [0 1]
+	z [0 0.75]
   )
+  
+  block(
+	points 4
+	point[0] [0.25 0.25]
+	point[1] [0.75 0.25]
+	point[2] [0.75 0.75]
+	point[3] [0.25 0.75]
+	z [1 0.25]
+  )
+  
   #properties as name value pairs
   size [2.5 1.5 1]
   drive "diff"
@@ -416,10 +426,20 @@ define CarrierRobot position
 	point[1] [1 0]
 	point[2] [1 1]
 	point[3] [0 1]
-	z [0 1]
+	z [0 0.75]
   )
+  
+  block(
+	points 4
+	point[0] [0.25 0.25]
+	point[1] [0.75 0.25]
+	point[2] [0.75 0.75]
+	point[3] [0.25 0.75]
+	z [1 0.25]
+  )
+  
   #properties as name value pairs
-  size [1.8 1.5 0.5]
+  size [1.8 1.5 0.75]
   drive "diff"
   carrierLaser(pose [ 0.9 0.0 -0.5 0.0 ])
 

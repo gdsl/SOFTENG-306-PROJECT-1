@@ -98,6 +98,7 @@ class Entity
 		int numOfScan;
 		double previousScanDistance;
 		AvoidanceCase avoidanceCase;
+		AvoidanceCase previousAvoidanceCase;
 		std::string obstacleStatus;
 		std::string status;
 
