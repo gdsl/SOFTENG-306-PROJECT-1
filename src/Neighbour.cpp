@@ -85,7 +85,6 @@ int main(int argc, char **argv) {
                    neighbour.addMovement("forward_x", -35, 1);
                         }
                 else if (neighbour.getX()<8){
-                   neighbour.setStatus("Observing");
                    neighbour.faceNorth(1);
                    neighbour.faceSouth(1);
                    neighbour.faceEast(1);
@@ -104,7 +103,9 @@ int main(int argc, char **argv) {
                 ros::spinOnce();
 		loop_rate.sleep();
                 neighbour.determineStatus();
-                if ((neighbour.getLin()>0.5)&&)
+                if (( neighbour.getStatus()=="Turning")&&(neighbour.getX()<8)){
+                    neighbour.setStatus("Observing");
+}
 
 
                
