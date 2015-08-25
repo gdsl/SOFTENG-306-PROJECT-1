@@ -175,7 +175,7 @@ void receiveCarrierRobotStatus(const se306project::carrier_status::ConstPtr& msg
 	}else if(msg->status.substr(0,6).compare("Moving")==0){// if carrier is send moving message check
 		//split string to get the target of carrier
 		std::vector<std::string> statusParts;
-		boost::split(statusParts, msg->status, boost::is_any_of("\t "));
+		boost::split(statusParts, msg->status, boost::is_any_of("_"));
 		double x=atof(statusParts.at(1).c_str());//get target x value of carrier
 		double y=atof(statusParts.at(2).c_str());//get target y value of carrier
 		if(std::abs(x-pickerRobot.getX())+std::abs(y-pickerRobot.getY())<0.2){
