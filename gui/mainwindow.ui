@@ -162,6 +162,12 @@
         </item>
         <item row="0" column="1">
          <widget class="QSpinBox" name="pickerSpinner">
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="maximum">
+           <number>7</number>
+          </property>
           <property name="value">
            <number>1</number>
           </property>
@@ -197,6 +203,12 @@
         </item>
         <item row="2" column="1">
          <widget class="QSpinBox" name="carrierSpinner">
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="maximum">
+           <number>7</number>
+          </property>
           <property name="value">
            <number>1</number>
           </property>
@@ -204,6 +216,9 @@
         </item>
         <item row="4" column="3">
          <widget class="QSpinBox" name="dogSpinner">
+          <property name="maximum">
+           <number>7</number>
+          </property>
           <property name="value">
            <number>1</number>
           </property>
@@ -252,13 +267,22 @@
         </item>
         <item row="4" column="5">
          <widget class="QSpinBox" name="neighborSpinner">
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="maximum">
+           <number>3</number>
+          </property>
           <property name="value">
-           <number>0</number>
+           <number>1</number>
           </property>
          </widget>
         </item>
         <item row="5" column="3">
          <widget class="QSpinBox" name="catSpinner">
+          <property name="maximum">
+           <number>7</number>
+          </property>
           <property name="value">
            <number>1</number>
           </property>
@@ -266,8 +290,14 @@
         </item>
         <item row="2" column="5">
          <widget class="QSpinBox" name="blindPersonSpinner">
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="maximum">
+           <number>3</number>
+          </property>
           <property name="value">
-           <number>0</number>
+           <number>1</number>
           </property>
          </widget>
         </item>
@@ -294,6 +324,12 @@
         </item>
         <item row="0" column="5">
          <widget class="QSpinBox" name="workerSpinner">
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="maximum">
+           <number>4</number>
+          </property>
           <property name="value">
            <number>1</number>
           </property>
@@ -301,13 +337,25 @@
         </item>
         <item row="2" column="3">
          <widget class="QSpinBox" name="gardenerSpinner">
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="maximum">
+           <number>4</number>
+          </property>
           <property name="value">
-           <number>0</number>
+           <number>1</number>
           </property>
          </widget>
         </item>
         <item row="4" column="1">
          <widget class="QDoubleSpinBox" name="rowWidthSpinner">
+          <property name="minimum">
+           <double>3.000000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>6.000000000000000</double>
+          </property>
           <property name="singleStep">
            <double>0.100000000000000</double>
           </property>

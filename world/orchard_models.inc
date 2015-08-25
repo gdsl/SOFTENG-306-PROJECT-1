@@ -13,13 +13,13 @@ define modelBase model
 
 define trunk modelBase
 (
-  size [0.500 0.500 1.800]
+  size [0.300 0.300 1.800]
   gui_noise 0
 )
 
 define pole modelBase
 (
-  size [0.400 0.400 2.500]
+  size [0.300 0.300 2.500]
   gui_noise 0
 )
 

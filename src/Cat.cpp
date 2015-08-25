@@ -70,11 +70,12 @@ int main(int argc, char **argv)
 		initial = false;
 
 		// Generate random number of seconds for cat to sleep between 20-70s
-		int num = (rand() % 100) / 2;
-		int time = 20 + num;
+		double num = (rand() % 100) / 2;
+		double time = 20 + num;
 
 		if (cat.getMovementQueueSize() == 0) {
-			sleep(time);
+			//sleep(time);
+			cat.addMovement("forward_x", 0.4, 0.01);
 			cat.faceEast(1);
 			cat.addMovement("forward_x",-5,1);
 			cat.faceWest(1);
@@ -96,6 +97,9 @@ int main(int argc, char **argv)
 		loop_rate.sleep();
 		// Determine status of cat
 		cat.determineStatus();
+		if ( cat.getLin() == 0.01 ) {
+			status = "Sleeping";
+		}
 	}
 	return 0;
 }
