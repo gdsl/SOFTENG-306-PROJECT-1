@@ -52,7 +52,7 @@ private:
 	string colourArray[14] = { "LightSkyBlue", "SpringGreen", "coral", "yellow", "SteelBlue", "HotPink", "khaki", "YellowGreen", "SeaGreen", "SandyBrown", "orchid", "SlateGrey", "OliveDrab", "peru" };
 	int colourCount = 0;
 	int peopleCC = 0;
-	int dogCC = 0;
+	int animalCC = 0;
 	// static const variables
 	// distance between trunk/pole and beacon. x coord
 	int const static SEPARATION = 2;
