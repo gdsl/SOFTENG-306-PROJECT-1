@@ -352,10 +352,11 @@ for (int i = 0; i < model.neighbours; i++) {
         //int y = -55;
 
         //if( (x > -30) && (x < 40) && (y < 20) && (y > rowEnd)) {
-        int xMult = (((rand() % columnCount + 1) * 2) - 1);
-        float xPos = -30 + (xMult * xOffset);
-        int yMult = (((rand() % 8 + 1) * 2) - 1);
-        float yPos = 20.4 - (yMult * yOffset);
+        //int xMult = (((rand() % columnCount + 1) * 2) - 1);
+        float xPos = 40 ;
+        //int yMult = (((rand() % 8 + 1) * 2) - 1);
+        float yPos = 19;
+        yPos=yPos-(i * model.rowWidth);
         string colour = colourArray[peopleCC];
         peopleCC += 1;
         neighbourPositions.push(xPos);

@@ -28,7 +28,7 @@ Neighbour::Neighbour(double x, double y, double theta, double linearVelocity, do
 
 Neighbour neighbour;
 // Default cat behaviour = walking
-std::string status="Walking";
+std::string status="Idle";
 bool queueFull = false;
 
 // Keeps track of current position that cat is facing
@@ -73,11 +73,27 @@ int main(int argc, char **argv) {
 	se306project::robot_status status_msg;
 	// ROS infinite loop
 	while (ros::ok()) {
-                // Message to stage 
-		neighbour.faceWest(1);
-		neighbour.move();
+                // Message to stage
+		//neighbour.faceWest(1);
+                //neighbour.addMovement("forward_x", -35, 1);
+                //neighbour.move();
+                //neighbour.setStatus("Moving to a robot");
 
-		//ros::spinOnce();
+                if (neighbour.getMovementQueueSize() == 0){
+                      if(neighbour.getX()>39){
+                   neighbour.faceWest(1);
+                   neighbour.addMovement("forward_x", -35, 1);
+                        }
+                else if (neighbour.getX()<8){
+                   neighbour.setStatus("Observing");
+                   neighbour.faceNorth(1);
+                   neighbour.faceSouth(1);
+                   neighbour.faceEast(1);
+                   neighbour.addMovement("forward_x", 35, 1);
+            }
+		
+}
+		neighbour.move();
 		// Publish neighbour status
 		status_msg.pos_x = neighbour.getX();
 		status_msg.pos_y = neighbour.getY();
@@ -85,7 +101,12 @@ int main(int argc, char **argv) {
 		status_msg.status = neighbour.getStatus();
 		//publish message
 		neighbour.Neighbour_status_pub.publish(status_msg);
+                ros::spinOnce();
 		loop_rate.sleep();
-                //neighbour.determineStatus();
-	}
+                neighbour.determineStatus();
+                if ((neighbour.getLin()>0.5)&&)
+
+
+               
+}
 }
