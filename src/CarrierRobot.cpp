@@ -290,7 +290,7 @@ void receiveCarrierRobotStatus(const se306project::robot_status::ConstPtr& msg)
 		std::string status = msg->status;
 		//only want the carrier robot that is moving toward the picker robots
 		if (status.find("Moving") !=  std::string::npos) {
-			std::vector<std::string> stringList = split(status,' ');
+			std::vector<std::string> stringList = split(status,'_');
 
 			double x;
 			double y;
