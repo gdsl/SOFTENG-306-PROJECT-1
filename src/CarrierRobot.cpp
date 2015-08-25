@@ -324,12 +324,12 @@ void CarrierRobot::stateLogic(){
 	if (carrierRobot.getState() == IDLE) {
 		carrierRobot.setStatus("Idle");
 	} else if (carrierRobot.getState() == MOVING) {
-		std::string status="Moving ";
+		std::string status="Moving_";
 		std::stringstream convert;
 		std::stringstream convert2;
 		convert << targetX;
 		convert2 << targetY;
-		status=status+convert.str()+" "+convert2.str();
+		status=status+convert.str()+"_"+convert2.str();
 		carrierRobot.setStatus(status);
 		ROS_INFO("x start: %s", status.c_str());
 		if (carrierRobot.getMovementQueueSize() == 0 ) {
