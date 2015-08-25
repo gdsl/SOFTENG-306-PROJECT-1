@@ -103,6 +103,7 @@ int main(int argc, char **argv) {
 
 	ros::Rate loop_rate(10);
 
+        //Add initial movement
 	se306project::robot_status status_msg;
 	neighbour.setStatus("Finding a robot");
 	neighbour.faceWest(1);
@@ -113,6 +114,7 @@ int main(int argc, char **argv) {
                 ros::spinOnce();
 		loop_rate.sleep();
 
+                //determine the logic of neighbour movement 
 		if (neighbour.getMovementQueueSize() == 0){
 			if(neighbour.getStatus().compare("Finding a robot")==0){
 				neighbour.setStatus("Moving back ");
