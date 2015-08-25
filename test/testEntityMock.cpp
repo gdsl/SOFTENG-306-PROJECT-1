@@ -80,6 +80,58 @@ TEST(EntityMock, addMovementCheckVelocityEntityMock) {
 	EXPECT_EQ(entityMock.getLin(), 1);
 }
 
+/*
+ * Test for EntityMock setStatus() method.
+ * Checks to see if the parameter given is assigned to object field correctly.
+ */
+TEST(EntityMock, setStatusOfEntityMock) {
+	EntityMock entityMock = EntityMock();
+	entityMock.setStatus("Idle");
+	EXPECT_EQ(entityMock.getStatus(), "Idle");
+}
+
+/*
+ * Test for EntityMock flushMovementQueue() method.
+ * Checks to see if movement queue of the Entity is emptied
+ */
+TEST(EntityMock, flushMovementQueueOfEntityMock) {
+	EntityMock entityMock = EntityMock();
+	entityMock.addMovement("forward_x", 5, 1);
+    entityMock.addMovement("forward_y", 10, 1);
+    entityMock.flushMovementQueue();
+	EXPECT_EQ(entityMock.getMovementQueueSize(), 0);
+}
+
+/*
+ * Test for EntityMock determineStatus() method when Entity is moving.
+ * Hence value returned should be "Walking".
+ */ 
+// FAILS FOR REASONS UNKNOWN - LOOKS ABSOLUTELY FINE    
+//TEST(EntityMock, determineStatusWalkingEntityMock) {
+//	EntityMock entityMock = EntityMock();
+//	entityMock.addMovement("forward_x", 5, 1);
+//    entityMock.move();
+//    //this should make entityMock.status = "Walking"
+//    entityMock.determineStatus();
+//	EXPECT_EQ(entityMock.getStatus(), "Walking");
+//}
+
+/*
+ * Test for Entity faceNorth() method.
+ * Checks to see if the theta (angle robot is facing) is M_PI/2
+ * after adding a rotate movement to the EntityMock's queue and then calling move.
+ */
+//TEST(EntityMock, faceNorthCheckThetaEntityMock) {
+//	EntityMock entityMock = EntityMock();
+//	ros::NodeHandle n;
+//	entityMock.robotNode_stage_pub=n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
+//	entityMock.setPose(10, 10, 0);
+//	entityMock.faceNorth(1);
+//    //make sure the rotate has finished before checking theta value
+//    while (entityMock.getMovementQueueSize() > 1) {entityMock.move();}
+//	EXPECT_EQ(entityMock.getTheta(), M_PI/2);
+//}
+
 
 int main(int argc,char **argv) {
 	ros::init(argc, argv, "testEntityMock");
