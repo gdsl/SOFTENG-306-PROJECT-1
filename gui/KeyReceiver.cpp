@@ -10,9 +10,13 @@
 #include <sstream>
 
 KeyReceiver::KeyReceiver() {
-	//timer = new QTimer(this);
-	//QObject::connect(timer, SIGNAL(timeout()), this, SLOT(fireKeyData()));
-	//timer->start(3000); //time specified in ms
+	timer = new QTimer(this);
+	QObject::connect(timer, SIGNAL(timeout()), this, SLOT(resetKeyData()));
+	timer->start(3000); //time specified in ms
+}
+
+void KeyReceiver::resetKeyData(){
+    lastKeyPressed = 0;
 }
 
 bool KeyReceiver::eventFilter(QObject* obj, QEvent* event)
