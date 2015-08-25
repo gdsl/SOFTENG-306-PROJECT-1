@@ -121,11 +121,14 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg) {
 		// Work out the minimum distance object
 		if (msg.ranges[i]< minDistance) {
 			minDistance = msg.ranges[i];
-			currentIntensity=msg.intensities[i];
+			if(msg.ranges[i]<1.1&&msg.intensities[i]>currentIntensity) {
+				// Record the most critical intensity within 1.1
+				currentIntensity=msg.intensities[i];
+			}
 			obstacleAngle= (i/l) * msg.angle_increment + msg.angle_min;
 		}
-		if (msg.ranges[i]<1.1&&numOfScan==0) {// Work most fatal intensity
-			if(msg.intensities[i]>previousScanIntensity) {
+		if (numOfScan==0) {// Work most fatal intensity
+			if(msg.ranges[i]<1.1&&msg.intensities[i]>previousScanIntensity) {
 				// Record first scan intensity
 				previousScanIntensity=msg.intensities[i];
 				// Record first scan range
@@ -156,7 +159,7 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg) {
 				int currentMax=previousScanNumber;
 				int currentMin=previousScanNumber;
 				// Work out max number of scan critical object still can be observed
-				for(int i=previousScanNumber;i<l-45;i++) {
+				for(int i=previousScanNumber;i<l-41;i++) {
 					if(previousScanIntensity!=msg.intensities[i]&&!found) {
 						currentMax=i-1;
 						found=true;
@@ -164,7 +167,7 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg) {
 				}
 				found=false;
 				// Work out min number of scan critical object still can be observed
-				for(int i=previousScanNumber;i>44;i--) {
+				for(int i=previousScanNumber;i>41;i--) {
 					if(previousScanIntensity!=msg.intensities[i]&&!found) {
 						currentMin=i+1;
 						found=true;
@@ -182,19 +185,30 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg) {
 			numOfScan=0;
 			previousAvoidanceCase=avoidanceCase;
 		} else {
-			// Work out max number of scan critical object still can be observed
-			for(int i=previousScanNumber;i<l-41;i++) {
-				if(previousScanIntensity!=msg.intensities[i]&&!found) {
-					previousScanNumberMax=i-1;
-					found=true;
+			if (currentIntensity==1.0) {
+				// The object in way is a weed
+				avoidanceCase=TREE;
+			}else if (currentIntensity==WEED_INTENSITY) {
+				// The object in way is a weed
+				avoidanceCase=WEED;
+			} else if (currentIntensity>=LIVING_MIN_INTENSITY){
+				// The object is a living object that is not weed
+				avoidanceCase=LIVING_OBJ;
+			}else{
+				// Work out max number of scan critical object still can be observed
+				for(int i=previousScanNumber;i<l-41;i++) {
+					if(previousScanIntensity!=msg.intensities[i]&&!found) {
+						previousScanNumberMax=i-1;
+						found=true;
+					}
 				}
-			}
-			found=false;
-			// Work out min number of scan critical object still can be observed
-			for(int i=previousScanNumber;i>41;i--) {
-				if(previousScanIntensity!=msg.intensities[i]&&!found) {
-					previousScanNumberMin=i+1;
-					found=true;
+				found=false;
+				// Work out min number of scan critical object still can be observed
+				for(int i=previousScanNumber;i>41;i--) {
+					if(previousScanIntensity!=msg.intensities[i]&&!found) {
+						previousScanNumberMin=i+1;
+						found=true;
+					}
 				}
 			}
 			// set avoidance case to previous
@@ -202,7 +216,7 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg) {
 			numOfScan+=1;
 		}
 	}
-	criticalIntensity=previousScanIntensity;
+	criticalIntensity=currentIntensity;
 }
 
 /**
@@ -439,7 +453,7 @@ void Entity::moveForward(double pos, double vel, std::string direction,int queue
 	}
 	if (!desireLocation){//TODO slow down
 		ROS_INFO("mfpos: %f", pos);
-		if (std::abs(position-pos)>=0.01){
+		if (std::abs(position-pos)>=0.01&&vel!=0){
 			if(std::abs(position-pos)<=0.2&&vel>0.1){
 				linearVelocity=0.1;
 			}else if(std::abs(position-pos)<=1&&vel>1){
@@ -478,6 +492,13 @@ void Entity::moveForward(double pos, double vel, std::string direction,int queue
 		}
 	}else{
 		desireLocation=true;
+		if (queueNum==2){
+			// Call method complete to remove complete movement from queue
+			movementComplete();
+		}else{
+			// Call method to remove from avoidance queue
+			avoidanceComplete();
+		}
 		linearVelocity=0;
 	}
 	angularVelocity=0;
