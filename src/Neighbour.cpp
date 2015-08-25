@@ -51,6 +51,51 @@ void Neighbour::stageOdom_callback(const nav_msgs::Odometry msg) {
 	Person::stageOdom_callback(msg);
 }
 
+/**
+ * Getter method for the origin x  of the picker robot
+ */
+double Neighbour::getOriginX() {
+	return originXPos;
+}
+
+/**
+ * Setter method for the origin x of the picker robot
+ */
+void Neighbour::setOriginX(double originXPos) {
+	this->originXPos=originXPos;
+}
+
+/**
+ * Getter method for the origin y  of the picker robot
+ */
+double Neighbour::getOriginY() {
+	return originYPos;
+}
+
+/**
+ * Setter method for the origin x of the picker robot
+ */
+void Neighbour::setOriginY(double originYPos) {
+	this->originYPos=originYPos;
+}
+/**
+ * Call back method for laser work out the avoidance logic for neighbour
+ */
+void callBackLaserScan(const sensor_msgs::LaserScan msg) {
+	neighbour.stageLaser_callback(msg);//call supercalss laser call back for detection case work out
+
+	if (neighbour.getAvoidanceCase()!=Entity::NONE&&neighbour.getAvoidanceCase()!=Entity::TREE) {//check if there is need to avoid obstacle
+		if (neighbour.getCriticalIntensity()==2){ //if sense picker robot run away
+			neighbour.addMovementFront("forward_x",0,0,1);//halt current movement
+			neighbour.move();
+			neighbour.flushMovementQueue();
+                   	neighbour.faceEast(1);
+                   	neighbour.addMovement("forward_x", neighbour.getOriginX()-neighbour.getX(), 1);
+			neighbour.setStatus("Moving back from a robot");
+		}
+	}
+}
+
 int main(int argc, char **argv) {
 	// Initialise ros
 	ros::init(argc,argv,"Neighbour");
@@ -61,12 +106,14 @@ int main(int argc, char **argv) {
 	double yPos = atof(yPosString.c_str());
 	double xPos = atof(xPosArg.c_str());
 	neighbour=Neighbour(xPos,yPos);
-
+	neighbour.setOriginY(yPos);
+	neighbour.setOriginX(xPos);
 	neighbour.robotNode_stage_pub = n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
 	neighbour.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth", 1000, &Neighbour::stageOdom_callback, &neighbour);
 	//Neighbour.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000, &Neighbour::stageLaser_callback, &Neighbour);
 	neighbour.Neighbour_status_pub = n.advertise<se306project::robot_status>("status",1000);
-
+	//subscribe to laser
+	neighbour.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000,callBackLaserScan);
 
 	ros::Rate loop_rate(10);
 
@@ -83,26 +130,19 @@ int main(int argc, char **argv) {
                       if(neighbour.getX()>39){
                    neighbour.faceWest(1);
                    neighbour.addMovement("forward_x", -35, 1);
-                        }
-                else if (neighbour.getX()<8){
-                   neighbour.faceNorth(1);
-                   neighbour.faceSouth(1);
+		} else if (neighbour.getX()<8){            
                    neighbour.faceEast(1);
                    neighbour.addMovement("forward_x", 35, 1);
-            }
+              }
 		
-}
-		neighbour.move();
-		// Publish neighbour status
-		status_msg.pos_x = neighbour.getX();
-		status_msg.pos_y = neighbour.getY();
-		status_msg.pos_theta = neighbour.getTheta();
-		status_msg.status = neighbour.getStatus();
+		}
+
+
 		//publish message
 		neighbour.Neighbour_status_pub.publish(status_msg);
                 ros::spinOnce();
 		loop_rate.sleep();
-                neighbour.determineStatus();
+		/**
                 if (( neighbour.getStatus()=="Turning")&&(neighbour.getX()<8)){
                     neighbour.setStatus("Observing");
                    } else if ( neighbour.getStatus()=="Walking"){
@@ -112,6 +152,20 @@ int main(int argc, char **argv) {
                              else{
                              neighbour.setStatus("Finding a robot");
                               }
-}                     
-}
+}       	**/
+		if (neighbour.getMovementQueueSize() == 0){
+			/*if(){
+				neighbour.setStatus("Moving back from a robot");
+			}else{
+				neighbour.setStatus("Finding a robot");
+			}*/
+		}
+		neighbour.move();
+		// Publish neighbour status
+		status_msg.pos_x = neighbour.getX();
+		status_msg.pos_y = neighbour.getY();
+		status_msg.pos_theta = neighbour.getTheta();
+		status_msg.status = neighbour.getStatus();
+	                neighbour.determineStatus();              
+	}
 }
