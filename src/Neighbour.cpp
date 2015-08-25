@@ -85,13 +85,15 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 	neighbour.stageLaser_callback(msg);//call supercalss laser call back for detection case work out
 
 	//if (neighbour.getAvoidanceCase()!=Entity::NONE&&neighbour.getAvoidanceCase()!=Entity::TREE) {//check if there is need to avoid obstacle
-		if (neighbour.getCriticalIntensity()==2&&neighbour.getAvoidanceQueueSize()==0){ //if sense picker robot run away
+		if (neighbour.getCriticalIntensity()==2&&neighbour.getAvoidanceQueueSize()==0&&neighbour.getObstacleStatus().compare("Obstacle nearby")!=0){ //if sense picker robot run away
 			neighbour.setObstacleStatus("Obstacle nearby");			
-			neighbour.addMovementFront("rotation",0, 1,1);//halt current movement
 			neighbour.addMovementFront("forward_x",0,0,1);//halt current movement
 			neighbour.move();
 			neighbour.flushMovementQueue();
-		}else{
+			neighbour.addMovementFront("rotation",0,1,1);
+			neighbour.addMovement("forward_x", neighbour.getOriginX()-neighbour.getX(), 1);
+			neighbour.setStatus("Moving back from a robot");
+		}else if(neighbour.getMinDistance()>1){
 			neighbour.setObstacleStatus("No detection");	
 		}
 	//}
@@ -139,7 +141,7 @@ int main(int argc, char **argv) {
 			if(neighbour.getStatus().compare("Finding a robot")==0){
 				neighbour.setStatus("Moving back from a robot");
 				neighbour.faceEast(1);
-                   		neighbour.addMovement("forward_x", neighbour.getOriginX()-neighbour.getX(), 1);
+                neighbour.addMovement("forward_x", neighbour.getOriginX()-neighbour.getX(), 1);
 			}else{
 				neighbour.setStatus("Finding a robot");
 				neighbour.faceWest(1);

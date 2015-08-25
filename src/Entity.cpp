@@ -112,15 +112,23 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg) {
 	// Varaible for current intensity
 	double currentIntensity=0;
 	// Only process the object in +49 to -49 degree of the nodes laser
+	if(numOfScan==0){//reset previous values
+		previousScanIntensity=0;
+		previousScanDistance=0;
+		previousScanNumber=0;
+	}
 	for (int i=41; i<l-41; i++){ 
 		// Work out the minimum distance object
 		if (msg.ranges[i]< minDistance) {
 			minDistance = msg.ranges[i];
-			currentIntensity=msg.intensities[i];
+			if(msg.ranges[i]<1.1&&msg.intensities[i]>currentIntensity) {
+				// Record the most critical intensity within 1.1
+				currentIntensity=msg.intensities[i];
+			}
 			obstacleAngle= (i/l) * msg.angle_increment + msg.angle_min;
 		}
-		if (msg.ranges[i]<1.1&&numOfScan==0) {// Work most fatal intensity
-			if(msg.intensities[i]>previousScanIntensity) {
+		if (numOfScan==0) {// Work most fatal intensity
+			if(msg.ranges[i]<1.1&&msg.intensities[i]>previousScanIntensity) {
 				// Record first scan intensity
 				previousScanIntensity=msg.intensities[i];
 				// Record first scan range
@@ -129,54 +137,64 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg) {
 			}
 		}
 	}
-	
+
 	if (minDistance<1.1&&currentIntensity>=1) {
-		if (currentIntensity==1.0) {
-			// The object in way is a weed
-			avoidanceCase=TREE;
-		}else if (currentIntensity==WEED_INTENSITY) {
-			// The object in way is a weed
-			avoidanceCase=WEED;
-		} else if (currentIntensity>=LIVING_MIN_INTENSITY){
-			// The object is a living object that is not weed
-			avoidanceCase=LIVING_OBJ;
-		} else {
-			// Check if there is perpendicular movement
-			if (numOfScan==1) {
+		// Check if there is perpendicular movement
+		if (numOfScan==1) {
+			if (currentIntensity==1.0) {
+				// The object in way is a weed
+				avoidanceCase=TREE;
+			}else if (currentIntensity==WEED_INTENSITY) {
+				// The object in way is a weed
+				avoidanceCase=WEED;
+			} else if (currentIntensity>=LIVING_MIN_INTENSITY){
+				// The object is a living object that is not weed
+				avoidanceCase=LIVING_OBJ;
+
 				// Obstacle got closer
-				if (previousScanDistance<msg.ranges[previousScanNumber]&&previousScanIntensity==msg.intensities[previousScanNumber]) {
-					// The object is face on
-					avoidanceCase=FACE_ON;
-				} else {
-					int currentMax=previousScanNumber;
-					int currentMin=previousScanNumber;
-					// Work out max number of scan critical object still can be observed
-					for(int i=previousScanNumber;i<l-45;i++) {
-						if(previousScanIntensity!=msg.intensities[i]&&!found) {
-							currentMax=i-1;
-							found=true;
-						}
-					}
-					found=false;
-					// Work out min number of scan critical object still can be observed
-					for(int i=previousScanNumber;i>44;i--) {
-						if(previousScanIntensity!=msg.intensities[i]&&!found) {
-							currentMin=i+1;
-							found=true;
-						}
-					}
-					// It is moving horizontally or rotating
-					if (currentMax!=previousScanNumberMax||currentMin!=previousScanNumberMin) {
-						// Avoidance case is perpendicular
-						avoidanceCase=PERPENDICULAR;
-					} else {
-						// If x or y distance didn't change then entity must be stationary
-						avoidanceCase=STATIONARY;
+			} else if (previousScanDistance<msg.ranges[previousScanNumber]&&previousScanIntensity==msg.intensities[previousScanNumber]) {
+				// The object is face on
+				avoidanceCase=FACE_ON;
+			} else {
+				int currentMax=previousScanNumber;
+				int currentMin=previousScanNumber;
+				// Work out max number of scan critical object still can be observed
+				for(int i=previousScanNumber;i<l-41;i++) {
+					if(previousScanIntensity!=msg.intensities[i]&&!found) {
+						currentMax=i-1;
+						found=true;
 					}
 				}
-				numOfScan=0;
-				previousAvoidanceCase=avoidanceCase;
-			} else {
+				found=false;
+				// Work out min number of scan critical object still can be observed
+				for(int i=previousScanNumber;i>41;i--) {
+					if(previousScanIntensity!=msg.intensities[i]&&!found) {
+						currentMin=i+1;
+						found=true;
+					}
+				}
+				// It is moving horizontally or rotating
+				if (currentMax!=previousScanNumberMax||currentMin!=previousScanNumberMin) {
+					// Avoidance case is perpendicular
+					avoidanceCase=PERPENDICULAR;
+				} else {
+					// If x or y distance didn't change then entity must be stationary
+					avoidanceCase=STATIONARY;
+				}
+			}
+			numOfScan=0;
+			previousAvoidanceCase=avoidanceCase;
+		} else {
+			if (currentIntensity==1.0) {
+				// The object in way is a weed
+				avoidanceCase=TREE;
+			}else if (currentIntensity==WEED_INTENSITY) {
+				// The object in way is a weed
+				avoidanceCase=WEED;
+			} else if (currentIntensity>=LIVING_MIN_INTENSITY){
+				// The object is a living object that is not weed
+				avoidanceCase=LIVING_OBJ;
+			}else{
 				// Work out max number of scan critical object still can be observed
 				for(int i=previousScanNumber;i<l-41;i++) {
 					if(previousScanIntensity!=msg.intensities[i]&&!found) {
@@ -192,14 +210,13 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg) {
 						found=true;
 					}
 				}
-				// set avoidance case to previous
-				avoidanceCase=previousAvoidanceCase;
-				numOfScan+=1;
 			}
+			// set avoidance case to previous
+			avoidanceCase=previousAvoidanceCase;
+			numOfScan+=1;
 		}
-							// Set the critical intensity as object got closer
-					criticalIntensity=previousScanIntensity;
 	}
+	criticalIntensity=currentIntensity;
 }
 
 /**
@@ -436,7 +453,7 @@ void Entity::moveForward(double pos, double vel, std::string direction,int queue
 	}
 	if (!desireLocation){//TODO slow down
 		ROS_INFO("mfpos: %f", pos);
-		if (std::abs(position-pos)>=0.01){
+		if (std::abs(position-pos)>=0.01&&vel!=0){
 			if(std::abs(position-pos)<=0.2&&vel>0.1){
 				linearVelocity=0.1;
 			}else if(std::abs(position-pos)<=1&&vel>1){
@@ -475,6 +492,13 @@ void Entity::moveForward(double pos, double vel, std::string direction,int queue
 		}
 	}else{
 		desireLocation=true;
+		if (queueNum==2){
+			// Call method complete to remove complete movement from queue
+			movementComplete();
+		}else{
+			// Call method to remove from avoidance queue
+			avoidanceComplete();
+		}
 		linearVelocity=0;
 	}
 	angularVelocity=0;
@@ -491,7 +515,7 @@ void Entity::moveForward(double pos, double vel, std::string direction,int queue
  */
 void Entity::moveZ(double pos, double vel,int queueNum) {
 	double position=z;
-	
+
 	/*if (!desireLocation){//TODO slow down
 		ROS_INFO("mfpos: %f", pos);
 		if (std::abs(position-pos)>=0.01){

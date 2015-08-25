@@ -108,17 +108,25 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 			if(carrierRobot.getAvoidanceCase()==Entity::WEED){// if its weed stop
 				carrierRobot.addMovementFront("forward_x",0,0,1);//add empty movement to front of avoidance to stop
 				carrierRobot.setObstacleStatus("Weed! Help!");
+				//send message of weed
+				se306project::weed_status weed_msg;
+				double angle=carrierRobot.getTheta()+(carrierRobot.getObstacleAngle()/180)*M_PI;
+				weed_msg.pos_theta=angle; //add angle of weed from carrier to message to broadcast
+				weed_msg.pos_x=carrierRobot.getX()+cos(angle)*(carrierRobot.getMinDistance()+0.9);
+				weed_msg.pos_y=carrierRobot.getY()+sin(angle)*(carrierRobot.getMinDistance()+0.9);
+				carrierRobot.weed_obstacle_pub.publish(weed_msg);
 			}else if(carrierRobot.getAvoidanceCase()==Entity::LIVING_OBJ){//if its human or animal stop
 				carrierRobot.addMovementFront("forward_x",0,0,1);//add empty movement to front of avoidance to stop
 				carrierRobot.setObstacleStatus("Living Object");
 			}else if(carrierRobot.getAvoidanceCase()==Entity::HALT){//if its halt stop
 				carrierRobot.addMovementFront("forward_x",0,0,1);//add empty movement to front of avoidance to stop
-				carrierRobot.setObstacleStatus("Obstacle nearby. Halt");
+			}else if(carrierRobot.getState()==carrierRobot.QUEUE){//if its carrier
+				carrierRobot.addMovementFront("forward_x",0,0,1);//this is at front of queue
+				carrierRobot.setObstacleStatus("Queue");
 			}else if(carrierRobot.getAvoidanceCase()==Entity::STATIONARY&& carrierRobot.getCriticalIntensity()>1){//if its stationary robot
+				carrierRobot.setObstacleStatus("Stationary object");
 				//if the carrier robot is infront and carrier is queue then halt
-				if(carrierRobot.getState()==carrierRobot.QUEUE&& carrierRobot.getCriticalIntensity()==3){//if its carrier
-					carrierRobot.addMovementFront("forward_x",0,0,1);//this is at front of queue
-				}else if(carrierRobot.getCriticalIntensity()!=2|| carrierRobot.getMinDistance()<0.4){//if not picker robot or if its too close
+				if(carrierRobot.getCriticalIntensity()!=2|| carrierRobot.getMinDistance()<0.4){//if not picker robot or if its too close
 					if(carrierRobot.getDirectionFacing()== carrierRobot.NORTH){
 						carrierRobot.addMovementFront("rotation",M_PI/2,1,1);
 						carrierRobot.addMovementFront("forward_x",3,1,1);
@@ -162,12 +170,14 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 					}
 				}
 			}else if(carrierRobot.getAvoidanceCase()==Entity::PERPENDICULAR){
+				carrierRobot.setObstacleStatus("perpendicular object");
 				if(carrierRobot.getDirectionFacing()== carrierRobot.NORTH||carrierRobot.getDirectionFacing()== carrierRobot.SOUTH){
 					//if robot moving in the y direction give way
 					carrierRobot.addMovementFront("forward_x",0,0,1);
 				}
 			}else if(carrierRobot.getAvoidanceCase()==Entity::FACE_ON){
-				if(carrierRobot.getAvoidanceQueueSize()<=0){
+				carrierRobot.setObstacleStatus("Face On");
+				if(carrierRobot.getAvoidanceQueueSize()<=0&&carrierRobot.getState()!=carrierRobot.QUEUE){
 					if(carrierRobot.getDirectionFacing()== carrierRobot.NORTH&&carrierRobot.getObstacleStatus().compare("Obstacle nearby")!=0){
 						carrierRobot.addMovementFront("rotation",M_PI/2,1,1);
 						carrierRobot.addMovementFront("forward_x",3,1,1);
@@ -195,13 +205,11 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 					//carrierRobot.move();
 				}
 			}
-			//get carrier to move
-			carrierRobot.addMovementFront("forward_x",0,0,1);//this is at front of front
-			carrierRobot.move();
 		}
 	} else {
 		carrierRobot.setObstacleStatus("No obstacles");
 	}
+	carrierRobot.move();
 }
 
 /*
@@ -232,7 +240,6 @@ void recievePickerRobotStatus(const se306project::robot_status::ConstPtr& msg)
 	}else if(carrierRobot.getStatus().compare("Idle")==0){
 		//when the carrier robot is idle and the picker robot is full the carrier robot move to it.
 		if ((msg->status).compare("Full") == 0){
-
 			//check the list of points that carrier robot seen
 			bool seen = false;
 			std::pair<double,double> currentPoint;
