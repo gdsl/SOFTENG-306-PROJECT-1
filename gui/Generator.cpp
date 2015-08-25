@@ -122,12 +122,12 @@ void Generator::loadOrchard()
 		     * Height is hardcoded to trunk height.
              */
 		    if (j < model.rowCount) {
-			    outfile << "verticalFruitVine( pose [ " << x << " " << (y-model.rowWidth/2.0) << " 1.8 0.000 ] size [0.100 " << model.rowWidth << " 0.100] color \"ForestGreen\")" << endl;
+			    outfile << "verticalFruitVine( pose [ " << x << " " << (y-model.rowWidth/2.0) << " 1.8 0.000 ] size [0.050 " << model.rowWidth << " 0.100] color \"PaleGreen\")" << endl;
                 
                 // place 2 more vertical vines on the right of each tree, just not on the very last tree.
                 if (i < (columnCount - 1)) {
-                    outfile << "verticalFruitVine( pose [ " << (x + model.poleTrunkSpacing/3) << " " << (y-model.rowWidth/2.0) << " 1.8 0.000 ] size [0.100 " << model.rowWidth << " 0.100] color \"ForestGreen\")" << endl;
-                    outfile << "verticalFruitVine( pose [ " << (x + (model.poleTrunkSpacing/3)*2) << " " << (y-model.rowWidth/2.0) << " 1.8 0.000 ] size [0.100 " << model.rowWidth << " 0.100] color \"ForestGreen\")" << endl;
+                    outfile << "verticalFruitVine( pose [ " << (x + model.poleTrunkSpacing/3) << " " << (y-model.rowWidth/2.0) << " 1.8 0.000 ] size [0.050 " << model.rowWidth << " 0.100] color \"PaleGreen\")" << endl;
+                    outfile << "verticalFruitVine( pose [ " << (x + (model.poleTrunkSpacing/3)*2) << " " << (y-model.rowWidth/2.0) << " 1.8 0.000 ] size [0.050 " << model.rowWidth << " 0.100] color \"PaleGreen\")" << endl;
                 }               
                 
 		    } 
@@ -138,12 +138,12 @@ void Generator::loadOrchard()
 		     */
             if (i != 0) {
                 outfile << "horizontalFruitVine( pose [ " << (x-model.poleTrunkSpacing/2) << " " << y 
-                    << " 1.8 0.000 ] size ["<< model.poleTrunkSpacing << " 0.100 0.100] color \"ForestGreen\")" << endl;
+                    << " 1.8 0.000 ] size ["<< model.poleTrunkSpacing << " 0.050 0.100] color \"PaleGreen\")" << endl;
                 if (j < model.rowCount) {
                     outfile << "horizontalFruitVine( pose [ " << (x-model.poleTrunkSpacing/2) << " " << (y-model.rowWidth/3) 
-                        << " 1.8 0.000 ] size ["<< model.poleTrunkSpacing << " 0.100 0.100] color \"ForestGreen\")" << endl;
+                        << " 1.8 0.000 ] size ["<< model.poleTrunkSpacing << " 0.050 0.100] color \"PaleGreen\")" << endl;
                     outfile << "horizontalFruitVine( pose [ " << (x-model.poleTrunkSpacing/2) << " " << (y-(model.rowWidth/3)*2) 
-                        << " 1.8 0.000 ] size ["<< model.poleTrunkSpacing << " 0.100 0.100] color \"ForestGreen\")" << endl;
+                        << " 1.8 0.000 ] size ["<< model.poleTrunkSpacing << " 0.050 0.100] color \"PaleGreen\")" << endl;
                 }
             }
 
@@ -346,6 +346,7 @@ void Generator::loadPeople()
         outfile << "# Generate neighbours" << endl;
 for (int i = 0; i < model.neighbours; i++) {
     	// Generate the position of the neigbours
+<<<<<<< HEAD
     	//int x = rand() % 82 - 36;
         //int y = rand() % 52 - 26;
         //int x = 24;
@@ -355,6 +356,9 @@ for (int i = 0; i < model.neighbours; i++) {
         //int xMult = (((rand() % columnCount + 1) * 2) - 1);
         float xPos = 43 ;
         //int yMult = (((rand() % 8 + 1) * 2) - 1);
+=======
+        float xPos = 40 ;
+>>>>>>> 52e6cef132f61053722071f200974bfc90c2ec5b
         float yPos = 19;
         yPos=yPos-(i * model.rowWidth);
         string colour = colourArray[peopleCC];
@@ -372,7 +376,7 @@ for (int i = 0; i < model.neighbours; i++) {
         int y = rand() % randNumY - rowEnd;
         int xMult = (((rand() % columnCount + 1) * 2) - 1);
         float xPos = -30 + (xMult * xOffset) + 0.5;
-        int yMult = (((rand() % 8 + 1) * 2) - 1);
+        int yMult = (((rand() % 6) * 2) - 1);
         float yPos = 20.4 - (yMult * yOffset) + 0.5;
         
         blindPersonPositions.push_back(xPos);
@@ -418,15 +422,15 @@ void Generator::loadAnimals()
             int y = rand() % randNumY - rowEnd;
             int xMult = (((rand() % columnCount + 1) * 2) - 1);
             xPos = -30 + (xMult * xOffset);
-            int yMult = (((rand() % 7 + 1) * 2) - 1);
+            int yMult = (((rand() % 6) * 2) - 1);
             yPos = 20.4 - (yMult * yOffset);
         }
 
         dogPositions.push(xPos);
         dogPositions.push(yPos);
 
-        string colour = colourArray[dogCC];
-        dogCC += 1;
+        string colour = colourArray[animalCC];
+        animalCC += 1;
         
         outfile << "dog( pose [ " << xPos << " " << yPos << " 0.000 0.000 ] name \"Dog" << i+1 << "\" color \"" + colour + "\")" << endl;
     }
@@ -438,8 +442,10 @@ void Generator::loadAnimals()
 	for(int i = 0; i < model.cats; i++) {
 		x += model.poleTrunkSpacing * 4;
 		catPositions.push(x);
+        string colour = colourArray[animalCC];
+        animalCC += 1;
 		//outfile << "cat( pose [ -20.000 21.500 0.000 0.000 ] name \"Cat" << i+1 << "\" color \"random\")" << endl;
-        	outfile << "cat( pose [ " << x << " 21.500 0.000 0.000 ] name \"Cat" << i+1 << "\" color \"random\")" << endl;
+        	outfile << "cat( pose [ " << x << " 21.500 0.000 0.000 ] name \"Cat" << i+1 << "\" color \"" + colour + "\")" << endl;
 	}
 
 	outfile << endl;
