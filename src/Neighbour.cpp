@@ -12,64 +12,40 @@ Neighbour::Neighbour():Neighbour(0,0,0,0,0){
 }
 
 /**
+ * Default constructor for Neighbour
+ */
+Neighbour::Neighbour(double x, double y):Neighbour(x,y,0,0,0){
+       
+}
+
+/**
  * Call super class constructor
  */
 Neighbour::Neighbour(double x, double y, double theta, double linearVelocity, double angularVelocity) : Person(x, y) {
-	setStatus("WALKING");
+	
+
 }
 
-/*
- * Update nearest robot
+Neighbour neighbour;
+// Default cat behaviour = walking
+std::string status="Walking";
+bool queueFull = false;
 
-void Neighbour::updateNearestRobot(const nav_msgs::Odometry msg)
-{
-	// Find nearest robot_status
-	double robotDistance = sqrt(pow(targetX-getX(),2.0)+pow(targetY-getY(),2.0));
-	double msgDistance = sqrt(pow(msg.pose.pose.position.x-getX(),2.0)+pow(msg.pose.pose.position.y-getY(),2.0));
-
-	if (msgDistance<robotDistance) {
-		targetX = msg.pose.pose.position.x;
-		targetY = msg.pose.pose.position.y;
-	}
-}*/
-
+// Keeps track of current position that cat is facing
+double radians;
+double angle;
+bool initial = true;
 /**
  * Represents FSM for Neighbour. Given an action, update the current status
  */
-void Neighbour::next(std::string action) {
+/*void Neighbour::next(std::string action) {
 	std::string currentStatus = getStatus();
 
-	//if (currentStatus =="WALKING"){
+	//if (currentStatus =="WALKING")ccc{
 	//if (
 	//}
-}
-
-/*void stage_laserCallback(sensor_msgs::LaserScan msg) {
-
-    neighbour.stageLaser_callback(msg);
-        int l=msg.intensities.size();
-        double minDist = 1000;
-        double robotAngle; 
-        //std::vector<double> v;
-        //std::map<double,double> Xmap;
-        //std::map<double,double> Ymap;
-        for (int i = 0; i<l; i++) {
-            if (((msg.intensities[i] == 2)||(msg.intensities[i]==3))&&(msg.ranges[i]<minDist)) { 
-                        minDistance = msg.ranges[i];
-			robotAngle= (i/l) * msg.angle_increment + msg.angle_min;
-            }
-        }
 }*/
 
-/*int Neighbour::getTargetX()
-{
-	return targetX;
-}
-
-int Neighbour::getTargetY()
-{
-	return targetY;
-}*/
 
 void Neighbour::stageOdom_callback(const nav_msgs::Odometry msg) {
 	Person::stageOdom_callback(msg);
@@ -80,48 +56,36 @@ int main(int argc, char **argv) {
 	ros::init(argc,argv,"Neighbour");
 	// Create ros handler for this node
 	ros::NodeHandle n;
+	std::string xPosArg = argv[1];
+	std::string yPosString = argv[2];
+	double yPos = atof(yPosString.c_str());
+	double xPos = atof(xPosArg.c_str());
+	neighbour=Neighbour(xPos,yPos);
 
-	Neighbour Neighbour;
-	Neighbour.robotNode_stage_pub = n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
-	Neighbour.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth", 1000, &Neighbour::stageOdom_callback, &Neighbour);
+	neighbour.robotNode_stage_pub = n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
+	neighbour.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth", 1000, &Neighbour::stageOdom_callback, &neighbour);
 	//Neighbour.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000, &Neighbour::stageLaser_callback, &Neighbour);
-	Neighbour.Neighbour_status_pub = n.advertise<se306project::robot_status>("status",1000);
+	neighbour.Neighbour_status_pub = n.advertise<se306project::robot_status>("status",1000);
 
-	/*//subscribing all the picker robot
-        ros::Subscriber *array = new ros::Subscriber[size];
-        int index = 0;
-        for (int i = s; i<=e; i++) {
-             std::stringstream convert;
-             convert << i;
-             topicName = "/robot_" + convert.str() + "/status";
-             array[index] = n.subscribe<se306project::robot_status>(topicName,1000,recievePickerRobotStatus);
-             index++;
-        }
-
-         //subscribing all the carrier robot
-         ros::Subscriber *carrierArray = new ros::Subscriber[size];
-         index = 0;
-         for (int i = a; i<=b; i++) {
-              std::stringstream convert;
-              convert << i;
-              topicName = "/robot_" + convert.str() + "/status";
-              carrierArray[index] = n.subscribe<se306project::robot_status>(topicName,1000,receiveCarrierRobotStatus);
-              index++;
-         } */ 
 
 	ros::Rate loop_rate(10);
 
 	se306project::robot_status status_msg;
 	// ROS infinite loop
 	while (ros::ok()) {
-		ros::spinOnce();
+                // Message to stage 
+		neighbour.faceWest(1);
+		neighbour.move();
+
+		//ros::spinOnce();
 		// Publish neighbour status
-		status_msg.pos_x = Neighbour.getX();
-		status_msg.pos_y = Neighbour.getY();
-		status_msg.pos_theta = Neighbour.getTheta();
-		status_msg.status = Neighbour.getStatus();
+		status_msg.pos_x = neighbour.getX();
+		status_msg.pos_y = neighbour.getY();
+		status_msg.pos_theta = neighbour.getTheta();
+		status_msg.status = neighbour.getStatus();
 		//publish message
-		Neighbour.Neighbour_status_pub.publish(status_msg);
+		neighbour.Neighbour_status_pub.publish(status_msg);
 		loop_rate.sleep();
+                //neighbour.determineStatus();
 	}
 }

@@ -348,8 +348,8 @@ for (int i = 0; i < model.neighbours; i++) {
     	// Generate the position of the neigbours
     	//int x = rand() % 82 - 36;
         //int y = rand() % 52 - 26;
-        int x = rand() % 76 - 36;
-        int y = rand() % randNumY - rowEnd;
+        //int x = 24;
+        //int y = -55;
 
         //if( (x > -30) && (x < 40) && (y < 20) && (y > rowEnd)) {
         int xMult = (((rand() % columnCount + 1) * 2) - 1);
