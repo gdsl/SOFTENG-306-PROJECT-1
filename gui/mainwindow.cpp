@@ -183,12 +183,12 @@ void MainWindow::generate() {
 	for (int i = 0; i < model.gardeners; i++) {
 		uiListPeoples.push_back(createNewItem("Gardener"));
 	}
+    for (int i = 0; i < model.neighbours; i++) {
+		uiListPeoples.push_back(createNewItem("Neighbour"));
+	}
 	for (int i = 0; i < model.blindPerson; i++) {
         uiListPeoples.push_back(createNewItem("Blind_Person"));
     }
-	for (int i = 0; i < model.neighbours; i++) {
-		uiListPeoples.push_back(createNewItem("Neighbour"));
-	}
 	for (int i = 0; i < model.dogs; i++) {
 		uiListAnimals.push_back(createNewItem("Animal_Dog"));
 	}
