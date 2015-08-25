@@ -204,9 +204,6 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 					carrierRobot.addMovementFront("forward_x",0,0,1);
 					//carrierRobot.move();
 				}
-			}else{
-				carrierRobot.setObstacleStatus("Already got moves");
-				carrierRobot.addMovementFront("forward_x",0,0,1);
 			}
 		}
 	} else {

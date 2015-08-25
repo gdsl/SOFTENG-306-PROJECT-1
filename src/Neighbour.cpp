@@ -90,6 +90,9 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 			neighbour.addMovementFront("forward_x",0,0,1);//halt current movement
 			neighbour.move();
 			neighbour.flushMovementQueue();
+			neighbour.addMovementFront("rotation",0,1,1);
+			neighbour.addMovement("forward_x", neighbour.getOriginX()-neighbour.getX(), 1);
+			neighbour.setStatus("Moving back from a robot");
 		}else if(neighbour.getMinDistance()>1){
 			neighbour.setObstacleStatus("No detection");	
 		}
