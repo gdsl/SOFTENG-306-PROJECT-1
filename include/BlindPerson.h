@@ -13,7 +13,6 @@ public:
 	BlindPerson(double x, double y);
 	BlindPerson(double x, double y, double theta, double linearVelocity, double angularVelocity);
 	virtual ~BlindPerson();
-	void followDog();
 
 private:
 
