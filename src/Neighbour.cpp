@@ -117,7 +117,7 @@ int main(int argc, char **argv) {
 	se306project::robot_status status_msg;
 	neighbour.setStatus("Finding a robot");
 	neighbour.faceWest(1);
-	neighbour.addMovement("forward_x", 35, 1);
+	neighbour.addMovement("forward_x", -35, 1);
 	// ROS infinite loop
 	while (ros::ok()) {
                 // Message to stage
@@ -139,7 +139,7 @@ int main(int argc, char **argv) {
 			}else{
 				neighbour.setStatus("Finding a robot");
 				neighbour.faceWest(1);
-				neighbour.addMovement("forward_x", 35, 1);
+				neighbour.addMovement("forward_x", -35, 1);
 			}
 		}
 		neighbour.move();
