@@ -89,9 +89,6 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 			neighbour.addMovementFront("forward_x",0,0,1);//halt current movement
 			neighbour.move();
 			neighbour.flushMovementQueue();
-                   	neighbour.faceEast(1);
-                   	neighbour.addMovement("forward_x", neighbour.getOriginX()-neighbour.getX(), 1);
-			neighbour.setStatus("Moving back from a robot");
 		}
 	}
 }
@@ -118,6 +115,8 @@ int main(int argc, char **argv) {
 	ros::Rate loop_rate(10);
 
 	se306project::robot_status status_msg;
+	neighbour.setStatus("Finding a robot");
+	neighbour.addMovement("forward_x", 35, 1);
 	// ROS infinite loop
 	while (ros::ok()) {
                 // Message to stage
@@ -126,39 +125,20 @@ int main(int argc, char **argv) {
                 //neighbour.move();
                 //neighbour.setStatus("Moving to a robot");
 
-                if (neighbour.getMovementQueueSize() == 0){
-                      if(neighbour.getX()>39){
-                   neighbour.faceWest(1);
-                   neighbour.addMovement("forward_x", -35, 1);
-		} else if (neighbour.getX()<8){            
-                   neighbour.faceEast(1);
-                   neighbour.addMovement("forward_x", 35, 1);
-              }
-		
-		}
-
-
 		//publish message
 		neighbour.Neighbour_status_pub.publish(status_msg);
                 ros::spinOnce();
 		loop_rate.sleep();
-		/**
-                if (( neighbour.getStatus()=="Turning")&&(neighbour.getX()<8)){
-                    neighbour.setStatus("Observing");
-                   } else if ( neighbour.getStatus()=="Walking"){
-                             if(neighbour.getTheta()>0){
-                             neighbour.setStatus("Moving back from a robot");
-                             }
-                             else{
-                             neighbour.setStatus("Finding a robot");
-                              }
-}       	**/
+
 		if (neighbour.getMovementQueueSize() == 0){
-			/*if(){
+			if(neighbour.getStatus().compare("Finding a robot")==0){
 				neighbour.setStatus("Moving back from a robot");
+				neighbour.faceEast(1);
+                   		neighbour.addMovement("forward_x", neighbour.getOriginX()-neighbour.getX(), 1);
 			}else{
 				neighbour.setStatus("Finding a robot");
-			}*/
+				neighbour.addMovement("forward_x", 35, 1);
+			}
 		}
 		neighbour.move();
 		// Publish neighbour status
