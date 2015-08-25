@@ -98,9 +98,30 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 			pickerRobot.setObstacleStatus("Obstacle nearby");
 
 			if(pickerRobot.getAvoidanceCase()==Entity::WEED ){// if its weed stop
+
+				if (pickerRobot.getObstacleStatus().compare("Weed! Help!") != 0) {
+					se306project::weed_status weedmsg;
+					Entity::Direction direction = pickerRobot.getDirectionFacing();
+
+					if (direction == Entity::NORTH) {
+						weedmsg.pos_x = pickerRobot.getX();
+						weedmsg.pos_y = pickerRobot.getY() + pickerRobot.getMinDistance();
+					} else if (direction == Entity::EAST) {
+						weedmsg.pos_x = pickerRobot.getX() + pickerRobot.getMinDistance();
+						weedmsg.pos_y = pickerRobot.getY();
+					} else if (direction == Entity::SOUTH) {
+						weedmsg.pos_x = pickerRobot.getX();
+						weedmsg.pos_y = pickerRobot.getY() - pickerRobot.getMinDistance();
+					} else {
+						weedmsg.pos_x = pickerRobot.getX() - pickerRobot.getMinDistance();
+						weedmsg.pos_y = pickerRobot.getY();
+					}
+
+					pickerRobot.weed_obstacle_pub.publish(weedmsg);
+				}
+
 				pickerRobot.addMovementFront("forward_x",0,0,1);//add empty movement to front of avoidance to stop
 				pickerRobot.setObstacleStatus("Weed! Help!");
-
 			}else if(pickerRobot.getAvoidanceCase()==Entity::LIVING_OBJ) {//if its human or animal stop
 				pickerRobot.addMovementFront("forward_x",0,0,1);//add empty movement to front of avoidance to stop
 				pickerRobot.setObstacleStatus("Living object");
