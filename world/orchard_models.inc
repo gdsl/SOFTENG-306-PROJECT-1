@@ -32,10 +32,18 @@ define verticalFruitVine modelBase
     gui_nose 0
 )
 
+define driveway modelBase
+(
+  size [8.000 55.000 0.01]
+  gui_move 0
+  obstacle_return 0
+)
+
 define grass modelBase
 (
-  size [95 55 0.01]
+  size [87.000 55.000 0.01]
   gui_move 0
+  obstacle_return 0
 )
 
 define backdropTree modelBase

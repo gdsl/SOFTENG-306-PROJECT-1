@@ -166,9 +166,13 @@ void Generator::loadOrchard()
 void Generator::loadBackdrop()
 {
 
+    outfile << "#Generate Driveway" << endl;
+    // Create driveway
+    outfile << "driveway( pose [ -43.500 0.000 0.000 0.000 ] color \"gray\")" << endl;
+
     outfile << "#Generate Grass" << endl;
     // Create grass
-    outfile << "grass( pose [ 0.000 0.000 0.000 0.000 ] color \"lawn green\")" << endl;
+    outfile << "grass( pose [ 4.000 0.000 0.000 0.000 ] color \"lawn green\")" << endl;
 
     outfile << "#Generate Backdrop Trees" << endl;
     
