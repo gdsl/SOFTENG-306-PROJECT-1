@@ -172,7 +172,7 @@ void Generator::loadBackdrop()
 
     outfile << "#Generate Grass" << endl;
     // Create grass
-    outfile << "grass( pose [ 4.000 0.000 0.000 0.000 ] color \"lawn green\")" << endl;
+    outfile << "grass( pose [ 4.000 0.000 0.000 0.000 ] )" << endl;
 
     outfile << "#Generate Backdrop Trees" << endl;
     

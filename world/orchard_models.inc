@@ -42,6 +42,7 @@ define driveway modelBase
 define grass modelBase
 (
   size [87.000 55.000 0.01]
+  color_rgba [0.341 0.678 0.000 1]
   gui_move 0
   obstacle_return 0
 )
