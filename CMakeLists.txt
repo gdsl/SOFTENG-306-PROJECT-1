@@ -251,7 +251,7 @@ target_link_libraries(BeaconLib Entity ${catkin_LIBRARIES})
 
 
 if (CATKIN_ENABLE_TESTING)
-	#integration test(everything include testing multiple nodes with stage running)
+    #integration test(everything include testing multiple nodes with stage running)
     find_package(catkin REQUIRED COMPONENTS rostest)
     
     add_rostest_gtest(testAlphaPerson test/rostest/testAlphaPerson.test test/testAlphaPerson.cpp)
@@ -281,7 +281,7 @@ if (CATKIN_ENABLE_TESTING)
     
     
     # unit tests
-	catkin_add_gtest(testMovement test/testMovement.cpp)
-	target_link_libraries(testMovement Movement ${catkin_LIBRARIES})
+    catkin_add_gtest(testMovement test/testMovement.cpp)
+    target_link_libraries(testMovement Movement ${catkin_LIBRARIES})
     
 endif()
