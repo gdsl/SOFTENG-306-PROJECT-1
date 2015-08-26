@@ -151,7 +151,7 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 			}else if(carrierRobot.getAvoidanceCase()==Entity::STATIONARY&& carrierRobot.getCriticalIntensity()>1){//if its stationary robot
 				carrierRobot.setObstacleStatus("Stationary object");
 				//if the carrier robot is infront and carrier is queue then halt
-				if(carrierRobot.getCriticalIntensity()!=2&& carrierRobot.getMinDistance()<0.4&&carrierRobot.getCriticalIntensity()!=3|| carrierRobot.getCriticalIntensity()!=2){//if not picker robot or if its too close
+				if(carrierRobot.getCriticalIntensity()!=2&& carrierRobot.getMinDistance()<0.4&&carrierRobot.getCriticalIntensity()!=3){//if not picker/carrier robot infront or if its too close
 					if(carrierRobot.getDirectionFacing()== carrierRobot.NORTH){
 						carrierRobot.addMovementFront("rotation",M_PI/2,1,1);
 						carrierRobot.addMovementFront("forward_x",3,1,1);
@@ -193,16 +193,18 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 						carrierRobot.addMovementFront("forward_x",0,0,1);//this is at front of front
 						//carrierRobot.move();
 					}
+				}else{
+					carrierRobot.addMovementFront("forward_x",0,0,1);
 				}
 			}else if(carrierRobot.getAvoidanceCase()==Entity::PERPENDICULAR){
 				carrierRobot.setObstacleStatus("perpendicular object");
-				if(carrierRobot.getDirectionFacing()== carrierRobot.NORTH||carrierRobot.getDirectionFacing()== carrierRobot.SOUTH&&carrierRobot.getCriticalIntensity()!=3|| carrierRobot.getCriticalIntensity()!=2){
+				if(carrierRobot.getDirectionFacing()== carrierRobot.NORTH||carrierRobot.getDirectionFacing()== carrierRobot.SOUTH||carrierRobot.getCriticalIntensity()==3|| carrierRobot.getCriticalIntensity()==2){
 					//if robot moving in the y direction give way
 					carrierRobot.addMovementFront("forward_x",0,0,1);
 				}
 			}else if(carrierRobot.getAvoidanceCase()==Entity::FACE_ON){
 				carrierRobot.setObstacleStatus("Face On");
-				if(carrierRobot.getAvoidanceQueueSize()<=0&&carrierRobot.getState()!=carrierRobot.QUEUE&&carrierRobot.getCriticalIntensity()!=3|| carrierRobot.getCriticalIntensity()!=2){
+				if(carrierRobot.getAvoidanceQueueSize()<=0&&carrierRobot.getState()!=carrierRobot.QUEUE&&carrierRobot.getCriticalIntensity()!=3&& carrierRobot.getCriticalIntensity()!=2){
 					if(carrierRobot.getDirectionFacing()== carrierRobot.NORTH&&carrierRobot.getObstacleStatus().compare("Obstacle nearby")!=0){
 						carrierRobot.addMovementFront("rotation",M_PI/2,1,1);
 						carrierRobot.addMovementFront("forward_x",3,1,1);
@@ -238,7 +240,7 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 	} else {
 		carrierRobot.setObstacleStatus("No obstacles");
 	}
-	//carrierRobot.move();
+	carrierRobot.move();
 }
 
 /*
@@ -392,7 +394,9 @@ void CarrierRobot::stateLogic(){
 			carrierRobot.setState(Robot::IDLE);
 		}
 	}
-	carrierRobot.move();
+	if (carrierRobot.getAvoidanceCase()==Entity::NONE||carrierRobot.getAvoidanceCase()==Entity::TREE){
+		carrierRobot.move();
+	}
 
 }
 

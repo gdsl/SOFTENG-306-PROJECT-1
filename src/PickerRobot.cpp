@@ -141,15 +141,15 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 				pickerRobot.addMovementFront("forward_x",0,0,1);//add empty movement to front of avoidance to stop
 				pickerRobot.setObstacleStatus("Halt");
 			}else if(pickerRobot.getAvoidanceCase()==Entity::STATIONARY&& pickerRobot.getCriticalIntensity()>1) {//if its stationary robot
-				if(pickerRobot.getCriticalIntensity()!=3|| pickerRobot.getCriticalIntensity()!=2||pickerRobot.getMinDistance()<0.8){
+				pickerRobot.setObstacleStatus("Stationary object");
+				if(pickerRobot.getCriticalIntensity()!=3&& pickerRobot.getCriticalIntensity()!=2&& pickerRobot.getMinDistance()<0.4){
 					pickerRobot.avoidObstacle(pickerRobot,3,3);
-					pickerRobot.setObstacleStatus("Stationary object");
 				}else{
 					pickerRobot.addMovementFront("forward_x",0,0,1);//this is at front of front
 				}
 			}else if(pickerRobot.getAvoidanceCase()==Entity::PERPENDICULAR){
 				pickerRobot.setObstacleStatus("Perpendicular");
-				if(pickerRobot.getCriticalIntensity()!=3||pickerRobot.getCriticalIntensity()!=2|| pickerRobot.getMinDistance()<0.8){
+				if((pickerRobot.getCriticalIntensity()!=3&&pickerRobot.getCriticalIntensity()!=2)&& pickerRobot.getMinDistance()<0.4){
 					if(pickerRobot.getDirectionFacing()== pickerRobot.NORTH||pickerRobot.getDirectionFacing()== pickerRobot.SOUTH) {
 						//if robot moving in the y direction give way
 						pickerRobot.addMovementFront("forward_x",0,0,1);
@@ -158,7 +158,7 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 					pickerRobot.addMovementFront("forward_x",0,0,1);//this is at front of front
 				}
 			}else if(pickerRobot.getAvoidanceCase()==Entity::FACE_ON) {
-				if(pickerRobot.getAvoidanceQueueSize()<=0&&pickerRobot.getState()==Robot::GO_TO_NEXT_BEACON){
+				if((pickerRobot.getCriticalIntensity()!=3&&pickerRobot.getCriticalIntensity()!=2)&&pickerRobot.getAvoidanceQueueSize()<=0&&pickerRobot.getState()==Robot::GO_TO_NEXT_BEACON){
 					if(pickerRobot.getDirectionFacing()== pickerRobot.NORTH&&pickerRobot.getObstacleStatus().compare("Obstacle nearby")!=0) {
 						pickerRobot.addMovementFront("rotation",M_PI/2,1,1);
 						pickerRobot.addMovementFront("forward_x",3,1,1);
@@ -202,7 +202,7 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 			}
 		}
 	}
-	//pickerRobot.move();
+	pickerRobot.move();
 }
 
 /*
@@ -239,11 +239,9 @@ void PickerRobot::stateLogic(ros::NodeHandle n) {
 	if (pickerRobot.getState() == FULL_BIN) {
 		pickerRobot.setStatus("Full");
 		pickerRobot.addMovementFront("forward_x",0,0,1);//halt when full
-		pickerRobot.addMovementFront("forward_x",0,0,1);
 	} else if(pickerRobot.getState() == SERVICED) {
 		pickerRobot.setStatus("Carrier servicing");
 		pickerRobot.addMovementFront("forward_x",0,0,1);//halt when full waiting for carrier
-		pickerRobot.addMovementFront("forward_x",0,0,1);
 	} else if (pickerRobot.getMovementQueueSize()==0) {
 
 		//if the current state is dispatch then the Picker Robot should move to the starting position of its picking path.
@@ -312,7 +310,9 @@ void PickerRobot::stateLogic(ros::NodeHandle n) {
 
 		}
 	}
-	pickerRobot.move();
+	if (pickerRobot.getAvoidanceCase()==Entity::NONE||pickerRobot.getAvoidanceCase()==Entity::TREE){
+		pickerRobot.move();
+	}
 }
 
 /*

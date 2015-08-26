@@ -76,7 +76,7 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 			neighbour.flushMovementQueue();
 			neighbour.addMovementFront("rotation",0,1,1);
 			neighbour.addMovement("forward_x", neighbour.getOriginX()-neighbour.getX(), 1);
-			neighbour.setStatus("Moving back from a robot");
+			neighbour.setStatus("Moving back");
 		}else if(neighbour.getMinDistance()>1){
 			neighbour.setObstacleStatus("No detection");	
 		}
@@ -117,7 +117,7 @@ int main(int argc, char **argv) {
                 //determine the logic of neighbour movement 
 		if (neighbour.getMovementQueueSize() == 0){
 			if(neighbour.getStatus().compare("Finding a robot")==0){
-				neighbour.setStatus("Moving back ");
+				neighbour.setStatus("Moving back");
 				neighbour.faceEast(1);
                 neighbour.addMovement("forward_x", neighbour.getOriginX()-neighbour.getX(), 1);
 			}else{
