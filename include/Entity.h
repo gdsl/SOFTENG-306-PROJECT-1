@@ -19,7 +19,7 @@ class Entity
 		// Default constructor
 		Entity();
 		virtual ~Entity();
-		Entity(double x, double y, double theta, double linearVelocity, double angularVelocity);
+		Entity(double x, double y, double theta, double linearVelocity, double angularVelocity, int angleNotProcess);
 		// update the position of the robot
 		void setPose(int x, int y, double theta);
 
@@ -100,6 +100,7 @@ class Entity
 		double obstacleAngle;
 		int numOfScan;
 		double previousScanDistance;
+		int angleNotProcess;//variable which store the angle of laser to not process up to eg 30 means only angle from 30 to 150 is processed
 		AvoidanceCase avoidanceCase;
 		AvoidanceCase previousAvoidanceCase;
 		std::string obstacleStatus;

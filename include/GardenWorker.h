@@ -35,6 +35,8 @@ public:
 
 	// setter methods
 	void setCommunicationPartners(int communicationPartners);
+	void setInitialX(double initialX);
+	void setInitialY(double initialY);
 private:
 	double targetX;
 	double targetY;
@@ -45,4 +47,5 @@ private:
 	bool closestToWeed;
 	time_t c_start;
 	time_t c_end;
+	bool pulled;
 };

@@ -79,8 +79,8 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 			neighbour.setStatus("Moving back");
 		}else if(neighbour.getCriticalIntensity()!=2&&neighbour.getAvoidanceQueueSize()==0&&neighbour.getObstacleStatus().compare("Obstacle nearby")!=0){
 			neighbour.setObstacleStatus("Obstacle nearby");
-			neighbour.avoidObstacle(3,0.5);//call avoid obstacle method in entity to avoid obstacle
-		}else if (neighbour.getMinDistance()<0.5&&neighbour.getCriticalIntensity()>1&&neighbour.getAvoidanceQueueSize()>0){
+			neighbour.avoidObstacle(2.5,0.5);//call avoid obstacle method in entity to avoid obstacle
+		}else if (neighbour.getMinDistance()<0.7&&neighbour.getCriticalIntensity()>=1&&neighbour.getAvoidanceQueueSize()>0){
 			neighbour.addMovementFront("forward_x",0,0,1);//halt movement if already have obstacle
 		}
 		neighbour.move();

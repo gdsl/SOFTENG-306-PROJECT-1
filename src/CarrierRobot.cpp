@@ -20,8 +20,6 @@ CarrierRobot::CarrierRobot(double x,double y,double theta,double linearVel, doub
 :Robot( x, y, theta, linearVel,  angularVel){
 	this->setStatus(status);
 	this->setState(IDLE);
-	carrierInFront = true;
-	initialMovement = false;
 	yDistanceTravel = 0;
 	xDistanceTravel = 0;
 }
@@ -32,14 +30,6 @@ CarrierRobot::CarrierRobot(double x,double y,double theta,double linearVel, doub
 CarrierRobot::~CarrierRobot() {}
 
 // getter function
-bool CarrierRobot::isInitialMovement() {
-	return this->initialMovement;
-}
-
-bool CarrierRobot::isCarrierInFront() {
-	return this->carrierInFront;
-}
-
 double CarrierRobot::getYDistanceTravel() {
 	return this->yDistanceTravel;
 }
@@ -56,16 +46,6 @@ void CarrierRobot::setYDistanceTravel(double y) {
 void CarrierRobot::setXDistanceTravel(double x) {
 	this->xDistanceTravel = x;
 }
-
-void CarrierRobot::setCarrierInFront(bool front) {
-	this->carrierInFront = front;
-}
-
-void CarrierRobot::setInitialMovement(bool initial) {
-	this->initialMovement = initial;
-}
-
-
 
 //create carrier robot and status
 CarrierRobot carrierRobot;
@@ -104,7 +84,7 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 
 	if (carrierRobot.getAvoidanceCase()!=Entity::NONE&&carrierRobot.getAvoidanceCase()!=Entity::TREE) {//check if there is need to avoid obstacle
 		if(carrierRobot.getState()!=Robot::IDLE){//check if robot is idle or not
-			carrierRobot.setObstacleStatus("Obstacle nearby");
+
 			if(!carrierRobot.isRotating()){
 				if(carrierRobot.getAvoidanceCase()==Entity::WEED){// if its weed stop
 
@@ -250,6 +230,7 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 						//if robot moving in the y direction give way
 						carrierRobot.addMovementFront("forward_x",0,0,1);
 					}
+					carrierRobot.setObstacleStatus("Obstacle nearby");
 				}
 			}
 		}

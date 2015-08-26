@@ -14,7 +14,7 @@ Tractor::Tractor() {
 /*
  * Constructor for carrier Robot with status
  */
-Tractor::Tractor(double x,double y,double theta,double linearVel, double angularVel) : Entity(x, y, theta, linearVel, angularVel) {
+Tractor::Tractor(double x,double y,double theta,double linearVel, double angularVel) : Entity(x, y, theta, linearVel, angularVel,0) {
 }
 
 /*

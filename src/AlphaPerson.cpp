@@ -118,8 +118,8 @@ void stage_laserCallback(sensor_msgs::LaserScan msg) {
 	if (alphaPerson.getAvoidanceCase()!=Entity::NONE&&alphaPerson.getAvoidanceCase()!=Entity::TREE&&!alphaPerson.isRotating()) {//check if there is need to avoid obstacle
 		if(alphaPerson.getCriticalIntensity()!=2&&alphaPerson.getAvoidanceQueueSize()==0&&alphaPerson.getObstacleStatus().compare("Obstacle nearby")!=0){
 			alphaPerson.setObstacleStatus("Obstacle nearby");
-			alphaPerson.avoidObstacle(3,0.5);//call avoid obstacle method in entity to avoid obstacle
-		}else if (alphaPerson.getMinDistance()<0.7&&alphaPerson.getCriticalIntensity()>1&&alphaPerson.getAvoidanceQueueSize()>0){
+			alphaPerson.avoidObstacle(2.5,0.5);//call avoid obstacle method in entity to avoid obstacle
+		}else if (alphaPerson.getMinDistance()<0.7&&alphaPerson.getCriticalIntensity()>=1&&alphaPerson.getAvoidanceQueueSize()>0){
 			alphaPerson.addMovementFront("forward_x",0,0,1);//halt movement if already have obstacle
 		}
 		alphaPerson.move();
@@ -212,15 +212,8 @@ int main(int argc, char **argv) {
 	alphaPerson.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000,stage_positionCallback);
 	alphaPerson.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000,stage_laserCallback);
 	ros::Rate loop_rate(10);
-	int state = 2;
 	int count = 0;
 	se306project::human_status status_msg;
-	int none = -1;
-	int trimming_tree = 0;
-	int moving_to_search_spot = 1;
-	int searching = 2;
-	int go_to_next_tree = 3;
-	int tickCount = 0;
 
 	while (ros::ok()) {
 		if(alphaPerson.getObstacleStatus().compare("Obstacle nearby")!=0){

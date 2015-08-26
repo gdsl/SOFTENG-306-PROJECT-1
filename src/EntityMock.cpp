@@ -12,7 +12,7 @@ EntityMock::EntityMock():Entity(){
 }
 
 EntityMock::EntityMock(double x,double y,double theta,double linearVel, double angularVel)
-:Entity( x, y, theta, linearVel,  angularVel){
+:Entity( x, y, theta, linearVel,  angularVel,0){
 }
 
 // destructor

@@ -95,7 +95,6 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 	if (pickerRobot.getAvoidanceCase()!=Entity::NONE&&pickerRobot.getAvoidanceCase()!=Entity::TREE) {//check if there is need to avoid obstacle
 
 		if(pickerRobot.getState()!=Robot::SERVICED&&pickerRobot.getState()!=Robot::FULL_BIN){//check if robot is idle or not
-			pickerRobot.setObstacleStatus("Obstacle nearby");
 
 			if(pickerRobot.getAvoidanceCase()==Entity::WEED ){// if its weed stop
 
@@ -183,6 +182,7 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 					//halt movement if already have avoidance logic
 					pickerRobot.addMovementFront("forward_x",0,0,1);
 				}
+				pickerRobot.setObstacleStatus("Obstacle nearby");
 			}else{
 				//halt movement if case not detected
 				pickerRobot.addMovementFront("forward_x",0,0,1);
@@ -194,7 +194,7 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 		if (pickerRobot.getStatus().compare("Picking")==0) {
 			ROS_INFO("Laser %d",pickerRobot.getBinCapacity());
 			ROS_INFO("pick range %f",pickerRobot.getPickRange());
-			if(msg.ranges[0]<=pickerRobot.getPickRange()&&msg.intensities[0]==1&&msg.ranges[5]>=pickerRobot.getPickRange()) {
+			if(msg.ranges[0]<=pickerRobot.getPickRange()&&msg.intensities[0]==1&&msg.ranges[2]>(pickerRobot.getPickRange()+0.3)) {
 				pickerRobot.setBinCapacity(pickerRobot.getBinCapacity()+1);
 				if(pickerRobot.getBinCapacity()>=BIN_CAPACITY) {
 					pickerRobot.setState(Robot::FULL_BIN);
@@ -256,7 +256,7 @@ void PickerRobot::stateLogic(ros::NodeHandle n) {
 			currentBeacon = startBeacon;
 			//if the Picker has received directions from next beacon, proceed to next state as it involves the next beacon
 			if (hasNewBeacon) {
-				pickerRobot.movement();
+				pickerRobot.movement(NOT_PICKING_VELOCITY);
 				//pickerRobot.setState(PICKING);
 				pickerRobot.setState(GO_TO_NEXT_BEACON);
 				pickerRobot.setStatus("To next beacon");
@@ -277,7 +277,7 @@ void PickerRobot::stateLogic(ros::NodeHandle n) {
 			//change state so when movements are complete, Picker should be at end of row and this state change will cause it to
 			//move down to the next row
 			if (hasNewBeacon) {
-				pickerRobot.movement();
+				pickerRobot.movement(PICKING_VELOCITY);
 				//as messages have arrived and movements have been added to queue, this can be set to false for the next time this State is set
 				pickerRobot.setState(PICKING);
 				pickerRobot.setStatus("Picking");
@@ -302,7 +302,7 @@ void PickerRobot::stateLogic(ros::NodeHandle n) {
 				//change state to PICKING so the next time this code is executed, it will tell the Picker to start
 				//picking the row it is at
 				if (hasNewBeacon) {
-					pickerRobot.movement();
+					pickerRobot.movement(NOT_PICKING_VELOCITY);
 					//as messages have arrived and movements have been added to queue, this can be set to false for the next time this State is set
 					pickerRobot.setState(GO_TO_NEXT_BEACON);
 					pickerRobot.setStatus("To next beacon");
@@ -322,7 +322,7 @@ void PickerRobot::stateLogic(ros::NodeHandle n) {
 /*
  * Method for the logic of PickerRobot running its movement queue.
  */
-void PickerRobot::movement() {
+void PickerRobot::movement(double velocity) {
 	//temporary variable used in calculation for distance to move
 	double distanceToMove = 0;
 	double currentX = pickerRobot.getX();
@@ -345,7 +345,7 @@ void PickerRobot::movement() {
 					//make sure the Robot is facing West, if not, turn it West.
 					if (pickerRobot.getDirectionFacing() != EAST) {pickerRobot.faceEast(1);}
 				}
-				pickerRobot.addMovement("forward_x", distanceToMove, 1);
+				pickerRobot.addMovement("forward_x", distanceToMove, velocity);
 			}
 			//now add the vertical movement to the movement queue
 			if (!atDestY) {
@@ -363,7 +363,7 @@ void PickerRobot::movement() {
 					//make sure the Robot is facing North, if not, turn it North.
 					if (pickerRobot.getDirectionFacing() != NORTH) {pickerRobot.faceNorth(1);}
 				}
-				pickerRobot.addMovement("forward_y", distanceToMove, 1);
+				pickerRobot.addMovement("forward_y", distanceToMove, velocity);
 			}
 		}
 		//once the required movements to go to the next beacon have been pushed to the movement queue

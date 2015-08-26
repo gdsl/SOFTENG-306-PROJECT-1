@@ -15,7 +15,7 @@
  * Default constructor of Entity. Calls the other constructor with default values.
  */
 
-Entity::Entity():Entity(0,0,0,0,0) {
+Entity::Entity():Entity(0,0,0,0,0,0) {
 
 }
 
@@ -29,7 +29,7 @@ Entity::~Entity() {
 /**
  * Constructor with parameters
  */
-Entity::Entity(double x, double y, double theta, double linearVelocity, double angularVelocity) {
+Entity::Entity(double x, double y, double theta, double linearVelocity, double angularVelocity,int angleNotProcess) {
 	// Initialise variables
 	this->x=x;
 	this->y=y;
@@ -53,6 +53,7 @@ Entity::Entity(double x, double y, double theta, double linearVelocity, double a
 	this->previousAvoidanceCase=NONE;
 	this->z=0;
 	this->zVelocity=0;
+	this->angleNotProcess=angleNotProcess;
 }
 
 // Field for current movement of the node
@@ -118,7 +119,7 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg) {
 		previousScanNumber=0;
 	}
 
-	for (int i=41; i<l-41; i++){ 
+	for (int i=angleNotProcess; i<l-angleNotProcess; i++){ 
 		// Work out the minimum distance object
 		if (msg.ranges[i]< minDistance) {
 			if(msg.intensities[i]>1||msg.ranges[i]<0.5){//if its not tree or tree very close
@@ -162,7 +163,7 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg) {
 				int currentMax=previousScanNumber;
 				int currentMin=previousScanNumber;
 				// Work out max number of scan critical object still can be observed
-				for(int i=previousScanNumber;i<l-41;i++) {
+				for(int i=previousScanNumber;i<l-angleNotProcess;i++) {
 					if(previousScanIntensity!=msg.intensities[i]&&!found) {
 						currentMax=i-1;
 						found=true;
@@ -170,7 +171,7 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg) {
 				}
 				found=false;
 				// Work out min number of scan critical object still can be observed
-				for(int i=previousScanNumber;i>41;i--) {
+				for(int i=previousScanNumber;i>angleNotProcess;i--) {
 					if(previousScanIntensity!=msg.intensities[i]&&!found) {
 						currentMin=i+1;
 						found=true;
@@ -202,7 +203,7 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg) {
 				avoidanceCase=LIVING_OBJ;
 			}else{
 				// Work out max number of scan critical object still can be observed
-				for(int i=previousScanNumber;i<l-41;i++) {
+				for(int i=previousScanNumber;i<l-angleNotProcess;i++) {
 					if(previousScanIntensity!=msg.intensities[i]&&!found) {
 						previousScanNumberMax=i-1;
 						found=true;
@@ -210,7 +211,7 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg) {
 				}
 				found=false;
 				// Work out min number of scan critical object still can be observed
-				for(int i=previousScanNumber;i>41;i--) {
+				for(int i=previousScanNumber;i>angleNotProcess;i--) {
 					if(previousScanIntensity!=msg.intensities[i]&&!found) {
 						previousScanNumberMin=i+1;
 						found=true;
@@ -422,7 +423,7 @@ void Entity::addMovement(std::string type, double distance,double velocity) {
 		pos=distance;
 	}
 	//ROS_INFO("pos: %f", pos);
-	Movement m=Movement(type,pos,velocity);
+	Movement m=Movement(type,pos,std::abs(velocity));
 	movementQueue.push_back(m);
 }
 
