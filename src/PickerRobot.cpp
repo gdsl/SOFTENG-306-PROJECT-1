@@ -186,7 +186,7 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 			}else{
 				//halt movement if case not detected
 				pickerRobot.addMovementFront("forward_x",0,0,1);
-				pickerRobot.setObstacleStatus("Obstacle nearby");
+
 			}
 		}
 	} else {

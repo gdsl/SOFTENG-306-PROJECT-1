@@ -51,8 +51,6 @@ void GardenWorker::weedRemovalRequest(const se306project::weed_status msg) {
 void GardenWorker::weedRemovalDelegation(const se306project::gardenworker_status msg) {
 	std::string currentStatus = getStatus();
 
-	int distance = sqrt(pow(targetX-getX(),2.0)+pow(targetY-getY(),2.0));
-
 	if (currentStatus.compare("Communicating")==0 && msg.status.compare("Communicating")==0) {
 		int distance = sqrt(pow(targetX-getX(),2.0)+pow(targetY-getY(),2.0));
 		int otherDistance = msg.distance;
@@ -67,7 +65,7 @@ void GardenWorker::weedRemovalDelegation(const se306project::gardenworker_status
 	if (messagesReceived % communicationPartners == 0) {
 		if (currentStatus.compare("Communicating")==0 && closestToWeed) {
 			next("Move");
-		} else {
+		} else if (currentStatus.compare("Moving")!=0){
 			next("Stop");
 		}
 	}
@@ -234,18 +232,6 @@ void GardenWorker::stageLaser_callback(const sensor_msgs::LaserScan msg) {
 		flushMovementQueue();
 		next("Move");
 	}
-
-//	if (getAvoidanceCase()!=Entity::NONE&&!isRotating()) {//check if there is need to avoid obstacle
-//		if(getCriticalIntensity()!=9&&getCriticalIntensity()!=2&&getAvoidanceQueueSize()==0&&getObstacleStatus().compare("Obstacle nearby")!=0){
-//			setObstacleStatus("Obstacle nearby");
-//			avoidObstacle(3,0.5);//call avoid obstacle method in entity to avoid obstacle
-//		}else if (getMinDistance()<0.7&&getCriticalIntensity()>1&&getAvoidanceQueueSize()>0){
-//			addMovementFront("forward_x",0,0,1);//halt movement if already have obstacle
-//		}
-//	}else{
-//		ROS_ERROR("No obstacleee");
-//		setObstacleStatus("No obstacles");
-//	}
 	move();
 }
 
