@@ -177,7 +177,6 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg) {
 					}
 				}
 				// It is moving horizontally or rotating
-				//TODO
 				if ((currentMax>previousScanNumberMax&&currentMin>=previousScanNumberMin)||(currentMax<=previousScanNumberMax&&currentMin<previousScanNumberMin)) {
 					// Avoidance case is perpendicular
 					avoidanceCase=PERPENDICULAR;
@@ -311,44 +310,44 @@ bool Entity::isRotating(){
  * 		double x: the magnitude of amount x to move
  * 		double y: the magnitude of amount y to move
  */
-void Entity::avoidObstacle(Entity entity, double x,double y){
-	if(entity.getDirectionFacing()== NORTH){
-		entity.addMovementFront("rotation",M_PI/2,1,1);
-		entity.addMovementFront("forward_x",x,1,1);
-		entity.addMovementFront("rotation",0, 1,1);
-		entity.addMovementFront("forward_y",y,1,1);
-		entity.addMovementFront("rotation",M_PI/2,1,1);
-		entity.addMovementFront("forward_x",-x,1,1);
-		entity.addMovementFront("rotation",M_PI,1,1);
-		entity.addMovementFront("forward_x",0,0,1);//this is at front of front
+void Entity::avoidObstacle(double x,double y){
+	if(directionFacing== NORTH){
+		addMovementFront("rotation",M_PI/2,1,1);
+		addMovementFront("forward_x",0,1,1);
+		addMovementFront("rotation",0, 1,1);
+		addMovementFront("forward_y",y,1,1);
+		addMovementFront("rotation",M_PI/2,1,1);
+		addMovementFront("forward_x",-x,1,1);
+		addMovementFront("rotation",M_PI,1,1);
+		addMovementFront("forward_x",0,0,1);//this is at front of front
 		//pickerRobot.move();
-	}else if(entity.getDirectionFacing()== SOUTH){
-		entity.addMovementFront("rotation",-M_PI/2,1,1);
-		entity.addMovementFront("forward_x",x,1,1);
-		entity.addMovementFront("rotation",0, 1,1);
-		entity.addMovementFront("forward_y",-y,1,1);
-		entity.addMovementFront("rotation",-M_PI/2,1,1);
-		entity.addMovementFront("forward_x",-x,1,1);
-		entity.addMovementFront("rotation",M_PI,1,1);
-		entity.addMovementFront("forward_x",0,0,1);//this is at front of front
-	}else if(entity.getDirectionFacing()== EAST){
-		entity.addMovementFront("rotation",0, 1,1);
-		entity.addMovementFront("forward_y",y,1,1);
-		entity.addMovementFront("rotation",M_PI/2, 1,1);
-		entity.addMovementFront("forward_x",x,0,1);
-		entity.addMovementFront("rotation",0, 1,1);
-		entity.addMovementFront("forward_y",-y,1,1);
-		entity.addMovementFront("rotation",-M_PI/2, 1,1);
-		entity.addMovementFront("forward_x",0,0,1);//this is at front of front
-	}else if(entity.getDirectionFacing()== WEST){
-		entity.addMovementFront("rotation",M_PI, 1,1);
-		entity.addMovementFront("forward_y",y,1,1);
-		entity.addMovementFront("rotation",M_PI/2, 1,1);
-		entity.addMovementFront("forward_x",-x,0,1);
-		entity.addMovementFront("rotation",M_PI, 1,1);
-		entity.addMovementFront("forward_y",-y,1,1);
-		entity.addMovementFront("rotation",-M_PI/2, 1,1);
-		entity.addMovementFront("forward_x",0,0,1);//this is at front of front
+	}else if(directionFacing== SOUTH){
+		addMovementFront("rotation",-M_PI/2,1,1);
+		addMovementFront("forward_x",0,1,1);
+		addMovementFront("rotation",M_PI, 1,1);
+		addMovementFront("forward_y",-y,1,1);
+		addMovementFront("rotation",-M_PI/2,1,1);
+		addMovementFront("forward_x",x,1,1);
+		addMovementFront("rotation",0,1,1);
+		addMovementFront("forward_x",0,0,1);//this is at front of front
+	}else if(directionFacing== EAST){
+		addMovementFront("rotation",0, 1,1);
+		addMovementFront("forward_y",0,1,1);
+		addMovementFront("rotation",M_PI/2, 1,1);
+		addMovementFront("forward_x",x,1,1);
+		addMovementFront("rotation",0, 1,1);
+		addMovementFront("forward_y",-y,1,1);
+		addMovementFront("rotation",-M_PI/2, 1,1);
+		addMovementFront("forward_x",0,0,1);//this is at front of front
+	}else if(directionFacing== WEST){
+		addMovementFront("rotation",M_PI, 1,1);
+		addMovementFront("forward_y",0,1,1);
+		addMovementFront("rotation",M_PI/2, 1,1);
+		addMovementFront("forward_x",-x,1,1);
+		addMovementFront("rotation",M_PI, 1,1);
+		addMovementFront("forward_y",y,1,1);
+		addMovementFront("rotation",M_PI/2, 1,1);
+		addMovementFront("forward_x",0,0,1);//this is at front of front
 	}
 }
 
@@ -535,7 +534,7 @@ void Entity::moveForward(double pos, double vel, std::string direction,int queue
 void Entity::moveZ(double pos, double vel,int queueNum) {
 	double position=z;
 
-	/*if (!desireLocation){//TODO slow down
+	/*if (!desireLocation){
 		ROS_INFO("mfpos: %f", pos);
 		if (std::abs(position-pos)>=0.01){
 			if(std::abs(position-pos)<=0.2&&vel>0.1){

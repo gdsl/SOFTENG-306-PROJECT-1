@@ -143,7 +143,7 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 			}else if(pickerRobot.getAvoidanceCase()==Entity::STATIONARY&& pickerRobot.getCriticalIntensity()>1) {//if its stationary robot
 				pickerRobot.setObstacleStatus("Stationary object");
 				if(pickerRobot.getCriticalIntensity()!=3&& pickerRobot.getCriticalIntensity()!=2&& pickerRobot.getMinDistance()<0.4){
-					pickerRobot.avoidObstacle(pickerRobot,3,3);
+					pickerRobot.avoidObstacle(3,3);
 				}else{
 					pickerRobot.addMovementFront("forward_x",0,0,1);//this is at front of front
 				}

@@ -68,7 +68,7 @@ void Neighbour::setOriginY(double originYPos) {
 void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 	neighbour.stageLaser_callback(msg);//call supercalss laser call back for detection case work out
 
-	//if (neighbour.getAvoidanceCase()!=Entity::NONE&&neighbour.getAvoidanceCase()!=Entity::TREE) {//check if there is need to avoid obstacle
+	if (neighbour.getAvoidanceCase()!=Entity::NONE) {//check if there is need to avoid obstacle
 		if (neighbour.getCriticalIntensity()==2&&neighbour.getAvoidanceQueueSize()==0&&neighbour.getObstacleStatus().compare("Obstacle nearby")!=0){ //if sense picker robot run away
 			neighbour.setObstacleStatus("Obstacle nearby");			
 			neighbour.addMovementFront("forward_x",0,0,1);//halt current movement
@@ -77,10 +77,16 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 			neighbour.addMovementFront("rotation",0,1,1);
 			neighbour.addMovement("forward_x", neighbour.getOriginX()-neighbour.getX(), 1);
 			neighbour.setStatus("Moving back");
-		}else if(neighbour.getMinDistance()>1){
-			neighbour.setObstacleStatus("No detection");	
+		}else if(neighbour.getCriticalIntensity()!=2&&neighbour.getAvoidanceQueueSize()==0&&neighbour.getObstacleStatus().compare("Obstacle nearby")!=0){
+			neighbour.setObstacleStatus("Obstacle nearby");
+			neighbour.avoidObstacle(3,0.5);//call avoid obstacle method in entity to avoid obstacle
+		}else if (neighbour.getMinDistance()<0.5&&neighbour.getCriticalIntensity()>1&&neighbour.getAvoidanceQueueSize()>0){
+			neighbour.addMovementFront("forward_x",0,0,1);//halt movement if already have obstacle
 		}
-	//}
+		neighbour.move();
+	}else{
+		neighbour.setObstacleStatus("No detection");
+	}
 }
 
 int main(int argc, char **argv) {
@@ -126,7 +132,9 @@ int main(int argc, char **argv) {
 				neighbour.addMovement("forward_x", -35, 1);
 			}
 		}
-		neighbour.move();
+		if(neighbour.getObstacleStatus().compare("Obstacle nearby")!=0){
+			neighbour.move();
+		}
 		// Publish neighbour status
 		status_msg.pos_x = neighbour.getX();
 		status_msg.pos_y = neighbour.getY();

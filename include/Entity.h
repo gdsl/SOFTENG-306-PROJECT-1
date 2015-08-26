@@ -57,7 +57,7 @@ class Entity
 		void setLin(double lv);
 		void setAng(double av);
 		void setObstacleStatus(std::string obstacleStatus);
-		void avoidObstacle(Entity entity,double x,double y);
+		void avoidObstacle(double x,double y);
 		void flushMovementQueue();
 		void moveZ(double pos, double vel, int queueNum);
 		bool isRotating();

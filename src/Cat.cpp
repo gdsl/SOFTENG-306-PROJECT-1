@@ -35,6 +35,25 @@ void stage_callback(nav_msgs::Odometry msg) {
 	cat.stageOdom_callback(msg);
 }
 
+/**
+ * Call back method for laser work out the avoidance logic for Cat
+ */
+void callBackLaserScan(const sensor_msgs::LaserScan msg) {
+	cat.stageLaser_callback(msg);//call supercalss laser call back for detection case work out
+
+	if (cat.getAvoidanceCase()!=Entity::NONE) {//check if there is need to avoid obstacle
+		if(cat.getCriticalIntensity()!=2&&cat.getAvoidanceQueueSize()==0&&cat.getObstacleStatus().compare("Obstacle nearby")!=0){
+			cat.setObstacleStatus("Obstacle nearby");
+			cat.avoidObstacle(3,0.5);//call avoid obstacle method in entity to avoid obstacle
+		}else if (cat.getMinDistance()<0.5&&cat.getCriticalIntensity()>1&&cat.getAvoidanceQueueSize()>0){
+			cat.addMovementFront("forward_x",0,0,1);//halt movement if already have obstacle
+		}
+		cat.move();
+	}else{
+		cat.setObstacleStatus("No detection");
+	}
+}
+
 int main(int argc, char **argv) 
 {
 	// Initialize the cat robot with the correct position position
@@ -54,6 +73,9 @@ int main(int argc, char **argv)
 	cat.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth",1000,stage_callback);
 	ros::Rate loop_rate(10); 
 
+	//subscribe to laser for cats
+	cat.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000,callBackLaserScan);
+
 	// Broadcast the node's status information for other to subscribe to.
 	ros::Publisher pub=n.advertise<se306project::animal_status>("status",1000);
 	se306project::animal_status status_msg;
@@ -61,8 +83,9 @@ int main(int argc, char **argv)
 	while (ros::ok())
 	{
 		// Message to stage 
-		cat.move();
-
+		if(cat.getObstacleStatus().compare("Obstacle nearby")!=0){
+			cat.move();
+		}
 		// Give cat a small initial movement to fill in its GUI status
 		if (initial) {
 			cat.addMovement("forward_x",-0.1,1);
