@@ -94,7 +94,7 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 
 	if (pickerRobot.getAvoidanceCase()!=Entity::NONE&&pickerRobot.getAvoidanceCase()!=Entity::TREE) {//check if there is need to avoid obstacle
 
-		if(pickerRobot.getState()!=Robot::IDLE){//check if robot is idle or not
+		if(pickerRobot.getState()!=Robot::SERVICED&&pickerRobot.getState()!=Robot::FULL_BIN){//check if robot is idle or not
 			pickerRobot.setObstacleStatus("Obstacle nearby");
 
 			if(pickerRobot.getAvoidanceCase()==Entity::WEED ){// if its weed stop
@@ -143,7 +143,7 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 			}else if(pickerRobot.getAvoidanceCase()==Entity::STATIONARY&& pickerRobot.getCriticalIntensity()>1) {//if its stationary robot
 				pickerRobot.setObstacleStatus("Stationary object");
 				if(pickerRobot.getCriticalIntensity()!=3&& pickerRobot.getCriticalIntensity()!=2&& pickerRobot.getMinDistance()<0.4){
-					pickerRobot.avoidObstacle(pickerRobot,3,3);
+					pickerRobot.avoidObstacle(3,3);
 				}else{
 					pickerRobot.addMovementFront("forward_x",0,0,1);//this is at front of front
 				}
@@ -311,7 +311,7 @@ void PickerRobot::stateLogic(ros::NodeHandle n) {
 			}
 
 		} else if (pickerRobot.getState() == FINISHED) {
-
+			pickerRobot.setStatus("Finished Picking");
 		}
 	}
 	if (pickerRobot.getAvoidanceCase()==Entity::NONE||pickerRobot.getAvoidanceCase()==Entity::TREE){

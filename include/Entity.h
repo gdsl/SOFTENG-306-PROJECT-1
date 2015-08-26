@@ -29,7 +29,7 @@ class Entity
         //direction robot facing
 		enum Direction {WEST, SOUTH, EAST, NORTH};
 		//enumeration for avoidance cases
-		enum AvoidanceCase{NONE,HALT, LIVING_OBJ,WEED, TREE,FACE_ON, PERPENDICULAR,STATIONARY};
+		enum AvoidanceCase{NONE,HALT, LIVING_OBJ,WEED, TREE,FACE_ON, PERPENDICULAR,STATIONARY,ROTATE};
 
 		// Publisher and Subscriber. Public available to update.
 		ros::Publisher robotNode_stage_pub;
@@ -57,10 +57,10 @@ class Entity
 		void setLin(double lv);
 		void setAng(double av);
 		void setObstacleStatus(std::string obstacleStatus);
-		void avoidObstacle(Entity entity,double x,double y);
+		void avoidObstacle(double x,double y);
 		void flushMovementQueue();
 		void moveZ(double pos, double vel, int queueNum);
-
+		bool isRotating();
 		//get method
 		double getX();
 		double getY();

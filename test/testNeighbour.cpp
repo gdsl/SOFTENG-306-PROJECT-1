@@ -13,14 +13,14 @@
  */
 TEST(Neighbour, constructNeighbour) {
 	Neighbour neighbour;
-	/*EXPECT_EQ(neighbour.getX(), 0);
+	EXPECT_EQ(neighbour.getX(), 0);
 	EXPECT_EQ(neighbour.getY(), 0);
 	EXPECT_EQ(neighbour.getTheta(), 0);
 	EXPECT_EQ(neighbour.getLin(), 0);
 	EXPECT_EQ(neighbour.getAng(), 0);
 	EXPECT_FALSE(neighbour.getDesireLocation());
 	EXPECT_EQ(neighbour.getMinDistance(), 30.0);
-	EXPECT_EQ(neighbour.getObstacleAngle(), 270);*/
+	EXPECT_EQ(neighbour.getObstacleAngle(), 270);
 };
 
 int main(int argc, char**argv) {
