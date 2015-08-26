@@ -48,10 +48,10 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 	alphaDog.stageLaser_callback(msg);//call supercalss laser call back
 
 	if (alphaDog.getAvoidanceCase()!=Entity::NONE&&!alphaDog.isRotating()) {//check if there is need to avoid obstacle
-		if(alphaDog.getCriticalIntensity()!=2&&alphaDog.getAvoidanceQueueSize()==0&&alphaDog.getObstacleStatus().compare("Obstacle nearby")!=0){
+		if(alphaDog.getCriticalIntensity()!=9&&alphaDog.getCriticalIntensity()!=2&&alphaDog.getAvoidanceQueueSize()==0&&alphaDog.getObstacleStatus().compare("Obstacle nearby")!=0){
 			alphaDog.setObstacleStatus("Obstacle nearby");
 			alphaDog.avoidObstacle(3,0.5);//call avoid obstacle method in entity to avoid obstacle
-		}else if (alphaDog.getMinDistance()<0.5&&alphaDog.getCriticalIntensity()>1&&alphaDog.getAvoidanceQueueSize()>0){
+		}else if (alphaDog.getMinDistance()<0.7&&alphaDog.getCriticalIntensity()>1&&alphaDog.getAvoidanceQueueSize()>0){
 			alphaDog.addMovementFront("forward_x",0,0,1);//halt movement if already have obstacle
 		}
 		alphaDog.move();
@@ -148,6 +148,7 @@ int main(int argc, char **argv) {
 		status_msg.pos_x=alphaDog.getX();
 		status_msg.pos_y=alphaDog.getY();
 		status_msg.pos_theta=alphaDog.getAng();
+		status_msg.obstacle=alphaDog.getObstacleStatus();
 		// Publish status message
 		pub.publish(status_msg);
 		ros::spinOnce();

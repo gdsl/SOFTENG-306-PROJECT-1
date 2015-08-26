@@ -617,5 +617,5 @@ define blindPerson position
 			)
   humanLaser(pose [ 0.00 0.000 -1.7 0.000 ])
   obstacle_return 1
-  ranger_return 1
+  ranger_return 9
 )
