@@ -311,7 +311,7 @@ void PickerRobot::stateLogic(ros::NodeHandle n) {
 			}
 
 		} else if (pickerRobot.getState() == FINISHED) {
-
+			pickerRobot.setStatus("Finished Picking");
 		}
 	}
 	if (pickerRobot.getAvoidanceCase()==Entity::NONE||pickerRobot.getAvoidanceCase()==Entity::TREE){

@@ -60,7 +60,7 @@ class Entity
 		void avoidObstacle(Entity entity,double x,double y);
 		void flushMovementQueue();
 		void moveZ(double pos, double vel, int queueNum);
-
+		bool isRotating();
 		//get method
 		double getX();
 		double getY();

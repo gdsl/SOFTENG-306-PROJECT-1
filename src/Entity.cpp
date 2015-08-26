@@ -233,7 +233,6 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg) {
 void Entity::updateOdometry() {
 	robotNode_cmdvel.linear.x = linearVelocity;
 	robotNode_cmdvel.angular.z = angularVelocity;
-	robotNode_cmdvel.angular.x = -zVelocity;
 	// Publish message
 	robotNode_stage_pub.publish(robotNode_cmdvel);
 }
@@ -293,6 +292,18 @@ void Entity::avoidanceComplete() {
 	desireLocation=true;
 }
 
+/**
+ * Method to check if the entity is rotating or not
+ */
+bool Entity::isRotating(){
+	bool isRotating=false;
+	if(avoidanceQueue.size()>0&&avoidanceQueue.front().getType().compare("Rotation")==0){
+			isRotating=true;
+	}else if(movementQueue.size()>0&&movementQueue.front().getType().compare("Rotation")==0){
+			isRotating=true;
+	}
+	return isRotating;
+}
 /**
  * Method that will handle avoidance of obstacle by moving slight around the obstacle
  * Input:
