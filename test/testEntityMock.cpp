@@ -109,6 +109,7 @@ TEST(EntityMock, flushMovementQueueOfEntityMock) {
 // FAILS FOR REASONS UNKNOWN - LOOKS ABSOLUTELY FINE    
 //TEST(EntityMock, determineStatusWalkingEntityMock) {
 //	EntityMock entityMock = EntityMock();
+
 //	entityMock.addMovement("forward_x", 5, 1);
 //    entityMock.move();
 //    //this should make entityMock.status = "Walking"

@@ -62,7 +62,7 @@ int main(int argc, char **argv) {
 	// Initialise ros    
 	ros::init(argc,argv,"Animal");
 
-	// convert input parameters for person initialization from String to respective types
+	// convert input parameters for dog initialization from String to respective types
 	std::string xString = argv[1];
 	std::string yString = argv[2];
 	std::string rowString = argv[4];

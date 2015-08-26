@@ -12,10 +12,8 @@
  * Test default alphaDog constructor
  */
 TEST(AlphaDog, constructAlphaDog) {
-	AlphaDog alphaDog(0,0);
+    AlphaDog alphaDog(0,0);
     EXPECT_EQ(alphaDog.isAntiClockwise(),false);
-    alphaDog.switchDirection();
-    EXPECT_EQ(alphaDog.isAntiClockwise(),true);
 	EXPECT_EQ(alphaDog.getX(), 0);
 	EXPECT_EQ(alphaDog.getY(), 0);
 	EXPECT_EQ(alphaDog.getTheta(), 0);
@@ -25,6 +23,19 @@ TEST(AlphaDog, constructAlphaDog) {
 	EXPECT_EQ(alphaDog.getMinDistance(), 30.0);
 	EXPECT_EQ(alphaDog.getObstacleAngle(), 270);
 };
+
+/*
+ * Tests that when switchDirection() is called on AlphaDog, the boolean
+ * indicating direction is inversed.
+ */
+TEST(AlphaDog, switchDirectionOfAlphaDog) {
+    AlphaDog alphaDog(0,0);
+    EXPECT_EQ(alphaDog.isAntiClockwise(),false);
+    alphaDog.switchDirection();
+    EXPECT_EQ(alphaDog.isAntiClockwise(),true);
+    alphaDog.switchDirection();
+    EXPECT_EQ(alphaDog.isAntiClockwise(),false);
+}
 
 int main(int argc, char**argv) {
 	ros::init(argc,argv,"testAlphaDog");
