@@ -365,9 +365,15 @@ void Generator::loadPeople()
         // Generate neighbours
         outfile << "# Generate neighbours" << endl;
 for (int i = 0; i < model.neighbours; i++) {
+<<<<<<< HEAD
+    	
+        float xPos = 43 ;
+        float yPos = 18;
+=======
     	// Generate the position of the neigbours
         float xPos = 43 ;
         float yPos = 19;
+>>>>>>> 8e2dd177f3a16c0af800f598ea4aa78cdef4d633
         yPos=yPos-(i * model.rowWidth) + 0.5; //plus 0.5 to stop getting rekt by tall weed
         string colour = colourArray[peopleCC];
         peopleCC += 1;
