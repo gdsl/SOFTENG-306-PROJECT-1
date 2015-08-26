@@ -92,17 +92,6 @@ void TallWeed::workerCallback(const se306project::robot_status msg) {
 
 void TallWeed::stageOdom_callback(nav_msgs::Odometry msg) {
 	Entity::stageOdom_callback(msg);
-
-	if (getAvoidanceCase()!=Entity::NONE&&!isRotating()) {//check if there is need to avoid obstacle
-		if(getCriticalIntensity()!=9&&getCriticalIntensity()!=2&&getAvoidanceQueueSize()==0&&getObstacleStatus().compare("Obstacle nearby")!=0){
-			setObstacleStatus("Obstacle nearby");
-			avoidObstacle(3,0.5);//call avoid obstacle method in entity to avoid obstacle
-		}else if (getMinDistance()<0.7&&getCriticalIntensity()>1&&getAvoidanceQueueSize()>0){
-			addMovementFront("forward_x",0,0,1);//halt movement if already have obstacle
-		}
-	}else{
-		setObstacleStatus("No obstacles");
-	}
 	move();
 }
 

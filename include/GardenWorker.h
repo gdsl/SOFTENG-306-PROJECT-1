@@ -35,6 +35,8 @@ public:
 
 	// setter methods
 	void setCommunicationPartners(int communicationPartners);
+	void setInitialX(double initialX);
+	void setInitialY(double initialY);
 private:
 	double targetX;
 	double targetY;
