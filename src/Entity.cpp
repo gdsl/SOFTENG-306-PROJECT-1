@@ -117,14 +117,17 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg) {
 		previousScanDistance=0;
 		previousScanNumber=0;
 	}
-	for (int i=0; i<l; i++){ 
+
+	for (int i=41; i<l-41; i++){ 
 		// Work out the minimum distance object
 		if (msg.ranges[i]< minDistance) {
 			if(msg.intensities[i]>1||msg.ranges[i]<0.5){//if its not tree or tree very close
 				minDistance = msg.ranges[i];
+				ROS_INFO("lvalue %f",msg.intensities[i]);
 				if(msg.ranges[i]<1.1&&msg.intensities[i]>currentIntensity) {
 					// Record the most critical intensity within 1.1
 					currentIntensity=msg.intensities[i];
+					ROS_INFO("new %f",criticalIntensity);
 				}
 				obstacleAngle= (i/l) * msg.angle_increment + msg.angle_min;
 			}
@@ -211,6 +214,7 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg) {
 		}
 	}
 	criticalIntensity=currentIntensity;
+	ROS_INFO("crit %f",criticalIntensity);
 }
 
 /**
