@@ -103,6 +103,17 @@ TEST(EntityMock, flushMovementQueueOfEntityMock) {
 }
 
 /*
+ * Test for EntityMock isRotating() method.
+ * Checks to see that true is returned by the isRotating() method when an 
+ * Entity has a rotate movement at the top of its movement queue.
+ */
+TEST(EntityMock, isRotatingEntityMock) {
+	EntityMock entityMock = EntityMock();
+	entityMock.faceNorth(2);
+	EXPECT_TRUE(entityMock.isRotating());
+}
+
+/*
  * Test for EntityMock determineStatus() method when Entity is moving.
  * Hence value returned should be "Walking".
  */ 
