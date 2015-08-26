@@ -165,6 +165,15 @@ void Generator::loadOrchard()
 
 void Generator::loadBackdrop()
 {
+
+    outfile << "#Generate Driveway" << endl;
+    // Create driveway
+    outfile << "driveway( pose [ -43.500 0.000 0.000 0.000 ] color \"gray\")" << endl;
+
+    outfile << "#Generate Grass" << endl;
+    // Create grass
+    outfile << "grass( pose [ 4.000 0.000 0.000 0.000 ] )" << endl;
+
     outfile << "#Generate Backdrop Trees" << endl;
     
     string backdropColourArray[7] = {"lawn green", "LimeGreen", "ForestGreen", "YellowGreen", "OliveDrab", "DarkOliveGreen", "DarkGreen"};
@@ -178,7 +187,7 @@ void Generator::loadBackdrop()
     int colourRand = 0;
     string colour = "";
     
-    //Create trees of the left perimeter wall.
+    // Create trees of the left perimeter wall.
     for(int i = 0; i < 27; i++) {
         colourRand = rand() % 6;
         colour = backdropColourArray[colourRand];
@@ -191,7 +200,7 @@ void Generator::loadBackdrop()
         y -= 0.9;
     }
     
-    //Create trees for the bottom perimeter wall.
+    // Create trees for the bottom perimeter wall.
     for(int i = 0; i < 47; i++) {
         colourRand = rand() % 6;
         colour = backdropColourArray[colourRand];
@@ -204,7 +213,7 @@ void Generator::loadBackdrop()
         x += 0.9;
     }
     
-    //Create trees for the right perimeter wall.
+    // Create trees for the right perimeter wall.
     for(int i = 0; i < 27; i++) {
         colourRand = rand() % 6;
         colour = backdropColourArray[colourRand];
@@ -217,7 +226,7 @@ void Generator::loadBackdrop()
         y += 0.9;
     }
     
-    //Create trees for the top perimeter wall.
+    // Create trees for the top perimeter wall.
     for(int i = 0; i < 47; i++) {
         colourRand = rand() % 6;
         colour = backdropColourArray[colourRand];

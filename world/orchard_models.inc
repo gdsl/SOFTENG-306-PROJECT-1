@@ -32,6 +32,21 @@ define verticalFruitVine modelBase
     gui_nose 0
 )
 
+define driveway modelBase
+(
+  size [8.000 55.000 0.01]
+  gui_move 0
+  obstacle_return 0
+)
+
+define grass modelBase
+(
+  size [87.000 55.000 0.01]
+  color_rgba [0.341 0.678 0.000 1]
+  gui_move 0
+  obstacle_return 0
+)
+
 define backdropTree modelBase
 (
   size [0.850 0.850 1.800]
@@ -446,7 +461,7 @@ define CarrierRobot position
   )
   
   #properties as name value pairs
-  size [1.8 1.5 0.75]
+  size [1.8 1.5 0.5]
   drive "diff"
   carrierLaser(pose [ 0.9 0.0 -0.5 0.0 ])
 
