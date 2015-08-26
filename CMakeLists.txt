@@ -279,7 +279,7 @@ if (CATKIN_ENABLE_TESTING)
     target_link_libraries(testNeighbour NeighbourLib ${catkin_LIBRARIES})
     
     add_rostest_gtest(testGardenWorker test/rostest/testGardenWorker.test test/testGardenWorker.cpp)
-    target_link_libraries(testGardenWorker GardenWorkerLib ${catkin_LIBRARIES})
+    target_link_libraries(testGardenWorker GardenWorkerLib PickerRobotLib ${catkin_LIBRARIES})
     
     # unit tests
     catkin_add_gtest(testMovement test/testMovement.cpp)

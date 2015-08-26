@@ -30,8 +30,12 @@ public:
 	void stageOdom_callback(nav_msgs::Odometry msg);
 
 	// getter methods
-	int getTargetX();
-	int getTargetY();
+	double getTargetX();
+	double getTargetY();
+	double getInitialX();
+	double getInitialY();
+	int getCommunicationPartners();
+	int getMessagesSent();
 
 	// setter methods
 	void setCommunicationPartners(int communicationPartners);
@@ -43,6 +47,7 @@ private:
 	double initialX;
 	double initialY;
 	int communicationPartners;
+	int messagesSent;
 	int messagesReceived;
 	bool closestToWeed;
 	time_t c_start;

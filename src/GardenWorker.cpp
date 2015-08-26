@@ -19,6 +19,7 @@ GardenWorker::GardenWorker(double x, double y, double theta, double linearVeloci
 	targetX = 0;
 	targetY = 0;
 	closestToWeed = true;
+	messagesSent = 0;
 	messagesReceived = 0;
 	communicationPartners = 0;
 	setStatus("Idle");
@@ -46,6 +47,7 @@ void GardenWorker::weedRemovalRequest(const se306project::weed_status msg) {
 	pubmsg.status = getStatus();
 
 	gardenworker_weedinfo_pub.publish(pubmsg);
+	messagesSent++;
 }
 
 void GardenWorker::weedRemovalDelegation(const se306project::gardenworker_status msg) {
@@ -81,7 +83,6 @@ void GardenWorker::next(std::string action) {
 		if (action.compare("Communicate")==0) {
 			setStatus("Communicating");
 		} else if (action.compare("Move") == 0) {
-			ROS_ERROR("Change");
 			setStatus("Moving");
 		}
 	} else if (currentStatus.compare("Communicating")==0) {
@@ -134,7 +135,7 @@ void GardenWorker::stageLaser_callback(const sensor_msgs::LaserScan msg) {
 
 		// check if an obstacle detected. if the obstacle is tallweed, change to pull weed
 
-		double errorMargin = 3;
+		double errorMargin = 1.5;
 
 		if (pulled && abs(getX() - initialX) <= errorMargin && abs(getY() - initialY) <= errorMargin) {
 			if (getDirectionFacing() == Entity::NORTH || getDirectionFacing() == Entity::SOUTH) {
@@ -165,7 +166,7 @@ void GardenWorker::stageLaser_callback(const sensor_msgs::LaserScan msg) {
 					distanceToMove = -(getX() - targetX);
 					//make sure the Robot is facing West, if not, turn it West.
 					if (direction != WEST) {
-						//ROS_ERROR("CAL1L");
+		//				ROS_ERROR("CAL1L");
 						faceWest(1);
 						direction = WEST;
 					}
@@ -174,7 +175,7 @@ void GardenWorker::stageLaser_callback(const sensor_msgs::LaserScan msg) {
 					distanceToMove = targetX - getX();
 					//make sure the Robot is facing West, if not, turn it West.
 					if (direction != EAST) {
-						//ROS_ERROR("EAST");
+		//				ROS_ERROR("EAST");
 						faceEast(1);
 						direction = EAST;
 					}
@@ -247,16 +248,32 @@ void GardenWorker::stageLaser_callback(const sensor_msgs::LaserScan msg) {
 	move();
 }
 
-int GardenWorker::getTargetX() {
+double GardenWorker::getTargetX() {
 	return targetX;
 }
 
-int GardenWorker::getTargetY() {
+double GardenWorker::getTargetY() {
 	return targetY;
 }
 
 void GardenWorker::setCommunicationPartners(int communicationPartners) {
 	this->communicationPartners = communicationPartners;
+}
+
+double GardenWorker::getInitialX() {
+	return initialX;
+}
+
+double GardenWorker::getInitialY() {
+	return initialY;
+}
+
+int GardenWorker::getCommunicationPartners() {
+	return communicationPartners;
+}
+
+int GardenWorker::getMessagesSent() {
+	return messagesSent;
 }
 
 void GardenWorker::stageOdom_callback(const nav_msgs::Odometry msg) {
