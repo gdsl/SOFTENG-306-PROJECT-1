@@ -446,7 +446,7 @@ define CarrierRobot position
   )
   
   #properties as name value pairs
-  size [1.8 1.5 0.75]
+  size [1.8 1.5 0.5]
   drive "diff"
   carrierLaser(pose [ 0.9 0.0 -0.5 0.0 ])
 
