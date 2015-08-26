@@ -50,7 +50,7 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 		}
 		cat.move();
 	}else{
-		cat.setObstacleStatus("No detection");
+		cat.setObstacleStatus("No obstacles");
 	}
 }
 
@@ -88,7 +88,7 @@ int main(int argc, char **argv)
 		}
 		// Give cat a small initial movement to fill in its GUI status
 		if (initial) {
-			cat.addMovement("forward_x",-0.1,1);
+			cat.addMovement("forward_x",0.1,1);
 		}
 		initial = false;
 
@@ -98,11 +98,11 @@ int main(int argc, char **argv)
 
 		if (cat.getMovementQueueSize() == 0) {
 			//sleep(time);
-			cat.addMovement("forward_x", 0.4, 0.01);
-			cat.faceEast(1);
-			cat.addMovement("forward_x",-5,1);
+			cat.addMovement("forward_x", -0.4, 0.01);
 			cat.faceWest(1);
 			cat.addMovement("forward_x",5,1);
+			cat.faceEast(1);
+			cat.addMovement("forward_x",-5,1);
 		}
 
 		/* if (cat.getMovementQueueSize() == 1) {

@@ -85,7 +85,7 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 		}
 		neighbour.move();
 	}else{
-		neighbour.setObstacleStatus("No detection");
+		neighbour.setObstacleStatus("No obstacles");
 	}
 }
 

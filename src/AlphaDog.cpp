@@ -46,14 +46,16 @@ void stage_callback(nav_msgs::Odometry msg) {
  */
 void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 	alphaDog.stageLaser_callback(msg);//call supercalss laser call back
-	if (alphaDog.getAvoidanceCase()!=Entity::NONE&&alphaDog.getAvoidanceCase()!=Entity::TREE) {//check if there is need to avoid obstacle
-		alphaDog.setObstacleStatus("Obstacles nearby");
-		//flush its movement
-		alphaDog.flushMovementQueue();
-		alphaDog.addMovementFront("forward_x",0,0,1);//this is at front of front
-		alphaDog.move();
 
-	} else {
+	if (alphaDog.getAvoidanceCase()!=Entity::NONE) {//check if there is need to avoid obstacle
+		if(alphaDog.getCriticalIntensity()!=2&&alphaDog.getAvoidanceQueueSize()==0&&alphaDog.getObstacleStatus().compare("Obstacle nearby")!=0){
+			alphaDog.setObstacleStatus("Obstacle nearby");
+			alphaDog.avoidObstacle(3,0.5);//call avoid obstacle method in entity to avoid obstacle
+		}else if (alphaDog.getMinDistance()<0.5&&alphaDog.getCriticalIntensity()>1&&alphaDog.getAvoidanceQueueSize()>0){
+			alphaDog.addMovementFront("forward_x",0,0,1);//halt movement if already have obstacle
+		}
+		alphaDog.move();
+	}else{
 		alphaDog.setObstacleStatus("No obstacles");
 	}
 }
@@ -93,7 +95,9 @@ int main(int argc, char **argv) {
 	AlphaDog::State state = AlphaDog::TOP;
 	while (ros::ok()) {
 		// Message to stage 
-		alphaDog.move();
+		if(alphaDog.getObstacleStatus().compare("Obstacle nearby")!=0){
+			alphaDog.move();
+		}
 
 		if (alphaDog.getMovementQueueSize() == 0) {
 			if (state == AlphaDog::TOP) {
