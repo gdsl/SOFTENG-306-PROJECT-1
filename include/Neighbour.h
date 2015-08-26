@@ -19,8 +19,6 @@ public:
 	void next(std::string action);
 	// override stageodom callback
 	void stageOdom_callback(nav_msgs::Odometry msg);
-
-	
 	
 	void setOriginY(double yPos);
 	void setOriginX(double xPos);
