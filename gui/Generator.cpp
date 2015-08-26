@@ -347,17 +347,11 @@ void Generator::loadPeople()
     outfile << "# Generate gardenworkers" << endl;
     for (int i = 0; i < model.gardeners; i++) {
     	// Generate gardenworkers same position as workers
-    	//int x = rand() % 82 - 36;
-        //int y = rand() % 52 - 26;
-        int x = rand() % 76 - 36;
-        int y = rand() % randNumY - rowEnd;
-
-        //if( (x > -30) && (x < 40) && (y < 20) && (y > rowEnd)) {
         int xMult = (((rand() % columnCount + 1) * 2) - 1);
-        float xPos = -30 + (xMult * xOffset);
-        
-        int yMult = (((rand() % 8 + 1) * 2) - 1);
-        float yPos = 20.4 - (yMult * yOffset);
+        float xPos = 43 - model.poleTrunkSpacing;
+        float yPos = 17.5;
+        yPos = yPos-(i * model.rowWidth);
+        xPos = xPos-(i * model.poleTrunkSpacing);
 
         gardenerPositions.push(xPos);
         gardenerPositions.push(yPos);
@@ -371,9 +365,15 @@ void Generator::loadPeople()
         // Generate neighbours
         outfile << "# Generate neighbours" << endl;
 for (int i = 0; i < model.neighbours; i++) {
+<<<<<<< HEAD
     	
         float xPos = 43 ;
         float yPos = 18;
+=======
+    	// Generate the position of the neigbours
+        float xPos = 43 ;
+        float yPos = 19;
+>>>>>>> 8e2dd177f3a16c0af800f598ea4aa78cdef4d633
         yPos=yPos-(i * model.rowWidth) + 0.5; //plus 0.5 to stop getting rekt by tall weed
         string colour = colourArray[peopleCC];
         peopleCC += 1;

@@ -100,7 +100,7 @@ define backdropShrub modelBase
 define horizontalFruitVine modelBase
 (
     size [2.500 0.100 0.100]
-    color_rgba [0.776 0.788 0.765 1]
+    color_rgba [0.776 0.788 0.765 0.3]
     gui_move 0
     gui_nose 0
 )
