@@ -333,10 +333,10 @@ define dog position
   # head
   block (
   points 4
-  point[3] [  -0.50   -0.05 ] 
-  point[2] [  -0.40   -0.05 ] 
-  point[1] [  -0.40   0.05 ] 
-  point[0] [  -0.50   0.05 ] 
+  point[3] [  0.50   0.05 ] 
+  point[2] [  0.40   0.05 ] 
+  point[1] [  0.40   -0.05 ] 
+  point[0] [  0.50   -0.05 ] 
   z [ 0.35 0.50 ]
 			)
   animalLaser(pose [ 0.500 0.000 -0.500 0.000 ])
@@ -400,12 +400,13 @@ define cat position
   # head
   block (
   points 4
-  point[3] [  -0.50   -0.05 ] 
-  point[2] [  -0.40   -0.05 ] 
-  point[1] [  -0.40   0.05 ] 
-  point[0] [  -0.50   0.05 ] 
+  point[3] [  0.50   0.05 ] 
+  point[2] [  0.40   0.05 ] 
+  point[1] [  0.40   -0.05 ] 
+  point[0] [  0.50   -0.05 ] 
   z [ 0.35 0.50 ]
 			)
+
   animalLaser(pose [ 0.500 0.000 -0.500 0.000 ])
   obstacle_return 1
   ranger_return 5
