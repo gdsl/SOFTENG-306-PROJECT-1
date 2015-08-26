@@ -373,7 +373,7 @@ for (int i = 0; i < model.neighbours; i++) {
         float xPos = 43 ;
         //int yMult = (((rand() % 8 + 1) * 2) - 1);
         float yPos = 19;
-        yPos=yPos-(i * model.rowWidth);
+        yPos=yPos-(i * model.rowWidth) + 0.5; //plus 0.5 to stop getting rekt by tall weed
         string colour = colourArray[peopleCC];
         peopleCC += 1;
         neighbourPositions.push(xPos);
@@ -481,7 +481,7 @@ void Generator::loadTallWeeds()
     int rowEnd = 20 - totalRowWidth;
     int randNumY = rowEnd + 20;
     
-     model.weed = 10;//rand() % 8 + 2; //between 2 and 10
+     model.weed = 5;//rand() % 8 + 2; //between 2 and 10
     
     for(int i = 0; i < model.weed; i++) {
         //Random numbers generated to be inside the area of the kiwi-fruit farming area.
@@ -496,7 +496,7 @@ void Generator::loadTallWeeds()
         //Get a random number for the number of spaces(slots) between the trees in the y direction.
         //Based on that number use the offset to get the y spawn coordinate to be in the middle of the two trees.
         int yMult = (((rand() % 8 + 1) * 2) - 1);
-        float yPos = 20.4 - (yMult * yOffset);
+        float yPos = 20.4 - (yMult * yOffset) - 0.3; //-0.3 to make it slightly lower so it doesn't screw up dog
         
         weedPositions.push(x);
         weedPositions.push(y);
@@ -521,7 +521,7 @@ void Generator::loadTallWeeds()
 
 void Generator::loadTractor() {
     outfile << "#Generate tractor" << endl;
-    outfile << "tractor( pose [ 0.00 -10.00 0.000 0.000 ] name \"Tractor\" color \"Blue\")" << endl;
+    outfile << "tractor( pose [ -35.0 -20.00 0.000 90.000 ] name \"Tractor\" color \"Blue\")" << endl;
 }
 
 void Generator::calculatePickerPaths() {
