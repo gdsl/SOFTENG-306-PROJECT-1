@@ -95,7 +95,6 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 	if (pickerRobot.getAvoidanceCase()!=Entity::NONE&&pickerRobot.getAvoidanceCase()!=Entity::TREE) {//check if there is need to avoid obstacle
 
 		if(pickerRobot.getState()!=Robot::SERVICED&&pickerRobot.getState()!=Robot::FULL_BIN){//check if robot is idle or not
-			pickerRobot.setObstacleStatus("Obstacle nearby");
 
 			if(pickerRobot.getAvoidanceCase()==Entity::WEED ){// if its weed stop
 
@@ -183,6 +182,7 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 					//halt movement if already have avoidance logic
 					pickerRobot.addMovementFront("forward_x",0,0,1);
 				}
+				pickerRobot.setObstacleStatus("Obstacle nearby");
 			}else{
 				//halt movement if case not detected
 				pickerRobot.addMovementFront("forward_x",0,0,1);

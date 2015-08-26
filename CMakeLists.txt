@@ -240,7 +240,7 @@ target_link_libraries(Robot Entity ${catkin_LIBRARIES})
 target_link_libraries(Animal Entity ${catkin_LIBRARIES})
 target_link_libraries(Person Entity ${catkin_LIBRARIES})
 target_link_libraries(AlphaDogLib Animal Entity ${catkin_LIBRARIES})
-target_link_libraries(Cat Animal Entity ${catkin_LIBRARIES})
+target_link_libraries(CatLib Animal Entity ${catkin_LIBRARIES})
 target_link_libraries(EntityMockLib Entity ${catkin_LIBRARIES})
 target_link_libraries(NeighbourLib Person Entity ${catkin_LIBRARIES})
 target_link_libraries(AlphaPersonLib Person Entity ${catkin_LIBRARIES})
@@ -251,7 +251,7 @@ target_link_libraries(BeaconLib Entity ${catkin_LIBRARIES})
 
 
 if (CATKIN_ENABLE_TESTING)
-	#integration test(everything include testing multiple nodes with stage running)
+    #integration test(everything include testing multiple nodes with stage running)
     find_package(catkin REQUIRED COMPONENTS rostest)
     
     add_rostest_gtest(testAlphaPerson test/rostest/testAlphaPerson.test test/testAlphaPerson.cpp)
@@ -262,6 +262,9 @@ if (CATKIN_ENABLE_TESTING)
     
     add_rostest_gtest(testPickerRobot test/rostest/testPickerRobot.test test/testPickerRobot.cpp)
     target_link_libraries(testPickerRobot PickerRobotLib ${catkin_LIBRARIES})
+    
+    add_rostest_gtest(testCat test/rostest/testCat.test test/testCat.cpp)
+    target_link_libraries(testCat CatLib ${catkin_LIBRARIES})
 
     add_rostest_gtest(testAlphaDog test/rostest/testAlphaDog.test test/testAlphaDog.cpp)
     target_link_libraries(testAlphaDog AlphaDogLib ${catkin_LIBRARIES})
@@ -275,8 +278,10 @@ if (CATKIN_ENABLE_TESTING)
     add_rostest_gtest(testNeighbour test/rostest/testNeighbour.test test/testNeighbour.cpp)
     target_link_libraries(testNeighbour NeighbourLib ${catkin_LIBRARIES})
     
+    
+    
     # unit tests
-	catkin_add_gtest(testMovement test/testMovement.cpp)
-	target_link_libraries(testMovement Movement ${catkin_LIBRARIES})
+    catkin_add_gtest(testMovement test/testMovement.cpp)
+    target_link_libraries(testMovement Movement ${catkin_LIBRARIES})
     
 endif()

@@ -45,7 +45,7 @@ void GardenWorker::weedRemovalRequest(const se306project::weed_status msg) {
 
 	int distance = sqrt(pow(targetX-getX(),2.0)+pow(targetY-getY(),2.0));
 	pubmsg.distance = distance;
-	pubmsg.status = currentStatus;
+	pubmsg.status = getStatus();
 
 	gardenworker_weedinfo_pub.publish(pubmsg);
 }
@@ -67,7 +67,7 @@ void GardenWorker::weedRemovalDelegation(const se306project::gardenworker_status
 	if (messagesReceived % communicationPartners == 0) {
 		if (currentStatus.compare("Communicating")==0 && closestToWeed) {
 			next("Move");
-		} else {
+		} else if (currentStatus.compare("Moving")!=0){
 			next("Stop");
 		}
 	}
@@ -83,6 +83,7 @@ void GardenWorker::next(std::string action) {
 		if (action.compare("Communicate")==0) {
 			setStatus("Communicating");
 		} else if (action.compare("Move") == 0) {
+			ROS_ERROR("Change");
 			setStatus("Moving");
 		}
 	} else if (currentStatus.compare("Communicating")==0) {
@@ -114,8 +115,9 @@ void GardenWorker::stageLaser_callback(const sensor_msgs::LaserScan msg) {
 	// 	invoke parent stagelaser
 	Person::stageLaser_callback(msg);
 	std::string currentStatus = getStatus();
-
+	//ROS_ERROR("Current Status: %s", currentStatus.c_str());
 	if (currentStatus.compare("Idle") == 0) {
+		pulled = false;
 		flushMovementQueue();
 	} else if (currentStatus.compare("Moving") == 0) {
 
@@ -135,37 +137,25 @@ void GardenWorker::stageLaser_callback(const sensor_msgs::LaserScan msg) {
 
 		double errorMargin = 3;
 
-		if (abs(getX() - initialX) <= errorMargin && abs(getY() - initialY) <= errorMargin) {
+		if (pulled && abs(getX() - initialX) <= errorMargin && abs(getY() - initialY) <= errorMargin) {
 			if (getDirectionFacing() == Entity::NORTH || getDirectionFacing() == Entity::SOUTH) {
-				addMovementFront("forward_y",0,0,0);
+				addMovementFront("forward_y",0,0,1);
 			} else {
-				addMovementFront("forward_x",0,0,0);
+				addMovementFront("forward_x",0,0,1);
 			}
 
 			next("Stop");
 			return;
 		}
 
-		if (getAvoidanceCase() == Entity::WEED && abs(getX() - targetX) <= errorMargin && abs(getY() - targetY) <= errorMargin) {
-
-			if (getDirectionFacing() == Entity::NORTH || getDirectionFacing() == Entity::SOUTH) {
-				addMovementFront("forward_y",0,0,0);
-			} else {
-				addMovementFront("forward_x",0,0,0);
-			}
-			//ROS_ERROR("LEL");
+		if (!pulled && getAvoidanceCase() == Entity::WEED && abs(getX() - targetX) <= errorMargin && abs(getY() - targetY) <= errorMargin) {
 			// start timer
 			time(&c_start);
 			next("Pull");
 			return;
 		}
 
-		//ROS_ERROR("queue size %d", getMovementQueueSize());
-
 		if (getMovementQueueSize() == 0) {
-//			ROS_ERROR("CALL");
-//			ROS_ERROR("targetX %lf", targetX);
-//			ROS_ERROR("targetY %lf", targetY);
 			double distanceToMove = 0;
 			Entity::Direction direction = getDirectionFacing();
 
@@ -191,7 +181,6 @@ void GardenWorker::stageLaser_callback(const sensor_msgs::LaserScan msg) {
 					}
 				}
 
-				//ROS_ERROR("X %lf", distanceToMove);
 				addMovement("forward_x", distanceToMove, 1);
 			}
 			//now add the vertical movement to the movement queue
@@ -215,12 +204,18 @@ void GardenWorker::stageLaser_callback(const sensor_msgs::LaserScan msg) {
 					}
 				}
 
-				//ROS_ERROR("Y %lf", distanceToMove);
 				addMovement("forward_y", distanceToMove, 1);
 			}
 		}
 
 	} else if (currentStatus.compare("Pull Weed") == 0) {
+
+		if (getDirectionFacing() == Entity::NORTH || getDirectionFacing() == Entity::SOUTH) {
+			addMovementFront("forward_y",0,0,1);
+		} else {
+			addMovementFront("forward_x",0,0,1);
+		}
+
 		// change to done after certain time
 		time(&c_end);
 
@@ -235,7 +230,7 @@ void GardenWorker::stageLaser_callback(const sensor_msgs::LaserScan msg) {
 
 		targetX = initialX;
 		targetY = initialY;
-
+		pulled = true;
 		flushMovementQueue();
 		next("Move");
 	}
@@ -303,7 +298,7 @@ int main(int argc, char **argv) {
 	std::stringstream topicName;
 	int index = 0;
 
-	// -1 means no beacons, do not subscribe to weed else subscribe
+	// -1 means no beacons, do not subscribe to robotworkers else subscribe
 	if (!(s == -1 && e == -1)) {
 		int size = e-s+1;
 
@@ -341,7 +336,7 @@ int main(int argc, char **argv) {
 	for (int i = gw_s; i < gw_e+1; i++) {
 		if (i != gw_i) {
 			topicName.str(std::string());
-			topicName << "/robot_" << i << "/status";
+			topicName << "/robot_" << i << "/weedinfo";
 			gardenWorker.gardenworker_status_sub[index] = n.subscribe<se306project::gardenworker_status>(topicName.str(),1000,&GardenWorker::weedRemovalDelegation, &gardenWorker);
 			index++;
 		}
