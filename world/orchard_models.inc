@@ -32,6 +32,12 @@ define verticalFruitVine modelBase
     gui_nose 0
 )
 
+define grass modelBase
+(
+  size [95 55 0.01]
+  gui_move 0
+)
+
 define backdropTree modelBase
 (
   size [0.850 0.850 1.800]
