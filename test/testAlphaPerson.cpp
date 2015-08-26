@@ -5,10 +5,14 @@
 #include <gtest/gtest.h>
 
 /**
+ * Unit tests for Person Robot - tests basic methods e.g. constructor
+ */
+
+/**
  * Test default alphaPerson constructor
  */
 TEST(AlphaPerson, constructAlphaPerson) {
-	AlphaPerson alphaPerson;
+	AlphaPerson alphaPerson = AlphaPerson();
 	EXPECT_EQ(alphaPerson.getX(), 0);
 	EXPECT_EQ(alphaPerson.getY(), 0);
 	EXPECT_EQ(alphaPerson.getTheta(), 0);
@@ -16,59 +20,35 @@ TEST(AlphaPerson, constructAlphaPerson) {
 	EXPECT_EQ(alphaPerson.getAng(), 0);
 	EXPECT_FALSE(alphaPerson.getDesireLocation());
 	EXPECT_EQ(alphaPerson.getMinDistance(), 30.0);
-	EXPECT_EQ(alphaPerson.getObstacleDistance(), 270);
+	EXPECT_EQ(alphaPerson.getObstacleAngle(), 270);
 };
 
 /**
- * Test AlphaPerson setPose() method.
+ * Test alphaPerson constructor with X and Y pose arguments
  */
-TEST(AlphaPerson, setPoseOfPerson) {
-	AlphaPerson alphaPerson;
-	alphaPerson.setPose(10, 30, 40);
+TEST(AlphaPerson, constructWithPoseAlphaPerson) {
+	AlphaPerson alphaPerson = AlphaPerson(10, 20);
 	EXPECT_EQ(alphaPerson.getX(), 10);
-	EXPECT_EQ(alphaPerson.getY(), 30);
-	EXPECT_EQ(alphaPerson.getTheta(), 40);
-}
-
-/*
- * Test for Entity setVelocity() method.
- * Checks to see if the parameters given are assigned to object fields correctly.
- */
-TEST(AlphaPerson, setVelocityOfPerson) {
-	AlphaPerson alphaPerson;
-	alphaPerson.setVelocity(4, 1);
-	EXPECT_EQ(alphaPerson.getLin(), 4);
-	EXPECT_EQ(alphaPerson.getAng(), 1);
-}
-
-/*
- * Test for Entity setDesireLocation() method.
- * Checks to see if the parameter given is assigned to object field correctly.
- */
-TEST(AlphaPerson, setDesireLocationOfPerson) {
-	AlphaPerson alphaPerson;
-	alphaPerson.setDesireLocation(true);
-	EXPECT_TRUE(alphaPerson.getDesireLocation());
-	alphaPerson.setDesireLocation(false);
+	EXPECT_EQ(alphaPerson.getY(), 20);
+	EXPECT_EQ(alphaPerson.getTheta(), 0);
+	EXPECT_EQ(alphaPerson.getLin(), 0);
+	EXPECT_EQ(alphaPerson.getAng(), 0);
 	EXPECT_FALSE(alphaPerson.getDesireLocation());
-}
+	EXPECT_EQ(alphaPerson.getMinDistance(), 30.0);
+	EXPECT_EQ(alphaPerson.getObstacleAngle(), 270);
+};
 
 /*
- * Test for Entity moveForward() method when Robot is NOT near its destination position.
- * Velocity of Robot should be set to value given as the Robot should be moving towards its 
- * horizontal or vertical destination.
- * WILL NOT WORK UNTIL ROBOT PUBLISHERS ARE INITIALIZED IN CONSTRUCTORS.*/
-TEST(AlphaPerson, moveForwardWhenNotAtDestination) {
-	AlphaPerson alphaPerson;
-	ros::NodeHandle n;
-	alphaPerson.robotNode_stage_pub=n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
-	alphaPerson.setPose(10, 10, 5);
-	alphaPerson.moveForward(15, 1, "x");
-	EXPECT_EQ(alphaPerson.getLin(), 1);
+ * Test for AlphaPerson's setState() method using a State argument specific to AlphaPerson
+ */
+TEST(AlphaPerson, setStateOfAlphaPerson) {
+	AlphaPerson alphaPerson = AlphaPerson(10, 20);
+    alphaPerson.setState(AlphaPerson::TRIMMING);
+    EXPECT_EQ(alphaPerson.getState(), AlphaPerson::TRIMMING);
 }
 
 int main(int argc, char**argv) {
-	ros::init(argc,argv,"testAlphaPerson");
+	ros::init(argc, argv, "testAlphaPerson");
 	testing::InitGoogleTest(&argc, argv);
 	return RUN_ALL_TESTS();
 }

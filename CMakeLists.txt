@@ -45,10 +45,15 @@ find_package(catkin REQUIRED COMPONENTS
 
 ## Generate messages in the 'msg' folder
 add_message_files(
-	FILES
-	RobotState.msg
-	robot_status.msg
-	carrier_status.msg
+  FILES
+  RobotState.msg
+  robot_status.msg
+  carrier_status.msg
+  animal_status.msg
+  human_status.msg
+  blindperson_status.msg
+  weed_status.msg
+  gardenworker_status.msg
 )
 
 ## Generate services in the 'srv' folder
@@ -164,18 +169,39 @@ catkin_package(
 
 # Libraries
 include_directories(include)
-add_library(Movement src/Movement.cpp)
-add_library(Entity src/Entity.cpp)
-add_library(Robot src/Robot.cpp)
-target_link_libraries(Entity Movement ${catkin_LIBRARIES})
-target_link_libraries(Robot Entity ${catkin_LIBRARIES})
 
-add_executable(Animal src/Animal.cpp)
-target_link_libraries(Animal Entity ${catkin_LIBRARIES})
-add_dependencies(Animal se306project_generate_messages_cpp)
+#Add executable
+add_executable(TallWeed src/TallWeed.cpp)
+target_link_libraries(TallWeed Entity ${catkin_LIBRARIES})
+add_dependencies(TallWeed se306project_generate_messages_cpp)
 
-add_library(Person src/Person.cpp)
-target_link_libraries(Person Entity ${catkin_LIBRARIES})
+add_executable(Tractor src/Tractor.cpp)
+target_link_libraries(Tractor Entity ${catkin_LIBRARIES})
+add_dependencies(Tractor se306project_generate_messages_cpp)
+
+add_executable(GardenWorker src/GardenWorker.cpp)
+target_link_libraries(GardenWorker Person Entity ${catkin_LIBRARIES})
+add_dependencies(GardenWorker se306project_generate_message_cpp)
+
+add_executable(BlindPerson src/BlindPerson.cpp)
+target_link_libraries(BlindPerson Person Entity ${catkin_LIBRARIES})
+add_dependencies(BlindPerson se306project_generate_message_cpp)
+
+add_executable(AlphaDog src/AlphaDog.cpp)
+target_link_libraries(AlphaDog Animal Entity ${catkin_LIBRARIES})
+add_dependencies(AlphaDog  se306project_generate_messages_cpp)
+
+add_executable(Cat src/Cat.cpp)
+target_link_libraries(Cat Animal Entity ${catkin_LIBRARIES})
+add_dependencies(Cat  se306project_generate_messages_cpp)
+
+add_executable(EntityMock src/EntityMock.cpp)
+target_link_libraries(EntityMock Entity ${catkin_LIBRARIES})
+add_dependencies(EntityMock se306project_generate_messages_cpp)
+
+add_executable(Neighbour src/Neighbour.cpp)
+target_link_libraries(Neighbour Person Entity ${catkin_LIBRARIES})
+add_dependencies(Neighbour se306project_generate_messages_cpp)
 
 add_executable(AlphaPerson src/AlphaPerson.cpp)
 target_link_libraries(AlphaPerson Person Entity ${catkin_LIBRARIES})
@@ -189,12 +215,74 @@ add_executable(CarrierRobot src/CarrierRobot.cpp)
 target_link_libraries(CarrierRobot Robot Entity ${catkin_LIBRARIES})
 add_dependencies(CarrierRobot se306project_generate_messages_cpp)
 
-#catkin_add_gtest(${PROJECT_NAME}-test test/testRobot.cpp src/PickerRobot.cpp)
- #if(TARGET ${PROJECT_NAME}-test)
-  # target_link_libraries(Entity Robot ${catkin_LIBRARIES})
-# endif()
+add_executable(Beacon src/Beacon.cpp)
+target_link_libraries(Beacon Entity ${catkin_LIBRARIES})
+add_dependencies(Beacon se306project_generate_messages_cpp)
+
+#add libraries
+add_library(Movement src/Movement.cpp)
+add_library(Entity src/Entity.cpp)
+add_library(Robot src/Robot.cpp)
+add_library(Animal src/Animal.cpp)
+add_library(Person src/Person.cpp)
+add_library(CatLib src/Cat.cpp)
+add_library(EntityMockLib src/EntityMock.cpp)
+add_library(AlphaDogLib src/AlphaDog.cpp)
+add_library(NeighbourLib src/Neighbour.cpp)
+add_library(AlphaPersonLib src/AlphaPerson.cpp)
+add_library(PickerRobotLib src/PickerRobot.cpp)
+add_library(CarrierRobotLib src/CarrierRobot.cpp)
+add_library(BeaconLib src/Beacon.cpp)
+add_library(GardenWorkerLib src/GardenWorker.cpp)
+
+#target libraries
+target_link_libraries(Entity Movement ${catkin_LIBRARIES})
+target_link_libraries(Robot Entity ${catkin_LIBRARIES})
+target_link_libraries(Animal Entity ${catkin_LIBRARIES})
+target_link_libraries(Person Entity ${catkin_LIBRARIES})
+target_link_libraries(AlphaDogLib Animal Entity ${catkin_LIBRARIES})
+target_link_libraries(CatLib Animal Entity ${catkin_LIBRARIES})
+target_link_libraries(EntityMockLib Entity ${catkin_LIBRARIES})
+target_link_libraries(NeighbourLib Person Entity ${catkin_LIBRARIES})
+target_link_libraries(AlphaPersonLib Person Entity ${catkin_LIBRARIES})
+target_link_libraries(PickerRobotLib Robot Entity ${catkin_LIBRARIES})
+target_link_libraries(CarrierRobotLib Robot Entity ${catkin_LIBRARIES})
+target_link_libraries(BeaconLib Entity ${catkin_LIBRARIES})
+target_link_libraries(GardenWorkerLib Person Entity ${catkin_LIBRARIES})
 
 if (CATKIN_ENABLE_TESTING)
-    catkin_add_gtest(testRobot test/testRobot.cpp)
-    catkin_add_gtest(testAlphaPerson test/testAlphaPerson.cpp)
+    #integration test(everything include testing multiple nodes with stage running)
+    find_package(catkin REQUIRED COMPONENTS rostest)
+    
+    add_rostest_gtest(testAlphaPerson test/rostest/testAlphaPerson.test test/testAlphaPerson.cpp)
+    target_link_libraries(testAlphaPerson AlphaPersonLib ${catkin_LIBRARIES})
+    
+    add_rostest_gtest(testCarrierRobot test/rostest/testCarrierRobot.test test/testCarrierRobot.cpp)
+    target_link_libraries(testCarrierRobot CarrierRobotLib ${catkin_LIBRARIES})
+    
+    add_rostest_gtest(testPickerRobot test/rostest/testPickerRobot.test test/testPickerRobot.cpp)
+    target_link_libraries(testPickerRobot PickerRobotLib ${catkin_LIBRARIES})
+    
+    add_rostest_gtest(testCat test/rostest/testCat.test test/testCat.cpp)
+    target_link_libraries(testCat CatLib ${catkin_LIBRARIES})
+
+    add_rostest_gtest(testAlphaDog test/rostest/testAlphaDog.test test/testAlphaDog.cpp)
+    target_link_libraries(testAlphaDog AlphaDogLib ${catkin_LIBRARIES})
+    
+    add_rostest_gtest(testEntityMock test/rostest/testEntityMock.test test/testEntityMock.cpp)
+    target_link_libraries(testEntityMock EntityMockLib ${catkin_LIBRARIES})
+
+    add_rostest_gtest(testBeacon test/rostest/testBeacon.test test/testBeacon.cpp)
+    target_link_libraries(testBeacon BeaconLib ${catkin_LIBRARIES})
+
+    add_rostest_gtest(testNeighbour test/rostest/testNeighbour.test test/testNeighbour.cpp)
+    target_link_libraries(testNeighbour NeighbourLib ${catkin_LIBRARIES})
+    
+    add_rostest_gtest(testGardenWorker test/rostest/testGardenWorker.test test/testGardenWorker.cpp)
+    target_link_libraries(testGardenWorker GardenWorkerLib ${catkin_LIBRARIES})
+    
+    # unit tests
+    catkin_add_gtest(testMovement test/testMovement.cpp)
+    target_link_libraries(testMovement Movement ${catkin_LIBRARIES})
+    
 endif()

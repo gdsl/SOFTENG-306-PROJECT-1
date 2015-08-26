@@ -1,3 +1,0 @@
-<launch>
-    <test test-name="testRobot" pkg="se306project" type="testRobot.cpp" />
-</launch>

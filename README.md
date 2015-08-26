@@ -1,6 +1,6 @@
 #Orchard Simulation of Kiwifruit Picking Robots
 
-Implementation of invidiual robotic nodes with varying behaviours and message passing between one another. Presented via a graphical simulation of nodes acting as robots. Written in C++, runs on Linux.
+Implementation of invidiual robotic nodes with varying behaviours and message passing between one another. Presented via a graphical simulation of nodes acting as robots. Written in C++, runs on Linux. More info in our [Wiki](https://github.com/gdsl/SOFTENG-306-PROJECT-1/wiki)
 
 Software Engineering Design 2 (SOFTENG 306)
   

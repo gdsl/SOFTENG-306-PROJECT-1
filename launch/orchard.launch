@@ -1,24 +1,34 @@
 <launch>
-	<node name="stage" pkg="stage_ros" type="stageros" args="$(find se306project)/world/orchard.world"/>
+	<node name="stage" pkg="stage_ros" type="stageros" args="$(find se306project)/world/test.world"/>
 
 	<group ns="robot_0">
 		<node pkg="se306project" name="pickernode" type="PickerRobot"/>
 	</group>
-
-	<group ns="robot_1">
-		<node pkg="se306project" name="pickernode" type="PickerRobot"/>
-	</group>
 	
-	<group ns="robot_2">
+	<group ns="robot_1">
 
 		<node pkg="se306project" name="carriernode" type="CarrierRobot"/>
 	</group>
 
-	<group ns="robot_3">
-		<node pkg="se306project" name="dognode" type="Animal"/>
+	<group ns="robot_2">
+		<node pkg="se306project" name="dognode" type="AlphaDog"/>
 	</group>
 
-    <group ns="robot_4">
+    <group ns="robot_3">
         <node pkg="se306project" name="alphaPersonnode" type="AlphaPerson"/>
     </group>
+
+    <group ns="robot_4">
+        <node pkg="se306project" name="beacon" type="Beacon" args="/beacon1/"/>
+    </group>
+
+    <group ns="robot_5">
+        <node pkg="se306project" name="beacon" type="Beacon" args="/beacon2/"/>
+    </group>
+
+	<group ns="robot_6">
+		<node pkg="se306project" name="catnode" type="Cat"/>
+	</group>
+
+
 </launch>

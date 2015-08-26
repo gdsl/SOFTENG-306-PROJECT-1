@@ -1,19 +1,23 @@
 #include "Robot.h"
 #include <nav_msgs/Odometry.h>
+#include "Constants.h" 
 
-Robot::Robot():Entity(0,0,0,0,0) {
-	// TODO Auto-generated constructor stub
+Robot::Robot():Entity(0,0,0,0,0,0) {
+
+}
+
+Robot::Robot(double x,double y,double theta,double linearVel, double angularVel) : Entity(x, y, theta, linearVel, angularVel,ROBOT_ANGLE_NOT_PROCESS) {
 
 }
 
 Robot::~Robot() {
-	// TODO Auto-generated destructor stub
+
 }
 
-void Robot::StageLaser_callback(sensor_msgs::LaserScan msg)
-{
-	//This is the callback function to process laser scan messages
-	//you can access the range data from msg.ranges[i]. i = sample number
-	
+Robot::State Robot::getState() {
+	return state;
+}
 
+void Robot::setState(Robot::State state) {
+	this->state = state;
 }

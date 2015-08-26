@@ -11,8 +11,9 @@
 class Animal : public Entity {
 
 public:
-    Animal();
-    virtual ~Animal();
+	Animal();
+	Animal(double x, double y);
+	virtual ~Animal();
 };
 
 #endif
