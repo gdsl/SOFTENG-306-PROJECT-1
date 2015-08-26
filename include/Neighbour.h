@@ -20,17 +20,14 @@ public:
 	// override stageodom callback
 	void stageOdom_callback(nav_msgs::Odometry msg);
 
-	// getter methods
-	int getTargetX();
-	int getTargetY();
+	
 	
 	void setOriginY(double yPos);
 	void setOriginX(double xPos);
 	double getOriginX();
 	double getOriginY();
 private:
-	int targetX;
-	int targetY;
+	
 	double originXPos;
 	double originYPos;
 };

@@ -265,7 +265,7 @@ void Generator::loadPickerRobots()
 
 void Generator::loadCarrierRobots()
 {
-    int y = 24;
+    int y = 23;
 	// Generate carrier robot comment
 	outfile << "# Carrier robot" << endl;
 	for (int i = 0; i < model.carrierRobots; i++) {
@@ -277,7 +277,7 @@ void Generator::loadCarrierRobots()
         carrierRobotsPositions.push(x);
         carrierRobotsPositions.push(y);
 		outfile << "CarrierRobot( pose [ " << x << " " << y << " 0 " << theta << " ] name \"Carrier" << i+1 << "\" color \"" << colour << "\")" << endl;
-		y -= 3;
+		y -= 3.5;
 	}
 
 	outfile << endl;

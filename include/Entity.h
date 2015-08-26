@@ -106,8 +106,8 @@ class Entity
 		std::string status;
 
 		//movement queue
-        	std::vector<Movement> movementQueue;
-        	std::vector<Movement> avoidanceQueue; //vector for lsit of avoidance movements
+        std::vector<Movement> movementQueue;
+        std::vector<Movement> avoidanceQueue; //vector for lsit of avoidance movements
 		Direction directionFacing=NORTH;//initialse to north originally
 
 		void moveForward(double distance,double vel, std::string direction, int queueNum);

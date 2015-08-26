@@ -53,6 +53,7 @@ add_message_files(
 	human_status.msg
 	blindperson_status.msg
 	weed_status.msg
+	gardenworker_status.msg
 )
 
 ## Generate services in the 'srv' folder
@@ -168,72 +169,8 @@ catkin_package(
 
 # Libraries
 include_directories(include)
-add_library(Movement src/Movement.cpp)
-add_library(Entity src/Entity.cpp)
-add_library(Robot src/Robot.cpp)
-target_link_libraries(Entity Movement ${catkin_LIBRARIES})
-target_link_libraries(Robot Entity ${catkin_LIBRARIES})
 
-add_library(Animal src/Animal.cpp)
-target_link_libraries(Animal Entity ${catkin_LIBRARIES})
-
-add_library(Person src/Person.cpp)
-target_link_libraries(Person Entity ${catkin_LIBRARIES})
-
-add_executable(AlphaDog src/AlphaDog.cpp)
-target_link_libraries(AlphaDog Animal Entity ${catkin_LIBRARIES})
-add_dependencies(AlphaDog  se306project_generate_messages_cpp)
-
-add_library(AlphaDogLib src/AlphaDog.cpp)
-target_link_libraries(AlphaDogLib Animal Entity ${catkin_LIBRARIES})
-
-add_executable(Cat src/Cat.cpp)
-target_link_libraries(Cat Animal Entity ${catkin_LIBRARIES})
-add_dependencies(Cat  se306project_generate_messages_cpp)
-
-add_library(CatLib src/Cat.cpp)
-target_link_libraries(Cat Animal Entity ${catkin_LIBRARIES})
-
-add_executable(EntityMock src/EntityMock.cpp)
-target_link_libraries(EntityMock Entity ${catkin_LIBRARIES})
-add_dependencies(EntityMock se306project_generate_messages_cpp)
-
-add_library(EntityMockLib src/EntityMock.cpp)
-target_link_libraries(EntityMockLib Entity ${catkin_LIBRARIES})
-
-add_executable(Neighbour src/Neighbour.cpp)
-target_link_libraries(Neighbour Person Entity ${catkin_LIBRARIES})
-add_dependencies(Neighbour se306project_generate_messages_cpp)
-
-
-add_library(NeighbourLib src/Neighbour.cpp)
-target_link_libraries(Neighbour Person Entity ${catkin_LIBRARIES})
-
-add_executable(AlphaPerson src/AlphaPerson.cpp)
-target_link_libraries(AlphaPerson Person Entity ${catkin_LIBRARIES})
-add_dependencies(AlphaPerson se306project_generate_messages_cpp)
-
-add_library(AlphaPersonLib src/AlphaPerson.cpp)
-target_link_libraries(AlphaPersonLib Person Entity ${catkin_LIBRARIES})
-
-add_executable(PickerRobot src/PickerRobot.cpp)
-target_link_libraries(PickerRobot Robot Entity ${catkin_LIBRARIES})
-add_dependencies(PickerRobot se306project_generate_messages_cpp)
-
-add_library(PickerRobotLib src/PickerRobot.cpp)
-target_link_libraries(PickerRobotLib Robot Entity ${catkin_LIBRARIES})
-
-add_executable(CarrierRobot src/CarrierRobot.cpp)
-target_link_libraries(CarrierRobot Robot Entity ${catkin_LIBRARIES})
-add_dependencies(CarrierRobot se306project_generate_messages_cpp)
-
-add_library(CarrierRobotLib src/CarrierRobot.cpp)
-target_link_libraries(CarrierRobotLib Robot Entity ${catkin_LIBRARIES})
-
-add_executable(Beacon src/Beacon.cpp)
-target_link_libraries(Beacon Entity ${catkin_LIBRARIES})
-add_dependencies(Beacon se306project_generate_messages_cpp)
-
+#Add executable
 add_executable(TallWeed src/TallWeed.cpp)
 target_link_libraries(TallWeed Entity ${catkin_LIBRARIES})
 add_dependencies(TallWeed se306project_generate_messages_cpp)
@@ -249,6 +186,69 @@ add_dependencies(GardenWorker se306project_generate_message_cpp)
 add_executable(BlindPerson src/BlindPerson.cpp)
 target_link_libraries(BlindPerson Person Entity ${catkin_LIBRARIES})
 add_dependencies(BlindPerson se306project_generate_message_cpp)
+
+add_executable(AlphaDog src/AlphaDog.cpp)
+target_link_libraries(AlphaDog Animal Entity ${catkin_LIBRARIES})
+add_dependencies(AlphaDog  se306project_generate_messages_cpp)
+
+add_executable(Cat src/Cat.cpp)
+target_link_libraries(Cat Animal Entity ${catkin_LIBRARIES})
+add_dependencies(Cat  se306project_generate_messages_cpp)
+
+add_executable(EntityMock src/EntityMock.cpp)
+target_link_libraries(EntityMock Entity ${catkin_LIBRARIES})
+add_dependencies(EntityMock se306project_generate_messages_cpp)
+
+add_executable(Neighbour src/Neighbour.cpp)
+target_link_libraries(Neighbour Person Entity ${catkin_LIBRARIES})
+add_dependencies(Neighbour se306project_generate_messages_cpp)
+
+add_executable(AlphaPerson src/AlphaPerson.cpp)
+target_link_libraries(AlphaPerson Person Entity ${catkin_LIBRARIES})
+add_dependencies(AlphaPerson se306project_generate_messages_cpp)
+
+add_executable(PickerRobot src/PickerRobot.cpp)
+target_link_libraries(PickerRobot Robot Entity ${catkin_LIBRARIES})
+add_dependencies(PickerRobot se306project_generate_messages_cpp)
+
+add_executable(CarrierRobot src/CarrierRobot.cpp)
+target_link_libraries(CarrierRobot Robot Entity ${catkin_LIBRARIES})
+add_dependencies(CarrierRobot se306project_generate_messages_cpp)
+
+add_executable(Beacon src/Beacon.cpp)
+target_link_libraries(Beacon Entity ${catkin_LIBRARIES})
+add_dependencies(Beacon se306project_generate_messages_cpp)
+
+#add libraries
+add_library(Movement src/Movement.cpp)
+add_library(Entity src/Entity.cpp)
+add_library(Robot src/Robot.cpp)
+add_library(Animal src/Animal.cpp)
+add_library(Person src/Person.cpp)
+add_library(CatLib src/Cat.cpp)
+add_library(EntityMockLib src/EntityMock.cpp)
+add_library(AlphaDogLib src/AlphaDog.cpp)
+add_library(NeighbourLib src/Neighbour.cpp)
+add_library(AlphaPersonLib src/AlphaPerson.cpp)
+add_library(PickerRobotLib src/PickerRobot.cpp)
+add_library(CarrierRobotLib src/CarrierRobot.cpp)
+add_library(BeaconLib src/Beacon.cpp)
+
+#target libraries
+target_link_libraries(Entity Movement ${catkin_LIBRARIES})
+target_link_libraries(Robot Entity ${catkin_LIBRARIES})
+target_link_libraries(Animal Entity ${catkin_LIBRARIES})
+target_link_libraries(Person Entity ${catkin_LIBRARIES})
+target_link_libraries(AlphaDogLib Animal Entity ${catkin_LIBRARIES})
+target_link_libraries(Cat Animal Entity ${catkin_LIBRARIES})
+target_link_libraries(EntityMockLib Entity ${catkin_LIBRARIES})
+target_link_libraries(Neighbour Person Entity ${catkin_LIBRARIES})
+target_link_libraries(AlphaPersonLib Person Entity ${catkin_LIBRARIES})
+target_link_libraries(PickerRobotLib Robot Entity ${catkin_LIBRARIES})
+target_link_libraries(CarrierRobotLib Robot Entity ${catkin_LIBRARIES})
+target_link_libraries(BeaconLib Entity ${catkin_LIBRARIES})
+
+
 
 if (CATKIN_ENABLE_TESTING)
 	#integration test(everything include testing multiple nodes with stage running)
@@ -268,6 +268,12 @@ if (CATKIN_ENABLE_TESTING)
     
     add_rostest_gtest(testEntityMock test/rostest/testEntityMock.test test/testEntityMock.cpp)
     target_link_libraries(testEntityMock EntityMockLib ${catkin_LIBRARIES})
+
+    add_rostest_gtest(testBeacon test/rostest/testBeacon.test test/testBeacon.cpp)
+    target_link_libraries(testBeacon BeaconLib ${catkin_LIBRARIES})
+
+    #add_rostest_gtest(testNeighbour test/rostest/testNeighbour.test test/testNeighbour.cpp)
+    #target_link_libraries(testNeighbour NeighbourLib ${catkin_LIBRARIES})
     
     # unit tests
 	catkin_add_gtest(testMovement test/testMovement.cpp)

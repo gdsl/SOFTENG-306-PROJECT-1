@@ -106,19 +106,52 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 		if(carrierRobot.getState()!=Robot::IDLE){//check if robot is idle or not
 			carrierRobot.setObstacleStatus("Obstacle nearby");
 			if(carrierRobot.getAvoidanceCase()==Entity::WEED){// if its weed stop
+
+				if (carrierRobot.getObstacleStatus().compare("Weed! Help!") != 0) {
+					se306project::weed_status weedmsg;
+					Entity::Direction direction = carrierRobot.getDirectionFacing();
+
+					// this is distance of laser sensor to robot center. got from model file. add distance to tallweed middle
+					double laser_sensor_distance = 0.9 + 0.15;
+
+					if (direction == Entity::NORTH) {
+						weedmsg.pos_x = carrierRobot.getX();
+						weedmsg.pos_y = carrierRobot.getY() + carrierRobot.getMinDistance() + laser_sensor_distance;
+					} else if (direction == Entity::EAST) {
+						weedmsg.pos_x = carrierRobot.getX() + carrierRobot.getMinDistance() + laser_sensor_distance;
+						weedmsg.pos_y = carrierRobot.getY();
+					} else if (direction == Entity::SOUTH) {
+						weedmsg.pos_x = carrierRobot.getX();
+						weedmsg.pos_y = carrierRobot.getY() - carrierRobot.getMinDistance() - laser_sensor_distance;
+					} else {
+						weedmsg.pos_x = carrierRobot.getX() - carrierRobot.getMinDistance() - laser_sensor_distance;
+						weedmsg.pos_y = carrierRobot.getY();
+					}
+
+					carrierRobot.weed_obstacle_pub.publish(weedmsg);
+				}
+
 				carrierRobot.addMovementFront("forward_x",0,0,1);//add empty movement to front of avoidance to stop
 				carrierRobot.setObstacleStatus("Weed! Help!");
+				//send message of weed
+				se306project::weed_status weed_msg;
+				double angle=carrierRobot.getTheta()+(carrierRobot.getObstacleAngle()/180)*M_PI;
+				weed_msg.pos_theta=angle; //add angle of weed from carrier to message to broadcast
+				weed_msg.pos_x=carrierRobot.getX()+cos(angle)*(carrierRobot.getMinDistance()+0.9);
+				weed_msg.pos_y=carrierRobot.getY()+sin(angle)*(carrierRobot.getMinDistance()+0.9);
+				carrierRobot.weed_obstacle_pub.publish(weed_msg);
 			}else if(carrierRobot.getAvoidanceCase()==Entity::LIVING_OBJ){//if its human or animal stop
 				carrierRobot.addMovementFront("forward_x",0,0,1);//add empty movement to front of avoidance to stop
 				carrierRobot.setObstacleStatus("Living Object");
 			}else if(carrierRobot.getAvoidanceCase()==Entity::HALT){//if its halt stop
 				carrierRobot.addMovementFront("forward_x",0,0,1);//add empty movement to front of avoidance to stop
-				carrierRobot.setObstacleStatus("Obstacle nearby. Halt");
+			}else if(carrierRobot.getState()==carrierRobot.QUEUE){//if its carrier
+				carrierRobot.addMovementFront("forward_x",0,0,1);//this is at front of queue
+				carrierRobot.setObstacleStatus("Queue");
 			}else if(carrierRobot.getAvoidanceCase()==Entity::STATIONARY&& carrierRobot.getCriticalIntensity()>1){//if its stationary robot
+				carrierRobot.setObstacleStatus("Stationary object");
 				//if the carrier robot is infront and carrier is queue then halt
-				if(carrierRobot.getState()==carrierRobot.QUEUE&& carrierRobot.getCriticalIntensity()==3){//if its carrier
-					carrierRobot.addMovementFront("forward_x",0,0,1);//this is at front of queue
-				}else if(carrierRobot.getCriticalIntensity()!=2|| carrierRobot.getMinDistance()<0.4){//if not picker robot or if its too close
+				if(carrierRobot.getCriticalIntensity()!=2&& carrierRobot.getMinDistance()<0.4&&carrierRobot.getCriticalIntensity()!=3){//if not picker/carrier robot infront or if its too close
 					if(carrierRobot.getDirectionFacing()== carrierRobot.NORTH){
 						carrierRobot.addMovementFront("rotation",M_PI/2,1,1);
 						carrierRobot.addMovementFront("forward_x",3,1,1);
@@ -160,14 +193,18 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 						carrierRobot.addMovementFront("forward_x",0,0,1);//this is at front of front
 						//carrierRobot.move();
 					}
+				}else{
+					carrierRobot.addMovementFront("forward_x",0,0,1);
 				}
 			}else if(carrierRobot.getAvoidanceCase()==Entity::PERPENDICULAR){
-				if(carrierRobot.getDirectionFacing()== carrierRobot.NORTH||carrierRobot.getDirectionFacing()== carrierRobot.SOUTH){
+				carrierRobot.setObstacleStatus("perpendicular object");
+				if(carrierRobot.getDirectionFacing()== carrierRobot.NORTH||carrierRobot.getDirectionFacing()== carrierRobot.SOUTH||carrierRobot.getCriticalIntensity()==3|| carrierRobot.getCriticalIntensity()==2){
 					//if robot moving in the y direction give way
 					carrierRobot.addMovementFront("forward_x",0,0,1);
 				}
 			}else if(carrierRobot.getAvoidanceCase()==Entity::FACE_ON){
-				if(carrierRobot.getAvoidanceQueueSize()<=0){
+				carrierRobot.setObstacleStatus("Face On");
+				if(carrierRobot.getAvoidanceQueueSize()<=0&&carrierRobot.getState()!=carrierRobot.QUEUE&&carrierRobot.getCriticalIntensity()!=3&& carrierRobot.getCriticalIntensity()!=2){
 					if(carrierRobot.getDirectionFacing()== carrierRobot.NORTH&&carrierRobot.getObstacleStatus().compare("Obstacle nearby")!=0){
 						carrierRobot.addMovementFront("rotation",M_PI/2,1,1);
 						carrierRobot.addMovementFront("forward_x",3,1,1);
@@ -194,13 +231,17 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 					carrierRobot.addMovementFront("forward_x",0,0,1);
 					//carrierRobot.move();
 				}
+			}else{
+				//halt movement if case not detected
+				carrierRobot.addMovementFront("forward_x",0,0,1);
+
 			}
-			//get carrier to move
-			carrierRobot.addMovementFront("forward_x",0,0,1);//this is at front of front
-			carrierRobot.move();
 		}
 	} else {
 		carrierRobot.setObstacleStatus("No obstacles");
+	}
+	if(carrierRobot.getAvoidanceQueueSize()>0){//only run queue if there is avoidance to be ran
+		carrierRobot.move();
 	}
 }
 
@@ -232,7 +273,6 @@ void recievePickerRobotStatus(const se306project::robot_status::ConstPtr& msg)
 	}else if(carrierRobot.getStatus().compare("Idle")==0){
 		//when the carrier robot is idle and the picker robot is full the carrier robot move to it.
 		if ((msg->status).compare("Full") == 0){
-
 			//check the list of points that carrier robot seen
 			bool seen = false;
 			std::pair<double,double> currentPoint;
@@ -356,7 +396,9 @@ void CarrierRobot::stateLogic(){
 			carrierRobot.setState(Robot::IDLE);
 		}
 	}
-	carrierRobot.move();
+	if (carrierRobot.getAvoidanceCase()==Entity::NONE||carrierRobot.getAvoidanceCase()==Entity::TREE){
+		carrierRobot.move();
+	}
 
 }
 

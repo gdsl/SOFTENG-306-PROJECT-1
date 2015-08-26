@@ -12,7 +12,10 @@
  * Test default alphaDog constructor
  */
 TEST(AlphaDog, constructAlphaDog) {
-	AlphaDog alphaDog;
+	AlphaDog alphaDog(0,0);
+    EXPECT_EQ(alphaDog.isAntiClockwise(),false);
+    alphaDog.switchDirection();
+    EXPECT_EQ(alphaDog.isAntiClockwise(),true);
 	EXPECT_EQ(alphaDog.getX(), 0);
 	EXPECT_EQ(alphaDog.getY(), 0);
 	EXPECT_EQ(alphaDog.getTheta(), 0);
