@@ -178,6 +178,7 @@ void Generator::loadBackdrop()
     int colourRand = 0;
     string colour = "";
     
+    //Create trees of the left perimeter wall.
     for(int i = 0; i < 27; i++) {
         colourRand = rand() % 6;
         colour = backdropColourArray[colourRand];
@@ -190,6 +191,7 @@ void Generator::loadBackdrop()
         y -= 0.9;
     }
     
+    //Create trees for the bottom perimeter wall.
     for(int i = 0; i < 47; i++) {
         colourRand = rand() % 6;
         colour = backdropColourArray[colourRand];
@@ -202,6 +204,7 @@ void Generator::loadBackdrop()
         x += 0.9;
     }
     
+    //Create trees for the right perimeter wall.
     for(int i = 0; i < 27; i++) {
         colourRand = rand() % 6;
         colour = backdropColourArray[colourRand];
@@ -214,6 +217,7 @@ void Generator::loadBackdrop()
         y += 0.9;
     }
     
+    //Create trees for the top perimeter wall.
     for(int i = 0; i < 47; i++) {
         colourRand = rand() % 6;
         colour = backdropColourArray[colourRand];
@@ -248,7 +252,9 @@ void Generator::loadPickerRobots()
 		//int y = rand() % 10 + 11;
 		float theta = 90; //0
         
+        //Get the colour from the colour array based on the current colourCount.
         string colour = colourArray[colourCount];
+        //Increment the colour count for every robot added.
         colourCount += 1;
         pickerRobotsPositions.push(x);
         pickerRobotsPositions.push(y);
@@ -284,27 +290,38 @@ void Generator::loadPeople()
 {
 	outfile << "# Generate people" << endl;
 	outfile << "# Generate workers" << endl;
-        
+    
+    //Get total orchard row width.
     float totalRowWidth = model.rowWidth * 8;
+    //The offset so that the point is half the distance between two trees in the y direction.
     float yOffset = model.rowWidth / 2;
     
+    //Total number of columns based off pole spacing.
     int columnCount = 70 / model.poleTrunkSpacing;
     int halfColumnCount = columnCount / 2;
+    //The offset so that the point is half the distance between two trees in the x direction.
     float xOffset = model.poleTrunkSpacing / 2;
     
+    //The y coordinate for the end of orchard in the y direction.
     int rowEnd = 20 - totalRowWidth;
     int randNumY = rowEnd + 20;
     
     for(int i = 0; i < model.workers; i++) {
+        //Random numbers generated to be inside the area of the kiwi-fruit farming area.
         int x = rand() % 76 - 36;
         int y = rand() % randNumY - rowEnd;
         //int x = -30 + (rand() % (40 - -30 +1));
         //int y = rowEnd + (rand() % (20 - rowEnd + 1));
     
        // if( (x > -30) && (x < 40) && (y < 20) && (y > rowEnd)) {
+        
+        //Get a random number for the number of spaces(slots) between the trees in the x direction.
+        //Based on that number use the offset to get the x spawn coordinate to be in the middle of the two trees.
         int xMult = (((rand() % columnCount + 1) * 2) - 1);
         float xPos = -30 + (xMult * xOffset);
         
+        //Get a random number for the number of spaces(slots) between the trees in the y direction.
+        //Based on that number use the offset to get the y spawn coordinate to be in the middle of the two trees.
         int yMult = (((rand() % 8 + 1) * 2) - 1);
         float yPos = 20.4 - (yMult * yOffset);
 
@@ -449,10 +466,48 @@ void Generator::loadAnimals()
 
 void Generator::loadTallWeeds()
 {
-//hardcoded to 10 for now - also is 10 in mainwindow.h file
-    model.weed = 10;//rand() % 8 + 2; //between 2 and 10
+    //Get total orchard row width.
+    float totalRowWidth = model.rowWidth * 8;
+    //The offset so that the point is half the distance between two trees in the y direction.
+    float yOffset = model.rowWidth / 2;
     
-    outfile << "#Generate tall weeds" << endl;
+    //Total number of columns based off pole spacing.
+    int columnCount = 70 / model.poleTrunkSpacing;
+    int halfColumnCount = columnCount / 2;
+    //The offset so that the point is half the distance between two trees in the x direction.
+    float xOffset = model.poleTrunkSpacing / 2;
+    
+    //The y coordinate for the end of orchard in the y direction.
+    int rowEnd = 20 - totalRowWidth;
+    int randNumY = rowEnd + 20;
+    
+     model.weed = 10;//rand() % 8 + 2; //between 2 and 10
+    
+    for(int i = 0; i < model.weed; i++) {
+        //Random numbers generated to be inside the area of the kiwi-fruit farming area.
+        int x = rand() % 76 - 30;
+        int y = rand() % randNumY - rowEnd;
+        
+        //Get a random number for the number of spaces(slots) between the trees in the x direction.
+        //Based on that number use the offset to get the x spawn coordinate to be in the middle of the two trees.
+        int xMult = (((rand() % columnCount + 1) * 2) - 1);
+        float xPos = -30 + (xMult * xOffset);
+        
+        //Get a random number for the number of spaces(slots) between the trees in the y direction.
+        //Based on that number use the offset to get the y spawn coordinate to be in the middle of the two trees.
+        int yMult = (((rand() % 8 + 1) * 2) - 1);
+        float yPos = 20.4 - (yMult * yOffset);
+        
+        weedPositions.push(x);
+        weedPositions.push(y);
+        
+        outfile << "tallWeed( pose [ " << xPos << " " << yPos << " 0.000 0.000 ] name \"TallWeed" << i+1 << "\" color \"ForestGreen\")" << endl;
+    }
+    
+    
+//hardcoded to 10 for now - also is 10 in mainwindow.h file
+    
+ /*   outfile << "#Generate tall weeds" << endl;
     for(int i = 0; i < model.weed; i++){
         int x = rand() % 76 - 30;
         int y = rand() % 52 - 26;
@@ -460,7 +515,7 @@ void Generator::loadTallWeeds()
         weedPositions.push(y);
         
         outfile << "tallWeed( pose [ " << x << " " << y << " 0.000 0.000 ] name \"TallWeed" << i+1 << "\" color \"ForestGreen\")" << endl;
-    }
+    } */
 }
 
 

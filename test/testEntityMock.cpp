@@ -103,12 +103,35 @@ TEST(EntityMock, flushMovementQueueOfEntityMock) {
 }
 
 /*
+ * Test for EntityMock isRotating() method.
+ * Checks to see that true is returned by the isRotating() method when an 
+ * Entity has a rotate movement at the top of its movement queue.
+ */
+TEST(EntityMock, isRotatingMovementEntityMock) {
+	EntityMock entityMock = EntityMock();
+	entityMock.faceNorth(2);
+	EXPECT_TRUE(entityMock.isRotating());
+}
+
+/*
+ * Test for EntityMock isRotating() method.
+ * Checks to see that true is returned by the isRotating() method when an 
+ * Entity has a rotate movement at the top of its avoidance queue.
+ */
+TEST(EntityMock, isRotatingAvoidanceEntityMock) {
+	EntityMock entityMock = EntityMock();
+	entityMock.addMovementFront("rotation",M_PI/2, 1,1);
+	EXPECT_TRUE(entityMock.isRotating());
+}
+
+/*
  * Test for EntityMock determineStatus() method when Entity is moving.
  * Hence value returned should be "Walking".
  */ 
 // FAILS FOR REASONS UNKNOWN - LOOKS ABSOLUTELY FINE    
 //TEST(EntityMock, determineStatusWalkingEntityMock) {
 //	EntityMock entityMock = EntityMock();
+
 //	entityMock.addMovement("forward_x", 5, 1);
 //    entityMock.move();
 //    //this should make entityMock.status = "Walking"
