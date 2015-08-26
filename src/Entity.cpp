@@ -296,9 +296,9 @@ void Entity::avoidanceComplete() {
  */
 bool Entity::isRotating(){
 	bool isRotating=false;
-	if(avoidanceQueue.size()>0&&avoidanceQueue.front().getType().compare("Rotation")==0){
+	if(avoidanceQueue.size()>0&&avoidanceQueue.front().getType().compare("rotation")==0){
 			isRotating=true;
-	}else if(movementQueue.size()>0&&movementQueue.front().getType().compare("Rotation")==0){
+	}else if(movementQueue.size()>0&&movementQueue.front().getType().compare("rotation")==0){
 			isRotating=true;
 	}
 	return isRotating;
