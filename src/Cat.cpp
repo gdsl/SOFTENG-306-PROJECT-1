@@ -44,8 +44,8 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 	if (cat.getAvoidanceCase()!=Entity::NONE&&!cat.isRotating()) {//check if there is need to avoid obstacle
 		if(cat.getCriticalIntensity()!=2&&cat.getAvoidanceQueueSize()==0&&cat.getObstacleStatus().compare("Obstacle nearby")!=0){
 			cat.setObstacleStatus("Obstacle nearby");
-			cat.avoidObstacle(3,0.5);//call avoid obstacle method in entity to avoid obstacle
-		}else if (cat.getMinDistance()<0.7&&cat.getCriticalIntensity()>1&&cat.getAvoidanceQueueSize()>0){
+			cat.avoidObstacle(2.5,0.5);//call avoid obstacle method in entity to avoid obstacle
+		}else if (cat.getMinDistance()<0.7&&cat.getCriticalIntensity()>=1&&cat.getAvoidanceQueueSize()>0){
 			cat.addMovementFront("forward_x",0,0,1);//halt movement if already have obstacle
 		}
 		cat.move();

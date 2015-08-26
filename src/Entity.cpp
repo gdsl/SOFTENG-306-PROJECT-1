@@ -422,7 +422,7 @@ void Entity::addMovement(std::string type, double distance,double velocity) {
 		pos=distance;
 	}
 	//ROS_INFO("pos: %f", pos);
-	Movement m=Movement(type,pos,velocity);
+	Movement m=Movement(type,pos,std::abs(velocity));
 	movementQueue.push_back(m);
 }
 

@@ -16,7 +16,7 @@ public:
 	PickerRobot(double x,double y,double theta,double linearVel, double angularVel,std::string status,double pickrange);
 	PickerRobot(std::string status);
 	virtual ~PickerRobot();
-	void movement();
+	void movement(double velocity);
 	virtual void stateLogic(ros::NodeHandle n);
 	int getBinCapacity();
 	void setBinCapacity(int bin_capacity);

@@ -243,8 +243,8 @@ void GardenWorker::stageLaser_callback(const sensor_msgs::LaserScan msg) {
 	if (gardenWorker.getAvoidanceCase()!=Entity::NONE&&!gardenWorker.isRotating()) {//check if there is need to avoid obstacle
 		if(gardenWorker.getCriticalIntensity()!=9&&gardenWorker.getCriticalIntensity()!=2&&gardenWorker.getAvoidanceQueueSize()==0&&gardenWorker.getObstacleStatus().compare("Obstacle nearby")!=0){
 			gardenWorker.setObstacleStatus("Obstacle nearby");
-			gardenWorker.avoidObstacle(3,0.5);//call avoid obstacle method in entity to avoid obstacle
-		}else if (gardenWorker.getMinDistance()<0.7&&gardenWorker.getCriticalIntensity()>1&&gardenWorker.getAvoidanceQueueSize()>0){
+			gardenWorker.avoidObstacle(2.5,0.5);//call avoid obstacle method in entity to avoid obstacle
+		}else if (gardenWorker.getMinDistance()<0.7&&gardenWorker.getCriticalIntensity()>=1&&gardenWorker.getAvoidanceQueueSize()>0){
 			gardenWorker.addMovementFront("forward_x",0,0,1);//halt movement if already have obstacle
 		}
 	}else{
