@@ -25,6 +25,8 @@ GardenWorker::GardenWorker(double x, double y, double theta, double linearVeloci
 	setObstacleStatus("No obstacles");
 }
 
+GardenWorker gardenWorker;
+
 void GardenWorker::weedRemovalRequest(const se306project::weed_status msg) {
 	se306project::gardenworker_status pubmsg;
 	std::string currentStatus = getStatus();
@@ -237,7 +239,18 @@ void GardenWorker::stageLaser_callback(const sensor_msgs::LaserScan msg) {
 		flushMovementQueue();
 		next("Move");
 	}
-	move();
+
+	if (gardenWorker.getAvoidanceCase()!=Entity::NONE&&!gardenWorker.isRotating()) {//check if there is need to avoid obstacle
+		if(gardenWorker.getCriticalIntensity()!=9&&gardenWorker.getCriticalIntensity()!=2&&gardenWorker.getAvoidanceQueueSize()==0&&gardenWorker.getObstacleStatus().compare("Obstacle nearby")!=0){
+			gardenWorker.setObstacleStatus("Obstacle nearby");
+			gardenWorker.avoidObstacle(3,0.5);//call avoid obstacle method in entity to avoid obstacle
+		}else if (gardenWorker.getMinDistance()<0.7&&gardenWorker.getCriticalIntensity()>1&&gardenWorker.getAvoidanceQueueSize()>0){
+			gardenWorker.addMovementFront("forward_x",0,0,1);//halt movement if already have obstacle
+		}
+	}else{
+		gardenWorker.setObstacleStatus("No obstacles");
+	}
+	gardenWorker.move();
 }
 
 int GardenWorker::getTargetX() {
@@ -275,7 +288,6 @@ int main(int argc, char **argv) {
 	// argv[4] = gardenworker node end index
 	// argv[5] = my node index
 
-	GardenWorker gardenWorker;
 	gardenWorker.robotNode_stage_pub = n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
 	gardenWorker.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth", 1000, &GardenWorker::stageOdom_callback, &gardenWorker);
 	gardenWorker.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000, &GardenWorker::stageLaser_callback, &gardenWorker);
@@ -346,6 +358,7 @@ int main(int argc, char **argv) {
 		status_msg.pos_y = gardenWorker.getY();
 		status_msg.pos_theta = gardenWorker.getTheta();
 		status_msg.status = gardenWorker.getStatus();
+		status_msg.obstacle = gardenWorker.getObstacleStatus();
 		// Publish message
 		gardenWorker.gardenworker_status_pub.publish(status_msg);
 		loop_rate.sleep();

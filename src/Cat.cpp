@@ -45,7 +45,7 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 		if(cat.getCriticalIntensity()!=2&&cat.getAvoidanceQueueSize()==0&&cat.getObstacleStatus().compare("Obstacle nearby")!=0){
 			cat.setObstacleStatus("Obstacle nearby");
 			cat.avoidObstacle(3,0.5);//call avoid obstacle method in entity to avoid obstacle
-		}else if (cat.getMinDistance()<0.5&&cat.getCriticalIntensity()>1&&cat.getAvoidanceQueueSize()>0){
+		}else if (cat.getMinDistance()<0.7&&cat.getCriticalIntensity()>1&&cat.getAvoidanceQueueSize()>0){
 			cat.addMovementFront("forward_x",0,0,1);//halt movement if already have obstacle
 		}
 		cat.move();
@@ -98,10 +98,10 @@ int main(int argc, char **argv)
 
 		if (cat.getMovementQueueSize() == 0) {
 			//sleep(time);
-			cat.addMovement("forward_x", -0.4, 0.01);
-			cat.faceWest(1);
-			cat.addMovement("forward_x",5,1);
+			cat.addMovement("forward_x", 0.4, 0.01);
 			cat.faceEast(1);
+			cat.addMovement("forward_x",5,1);
+			cat.faceWest(1);
 			cat.addMovement("forward_x",-5,1);
 		}
 
@@ -114,6 +114,7 @@ int main(int argc, char **argv)
 		status_msg.pos_x=cat.getX();
 		status_msg.pos_y=cat.getY();
 		status_msg.pos_theta=cat.getAng();
+		status_msg.obstacle=cat.getObstacleStatus();
 		// Publish status message
 		pub.publish(status_msg);
 		ros::spinOnce();

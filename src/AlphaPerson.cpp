@@ -114,6 +114,18 @@ void stage_laserCallback(sensor_msgs::LaserScan msg) {
 			}
 		}
 	}
+
+	if (alphaPerson.getAvoidanceCase()!=Entity::NONE&&alphaPerson.getAvoidanceCase()!=Entity::TREE&&!alphaPerson.isRotating()) {//check if there is need to avoid obstacle
+		if(alphaPerson.getCriticalIntensity()!=2&&alphaPerson.getAvoidanceQueueSize()==0&&alphaPerson.getObstacleStatus().compare("Obstacle nearby")!=0){
+			alphaPerson.setObstacleStatus("Obstacle nearby");
+			alphaPerson.avoidObstacle(3,0.5);//call avoid obstacle method in entity to avoid obstacle
+		}else if (alphaPerson.getMinDistance()<0.7&&alphaPerson.getCriticalIntensity()>1&&alphaPerson.getAvoidanceQueueSize()>0){
+			alphaPerson.addMovementFront("forward_x",0,0,1);//halt movement if already have obstacle
+		}
+		alphaPerson.move();
+	}else{
+		alphaPerson.setObstacleStatus("No obstacles");
+	}
 }
 
 void AlphaPerson::stateLogic() {
@@ -211,7 +223,9 @@ int main(int argc, char **argv) {
 	int tickCount = 0;
 
 	while (ros::ok()) {
-		alphaPerson.move();
+		if(alphaPerson.getObstacleStatus().compare("Obstacle nearby")!=0){
+			alphaPerson.move();
+		}
 		alphaPerson.stateLogic();
 		// Assign to status message
 		// Add counter to message to broadcast
@@ -224,6 +238,8 @@ int main(int argc, char **argv) {
 		status_msg.pos_y=alphaPerson.getY();
 		// Add angle to message to broadcast
 		status_msg.pos_theta=alphaPerson.getTheta(); 
+		// Add obstacle detection status to message to broadcast
+		status_msg.obstacle=alphaPerson.getObstacleStatus();
 		// Publish the message for other node
 		pub.publish(status_msg);
 		ros::spinOnce();
