@@ -481,7 +481,7 @@ void Generator::loadTallWeeds()
     int rowEnd = 20 - totalRowWidth;
     int randNumY = rowEnd + 20;
     
-     model.weed = 7;//rand() % 8 + 2; //between 2 and 10
+     model.weed = 10;//rand() % 8 + 2; //between 2 and 10
     
     for(int i = 0; i < model.weed; i++) {
         //Random numbers generated to be inside the area of the kiwi-fruit farming area.
@@ -501,7 +501,7 @@ void Generator::loadTallWeeds()
         weedPositions.push(x);
         weedPositions.push(y);
         
-        outfile << "tallWeed( pose [ " << xPos << " " << yPos << " 0.000 0.000 ] name \"TallWeed" << i+1 << "\" color \"HotPink\")" << endl;
+        outfile << "tallWeed( pose [ " << xPos << " " << yPos << " 0.000 0.000 ] name \"TallWeed" << i+1 << "\" color \"ForestGreen\")" << endl;
     }
     
     
