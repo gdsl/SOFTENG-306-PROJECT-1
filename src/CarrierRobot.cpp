@@ -199,8 +199,13 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 			}else if(carrierRobot.getAvoidanceCase()==Entity::PERPENDICULAR){
 				carrierRobot.setObstacleStatus("perpendicular object");
 				if(carrierRobot.getDirectionFacing()== carrierRobot.NORTH||carrierRobot.getDirectionFacing()== carrierRobot.SOUTH||carrierRobot.getCriticalIntensity()==3|| carrierRobot.getCriticalIntensity()==2){
-					//if robot moving in the y direction give way
-					carrierRobot.addMovementFront("forward_x",0,0,1);
+					if(carrierRobot.getDirectionFacing()== carrierRobot.NORTH){
+						//if robot moving in the y direction give way
+						carrierRobot.addMovementFront("forward_y",-1,1,1);
+					}else{
+						//if robot moving in the y direction give way
+						carrierRobot.addMovementFront("forward_x",0,0,1);
+					}
 				}
 			}else if(carrierRobot.getAvoidanceCase()==Entity::FACE_ON){
 				carrierRobot.setObstacleStatus("Face On");
@@ -227,9 +232,13 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 						//carrierRobot.move();
 					}
 				}else{
-					//halt movement if already have avoidance logic
-					carrierRobot.addMovementFront("forward_x",0,0,1);
-					//carrierRobot.move();
+					if(carrierRobot.getDirectionFacing()== carrierRobot.NORTH){
+						//if robot moving in the y direction give way
+						carrierRobot.addMovementFront("forward_y",-1,1,1);
+					}else{
+						//if robot moving in the y direction give way
+						carrierRobot.addMovementFront("forward_x",0,0,1);
+					}
 				}
 			}else{
 				//halt movement if case not detected
