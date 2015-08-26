@@ -232,7 +232,7 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 						//carrierRobot.move();
 					}
 				}else{
-					if(carrierRobot.getDirectionFacing()== carrierRobot.NORTH){
+					if(carrierRobot.getDirectionFacing()== carrierRobot.NORTH&&carrierRobot.getAvoidanceQueueSize()<0){
 						//if robot moving in the y direction give way
 						carrierRobot.addMovementFront("forward_y",-1,1,1);
 					}else{
@@ -242,6 +242,7 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 				}
 			}else{
 				//halt movement if case not detected
+				carrierRobot.setObstacleStatus("NO CASE");
 				carrierRobot.addMovementFront("forward_x",0,0,1);
 
 			}
