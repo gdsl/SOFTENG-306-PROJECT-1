@@ -275,6 +275,9 @@ if (CATKIN_ENABLE_TESTING)
 
     add_rostest_gtest(testBeacon test/rostest/testBeacon.test test/testBeacon.cpp)
     target_link_libraries(testBeacon BeaconLib ${catkin_LIBRARIES})
+
+    #add_rostest_gtest(testNeighbour test/rostest/testNeighbour.test test/testNeighbour.cpp)
+    #target_link_libraries(testNeighbour NeighbourLib ${catkin_LIBRARIES})
     
     # unit tests
 	catkin_add_gtest(testMovement test/testMovement.cpp)
