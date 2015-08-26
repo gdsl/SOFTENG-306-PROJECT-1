@@ -57,7 +57,7 @@ int main(int argc, char **argv) {
 
 	std::string topicName = "/robot_" +dogString + "/status";
 	ros::Subscriber sub = n.subscribe<se306project::animal_status>(topicName,1000, dog_positionCallback);
-	//gardenWorker.tallweed_pose_sub[index] = n.subscribe<se306project::weed_status>(topicName.str(),1000,&GardenWorker::weedRemovalRequest, &gardenWorker);
+	
 	ros::Rate loop_rate(10);
 	se306project::human_status status_msg;
 	blindPerson.setStatus("Following dog");
@@ -74,8 +74,6 @@ int main(int argc, char **argv) {
 
       //  if (difference > 0) { difference = M_PI - difference; }
       //  else { difference = difference + M_PI; }
-        
-      //  ROS_FATAL("angleToDog is %f", angleToDog);
       //  ROS_FATAL("theta is %f", blindPerson.getTheta());
         if (dist < 1) {
             dist = 0;
@@ -97,15 +95,4 @@ int main(int argc, char **argv) {
 	return 0;
 }
 
-/*
-while(ros::ok) {        
-       // blindPerson.addMovement("forward_x",0.75,1);
-       // blindPerson.move();
-		blindPerson.setLin(1);
-        ROS_WARN("hi");
-    //    float angle = atan2(blindPerson.getY() - targetY, blindPerson.getX() - targetX);
- //       ROS_WARN("%f", angle);
-		blindPerson.setAng(0);
-        blindPerson.updateOdometry();
-		ros::spinOnce();
-*/
+
