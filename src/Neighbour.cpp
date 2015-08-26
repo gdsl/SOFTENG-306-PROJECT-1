@@ -1,7 +1,7 @@
 #include "Neighbour.h"
 #include "ros/ros.h"
 #include "geometry_msgs/Twist.h"
-#include "se306project/robot_status.h"
+#include "se306project/human_status.h"
 #include <math.h>
 
 /**
@@ -103,14 +103,14 @@ int main(int argc, char **argv) {
 	neighbour.setOriginX(xPos);
 	neighbour.robotNode_stage_pub = n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
 	neighbour.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth", 1000, &Neighbour::stageOdom_callback, &neighbour);
-	neighbour.Neighbour_status_pub = n.advertise<se306project::robot_status>("status",1000);
+	neighbour.Neighbour_status_pub = n.advertise<se306project::human_status>("status",1000);
 	//subscribe to laser
 	neighbour.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000,callBackLaserScan);
 
 	ros::Rate loop_rate(10);
 
         //Add initial movement
-	se306project::robot_status status_msg;
+	se306project::human_status status_msg;
 	neighbour.setStatus("Finding a robot");
 	neighbour.faceWest(1);
 	neighbour.addMovement("forward_x", -35, 1);
@@ -140,7 +140,6 @@ int main(int argc, char **argv) {
 		status_msg.pos_y = neighbour.getY();
 		status_msg.pos_theta = neighbour.getTheta();
 		status_msg.status = neighbour.getStatus();
-		status_msg.obstacle = neighbour.getObstacleStatus();
 		neighbour.Neighbour_status_pub.publish(status_msg);             
 	}
 }

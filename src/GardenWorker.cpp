@@ -174,7 +174,7 @@ void GardenWorker::stageLaser_callback(const sensor_msgs::LaserScan msg) {
 					distanceToMove = -(getX() - targetX);
 					//make sure the Robot is facing West, if not, turn it West.
 					if (direction != WEST) {
-						//ROS_ERROR("CAL1L");
+						ROS_ERROR("CAL1L");
 						faceWest(1);
 						direction = WEST;
 					}
@@ -183,7 +183,7 @@ void GardenWorker::stageLaser_callback(const sensor_msgs::LaserScan msg) {
 					distanceToMove = targetX - getX();
 					//make sure the Robot is facing West, if not, turn it West.
 					if (direction != EAST) {
-						//ROS_ERROR("EAST");
+						ROS_ERROR("EAST");
 						faceEast(1);
 						direction = EAST;
 					}
