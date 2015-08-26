@@ -63,8 +63,6 @@ int main(int argc, char **argv) {
 	blindPerson.setStatus("Following dog");
 
 	while (ros::ok()) {
-        //blindPerson.move();
-		//blindPerson.faceNorth(1);
 
         float angleToDog = atan2(blindPerson.getY() - targetY, blindPerson.getX() - targetX);
         float dist = sqrt((blindPerson.getX() - targetX)*(blindPerson.getX() - targetX) + (blindPerson.getY() - targetY)*(blindPerson.getY() - targetY));
@@ -72,9 +70,6 @@ int main(int argc, char **argv) {
         if (difference < -1*M_PI) { difference += 2*M_PI; }
         else if (difference > M_PI) { difference -= 2*M_PI; }
 
-      //  if (difference > 0) { difference = M_PI - difference; }
-      //  else { difference = difference + M_PI; }
-      //  ROS_FATAL("theta is %f", blindPerson.getTheta());
         if (dist < 1) {
             dist = 0;
             difference = 0;

@@ -122,10 +122,10 @@ int main(int argc, char **argv) {
 
                 //determine the logic of neighbour movement 
 		if (neighbour.getMovementQueueSize() == 0){
-			if(neighbour.getStatus().compare("Finding a robot")==0){
-				neighbour.setStatus("Moving back");
-				neighbour.faceEast(1);
+			if(neighbour.getStatus().compare("Finding a robot")==0){  
+  				neighbour.faceEast(1);
                 neighbour.addMovement("forward_x", neighbour.getOriginX()-neighbour.getX(), 1);
+                neighbour.setStatus("Moving back");
 			}else{
 				neighbour.setStatus("Finding a robot");
 				neighbour.faceWest(1);
@@ -141,6 +141,7 @@ int main(int argc, char **argv) {
 		status_msg.pos_theta = neighbour.getTheta();
 		status_msg.status = neighbour.getStatus();
 		status_msg.obstacle = neighbour.getObstacleStatus();
-		neighbour.Neighbour_status_pub.publish(status_msg);             
+		neighbour.Neighbour_status_pub.publish(status_msg);
+                    
 	}
 }
