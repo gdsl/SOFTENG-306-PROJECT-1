@@ -240,7 +240,9 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 	} else {
 		carrierRobot.setObstacleStatus("No obstacles");
 	}
-	carrierRobot.move();
+	if(carrierRobot.getAvoidanceQueueSize()>0){//only run queue if there is avoidance to be ran
+		carrierRobot.move();
+	}
 }
 
 /*

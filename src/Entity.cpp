@@ -142,26 +142,27 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg) {
 
 	if (minDistance<1.1&&currentIntensity>=1) {
 		// Check if there is perpendicular movement
+		if (currentIntensity==1.0) {
+			// The object in way is a weed
+			avoidanceCase=TREE;
+		}else if (currentIntensity==WEED_INTENSITY) {
+			// The object in way is a weed
+			avoidanceCase=WEED;
+		} else if (currentIntensity>=LIVING_MIN_INTENSITY){
+			// The object is a living object that is not weed
+			avoidanceCase=LIVING_OBJ;
+		}
 		if (numOfScan==1) {
-			if (currentIntensity==1.0) {
-				// The object in way is a weed
-				avoidanceCase=TREE;
-			}else if (currentIntensity==WEED_INTENSITY) {
-				// The object in way is a weed
-				avoidanceCase=WEED;
-			} else if (currentIntensity>=LIVING_MIN_INTENSITY){
-				// The object is a living object that is not weed
-				avoidanceCase=LIVING_OBJ;
-
+			
 				// Obstacle got closer
-			} else if (previousScanDistance<msg.ranges[previousScanNumber]&&previousScanIntensity==msg.intensities[previousScanNumber]) {
+			if (previousScanDistance<msg.ranges[previousScanNumber]&&previousScanIntensity==msg.intensities[previousScanNumber]) {
 				// The object is face on
 				avoidanceCase=FACE_ON;
 			} else {
 				int currentMax=previousScanNumber;
 				int currentMin=previousScanNumber;
 				// Work out max number of scan critical object still can be observed
-				for(int i=previousScanNumber;i<l;i++) {
+				for(int i=previousScanNumber;i<l-41;i++) {
 					if(previousScanIntensity!=msg.intensities[i]&&!found) {
 						currentMax=i-1;
 						found=true;
@@ -169,13 +170,14 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg) {
 				}
 				found=false;
 				// Work out min number of scan critical object still can be observed
-				for(int i=previousScanNumber;i>0;i--) {
+				for(int i=previousScanNumber;i>41;i--) {
 					if(previousScanIntensity!=msg.intensities[i]&&!found) {
 						currentMin=i+1;
 						found=true;
 					}
 				}
 				// It is moving horizontally or rotating
+				//TODO
 				if (currentMax!=previousScanNumberMax||currentMin!=previousScanNumberMin) {
 					// Avoidance case is perpendicular
 					avoidanceCase=PERPENDICULAR;
@@ -188,18 +190,8 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg) {
 			numOfScan=0;
 			previousAvoidanceCase=avoidanceCase;
 		} else {
-			if (currentIntensity==1.0) {
-				// The object in way is a weed
-				avoidanceCase=TREE;
-			}else if (currentIntensity==WEED_INTENSITY) {
-				// The object in way is a weed
-				avoidanceCase=WEED;
-			} else if (currentIntensity>=LIVING_MIN_INTENSITY){
-				// The object is a living object that is not weed
-				avoidanceCase=LIVING_OBJ;
-			}else{
 				// Work out max number of scan critical object still can be observed
-				for(int i=previousScanNumber;i<l;i++) {
+				for(int i=previousScanNumber;i<l-41;i++) {
 					if(previousScanIntensity!=msg.intensities[i]&&!found) {
 						previousScanNumberMax=i-1;
 						found=true;
@@ -207,13 +199,12 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg) {
 				}
 				found=false;
 				// Work out min number of scan critical object still can be observed
-				for(int i=previousScanNumber;i>0;i--) {
+				for(int i=previousScanNumber;i>41;i--) {
 					if(previousScanIntensity!=msg.intensities[i]&&!found) {
 						previousScanNumberMin=i+1;
 						found=true;
 					}
 				}
-			}
 			// set avoidance case to previous
 			avoidanceCase=previousAvoidanceCase;
 			numOfScan+=1;

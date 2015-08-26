@@ -202,7 +202,9 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 			}
 		}
 	}
-	pickerRobot.move();
+	if(pickerRobot.getAvoidanceQueueSize()>0){//only run queue if there is avoidance to be ran
+		pickerRobot.move();
+	}
 }
 
 /*
@@ -212,6 +214,8 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 void receiveCarrierRobotStatus(const se306project::carrier_status::ConstPtr& msg) {
 	if ((msg->status.compare("Arrived")==0)&&pickerRobot.getState()==pickerRobot.SERVICED&&std::abs(msg->pos_y-pickerRobot.getY())<0.1) {
 		pickerRobot.setStatus("Picking");
+		pickerRobot.addMovementFront("forward_x",0,0,1);//halt
+		pickerRobot.move();
 		pickerRobot.setBinCapacity(0);
 		pickerRobot.setState(Robot::PICKING);
 	}else if(msg->status.substr(0,6).compare("Moving")==0&&pickerRobot.getState()==pickerRobot.FULL_BIN){// if carrier is send moving message check
