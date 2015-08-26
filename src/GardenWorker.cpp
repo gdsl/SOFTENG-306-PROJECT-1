@@ -14,8 +14,8 @@ GardenWorker::GardenWorker():GardenWorker(0,0,0,0,0){}
  */
 GardenWorker::GardenWorker(double x, double y, double theta, double linearVelocity, double angularVelocity) : Person(x, y) {
 	// give in nan so that initialX and initialY can be changed in callback
-	initialX = std::numeric_limits<double>::quiet_NaN();
-	initialY = std::numeric_limits<double>::quiet_NaN();
+	initialX = x;
+	initialY = y;
 	targetX = 0;
 	targetY = 0;
 	closestToWeed = true;
@@ -24,8 +24,6 @@ GardenWorker::GardenWorker(double x, double y, double theta, double linearVeloci
 	setStatus("Idle");
 	setObstacleStatus("No obstacles");
 }
-
-GardenWorker gardenWorker;
 
 void GardenWorker::weedRemovalRequest(const se306project::weed_status msg) {
 	se306project::gardenworker_status pubmsg;
@@ -115,6 +113,7 @@ void GardenWorker::stageLaser_callback(const sensor_msgs::LaserScan msg) {
 	// 	invoke parent stagelaser
 	Person::stageLaser_callback(msg);
 	std::string currentStatus = getStatus();
+
 	//ROS_ERROR("Current Status: %s", currentStatus.c_str());
 	if (currentStatus.compare("Idle") == 0) {
 		pulled = false;
@@ -235,17 +234,17 @@ void GardenWorker::stageLaser_callback(const sensor_msgs::LaserScan msg) {
 		next("Move");
 	}
 
-	if (gardenWorker.getAvoidanceCase()!=Entity::NONE&&!gardenWorker.isRotating()) {//check if there is need to avoid obstacle
-		if(gardenWorker.getCriticalIntensity()!=9&&gardenWorker.getCriticalIntensity()!=2&&gardenWorker.getAvoidanceQueueSize()==0&&gardenWorker.getObstacleStatus().compare("Obstacle nearby")!=0){
-			gardenWorker.setObstacleStatus("Obstacle nearby");
-			gardenWorker.avoidObstacle(2.5,0.5);//call avoid obstacle method in entity to avoid obstacle
-		}else if (gardenWorker.getMinDistance()<0.7&&gardenWorker.getCriticalIntensity()>=1&&gardenWorker.getAvoidanceQueueSize()>0){
-			gardenWorker.addMovementFront("forward_x",0,0,1);//halt movement if already have obstacle
-		}
-	}else{
-		gardenWorker.setObstacleStatus("No obstacles");
-	}
-	gardenWorker.move();
+	// if (gardenWorker.getAvoidanceCase()!=Entity::NONE&&!gardenWorker.isRotating()) {//check if there is need to avoid obstacle
+	// 	if(gardenWorker.getCriticalIntensity()!=9&&gardenWorker.getCriticalIntensity()!=2&&gardenWorker.getAvoidanceQueueSize()==0&&gardenWorker.getObstacleStatus().compare("Obstacle nearby")!=0){
+	// 		gardenWorker.setObstacleStatus("Obstacle nearby");
+	// 		gardenWorker.avoidObstacle(2.5,0.5);//call avoid obstacle method in entity to avoid obstacle
+	// 	}else if (gardenWorker.getMinDistance()<0.7&&gardenWorker.getCriticalIntensity()>=1&&gardenWorker.getAvoidanceQueueSize()>0){
+	// 		gardenWorker.addMovementFront("forward_x",0,0,1);//halt movement if already have obstacle
+	// 	}
+	// }else{
+	// 	gardenWorker.setObstacleStatus("No obstacles");
+	// }
+	move();
 }
 
 int GardenWorker::getTargetX() {
@@ -271,6 +270,14 @@ void GardenWorker::stageOdom_callback(const nav_msgs::Odometry msg) {
 
 }
 
+void GardenWorker::setInitialX(double initialX) {
+	this->initialX = initialX;
+}
+
+void GardenWorker::setInitialY(double initialY) {
+	this->initialY = initialY;
+}
+
 int main(int argc, char **argv) {
 	// Initialise ros
 	ros::init(argc,argv,"GardenWorker");
@@ -282,7 +289,9 @@ int main(int argc, char **argv) {
 	// argv[3] = gardenworker node start index
 	// argv[4] = gardenworker node end index
 	// argv[5] = my node index
-
+	GardenWorker gardenWorker;
+	gardenWorker.setInitialX(std::numeric_limits<double>::quiet_NaN());
+	gardenWorker.setInitialY(std::numeric_limits<double>::quiet_NaN());
 	gardenWorker.robotNode_stage_pub = n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
 	gardenWorker.stageOdo_Sub = n.subscribe<nav_msgs::Odometry>("base_pose_ground_truth", 1000, &GardenWorker::stageOdom_callback, &gardenWorker);
 	gardenWorker.baseScan_Sub = n.subscribe<sensor_msgs::LaserScan>("base_scan", 1000, &GardenWorker::stageLaser_callback, &gardenWorker);

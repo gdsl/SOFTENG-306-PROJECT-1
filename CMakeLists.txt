@@ -45,15 +45,15 @@ find_package(catkin REQUIRED COMPONENTS
 
 ## Generate messages in the 'msg' folder
 add_message_files(
-	FILES
-	RobotState.msg
-	robot_status.msg
-	carrier_status.msg
-	animal_status.msg
-	human_status.msg
-	blindperson_status.msg
-	weed_status.msg
-	gardenworker_status.msg
+  FILES
+  RobotState.msg
+  robot_status.msg
+  carrier_status.msg
+  animal_status.msg
+  human_status.msg
+  blindperson_status.msg
+  weed_status.msg
+  gardenworker_status.msg
 )
 
 ## Generate services in the 'srv' folder
@@ -233,6 +233,7 @@ add_library(AlphaPersonLib src/AlphaPerson.cpp)
 add_library(PickerRobotLib src/PickerRobot.cpp)
 add_library(CarrierRobotLib src/CarrierRobot.cpp)
 add_library(BeaconLib src/Beacon.cpp)
+add_library(GardenWorkerLib src/GardenWorker.cpp)
 
 #target libraries
 target_link_libraries(Entity Movement ${catkin_LIBRARIES})
@@ -247,8 +248,7 @@ target_link_libraries(AlphaPersonLib Person Entity ${catkin_LIBRARIES})
 target_link_libraries(PickerRobotLib Robot Entity ${catkin_LIBRARIES})
 target_link_libraries(CarrierRobotLib Robot Entity ${catkin_LIBRARIES})
 target_link_libraries(BeaconLib Entity ${catkin_LIBRARIES})
-
-
+target_link_libraries(GardenWorkerLib Person Entity ${catkin_LIBRARIES})
 
 if (CATKIN_ENABLE_TESTING)
     #integration test(everything include testing multiple nodes with stage running)
@@ -278,7 +278,8 @@ if (CATKIN_ENABLE_TESTING)
     add_rostest_gtest(testNeighbour test/rostest/testNeighbour.test test/testNeighbour.cpp)
     target_link_libraries(testNeighbour NeighbourLib ${catkin_LIBRARIES})
     
-    
+    add_rostest_gtest(testGardenWorker test/rostest/testGardenWorker.test test/testGardenWorker.cpp)
+    target_link_libraries(testGardenWorker GardenWorkerLib ${catkin_LIBRARIES})
     
     # unit tests
     catkin_add_gtest(testMovement test/testMovement.cpp)
