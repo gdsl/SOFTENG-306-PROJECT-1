@@ -45,4 +45,5 @@ private:
 	bool closestToWeed;
 	time_t c_start;
 	time_t c_end;
+	bool pulled;
 };
