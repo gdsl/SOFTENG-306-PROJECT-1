@@ -47,7 +47,7 @@
            <x>0</x>
            <y>0</y>
            <width>1014</width>
-           <height>148</height>
+           <height>154</height>
           </rect>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_3"/>
@@ -76,7 +76,7 @@
            <x>0</x>
            <y>0</y>
            <width>1014</width>
-           <height>148</height>
+           <height>154</height>
           </rect>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_4"/>
@@ -105,7 +105,7 @@
            <x>0</x>
            <y>0</y>
            <width>1014</width>
-           <height>148</height>
+           <height>154</height>
           </rect>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_5"/>
@@ -148,13 +148,29 @@
         </property>
         <item row="0" column="2">
          <widget class="QLabel" name="rowNumberLabel">
+          <property name="toolTip">
+           <string>Number of kiwifruit rows</string>
+          </property>
           <property name="text">
            <string>Row Number</string>
           </property>
          </widget>
         </item>
+        <item row="2" column="4">
+         <widget class="QLabel" name="blindPersonLabel">
+          <property name="toolTip">
+           <string>Number of blind people to add to the world</string>
+          </property>
+          <property name="text">
+           <string>Blind Person</string>
+          </property>
+         </widget>
+        </item>
         <item row="5" column="2">
          <widget class="QLabel" name="catLabel">
+          <property name="toolTip">
+           <string>Number of cats to add to the world</string>
+          </property>
           <property name="text">
            <string>Cat</string>
           </property>
@@ -162,6 +178,9 @@
         </item>
         <item row="0" column="1">
          <widget class="QSpinBox" name="pickerSpinner">
+          <property name="toolTip">
+           <string>1 - 7</string>
+          </property>
           <property name="minimum">
            <number>1</number>
           </property>
@@ -175,6 +194,9 @@
         </item>
         <item row="5" column="0">
          <widget class="QLabel" name="spacingLabel">
+          <property name="toolTip">
+           <string>Distance (metres) between kiwifruit trunks and pergola posts</string>
+          </property>
           <property name="text">
            <string>Pole/Trunk spacing</string>
           </property>
@@ -182,6 +204,9 @@
         </item>
         <item row="4" column="0">
          <widget class="QLabel" name="rowWidthLabel">
+          <property name="toolTip">
+           <string>Distance (metres) between each kiwifruit row</string>
+          </property>
           <property name="text">
            <string>Row width</string>
           </property>
@@ -189,6 +214,9 @@
         </item>
         <item row="2" column="0">
          <widget class="QLabel" name="carrierRobotsLabel">
+          <property name="toolTip">
+           <string>Number of carrier robots to add to the world</string>
+          </property>
           <property name="text">
            <string>Carrier Robots</string>
           </property>
@@ -196,6 +224,9 @@
         </item>
         <item row="0" column="0">
          <widget class="QLabel" name="pickerRobotsLabel">
+          <property name="toolTip">
+           <string>Number of picker robots to add to the world</string>
+          </property>
           <property name="text">
            <string>Picker Robots</string>
           </property>
@@ -203,6 +234,9 @@
         </item>
         <item row="2" column="1">
          <widget class="QSpinBox" name="carrierSpinner">
+          <property name="toolTip">
+           <string>1 - 7</string>
+          </property>
           <property name="minimum">
            <number>1</number>
           </property>
@@ -214,8 +248,21 @@
           </property>
          </widget>
         </item>
+        <item row="4" column="2">
+         <widget class="QLabel" name="dogLabel">
+          <property name="toolTip">
+           <string>Number of dogs to add to the world</string>
+          </property>
+          <property name="text">
+           <string>Dog</string>
+          </property>
+         </widget>
+        </item>
         <item row="4" column="3">
          <widget class="QSpinBox" name="dogSpinner">
+          <property name="toolTip">
+           <string>0 - 5</string>
+          </property>
           <property name="maximum">
            <number>7</number>
           </property>
@@ -229,29 +276,11 @@
           <property name="enabled">
            <bool>false</bool>
           </property>
+          <property name="toolTip">
+           <string>7</string>
+          </property>
           <property name="value">
            <number>7</number>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="2">
-         <widget class="QLabel" name="dogLabel">
-          <property name="text">
-           <string>Dog</string>
-          </property>
-         </widget>
-        </item>
-        <item row="5" column="4">
-         <widget class="QLabel" name="tractorLabel">
-          <property name="text">
-           <string>Tractor</string>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="4">
-         <widget class="QLabel" name="neighborLabel">
-          <property name="text">
-           <string>Neighbor</string>
           </property>
          </widget>
         </item>
@@ -260,26 +289,39 @@
           <property name="enabled">
            <bool>false</bool>
           </property>
+          <property name="toolTip">
+           <string>1</string>
+          </property>
           <property name="value">
            <number>1</number>
           </property>
          </widget>
         </item>
-        <item row="4" column="5">
-         <widget class="QSpinBox" name="neighborSpinner">
-          <property name="minimum">
-           <number>0</number>
+        <item row="5" column="4">
+         <widget class="QLabel" name="tractorLabel">
+          <property name="toolTip">
+           <string>Number of tractors to add to the world</string>
           </property>
-          <property name="maximum">
-           <number>3</number>
+          <property name="text">
+           <string>Tractor</string>
           </property>
-          <property name="value">
-           <number>1</number>
+         </widget>
+        </item>
+        <item row="4" column="4">
+         <widget class="QLabel" name="neighborLabel">
+          <property name="toolTip">
+           <string>Number of orchard neighbours to add to the world</string>
+          </property>
+          <property name="text">
+           <string>Neighbor</string>
           </property>
          </widget>
         </item>
         <item row="5" column="3">
          <widget class="QSpinBox" name="catSpinner">
+          <property name="toolTip">
+           <string>0 - 3</string>
+          </property>
           <property name="maximum">
            <number>7</number>
           </property>
@@ -290,6 +332,9 @@
         </item>
         <item row="2" column="5">
          <widget class="QSpinBox" name="blindPersonSpinner">
+          <property name="toolTip">
+           <string>0 - 3</string>
+          </property>
           <property name="minimum">
            <number>0</number>
           </property>
@@ -301,55 +346,47 @@
           </property>
          </widget>
         </item>
-        <item row="2" column="4">
-         <widget class="QLabel" name="blindPersonLabel">
-          <property name="text">
-           <string>Blind Person</string>
-          </property>
-         </widget>
-        </item>
         <item row="2" column="2">
          <widget class="QLabel" name="rowLengthLabel">
+          <property name="toolTip">
+           <string>Number of gardeners to add to the world</string>
+          </property>
           <property name="text">
            <string>Gardener</string>
           </property>
          </widget>
         </item>
+        <item row="0" column="5">
+         <widget class="QSpinBox" name="workerSpinner">
+          <property name="toolTip">
+           <string>0 - 4</string>
+          </property>
+          <property name="minimum">
+           <number>0</number>
+          </property>
+          <property name="maximum">
+           <number>4</number>
+          </property>
+          <property name="value">
+           <number>1</number>
+          </property>
+         </widget>
+        </item>
         <item row="0" column="4">
          <widget class="QLabel" name="workerLabel">
+          <property name="toolTip">
+           <string>Number of orchard workers to add to the world</string>
+          </property>
           <property name="text">
            <string>Worker</string>
           </property>
          </widget>
         </item>
-        <item row="0" column="5">
-         <widget class="QSpinBox" name="workerSpinner">
-          <property name="minimum">
-           <number>0</number>
-          </property>
-          <property name="maximum">
-           <number>4</number>
-          </property>
-          <property name="value">
-           <number>1</number>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="3">
-         <widget class="QSpinBox" name="gardenerSpinner">
-          <property name="minimum">
-           <number>0</number>
-          </property>
-          <property name="maximum">
-           <number>4</number>
-          </property>
-          <property name="value">
-           <number>1</number>
-          </property>
-         </widget>
-        </item>
         <item row="4" column="1">
          <widget class="QDoubleSpinBox" name="rowWidthSpinner">
+          <property name="toolTip">
+           <string>3 - 6m</string>
+          </property>
           <property name="minimum">
            <double>3.000000000000000</double>
           </property>
@@ -364,8 +401,27 @@
           </property>
          </widget>
         </item>
+        <item row="2" column="3">
+         <widget class="QSpinBox" name="gardenerSpinner">
+          <property name="toolTip">
+           <string>0 - 4</string>
+          </property>
+          <property name="minimum">
+           <number>0</number>
+          </property>
+          <property name="maximum">
+           <number>4</number>
+          </property>
+          <property name="value">
+           <number>1</number>
+          </property>
+         </widget>
+        </item>
         <item row="5" column="1">
          <widget class="QDoubleSpinBox" name="spacingSpinner">
+          <property name="toolTip">
+           <string>1 - 10m</string>
+          </property>
           <property name="minimum">
            <double>1.000000000000000</double>
           </property>
@@ -377,6 +433,22 @@
           </property>
           <property name="value">
            <double>2.500000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="5">
+         <widget class="QSpinBox" name="neighborSpinner">
+          <property name="toolTip">
+           <string>0 - 3</string>
+          </property>
+          <property name="minimum">
+           <number>0</number>
+          </property>
+          <property name="maximum">
+           <number>3</number>
+          </property>
+          <property name="value">
+           <number>1</number>
           </property>
          </widget>
         </item>
@@ -458,7 +530,7 @@ color: rgb(255, 255, 255);</string>
      <x>0</x>
      <y>0</y>
      <width>1036</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuOrchard_Simulator">
