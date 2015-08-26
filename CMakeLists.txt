@@ -230,7 +230,7 @@ target_link_libraries(GardenWorker Person Entity ${catkin_LIBRARIES})
 add_dependencies(GardenWorker se306project_generate_message_cpp)
 
 if (CATKIN_ENABLE_TESTING)
-	#integration test(everything include testing multiple nodes with stage running)
+    #integration test(everything include testing multiple nodes with stage running)
     find_package(catkin REQUIRED COMPONENTS rostest)
     
     add_rostest_gtest(testAlphaPerson test/rostest/testAlphaPerson.test test/testAlphaPerson.cpp)
