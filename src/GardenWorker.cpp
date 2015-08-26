@@ -81,7 +81,7 @@ void GardenWorker::next(std::string action) {
 		if (action.compare("Communicate")==0) {
 			setStatus("Communicating");
 		} else if (action.compare("Move") == 0) {
-			ROS_ERROR("Change");
+	//		ROS_ERROR("Change");
 			setStatus("Moving");
 		}
 	} else if (currentStatus.compare("Communicating")==0) {
@@ -134,7 +134,7 @@ void GardenWorker::stageLaser_callback(const sensor_msgs::LaserScan msg) {
 
 		// check if an obstacle detected. if the obstacle is tallweed, change to pull weed
 
-		double errorMargin = 3;
+		double errorMargin = 1.5;
 
 		if (pulled && abs(getX() - initialX) <= errorMargin && abs(getY() - initialY) <= errorMargin) {
 			if (getDirectionFacing() == Entity::NORTH || getDirectionFacing() == Entity::SOUTH) {
@@ -165,7 +165,7 @@ void GardenWorker::stageLaser_callback(const sensor_msgs::LaserScan msg) {
 					distanceToMove = -(getX() - targetX);
 					//make sure the Robot is facing West, if not, turn it West.
 					if (direction != WEST) {
-						ROS_ERROR("CAL1L");
+		//				ROS_ERROR("CAL1L");
 						faceWest(1);
 						direction = WEST;
 					}
@@ -174,7 +174,7 @@ void GardenWorker::stageLaser_callback(const sensor_msgs::LaserScan msg) {
 					distanceToMove = targetX - getX();
 					//make sure the Robot is facing West, if not, turn it West.
 					if (direction != EAST) {
-						ROS_ERROR("EAST");
+		//				ROS_ERROR("EAST");
 						faceEast(1);
 						direction = EAST;
 					}

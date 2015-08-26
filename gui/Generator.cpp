@@ -348,9 +348,10 @@ void Generator::loadPeople()
     for (int i = 0; i < model.gardeners; i++) {
     	// Generate gardenworkers same position as workers
         int xMult = (((rand() % columnCount + 1) * 2) - 1);
-        float xPos = -30 + (xMult * xOffset);
+        float xPos = 43 - model.poleTrunkSpacing;
         float yPos = 17.5;
         yPos = yPos-(i * model.rowWidth);
+        xPos = xPos-(i * model.poleTrunkSpacing);
 
         gardenerPositions.push(xPos);
         gardenerPositions.push(yPos);

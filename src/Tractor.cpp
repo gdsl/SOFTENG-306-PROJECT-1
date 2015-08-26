@@ -55,22 +55,9 @@ void receiveTractorControl(const std_msgs::String::ConstPtr& msg) {
 }
 
 int main(int argc, char **argv) {
-	// for (std::string line; std::getline(std::cin, line);) {
-	//     ROS_WARN(line);
-	//}
-
 	// You must call ros::init() first of all. ros::init() function needs to see argc and argv. The third argument is the name of the node
 	ros::init(argc, argv, "Tractor");
 	std::string xString = argv[1];
-//	ROS_WARN(xString.c_str());
-	// convert input parameters for Robot initialization from String to respective types
-	//std::string xString = argv[1];
-	//std::string yString = argv[2];
-	//double xPos = atof(xString.c_str());
-	//double yPos = atof(yString.c_str());
-	//ROS_INFO("x start: %f", xPos);
-	//ROS_INFO("y start: %f", yPos);
-
 	// Initialize the Carrier robot with the correct position, velocity and state parameters.
 	tractor=Tractor(0,0,0,0,0);
 
@@ -80,7 +67,8 @@ int main(int argc, char **argv) {
 	std::ostringstream oss;
 	oss << "robot_" << xString.c_str() << "/cmd_vel";
 	tractor.robotNode_stage_pub = n.advertise<geometry_msgs::Twist>(oss.str().c_str(),1000);
-	// Broadcast the node's status information for other to subscribe to.
+	
+// Broadcast the node's status information for other to subscribe to.
 //	 ros::Publisher pub=n.advertise<se306project::robot_status>("/robot_27/status",1000);
 
 	// Subscribe to listen to messages coming from stage for odometry (this is base pose so it is
@@ -139,10 +127,8 @@ int main(int argc, char **argv) {
 	{
 		ros::spinOnce();
 
-
 		tractor.updateOdometry();
 		loop_rate.sleep();
-		//++count; // increase counter
 	}
 */
 
