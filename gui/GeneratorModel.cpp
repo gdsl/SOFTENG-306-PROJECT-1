@@ -21,7 +21,7 @@ GeneratorModel::GeneratorModel()
 	neighbours = 0;
 	tractors = 1;
 	beacons = 0;
-	weed = 10;
+	weed = 5;
 }
 
 int GeneratorModel::getTotalNodes() {
