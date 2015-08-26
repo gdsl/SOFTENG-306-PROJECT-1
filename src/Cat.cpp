@@ -41,7 +41,7 @@ void stage_callback(nav_msgs::Odometry msg) {
 void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 	cat.stageLaser_callback(msg);//call supercalss laser call back for detection case work out
 
-	if (cat.getAvoidanceCase()!=Entity::NONE) {//check if there is need to avoid obstacle
+	if (cat.getAvoidanceCase()!=Entity::NONE&&!cat.isRotating()) {//check if there is need to avoid obstacle
 		if(cat.getCriticalIntensity()!=2&&cat.getAvoidanceQueueSize()==0&&cat.getObstacleStatus().compare("Obstacle nearby")!=0){
 			cat.setObstacleStatus("Obstacle nearby");
 			cat.avoidObstacle(3,0.5);//call avoid obstacle method in entity to avoid obstacle

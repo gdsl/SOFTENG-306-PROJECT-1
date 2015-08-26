@@ -47,7 +47,7 @@ void stage_callback(nav_msgs::Odometry msg) {
 void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 	alphaDog.stageLaser_callback(msg);//call supercalss laser call back
 
-	if (alphaDog.getAvoidanceCase()!=Entity::NONE) {//check if there is need to avoid obstacle
+	if (alphaDog.getAvoidanceCase()!=Entity::NONE&&!alphaDog.isRotating()) {//check if there is need to avoid obstacle
 		if(alphaDog.getCriticalIntensity()!=2&&alphaDog.getAvoidanceQueueSize()==0&&alphaDog.getObstacleStatus().compare("Obstacle nearby")!=0){
 			alphaDog.setObstacleStatus("Obstacle nearby");
 			alphaDog.avoidObstacle(3,0.5);//call avoid obstacle method in entity to avoid obstacle
