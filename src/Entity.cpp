@@ -183,6 +183,7 @@ void Entity::stageLaser_callback(sensor_msgs::LaserScan msg) {
 					// If x or y distance didn't change then entity must be stationary
 					avoidanceCase=STATIONARY;
 				}
+				avoidanceCase=STATIONARY;
 			}
 			numOfScan=0;
 			previousAvoidanceCase=avoidanceCase;
