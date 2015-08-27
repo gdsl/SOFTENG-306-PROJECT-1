@@ -130,7 +130,6 @@ int main(int argc, char **argv) {
 		ros::spinOnce();
 		if (count==50){
 			tallWeed.addMovementFront("forward_z",-5,-1,2);
-			//tallWeed.move();
 		}
 		tallWeed.move();
 

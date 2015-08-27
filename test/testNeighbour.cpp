@@ -5,7 +5,7 @@
 #include <gtest/gtest.h>
 
 /**
- * Unit tests for Person Robot - tests basic methods e.g. constructor
+ * Unit tests for Neighbour Robot - tests basic methods e.g. constructor
  */
 
 /**
