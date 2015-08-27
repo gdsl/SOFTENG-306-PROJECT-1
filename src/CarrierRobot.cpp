@@ -257,12 +257,12 @@ void recievePickerRobotStatus(const se306project::robot_status::ConstPtr& msg)
 			carrierRobot.faceWest(1);
 			carrierRobot.addMovement("forward_x", -1*carrierRobot.getXDistanceTravel(),1);
 
-			if (carrierRobot.getY() > 0) {
+			if (carrierRobot.getY() > -10) {
 				carrierRobot.faceSouth(1);
 			} else {
 				carrierRobot.faceNorth(1);
 			}
-			carrierRobot.addMovement("forward_y", 0-carrierRobot.getY(),1);
+			carrierRobot.addMovement("forward_y", -10-carrierRobot.getY(),1);
 
 			carrierRobot.faceWest(1);
 			carrierRobot.addMovement("forward_x", -10,1);

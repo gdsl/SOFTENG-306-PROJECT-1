@@ -54,6 +54,7 @@ define backdropTree modelBase
   size [0.850 0.850 1.800]
   gui_move 0
   gui_nose 0
+  ranger_return 0
 )
 
 define backdropTreeTop modelBase
@@ -61,6 +62,7 @@ define backdropTreeTop modelBase
   size [1.5 1.5 1.7]
   gui_move 0
   gui_nose 0
+  ranger_return 0
 
   block (
   points 4
@@ -96,6 +98,7 @@ define backdropShrub modelBase
   size [0.650 0.650 1.000]
   gui_move 0
   gui_nose 0
+  ranger_return 0
 )
 define horizontalFruitVine modelBase
 (
@@ -333,10 +336,10 @@ define dog position
   # head
   block (
   points 4
-  point[3] [  -0.50   -0.05 ] 
-  point[2] [  -0.40   -0.05 ] 
-  point[1] [  -0.40   0.05 ] 
-  point[0] [  -0.50   0.05 ] 
+  point[3] [  0.50   0.05 ] 
+  point[2] [  0.40   0.05 ] 
+  point[1] [  0.40   -0.05 ] 
+  point[0] [  0.50   -0.05 ] 
   z [ 0.35 0.50 ]
 			)
   animalLaser(pose [ 0.500 0.000 -0.500 0.000 ])
@@ -400,12 +403,13 @@ define cat position
   # head
   block (
   points 4
-  point[3] [  -0.50   -0.05 ] 
-  point[2] [  -0.40   -0.05 ] 
-  point[1] [  -0.40   0.05 ] 
-  point[0] [  -0.50   0.05 ] 
+  point[3] [  0.50   0.05 ] 
+  point[2] [  0.40   0.05 ] 
+  point[1] [  0.40   -0.05 ] 
+  point[0] [  0.50   -0.05 ] 
   z [ 0.35 0.50 ]
 			)
+
   animalLaser(pose [ 0.500 0.000 -0.500 0.000 ])
   obstacle_return 1
   ranger_return 5

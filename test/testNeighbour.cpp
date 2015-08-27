@@ -23,6 +23,18 @@ TEST(Neighbour, constructNeighbour) {
 	EXPECT_EQ(neighbour.getObstacleAngle(), 270);
 };
 
+TEST(Neighbour, testSetOriginX) {
+	Neighbour neighbour;
+	neighbour.setOriginX(100);
+	EXPECT_EQ(neighbour.getOriginX(), 100);
+}
+
+TEST(Neighbour, testSetOriginY) {
+	Neighbour neighbour;
+	neighbour.setOriginY(50);
+	EXPECT_EQ(neighbour.getOriginY(), 50);
+}
+
 int main(int argc, char**argv) {
 	ros::init(argc, argv, "testNeighbour");
 	testing::InitGoogleTest(&argc, argv);

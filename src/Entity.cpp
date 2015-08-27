@@ -577,7 +577,7 @@ void Entity::rotate(double angleToRotateTo, double angleSpeed, int queueNum) {
 	// Check if angleToRotateTo and the current angle is similar. If not rotate.
 	if (std::abs(angleToRotateTo-theta)>0.0001){
 		// Slow down speed when very near
-		if (std::abs(angleToRotateTo-theta)<(0.002)){
+		if (std::abs(angleToRotateTo-theta)<(0.002) || std::abs(angleToRotateTo-theta)>=(2*M_PI) ){
 			// ROS_INFO(""+(angleToRotateTo-theta));
 			angularVelocity=0.001;
 			updateOdometry();
