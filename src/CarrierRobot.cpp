@@ -182,7 +182,7 @@ void callBackLaserScan(const sensor_msgs::LaserScan msg) {
 					if(carrierRobot.getDirectionFacing()== carrierRobot.NORTH||carrierRobot.getDirectionFacing()== carrierRobot.SOUTH||carrierRobot.getCriticalIntensity()==3|| carrierRobot.getCriticalIntensity()==2){
 						//check that carrier is transporting north with empty queue
 						if(carrierRobot.getState()==carrierRobot.TRANSPORTING&&carrierRobot.getDirectionFacing()== carrierRobot.NORTH&&carrierRobot.getAvoidanceQueueSize()<0){
-													//if robot moving in the y direction give way
+							//if robot moving in the y direction give way
 							carrierRobot.addMovementFront("forward_y",-1,1,1);
 						}else{
 							//if robot moving in the y direction give way

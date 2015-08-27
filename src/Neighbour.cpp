@@ -15,14 +15,14 @@ Neighbour::Neighbour():Neighbour(0,0,0,0,0){
  * Default constructor for Neighbour
  */
 Neighbour::Neighbour(double x, double y):Neighbour(x,y,0,0,0){
-       
+
 }
 
 /**
  * Call super class constructor
  */
 Neighbour::Neighbour(double x, double y, double theta, double linearVelocity, double angularVelocity) : Person(x, y) {
-	
+
 
 }
 
@@ -109,7 +109,7 @@ int main(int argc, char **argv) {
 
 	ros::Rate loop_rate(10);
 
-        //Add initial movement
+	//Add initial movement
 	se306project::human_status status_msg;
 	neighbour.setStatus("Finding a robot");
 	neighbour.faceWest(1);
@@ -117,15 +117,15 @@ int main(int argc, char **argv) {
 	// ROS infinite loop
 	while (ros::ok()) {
 
-                ros::spinOnce();
+		ros::spinOnce();
 		loop_rate.sleep();
 
-                //determine the logic of neighbour movement 
+		//determine the logic of neighbour movement
 		if (neighbour.getMovementQueueSize() == 0){
 			if(neighbour.getStatus().compare("Finding a robot")==0){  
-  				neighbour.faceEast(1);
-                neighbour.addMovement("forward_x", neighbour.getOriginX()-neighbour.getX(), 1);
-                neighbour.setStatus("Moving back");
+				neighbour.faceEast(1);
+				neighbour.addMovement("forward_x", neighbour.getOriginX()-neighbour.getX(), 1);
+				neighbour.setStatus("Moving back");
 			}else{
 				neighbour.setStatus("Finding a robot");
 				neighbour.faceWest(1);

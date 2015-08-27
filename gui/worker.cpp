@@ -45,14 +45,14 @@ void Worker::exec(string cmd) {
 				// Check if line starts with pos_x
 				if (s.compare(0, 5, "pos_x") == 0) { 
 					// Emits a signal
-	 				emit requestNewLabel(id, buffer, 1); 
-				// Check if line starts with pos_y
+					emit requestNewLabel(id, buffer, 1);
+					// Check if line starts with pos_y
 				} else if (s.compare(0, 5, "pos_y") == 0) {
-	 				emit requestNewLabel(id, buffer, 2); 
-				// Check if line starts with pos_theta
+					emit requestNewLabel(id, buffer, 2);
+					// Check if line starts with pos_theta
 				} else if (s.compare(0, 9, "pos_theta") == 0) {
 					emit requestNewLabel(id, buffer, 3); 
-				// Check if line starts with status
+					// Check if line starts with status
 				} else if (s.compare(0, 6, "status") == 0) {
 					emit requestNewLabel(id, buffer, 4); 
 				} else if (s.compare(0, 8, "obstacle") == 0) {
@@ -70,30 +70,30 @@ void Worker::setMainWindow(MainWindow *m) {
 
 // For sending to Tractor
 void Worker::sendToTractor() {
-    FILE *in;
-    ostringstream oss;
-    oss << "../../devel/lib/se306project/Tractor " << mw->getTotalNodesFromModel();
-    if (!(in = popen(oss.str().c_str(), "w"))) {
-        qDebug("failed to run tractor node");
-        return;
-    }
-    while (1){
-        int last = mw->getLastKeyPressed();
-        if (last == 0) {
-            fputs("none",in);
-        } else if (last == 1) {
-            fputs("left",in);
-        } else if (last == 2) {
-            fputs("right",in);
-        } else if (last == 3) {
-            fputs("up",in);
-        } else if (last == 4) {
-            fputs("down",in);
-        } 
-        fputs("\n",in);
-        int j =fflush(in);
-        usleep(200000);
-    }
-    pclose(in);
+	FILE *in;
+	ostringstream oss;
+	oss << "../../devel/lib/se306project/Tractor " << mw->getTotalNodesFromModel();
+	if (!(in = popen(oss.str().c_str(), "w"))) {
+		qDebug("failed to run tractor node");
+		return;
+	}
+	while (1){
+		int last = mw->getLastKeyPressed();
+		if (last == 0) {
+			fputs("none",in);
+		} else if (last == 1) {
+			fputs("left",in);
+		} else if (last == 2) {
+			fputs("right",in);
+		} else if (last == 3) {
+			fputs("up",in);
+		} else if (last == 4) {
+			fputs("down",in);
+		}
+		fputs("\n",in);
+		int j =fflush(in);
+		usleep(200000);
+	}
+	pclose(in);
 }
 

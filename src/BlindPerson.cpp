@@ -25,13 +25,13 @@ BlindPerson blindPerson(-30.00,21.15);
 void stage_positionCallback(nav_msgs::Odometry msg) {
 	blindPerson.stageOdom_callback(msg);
 }
- 
+
 double targetX;
 double targetY;
 
 void dog_positionCallback(const se306project::animal_status::ConstPtr& msg) {
 	targetX = msg->pos_x;
-    targetY = msg->pos_y;
+	targetY = msg->pos_y;
 }
 
 
@@ -44,7 +44,7 @@ int main(int argc, char **argv) {
 	// Convert input parameters for person initialization from String to respective types
 	std::string xString = argv[1];
 	std::string yString = argv[2];
-    std::string dogString = argv[4];
+	std::string dogString = argv[4];
 	double xPos = atof(xString.c_str());
 	double yPos = atof(yString.c_str());
 	blindPerson = BlindPerson(xPos,yPos);
@@ -57,28 +57,28 @@ int main(int argc, char **argv) {
 
 	std::string topicName = "/robot_" +dogString + "/status";
 	ros::Subscriber sub = n.subscribe<se306project::animal_status>(topicName,1000, dog_positionCallback);
-	
+
 	ros::Rate loop_rate(10);
 	se306project::human_status status_msg;
 	blindPerson.setStatus("Following dog");
 
 	while (ros::ok()) {
 
-        float angleToDog = atan2(blindPerson.getY() - targetY, blindPerson.getX() - targetX);
-        float dist = sqrt((blindPerson.getX() - targetX)*(blindPerson.getX() - targetX) + (blindPerson.getY() - targetY)*(blindPerson.getY() - targetY));
-        float difference = -1 * (angleToDog - blindPerson.getTheta());
-        if (difference < -1*M_PI) { difference += 2*M_PI; }
-        else if (difference > M_PI) { difference -= 2*M_PI; }
+		float angleToDog = atan2(blindPerson.getY() - targetY, blindPerson.getX() - targetX);
+		float dist = sqrt((blindPerson.getX() - targetX)*(blindPerson.getX() - targetX) + (blindPerson.getY() - targetY)*(blindPerson.getY() - targetY));
+		float difference = -1 * (angleToDog - blindPerson.getTheta());
+		if (difference < -1*M_PI) { difference += 2*M_PI; }
+		else if (difference > M_PI) { difference -= 2*M_PI; }
 
-        if (dist < 1) {
-            dist = 0;
-            difference = 0;
-        }
+		if (dist < 1) {
+			dist = 0;
+			difference = 0;
+		}
 		blindPerson.setLin(dist);
 		blindPerson.setAng(difference);
-        blindPerson.updateOdometry();
+		blindPerson.updateOdometry();
 
-        status_msg.pos_x = blindPerson.getX();
+		status_msg.pos_x = blindPerson.getX();
 		status_msg.pos_y = blindPerson.getY();
 		status_msg.pos_theta = blindPerson.getTheta();
 		status_msg.status = blindPerson.getStatus();

@@ -298,9 +298,9 @@ void Entity::avoidanceComplete() {
 bool Entity::isRotating(){
 	bool isRotating=false;
 	if(avoidanceQueue.size()>0&&avoidanceQueue.front().getType().compare("rotation")==0){
-			isRotating=true;
+		isRotating=true;
 	}else if(movementQueue.size()>0&&movementQueue.front().getType().compare("rotation")==0){
-			isRotating=true;
+		isRotating=true;
 	}
 	return isRotating;
 }
@@ -534,31 +534,6 @@ void Entity::moveForward(double pos, double vel, std::string direction,int queue
  */
 void Entity::moveZ(double pos, double vel,int queueNum) {
 	double position=z;
-
-	/*if (!desireLocation){
-		ROS_INFO("mfpos: %f", pos);
-		if (std::abs(position-pos)>=0.01){
-			if(std::abs(position-pos)<=0.2&&vel>0.1){
-				zVelocity=-0.1;
-			}else if(std::abs(position-pos)<=1&&vel>1){
-				zVelocity=-1;
-			}else{
-				zVelocity=vel;
-			}
-		}else{
-			if (queueNum==2){
-				// Call method complete to remove complete movement from queue
-				movementComplete();
-			}else{
-				// Call method to remove from avoidance queue
-				avoidanceComplete();
-			}
-			zVelocity=0;
-		}
-	}else{
-		desireLocation=true;
-		zVelocity=0;
-	}*/
 	zVelocity=3;
 	linearVelocity=0;
 	angularVelocity=0;
