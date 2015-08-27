@@ -365,6 +365,7 @@ void Generator::loadPeople()
         // Generate neighbours
         outfile << "# Generate neighbours" << endl;
 for (int i = 0; i < model.neighbours; i++) {
+
     	// Generate the position of the neigbours
         float xPos = 43 ;
         float yPos = 19;

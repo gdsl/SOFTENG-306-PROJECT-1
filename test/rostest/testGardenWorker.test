@@ -1,3 +1,5 @@
 <launch>
+    <node pkg="se306project" name="PickerRobotnode" type="PickerRobot" args="-42 24 0 1 14 3.5 20 20"/>
+    <node pkg="se306project" name="GardenWorkernode" type="GardenWorker" args="19 20 22 23 23"/>
     <test test-name="testGardenWorker" pkg="se306project" type="testGardenWorker"/>
 </launch>
