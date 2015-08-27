@@ -369,7 +369,7 @@ for (int i = 0; i < model.neighbours; i++) {
     	// Generate the position of the neigbours
         float xPos = 43 ;
         float yPos = 19;
-        yPos=yPos-(i * model.rowWidth) + 0.5; //plus 0.5 to stop getting rekt by tall weed
+        yPos=yPos-(i * model.rowWidth); //plus 0.5 to stop getting rekt by tall weed
         string colour = colourArray[peopleCC];
         peopleCC += 1;
         neighbourPositions.push(xPos);
